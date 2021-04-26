@@ -1,7 +1,14 @@
+import Head from 'next/head';
+
 export default function Products(){
 	return(
-		<div className="products-container">
-			<h1>All Products</h1>
-		</div>
+		<>
+			<Head>
+				<title>Shopping Cart | Products</title>
+			</Head>
+			<div className="products-container">
+				<h1>All Products</h1>
+			</div>
+		</>
 	);
 }
