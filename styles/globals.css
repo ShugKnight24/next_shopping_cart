@@ -15,6 +15,12 @@ a {
   box-sizing: border-box;
 }
 
+/* Site Wrapper */
+.site-container {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
 /* Nav Styles */
 nav {
 	margin: 9px auto 45px;
