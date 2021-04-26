@@ -14,3 +14,29 @@ a {
 * {
   box-sizing: border-box;
 }
+
+/* Nav Styles */
+nav {
+	margin: 9px auto 45px;
+	padding: 15px 0;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	border-bottom: 3px solid #1173A8;
+}
+
+nav a {
+	margin-left: 15px;
+	color: #D54140;
+	text-transform: uppercase;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+nav a:last-of-type {
+	margin-right: 15px;
+}
+
+nav a:hover {
+	color: #C92C2C
+}
