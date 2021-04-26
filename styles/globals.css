@@ -40,3 +40,16 @@ nav a:last-of-type {
 nav a:hover {
 	color: #C92C2C
 }
+
+/* Footer Styles */
+.footer-container {
+	margin-top: 25px;
+}
+
+footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-top: 3px solid #1173A8;
+	padding: 30px 0;
+}
