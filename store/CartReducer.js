@@ -39,7 +39,11 @@ export const reducer = (state, action) => {
 			currentItem.available -= 1;
 			return { ...state };
 		case 'UPDATE_QUANTITY':
-			return { ...state, ...action.payload };
+			productId = action.payload.productId;
+			let quantity = parseFloat(action.payload.quantity);
+			currentItem = cart.find(product => product.itemid === productId);
+			currentItem.quantity = quantity;
+			return { ...state };
 		case 'REMOVE_ITEM':
 			productId = action.payload.productId;
 			const currentCartItemIndex = cart.indexOf((product) => product.itemid === productId);

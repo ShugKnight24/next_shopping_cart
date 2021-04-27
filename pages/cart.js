@@ -47,8 +47,14 @@ export default function Cart(){
 												name="quantity"
 												value={ cartItem.quantity }
 												min="0"
-												// max={ currentProduct.available }
-												onChange={ (event) => updateQuantity(event) }
+												max={ cartItem.available }
+												onChange={(event) =>  dispatch({ 
+													type: 'UPDATE_QUANTITY',
+													payload: {
+														productId: cartItem.itemid,
+														quantity: event.target.value
+													}
+												})}
 											/>
 											<button className="delete-item"
 												onClick={() =>  dispatch({ 
