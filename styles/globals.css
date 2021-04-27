@@ -143,6 +143,17 @@ footer {
 	border-color: #1E7E34;
 }
 
+.add-cart-button.disabled {
+	background-color: #6C757D;
+	border-color: #6C757D;
+}
+
+.add-cart-button.disabled:hover {
+	cursor: not-allowed;
+	background-color: #5A6268;
+	border-color: #545B62;
+}
+
 .add-to-cart-form {
 	display: flex;
 	flex-direction: column;

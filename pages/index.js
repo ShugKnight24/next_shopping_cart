@@ -20,6 +20,7 @@ export default function Home() {
 				<div className="products-container">
 				{
 					inventory.map(product => {
+						const disabledButton = product.available === 0 ? true : false;
 						return(
 							<div
 								className="product"
@@ -46,7 +47,7 @@ export default function Home() {
 										</button>
 										{/* TODO:// Add to cart functionality */}
 										<button 
-											className="button add-cart-button"
+											className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
 											onClick={ () => dispatch({ 
 												type: 'ADD_ITEM',
 												payload: {

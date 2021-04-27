@@ -19,6 +19,7 @@ export default function Products(){
 				<div className="products-container">
 					{
 						inventory.map(product => {
+							const disabledButton = product.available === 0 ? true : false;
 							return(
 								<div
 									className="product"
@@ -44,7 +45,7 @@ export default function Products(){
 												<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
 											</button>
 											{/* TODO:// Add to cart functionality */}
-											<button className="button add-cart-button">Add To Cart</button>
+											<button className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}>Add To Cart</button>
 										</div>
 									</div>
 								</div>
