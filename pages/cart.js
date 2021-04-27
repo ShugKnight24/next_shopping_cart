@@ -63,7 +63,12 @@ export default function Cart(){
 							</div>
 							<div className="cart-actions">
 								{/* TODO:// Confirm Modal */}
-								<button className="clear-cart">
+								<button
+									className="clear-cart"
+									onClick={ () => dispatch({ 
+										type: 'EMPTY_CART'
+									}) }
+								>
 									Empty Cart
 								</button>
 								<button className="checkout">
