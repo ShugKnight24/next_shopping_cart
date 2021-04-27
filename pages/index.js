@@ -1,19 +1,11 @@
 import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import productList from '../data/items.json';
 import { CartContext } from '../context/CartProvider';
 
-export const getStaticProps = () => {
-	return {
-		props: { 
-			products: productList 
-		}
-	}
-}
-
-export default function Home({ products }) {
+export default function Home() {
 	const { state, dispatch } = useContext(CartContext);
+	const { inventory } = state;
 
 	return (
 		<>
@@ -27,7 +19,7 @@ export default function Home({ products }) {
 				</div>
 				<div className="products-container">
 				{
-					products.map(product => {
+					inventory.map(product => {
 						return(
 							<div
 								className="product"
