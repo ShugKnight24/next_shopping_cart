@@ -1,6 +1,8 @@
+import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import productList from '../data/items.json';
+import { CartContext } from '../context/CartProvider';
 
 export const getStaticProps = () => {
 	return {
@@ -11,6 +13,8 @@ export const getStaticProps = () => {
 }
 
 export default function Home({ products }) {
+	const { state, dispatch } = useContext(CartContext);
+
 	return (
 		<>
 			<Head>
@@ -49,7 +53,15 @@ export default function Home({ products }) {
 											<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
 										</button>
 										{/* TODO:// Add to cart functionality */}
-										<button className="button add-cart-button">Add To Cart</button>
+										<button 
+											className="button add-cart-button"
+											onClick={ () => dispatch({ 
+												type: 'ADD_ITEM',
+												payload: {
+													productId: product.itemid
+												}
+											}) }
+										>Add To Cart</button>
 									</div>
 								</div>
 							</div>
