@@ -17,9 +17,10 @@ export default function Home({ products }) {
 				<title>Shopping Cart | Home</title>
 			</Head>
 			<div className="home-container">
-				<h1>Home Page</h1>
-				<h2>Most Popular Products</h2>
-				<Link href='/products'><a>See All Products</a></Link>
+				<div className="page-header">
+					<h1>Home Page</h1>
+					<h2>Our Most Popular Products</h2>
+				</div>
 				<div className="products-container">
 				{
 					products.map(product => {
@@ -44,8 +45,9 @@ export default function Home({ products }) {
 									*/}
 									<p className="product-quantity">Currently Available: { product.available }</p>
 									<div className="product-actions">
-										{/*  TODO:// Link to specific product page */}
-										<button className="button more-info-button">More Info</button>
+										<button className="button more-info-button">
+											<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
+										</button>
 										{/* TODO:// Add to cart functionality */}
 										<button className="button add-cart-button">Add To Cart</button>
 									</div>
@@ -54,6 +56,7 @@ export default function Home({ products }) {
 						)
 					})
 				}
+					<Link href='/products'><a className="all-products-link">See All Products</a></Link>
 				</div>
 			</div>
 		</>

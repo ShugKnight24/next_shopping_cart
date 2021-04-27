@@ -102,6 +102,10 @@ footer {
 	margin: 9px 0;
 }
 
+.product-actions {
+	text-align: center;
+}
+
 .product button {
 	padding: 15px;
 	font-size: 18px;
