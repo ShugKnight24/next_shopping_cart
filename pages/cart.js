@@ -50,7 +50,14 @@ export default function Cart(){
 												// max={ currentProduct.available }
 												onChange={ (event) => updateQuantity(event) }
 											/>
-											<button className="delete-item">
+											<button className="delete-item"
+												onClick={() =>  dispatch({ 
+													type: 'REMOVE_ITEM',
+													payload: {
+														productId: cartItem.itemid
+													}
+												})}
+											>
 												<i className="far fa-trash-alt"></i>
 											</button>
 											<p className="product-price">Price: ${ (cartItem.price * cartItem.quantity).toFixed(2) }</p>

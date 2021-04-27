@@ -9,12 +9,14 @@ export const initialState = {
 
 export const reducer = (state, action) => {
 	const { inventory, cart } = state;
+	let productId;
+	let currentItem;
 	switch (action.type) {
 		case 'SET_CART':
 			return { ...state, ...action.payload };
 		case 'ADD_ITEM':
-			const { productId } = action.payload;
-			const currentItem = inventory.find((product) => product.itemid === productId);
+			productId = action.payload.productId;
+			currentItem = inventory.find((product) => product.itemid === productId);
 			// TODO: // Error logging / alert
 			if (currentItem.available === 0) return { ...state }
 			
@@ -39,7 +41,13 @@ export const reducer = (state, action) => {
 		case 'UPDATE_QUANTITY':
 			return { ...state, ...action.payload };
 		case 'REMOVE_ITEM':
-			return { ...state, ...action.payload };
+			productId = action.payload.productId;
+			const currentCartItemIndex = cart.indexOf((product) => product.itemid === productId);
+			currentItem = inventory.find((product) => product.itemid === productId);
+			currentItem.available += 1;
+			cart.splice(currentCartItemIndex, 1);
+
+			return { ...state };
 		case 'EMPTY_CART':
 			state.cart = [];
 			state.inventory = [...JSON.parse(JSON.stringify(initialInventory))];
