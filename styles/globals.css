@@ -148,12 +148,31 @@ footer {
 	margin-bottom: 9px;
 }
 
-.products-container .all-products-link {
+.products-container .all-products-link,
+.not-found-body a {
 	color: #1173A8;
 	text-decoration: none;
 	font-weight: bold;
 }
 
-.products-container .all-products-link:hover {
+.products-container .all-products-link:hover,
+.not-found-body a:hover {
 	color: #0D5982;
+}
+
+/* 404 Styles */
+.not-found-body {
+	text-align: center;
+}
+
+.not-found-body p {
+	margin: 9px 0;
+}
+
+.not-found-body ul {
+	list-style-type: none;
+}
+
+.not-found-body li {
+	margin: 3px 0;
 }
