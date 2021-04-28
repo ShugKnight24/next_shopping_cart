@@ -29,7 +29,7 @@ export default function Home() {
 							>
 								<img 
 									src={ product.image }
-									alt={`${ product.productName } by ${ product.manufacturer }`}
+									alt={`${ product.productName } made by ${ product.manufacturer }`}
 								/>
 								<h2>{ product.productName }</h2>
 								<h3>Manufactured By: { product.manufacturer }</h3>
@@ -43,9 +43,11 @@ export default function Home() {
 									*/}
 									<p className="product-quantity">Currently Available: { product.available }</p>
 									<div className="product-actions">
-										<button className="button more-info-button">
-											<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
-										</button>
+										<Link href={`/products/${ product.itemid.toString() }`}>
+											<button className="button more-info-button">
+												<a>More Info</a>
+											</button>
+										</Link>
 										{/* TODO:// Add to cart functionality */}
 										<button 
 											className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}

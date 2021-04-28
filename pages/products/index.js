@@ -36,17 +36,20 @@ export default function Products(){
 										{/* TODO:// Trim description Text `...Read More` => Head to Specific product */}
 										<p className="product-description">{ product.description }</p>
 										<p className="product-Price">Price: ${ product.price }</p>
-										{/* 
-											TODO:// Reduce this number as items are added to cart... 
-											Can't add more than currently available
-										*/}
 										<p className="product-quantity">Currently Available: { product.available }</p>
 										<div className="product-actions">
 											<button className="button more-info-button">
 												<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
 											</button>
-											{/* TODO:// Add to cart functionality */}
-											<button className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}>Add To Cart</button>
+											<button
+												className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
+												onClick={ () => dispatch({ 
+													type: 'ADD_ITEM',
+													payload: {
+														productId: product.itemid
+													}
+												}) }
+											>Add To Cart</button>
 										</div>
 									</div>
 								</div>
