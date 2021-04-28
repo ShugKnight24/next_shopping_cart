@@ -71,7 +71,7 @@ export default function ProductID({ currentProduct }){
 							<p className="product-description"></p>
 							<p className="product-Price">Price: ${ currentProduct.price }</p>
 							{/* Refactor available */}
-							<p className="product-quantity">Currently Available: { currentProduct.available }</p>
+							{/* <p className="product-quantity">Currently Available: { currentProduct.available }</p> */}
 							<button
 								className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
 								onClick={ () => dispatch({ 
