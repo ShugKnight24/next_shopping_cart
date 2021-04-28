@@ -33,6 +33,12 @@ export default function Cart(){
 					itemsInCart
 					?
 						<>
+							<div className="cart-header">
+								<span className="product-header">Product</span>
+								<span className="quantity">Quantity</span>
+								<span className="remove">Remove Item</span>
+								<span className="price">Price</span>
+							</div>
 							{
 								cart.map(cartItem => {
 									return(
@@ -53,7 +59,7 @@ export default function Cart(){
 												type="number"
 												name="quantity"
 												value={ cartItem.quantity }
-												min="0"
+												min="1"
 												max={ cartItem.available }
 												onChange={(event) =>  dispatch({ 
 													type: 'UPDATE_QUANTITY',
@@ -73,7 +79,7 @@ export default function Cart(){
 											>
 												<i className="far fa-trash-alt"></i>
 											</button>
-											<p className="product-price">Price: ${ (cartItem.price * cartItem.quantity).toFixed(2) }</p>
+											<p className="product-price">${ (cartItem.price * cartItem.quantity).toFixed(2) }</p>
 										</div>
 									)
 								}
