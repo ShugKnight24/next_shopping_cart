@@ -13,7 +13,7 @@ export const reducer = (state, action) => {
 	let currentItem;
 	switch (action.type) {
 		case 'SET_CART':
-			return { ...state, ...action.payload };
+			return { ...state };
 		case 'ADD_ITEM':
 			productId = action.payload.productId;
 			currentItem = inventory.find((product) => product.itemid === productId);
