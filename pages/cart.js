@@ -5,11 +5,18 @@ import { CartContext } from '../context/CartProvider';
 
 export default function Cart(){
 	const { state, dispatch } = useContext(CartContext);
-	const { cart, totalPrice } = state;
+	const { cart } = state;
 	const itemsInCart = cart.length > 0 ? true : false;
 
 	// TODO:// Money converting util?
 	// TODO:// column titles when layout is set 
+	const totalPrice = cart.reduce((total, { price, quantity }) => {
+		return total + (price * quantity);
+	}, 0);
+
+	const totalQuantity = cart.reduce((total, { quantity }) => {
+		return total + quantity;
+	}, 0);
 
 	return(
 		<>
@@ -71,8 +78,13 @@ export default function Cart(){
 									)
 								}
 							)}
-							<div className="total-price">
-								<p>Total Price: ${ totalPrice.toFixed(2) }</p>
+							<div className="cart-info">
+								<div className="total-quantity">
+									<p>Total Items: { totalQuantity }</p>
+								</div>
+								<div className="total-price">
+									<p>SubTotal: ${ totalPrice.toFixed(2) }</p>
+								</div>
 							</div>
 							<div className="cart-actions">
 								{/* TODO:// Confirm Modal */}

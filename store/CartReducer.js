@@ -3,8 +3,6 @@ const initialInventory = JSON.parse(JSON.stringify(productList));
 export const initialState = {
 	inventory: [...productList],
 	cart: [],
-	totalItems: 0,
-	totalPrice: 0
 };
 
 export const reducer = (state, action) => {
@@ -23,8 +21,6 @@ export const reducer = (state, action) => {
 			const cartItem = cart.find((product) => product.itemid === productId);
 			if (cartItem){
 				cartItem.quantity += 1;
-				state.totalItems += 1;
-				state.totalPrice += currentItem.price;
 			} else {
 				state.cart = ([
 					...cart,
@@ -33,8 +29,6 @@ export const reducer = (state, action) => {
 						quantity: 1
 					}
 				]);
-				state.totalItems += 1;
-				state.totalPrice += currentItem.price;
 			}
 			currentItem.available -= 1;
 			return { ...state };
@@ -50,13 +44,10 @@ export const reducer = (state, action) => {
 			currentItem = inventory.find((product) => product.itemid === productId);
 			currentItem.available += 1;
 			cart.splice(currentCartItemIndex, 1);
-
 			return { ...state };
 		case 'EMPTY_CART':
 			state.cart = [];
 			state.inventory = [...JSON.parse(JSON.stringify(initialInventory))];
-			state.totalItems = 0;
-			state.totalPrice = 0;
 			return { ...state };
 		default:
 			throw new Error(`No recognized action was run... ${ action.type }`);
