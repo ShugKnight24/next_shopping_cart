@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import Head from 'next/head';
 import productList from '../../data/items.json';
+import { CartContext } from '../../context/CartProvider';
 
 export const getStaticPaths = async () => {
 	const pagePaths = productList.map(({ itemid }) => {
@@ -30,11 +32,8 @@ export const getStaticProps = (context) => {
 }
 
 export default function ProductID({ currentProduct }){
-
-	// TODO: Finish Update Qty functionality
-	function updateQuantity(event){
-		console.log(event)
-	}
+	const { state, dispatch } = useContext(CartContext);
+	const disabledButton = currentProduct.available === 0 ? true : false;
 
 	// TODO: Finish Add to Cart functionality
 	function handleSubmit(event){
@@ -71,8 +70,18 @@ export default function ProductID({ currentProduct }){
 								/>
 							<p className="product-description"></p>
 							<p className="product-Price">Price: ${ currentProduct.price }</p>
+							{/* Refactor available */}
 							<p className="product-quantity">Currently Available: { currentProduct.available }</p>
-							<form
+							<button
+								className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
+								onClick={ () => dispatch({ 
+									type: 'ADD_ITEM',
+									payload: {
+										productId: currentProduct.itemid
+									}
+								}) }
+							>Add To Cart</button>
+							{/* <form
 								className="add-to-cart-form"
 								onSubmit={ (event) => handleSubmit(event) }
 							>
@@ -91,7 +100,7 @@ export default function ProductID({ currentProduct }){
 									className="button add-cart-button"
 									type="submit"
 								>Add To Cart</button>
-							</form>
+							</form> */}
 						</div>
 					}
 				</div>
