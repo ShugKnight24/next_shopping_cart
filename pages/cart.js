@@ -40,6 +40,7 @@ export default function Cart(){
 								<span className="price">Price</span>
 							</div>
 							{
+								cart &&
 								cart.map(cartItem => {
 									return(
 										<div 

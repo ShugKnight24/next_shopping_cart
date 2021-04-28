@@ -19,6 +19,7 @@ export default function Home() {
 				</div>
 				<div className="products-container">
 				{
+					inventory &&
 					inventory.map(product => {
 						const disabledButton = product.available === 0 ? true : false;
 						return(
