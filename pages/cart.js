@@ -2,21 +2,12 @@ import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
+import { totalQuantity, totalPrice } from '../utils/cartUtils';
 
 export default function Cart(){
 	const { state, dispatch } = useContext(CartContext);
 	const { cart } = state;
 	const itemsInCart = cart.length > 0 ? true : false;
-
-	// TODO:// Money converting util?
-	// TODO:// column titles when layout is set 
-	const totalPrice = cart.reduce((total, { price, quantity }) => {
-		return total + (price * quantity);
-	}, 0);
-
-	const totalQuantity = cart.reduce((total, { quantity }) => {
-		return total + quantity;
-	}, 0);
 
 	return(
 		<>
@@ -86,10 +77,10 @@ export default function Cart(){
 							)}
 							<div className="cart-info">
 								<div className="total-quantity">
-									<p>Total Items: { totalQuantity }</p>
+									<p>Total Items: { totalQuantity(cart) }</p>
 								</div>
 								<div className="total-price">
-									<p>SubTotal: ${ totalPrice.toFixed(2) }</p>
+									<p>SubTotal: ${ totalPrice(cart).toFixed(2) }</p>
 								</div>
 							</div>
 							<div className="cart-actions">
