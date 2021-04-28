@@ -11,6 +11,7 @@ export default function Products(){
 		<>
 			<Head>
 				<title>Shopping Cart | All Products Page</title>
+				<link rel="stylesheet" href="../static/normalize.css"></link>
 			</Head>
 			<div className="products-page">
 				<div className="page-header">

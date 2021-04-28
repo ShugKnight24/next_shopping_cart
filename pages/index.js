@@ -11,6 +11,7 @@ export default function Home() {
 		<>
 			<Head>
 				<title>Shopping Cart | Home</title>
+				<link rel="stylesheet" href="../static/normalize.css"></link>
 			</Head>
 			<div className="home-container">
 				<div className="page-header">

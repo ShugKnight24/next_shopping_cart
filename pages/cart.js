@@ -23,6 +23,7 @@ export default function Cart(){
 			<Head>
 				<title>Shopping Cart | Cart</title>
 				<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.2/css/all.css"></link>
+				<link rel="stylesheet" href="../static/normalize.css"></link>
 			</Head>
 			<div className="cart-container">
 				<div className="page-header">

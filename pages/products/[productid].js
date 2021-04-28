@@ -51,6 +51,7 @@ export default function ProductID({ currentProduct }){
 		<>
 			<Head>
 				<title>{ currentProduct.productName } | Product Page</title>
+				<link rel="stylesheet" href="../static/normalize.css"></link>
 			</Head>
 			<div className="product-page">
 				<div className="product-container">
