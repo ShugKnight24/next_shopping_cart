@@ -5,8 +5,7 @@ export const CartContext = createContext();
 
 export function CartProvider({ children }){
 	const [isInitialized, setIsInitialized] = useState(false);
-	const [localCartState, setLocalCartState] = useState(initialState);
-	const [state, dispatch] = useReducer(reducer, localCartState);
+	const [state, dispatch] = useReducer(reducer, initialState);
 	const LOCAL_STORAGE_CART_KEY = 'shopping_cart.cart';
 	
 	function save(){
@@ -14,17 +13,17 @@ export function CartProvider({ children }){
 	}
 	
 	useEffect(() => {
-		if (isInitialized){
-			save();
-		}
+		if (isInitialized) save();
 	}, [state]);
 	
 	useEffect(() => {
 		const localCartData = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
-		setLocalCartState( localCartData ? JSON.parse(localCartData) : initialState);
+
+		if (!localCartData) return;
+
 		dispatch({
 			type: 'SET_CART',
-			payload: localCartState
+			payload: JSON.parse(localCartData)
 		})
 		setIsInitialized(true);
 	}, []);

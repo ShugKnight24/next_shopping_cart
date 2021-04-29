@@ -11,6 +11,7 @@ export const reducer = (state, action) => {
 	let currentItem;
 	switch (action.type) {
 		case 'SET_CART':
+			state = action.payload;
 			return { ...state };
 		case 'ADD_ITEM':
 			productId = action.payload.productId;
