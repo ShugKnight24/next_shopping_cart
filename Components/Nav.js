@@ -14,7 +14,7 @@ export default function Nav(){
 				<Link href="/products"><a>Products</a></Link>
 				<Link href="/cart">
 					<a className="cart-nav-item">
-						<span class="cart-count">{ totalQuantity(cart) }</span>
+						<span className="cart-count">{ totalQuantity(cart) }</span>
 					</a>
 				</Link>
 			</nav>
