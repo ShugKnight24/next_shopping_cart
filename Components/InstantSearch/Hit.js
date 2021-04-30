@@ -7,7 +7,7 @@ export function Hit({ itemid, image, productName, manufacturer }){
 	const { inventory } = state;
 
 	function handleButtonClick(event, productId){
-		event.stopPropagation();
+		event.preventDefault();
 		dispatch({ 
 			type: 'ADD_ITEM',
 			payload: {
@@ -38,7 +38,7 @@ export function Hit({ itemid, image, productName, manufacturer }){
 						</div>
 						<button 
 							className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
-							onClick={ (event) => handleButtonClick(event,  itemid) }
+							onClick={ (event) => handleButtonClick(event, itemid) }
 						>Add To Cart</button>
 					</div>
 				</a>
