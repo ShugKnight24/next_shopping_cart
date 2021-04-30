@@ -40,8 +40,11 @@ export function InstantSearch(){
 				className="instant-search"
 				type="text"
 				placeholder="Search Products"
-				onClick={
+				onFocus={ 
 					() => setShowHits(true)
+				}
+				onBlur={
+					() => setShowHits(false)
 				}
 			/>
 			<ul className={`instant-list ${ showHits ? 'populated' : '' }`}>
