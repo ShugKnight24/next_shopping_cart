@@ -1,10 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
+import { ModalContext } from '../../context/ModalProvider';
 
-export function Hit({ itemid, image, productName, manufacturer }){
+export function Hit({ itemid, image, productName, manufacturer, setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
 	const { inventory } = state;
+	const { setShowModal } = useContext(ModalContext);
 
 	function handleButtonClick(event, productId){
 		event.preventDefault();
@@ -14,6 +16,12 @@ export function Hit({ itemid, image, productName, manufacturer }){
 				productId
 			}
 		});
+
+		if (productId === 'SM58') {
+			setShowModal(true);
+			setSelectedProduct('SM58');
+			setRecommendedProduct ('SM57');
+		}
 	}
 
 	const currentItem = inventory.find(product => product.itemid === itemid);

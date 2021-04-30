@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Hit } from './Hit';
 
-export function InstantSearch({ showHitsClosed }){
+export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommendedProduct }){
 	const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
 	const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID;
 	const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME;
@@ -74,6 +74,8 @@ export function InstantSearch({ showHitsClosed }){
 									image={ product.image }
 									productName={ product.productName }
 									manufacturer={ product.manufacturer }
+									setSelectedProduct={ setSelectedProduct }
+									setRecommendedProduct={ setRecommendedProduct }
 								/>
 							)
 						})
