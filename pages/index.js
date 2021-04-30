@@ -12,7 +12,14 @@ export default function Home() {
 	function handleClick(event){
 		const element = document.querySelector('.instant-search');
 
-		if (event.target !== element && !element.contains(event.target)) setShowHitsClosed(false);
+		// work around
+		// functional components won't rerender if state is reset to same
+		if (event.target !== element && !element.contains(event.target)) {
+			setShowHitsClosed(false);
+			setTimeout(() => {
+				setShowHitsClosed(null);
+			}, 500)
+		};
 	}
 
 	return (
