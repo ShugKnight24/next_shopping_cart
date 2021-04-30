@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
@@ -7,6 +7,13 @@ import { InstantSearch } from '../Components/InstantSearch/InstantSearch';
 export default function Home() {
 	const { state, dispatch } = useContext(CartContext);
 	const { inventory } = state;
+	const [showHitsClosed, setShowHitsClosed] = useState(null);
+
+	function handleClick(event){
+		const element = document.querySelector('.instant-search');
+
+		if (event.target !== element && !element.contains(event.target)) setShowHitsClosed(false);
+	}
 
 	return (
 		<>
@@ -18,8 +25,14 @@ export default function Home() {
 					<h1>Home Page</h1>
 					<h2>Our Most Popular Products</h2>
 				</div>
-				<div className="products-container">
-					<InstantSearch />
+				<div className="products-container"
+					onClick={
+						(event) => handleClick(event) 
+					}
+				>
+					<InstantSearch 
+						showHitsClosed={ showHitsClosed }
+					/>
 				{
 					inventory &&
 					inventory.map(product => {

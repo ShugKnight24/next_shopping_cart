@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Hit } from './Hit';
 
-export function InstantSearch(){
+export function InstantSearch({ showHitsClosed }){
 	const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
 	const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID;
 	const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME;
@@ -43,6 +43,10 @@ export function InstantSearch(){
 		fetchAlgoliaData(newURL);
 	}
 
+	useEffect(() => {
+		if (showHitsClosed === false) setShowHits(false);
+	}, [showHitsClosed]);
+
 	return(
 		<div className={`instant-search-container ${ showHits ? 'populated' : '' }`}>
 			<input
@@ -52,8 +56,6 @@ export function InstantSearch(){
 				onFocus={ 
 					() => setShowHits(true)
 				}
-				onBlur={
-					() => setShowHits(false)
 				onKeyUp={ 
 					(event) => handleKeyUp(event)
 				}
