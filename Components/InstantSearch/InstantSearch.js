@@ -35,7 +35,7 @@ export function InstantSearch(){
 	}, []);
 
 	return(
-		<div className="instant-search-container">
+		<div className={`instant-search-container ${ showHits ? 'populated' : '' }`}>
 			<input
 				className="instant-search"
 				type="text"
@@ -47,7 +47,7 @@ export function InstantSearch(){
 					() => setShowHits(false)
 				}
 			/>
-			<ul className={`instant-list ${ showHits ? 'populated' : '' }`}>
+			<ul className="instant-list">
 				{
 					showHits
 					? hitList.map(product => {

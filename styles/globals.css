@@ -342,6 +342,10 @@ footer {
 	width: 85%;
 }
 
+.instant-search-container.populated {
+	margin-bottom: 120px;
+}
+
 .instant-search {
 	position: relative;
 	background-color: #1173A8;
@@ -371,7 +375,7 @@ footer {
 	position: relative;
 }
 
-.instant-list.populated {
+.populated .instant-list {
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -397,7 +401,7 @@ footer {
 	background: linear-gradient(to bottom, #148CCC 0%,#1173A8 100%);
 }
 
-.instant-list.populated li.hit-container:nth-child(even) {
+.populated .instant-list li.hit-container:nth-child(even) {
 	transform: perspective(100px) rotateX(3deg) translateY(-4px) scale(1.001);
 }
 
@@ -406,7 +410,7 @@ footer {
 	background: linear-gradient(to top, #148CCC 0%,#1173A8 100%);
 }
 
-.instant-list.populated li.hit-container:nth-child(odd) {
+.populated .instant-list li.hit-container:nth-child(odd) {
 	transform: perspective(100px) rotateX(-3deg) translateY(2px);
 }
 
