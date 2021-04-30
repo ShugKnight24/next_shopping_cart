@@ -335,3 +335,118 @@ footer {
 	background-color: #218838;
 	border-color: #1E7E34;
 }
+
+/* Instant Search */
+.instant-search-container {
+	position: relative;
+	width: 85%;
+}
+
+.instant-search {
+	position: relative;
+	background-color: #1173A8;
+	color: #FFF;
+	outline: 0;
+	width: 100%;
+	max-width: 400px;
+	left: 50%;
+	transform: translateX(-50%);
+	border: 3px solid #D54140;
+	border-radius: 9px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.19);
+	font-size: 36px;
+	text-align: left;
+	text-transform: uppercase;
+	padding: 6px 15px;	
+}
+
+.instant-search::placeholder {
+	color: #FFF;
+	font-size: 24px;
+}
+
+.instant-list {
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+
+.instant-list.populated {
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+.instant-list li {
+	background: #148CCC;
+	color: #FFF;
+	list-style: none;
+	border-bottom: 3px solid #C92C2C;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+	margin: 0;
+	padding: 0 15px;
+	transition: background 0.2s;
+	display: flex;
+	font-weight: bold;
+	font-size: 24px;
+	text-transform: capitalize;
+}
+
+.instant-list li:nth-child(even) {
+	transform: perspective(100px) rotateX(3deg) translateY(1px) scale(1.001);
+	background: linear-gradient(to bottom, #148CCC 0%,#1173A8 100%);
+}
+
+.instant-list.populated li.hit-container:nth-child(even) {
+	transform: perspective(100px) rotateX(3deg) translateY(-4px) scale(1.001);
+}
+
+.instant-list li:nth-child(odd) {
+	transform: perspective(100px) rotateX(-3deg) translateY(1px);
+	background: linear-gradient(to top, #148CCC 0%,#1173A8 100%);
+}
+
+.instant-list.populated li.hit-container:nth-child(odd) {
+	transform: perspective(100px) rotateX(-3deg) translateY(2px);
+}
+
+.instant-list li a {
+	width: 100%;
+	padding: 15px 0;
+}
+
+.hit-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.hit-image {
+	max-width: 75px;
+	margin-right: 25px;
+}
+
+.name-manufactuter {
+	display: flex;
+	flex-direction: column;
+}
+
+.name-manufacturer h2,
+.name-manufacturer h3 {
+	margin: 6px 0;
+	padding: 0 3px;
+}
+
+.name-manufacturer h2 {
+	font-size: 24px;
+}
+
+.name-manufacturer h3 {
+	font-size: 18px;
+}
+
+.hit-container .add-cart-button {
+	color: #FFF;
+	padding: 9px 15px;
+	border-radius: 9px;
+}
