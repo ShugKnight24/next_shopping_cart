@@ -473,8 +473,8 @@ footer {
 
 #modal > div {
 	background-color: white;
-	min-width: 100%;
-	min-height: 100%;
+	min-width: 90%;
+	min-height: 75%;
 	padding: 15px;
 	text-align: center;
 	background: #FFFFFF;
@@ -482,11 +482,11 @@ footer {
 
 #modal .modal-header {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 	align-items: center;
 	padding: 20px 40px;
-	box-shadow: 0px 2px 4px rgba(23, 25, 35, 0.08);
 }
+
 #modal .close-modal {
 	width: 40px;
 	height: 40px;
@@ -498,11 +498,11 @@ footer {
 }
 
 #modal .close-modal:hover {
-	border-color:#DC3545;
+	border-color: #C92C2C;
 }
 
 #modal .close-modal:hover .fa-times {
-		color:#DC3545;
+		color: #C92C2C;
 }
 
 #modal .fa-times {
@@ -512,5 +512,5 @@ footer {
 	color: #171923;
 }
 #modal .fa-times:hover {
-	color:#DC3545;
+	color: #C92C2C;
 }
