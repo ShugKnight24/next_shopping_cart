@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
+import { InstantSearch } from '../Components/InstantSearch';
 
 export default function Home() {
 	const { state, dispatch } = useContext(CartContext);
@@ -18,6 +19,7 @@ export default function Home() {
 					<h2>Our Most Popular Products</h2>
 				</div>
 				<div className="products-container">
+					<InstantSearch />
 				{
 					inventory &&
 					inventory.map(product => {
