@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
-import { InstantSearch } from '../Components/InstantSearch';
+import { InstantSearch } from '../Components/InstantSearch/InstantSearch';
 
 export default function Home() {
 	const { state, dispatch } = useContext(CartContext);
