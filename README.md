@@ -2,6 +2,12 @@
 
 Shopping cart built utilizing NextJS and the React Context API
 
+## Setup
+
+If you want to add Algolia to your own local version, take a look at the `.example.env` file and add the necessary info from Algolia's API
+  - Rename based on your own project
+  - Refer to [NextJS Docs](https://nextjs.org/docs/basic-features/environment-variables) for more info
+
 ## To-Dos
 - [ ] Refactor
   - Sloppy Implementation for Modal & Recommendation system in favor of speed
