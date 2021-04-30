@@ -9,7 +9,8 @@ export function InstantSearch(){
 	const [showHits, setShowHits] = useState(false);
 	const [hitList, setHitList] = useState([]);
 
-	const url = `https://${ appId }-dsn.algolia.net/1/indexes/${ indexName }`;
+	const baseAlgoliaURL = `https://${ appId }-dsn.algolia.net/1/indexes/${ indexName }`;
+
 	/*
 		Built from https://www.algolia.com/doc/rest-api/search/
 		Eventually implement try catch for all Algolia api servers...?
@@ -18,7 +19,7 @@ export function InstantSearch(){
 		-3.algolianet.com
 	*/
 	
-	const fetchAlgoliaData = () => fetch(url, {
+	const fetchAlgoliaData = (url) => fetch(url, {
 		method: 'GET',
 		withCredentials: true,
 		headers: {
@@ -29,10 +30,18 @@ export function InstantSearch(){
 	})
 	.then(response => response.json())
 	.then(data => setHitList(data.hits));
-
+	
 	useEffect(() => {
-		fetchAlgoliaData();
+		fetchAlgoliaData(baseAlgoliaURL);
 	}, []);
+
+	function handleKeyUp(event){
+		const newKey = event.target.value;
+		const searchURL = baseAlgoliaURL + '?query=' + encodeURIComponent(newKey) + '&hitsPerPage=2&getRankingInfo=1';
+		const newURL = (event.target.value === '') ? baseAlgoliaURL : searchURL;
+
+		fetchAlgoliaData(newURL);
+	}
 
 	return(
 		<div className={`instant-search-container ${ showHits ? 'populated' : '' }`}>
@@ -45,22 +54,29 @@ export function InstantSearch(){
 				}
 				onBlur={
 					() => setShowHits(false)
+				onKeyUp={ 
+					(event) => handleKeyUp(event)
 				}
 			/>
 			<ul className="instant-list">
 				{
 					showHits
-					? hitList.map(product => {
-						return(
-							<Hit
-								key={ product.itemid }
-								itemid={ product.itemid }
-								image={ product.image }
-								productName={ product.productName }
-								manufacturer={ product.manufacturer }
-							/>
-						)
-					})
+					?
+						hitList !== undefined
+						?
+						hitList.map(product => {
+							return(
+								<Hit
+									key={ product.itemid }
+									itemid={ product.itemid }
+									image={ product.image }
+									productName={ product.productName }
+									manufacturer={ product.manufacturer }
+								/>
+							)
+						})
+						: <li><a>No Matches Found</a></li>
+
 					: (
 						<>
 							<li><a>Find the products you want</a></li>
