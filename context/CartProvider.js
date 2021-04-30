@@ -18,12 +18,11 @@ export function CartProvider({ children }){
 	
 	useEffect(() => {
 		const localCartData = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
-
-		if (!localCartData) return;
+		const currentData = localCartData ? JSON.parse(localCartData) : initialState;
 
 		dispatch({
 			type: 'SET_CART',
-			payload: JSON.parse(localCartData)
+			payload: currentData
 		})
 		setIsInitialized(true);
 	}, []);
