@@ -1,71 +1,43 @@
-/* Products */
-.products-container {
+/* Sub Product Pages */
+.product-page {
 	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: center;
-	padding: 0 30px;
-	
+	padding: 15px;
+
 	.product {
-		flex-basis: 50%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding: 15px;
-		
-		@include mq-max(800px) {
-			flex-basis: 100%;
-			margin-bottom: 15px;
-		}
-		
+	
 		img {
 			max-width: 250px;
 		}
-
-		h2,
-		h3,
-		p {
-			margin: 9px 0;
+			
+		button {
+			padding: 15px;
+			font-size: 18px;
+			font-weight: bold;
+			color: white;
+			outline: 0;
+			border: 1px solid transparent;
+			
+			&:hover {
+				cursor: pointer;
+			}
 		}
-
-		.product-actions {
-			text-align: center;
+		
+		.add-cart-button {
+			background-color: #28A745;
+			border-color: #28A745;
 			
-			button {
-				padding: 15px;
-				font-size: 18px;
-				font-weight: bold;
-				color: white;
-				outline: 0;
-				border: 1px solid transparent;
-				
-				&:hover {
-					cursor: pointer;
-				}
+			&:hover {
+				background-color: #218838;
+				border-color: #1E7E34;
 			}
-			
-			.more-info-button {
-				background-color: #007BFF;
-				border-color: #007BFF;
-				
-				&:hover {
-					background-color: #0069D9;
-					border-color: #0062CC;
-				}
-			}
-			
-			.add-cart-button {
-				background-color: #28A745;
-				border-color: #28A745;
-				
-				&:hover {
-					background-color: #218838;
-					border-color: #1E7E34;
-				}
-			}
-			
-			.disabled {
+	
+			&.disabled {
 				background-color: #6C757D;
 				border-color: #6C757D;
 				
@@ -76,7 +48,7 @@
 				}
 			}
 		}
-
+	
 		// TODO Implement add w/ Quantity
 		.add-to-cart-form {
 			display: flex;
@@ -86,6 +58,5 @@
 				margin-bottom: 9px;
 			}
 		}
-		
 	}
 }
