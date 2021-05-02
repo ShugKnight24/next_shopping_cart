@@ -4,6 +4,7 @@ import Link from 'next/link';
 import productList from '../../data/items.json';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
+import { getCurrentItem } from '../../utils/getItem';
 
 export const getStaticPaths = async () => {
 	const pagePaths = productList.map(({ itemid }) => {
@@ -23,12 +24,10 @@ export const getStaticPaths = async () => {
 export const getStaticProps = (context) => {
 
 	const currentid = context.params.productid;
-	const currentProduct = productList.filter(product => {
-		return product.itemid.toString() === currentid;
-	});
+	const currentProduct = getCurrentItem(productList, currentid);
 	return {
 		props: { 
-			currentProduct: currentProduct[0]
+			currentProduct: currentProduct
 		}
 	}
 }
@@ -36,7 +35,7 @@ export const getStaticProps = (context) => {
 export default function ProductID({ currentProduct }){
 	const { state, dispatch } = useContext(CartContext);
 	const { inventory } = state;
-	const currentItem = inventory.find((product) => product.itemid === currentProduct.itemid)
+	const currentItem = getCurrentItem(inventory, currentProduct.itemid)
 	const disabledButton = currentItem.available === 0 ? true : false;
 
 	// TODO: Finish Add to Cart functionality

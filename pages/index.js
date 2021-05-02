@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Products } from '../Components/Products';
 import { ModalContext } from '../context/ModalProvider';
 import { Modal } from '../Components/Modal';
+import { getCurrentItem } from '../utils/getItem';
 
 export default function Home() {
 	const { showModal } = useContext(ModalContext);
@@ -12,9 +13,8 @@ export default function Home() {
 	const [recommendedProduct, setRecommendedProduct] = useState('');
 	const [recItem, setRecItem] = useState(null);
 
-
 	useEffect(() => {
-		const currentItem = inventory.find(product => product.itemid === recommendedProduct);
+		const currentItem = getCurrentItem(inventory, recommendedProduct);
 		setRecItem(currentItem ? currentItem : null);
 	}, [selectedProduct]);
 

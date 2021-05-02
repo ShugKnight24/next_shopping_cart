@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
 import { formatCurrency } from '../../utils/cartUtils';
+import { getCurrentItem } from '../../utils/getItem';
 
 export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
@@ -25,7 +26,7 @@ export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 		}
 	}
 
-	const { available, image, manufacturer, price, productName } = inventory.find(product => product.itemid === itemid);
+	const { available, image, manufacturer, price, productName } = getCurrentItem(inventory, itemid);
 	const disabledButton = available === 0 ? true : false;
 
 	return(

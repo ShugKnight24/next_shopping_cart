@@ -1,4 +1,6 @@
 import productList from '../data/items.json';
+import { getCurrentItem } from '../utils/getItem';
+
 const initialInventory = JSON.parse(JSON.stringify(productList));
 export const initialState = {
 	inventory: [...productList],
@@ -15,11 +17,11 @@ export const reducer = (state, action) => {
 			return { ...state };
 		case 'ADD_ITEM':
 			productId = action.payload.productId;
-			currentItem = inventory.find((product) => product.itemid === productId);
+			currentItem = getCurrentItem(inventory, productId);
 			// TODO: // Error logging / alert
 			if (currentItem.available === 0) return { ...state }
 			
-			const cartItem = cart.find((product) => product.itemid === productId);
+			const cartItem = getCurrentItem(cart, productId);
 			if (cartItem){
 				cartItem.quantity += 1;
 			} else {
@@ -36,13 +38,13 @@ export const reducer = (state, action) => {
 		case 'UPDATE_QUANTITY':
 			productId = action.payload.productId;
 			let quantity = parseFloat(action.payload.quantity);
-			currentItem = cart.find(product => product.itemid === productId);
+			currentItem = getCurrentItem(cart, productId);
 			currentItem.quantity = quantity;
 			return { ...state };
 		case 'REMOVE_ITEM':
 			productId = action.payload.productId;
 			const currentCartItemIndex = cart.indexOf((product) => product.itemid === productId);
-			currentItem = inventory.find((product) => product.itemid === productId);
+			currentItem = getCurrentItem(inventory, productId);
 			currentItem.available += 1;
 			cart.splice(currentCartItemIndex, 1);
 			return { ...state };
