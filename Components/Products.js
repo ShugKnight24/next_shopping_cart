@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
 import { InstantSearch } from './InstantSearch/InstantSearch';
+import { formatCurrency } from '../utils/cartUtils';
 
 export function Products(){
 	const { state, dispatch } = useContext(CartContext);
@@ -55,7 +56,7 @@ export function Products(){
 						<div className="product-info">
 							{/* TODO:// Trim description Text `...Read More` => Head to Specific product */}
 							<p className="product-description">{ product.description }</p>
-							<p className="product-Price">Price: ${ product.price }</p>
+							<p className="product-Price">Price: { formatCurrency(product.price) }</p>
 							<p className="product-quantity">Currently Available: { product.available }</p>
 							<div className="product-actions">
 								<button className="button more-info-button">

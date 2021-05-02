@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
-import { totalQuantity, totalPrice } from '../utils/cartUtils';
+import { formatCurrency, totalQuantity, totalPrice } from '../utils/cartUtils';
 
 export default function Cart(){
 	const { state, dispatch } = useContext(CartContext);
@@ -70,7 +70,7 @@ export default function Cart(){
 											>
 												<i className="far fa-trash-alt"></i>
 											</button>
-											<p className="product-price">${ (cartItem.price * cartItem.quantity).toFixed(2) }</p>
+											<p className="product-price">{ formatCurrency(cartItem.price * cartItem.quantity) }</p>
 										</div>
 									)
 								}
@@ -80,7 +80,7 @@ export default function Cart(){
 									<p>Total Items: { totalQuantity(cart) }</p>
 								</div>
 								<div className="total-price">
-									<p>SubTotal: ${ totalPrice(cart).toFixed(2) }</p>
+									<p>SubTotal: { formatCurrency(totalPrice(cart)) }</p>
 								</div>
 							</div>
 							<div className="cart-actions">

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import productList from '../../data/items.json';
 import { CartContext } from '../../context/CartProvider';
+import { formatCurrency } from '../../utils/cartUtils';
 
 export const getStaticPaths = async () => {
 	const pagePaths = productList.map(({ itemid }) => {
@@ -71,7 +72,7 @@ export default function ProductID({ currentProduct }){
 							alt={`${ currentProduct.productName } by ${ currentProduct.manufacturer }`}
 							/>
 						<p className="product-description"></p>
-						<p className="product-price">Price: ${ currentProduct.price }</p>
+						<p className="product-price">Price: { formatCurrency(currentProduct.price) }</p>
 						<p className="product-quantity">Currently Available: { currentItem.available }</p>
 						<button
 							className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
