@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
+import { formatCurrency } from '../../utils/cartUtils';
 
 export function Hit({ itemid, image, productName, manufacturer, setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
@@ -43,6 +44,7 @@ export function Hit({ itemid, image, productName, manufacturer, setSelectedProdu
 							<h2>{ productName }</h2>
 							<h3>Made By: { manufacturer }</h3>
 							<p>Available: { currentItem.available }</p>
+							<p>{ formatCurrency(price) }</p>
 						</div>
 						<button 
 							className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
