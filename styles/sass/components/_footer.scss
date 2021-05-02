@@ -1,19 +1,12 @@
 /* Footer Styles */
 .footer-container {
 	margin-top: 25px;
-}
-
-footer {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-top: 3px solid #1173A8;
-	padding: 30px 0;
-}
-
-/* Generic Page Styles */
-.page-header h1,
-.page-header h2 {
-	text-align: center;
-	margin: 9px 0;
+	
+	footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-top: 3px solid #1173A8;
+		padding: 30px 0;
+	}
 }

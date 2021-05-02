@@ -13,9 +13,12 @@ body {
 a {
 	color: inherit;
 	text-decoration: none;
+	
+	&:hover {
+		cursor: pointer;
+	}
 }
 
-a:hover,
 button:hover {
 	cursor: pointer;
 }
@@ -24,4 +27,11 @@ button:hover {
 .site-container {
 	max-width: 1440px;
 	margin: 0 auto;
+	
+	/* Generic Page Styles */
+	.page-header h1,
+	.page-header h2 {
+		text-align: center;
+		margin: 9px 0;
+	}
 }

@@ -6,39 +6,39 @@ nav {
 	justify-content: flex-end;
 	align-items: flex-end;
 	border-bottom: 3px solid #1173A8;
-}
+	
+	a {
+		margin-left: 15px;
+		color: #D54140;
+		text-transform: uppercase;
+		font-size: 18px;
+		font-weight: bold;
+		
+		&:last-of-type {
+			margin-right: 15px;
+		}
+		
+		&:hover {
+			color: #C92C2C
+		}
+	}
 
-nav a {
-	margin-left: 15px;
-	color: #D54140;
-	text-transform: uppercase;
-	font-size: 18px;
-	font-weight: bold;
-}
-
-nav a:last-of-type {
-	margin-right: 15px;
-}
-
-nav a:hover {
-	color: #C92C2C
-}
-
-nav .cart-nav-item {
-	position: relative;
-}
-
-.cart-nav-item::before {
-	font-family: "Font Awesome 5 Pro";
-	font-size: 60px;
-	font-weight: 900;
-	content: "\f07a";
-}
-
-nav .cart-nav-item .cart-count {
-	position: absolute;
-	left: 30px;
-	top: 15px;
-	color: #FFF;
-	font-size: 21px;
+	.cart-nav-item {
+		position: relative;
+		
+		&::before {
+			font-family: "Font Awesome 5 Pro";
+			font-size: 60px;
+			font-weight: 900;
+			content: "\f07a";
+		}
+		
+		.cart-count {
+			position: absolute;
+			left: 30px;
+			top: 15px;
+			color: #FFF;
+			font-size: 21px;
+		}
+	}
 }
