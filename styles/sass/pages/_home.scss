@@ -1,5 +1,8 @@
 .home-container {
 	.all-products-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		color: #1173A8;
 		text-decoration: none;
 		font-weight: bold;
