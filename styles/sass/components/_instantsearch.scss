@@ -1,7 +1,8 @@
 /* Instant Search */
 .instant-search-container {
 	position: relative;
-	width: 85%;
+	width: 75%;
+	max-width: 600px;
 	
 	&.populated {
 		margin-bottom: 120px;
@@ -107,9 +108,27 @@
 					}
 					
 					.add-cart-button {
+						background-color: #28A745;
+						border-color: #28A745;
 						color: #FFF;
 						padding: 9px 15px;
 						border-radius: 9px;
+						
+						&:hover {
+							background-color: #218838;
+							border-color: #1E7E34;
+						}
+
+						&.disabled {
+							background-color: #6C757D;
+							border-color: #6C757D;
+							
+							&:hover {
+								cursor: not-allowed;
+								background-color: #5A6268;
+								border-color: #545B62;
+							}
+						}
 					}
 				}
 			}

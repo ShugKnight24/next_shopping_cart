@@ -18,7 +18,7 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 		-2.algolianet.com
 		-3.algolianet.com
 	*/
-	
+
 	const fetchAlgoliaData = (url) => fetch(url, {
 		method: 'GET',
 		withCredentials: true,
