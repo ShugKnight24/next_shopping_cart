@@ -1,0 +1,18 @@
+/* Mixins */
+@mixin mq-max($from) {
+	@media screen and (max-width: $from) {
+		@content;
+	}
+}
+
+@mixin mq-min($from) {
+	@media screen and (min-width: $from) {
+		@content;
+	}
+}
+
+@mixin mq-between($min, $max) {
+	@media screen and (min-width: $min) and (max-width: $max) {
+		@content;
+	}
+}
