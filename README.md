@@ -13,18 +13,32 @@ If you want to add Algolia to your own local version, take a look at the `.examp
   - Sloppy Implementation for Modal & Recommendation system in favor of speed
     - Avoid prop drilling for recs
   - Add subcomponents for dupe code
-  - Add utils for dupe code
-  - Add full implementation to products page
+    - Further refactor
+  - Leverage destructuring
 
-- [ ] Improve Algolia Implementation  
+- [ ] Improve Algolia Implementation
+  - Further refactor
   - [ ] Highlight matches in algolia search
+    - [ ] Match can be found in algolia response
   - [ ] Improve responsiveness
   - [ ] Improve design
+
+- [ ] Further utilize sass
+  - Color Variables
+  - Modules for buttons / Links
+    - Other repeated styles
 
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
+## Future Ideas
+- Discount system on recommended products ...?
+  - How to best handle...
+    - Apply discount for each product pair... add to cart together
+- Discount Code system... 
+
 ## Implemented
+- [X] Added formatCurrency and getItem utils - 5/2/21
 - [X] Use SCSS - 5/2/21
 - [X] Add Product Recommendation system - 4/30/21
 - [X] Add Modal System - 4/30/21

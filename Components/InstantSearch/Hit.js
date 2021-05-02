@@ -1,9 +1,11 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
+import { formatCurrency } from '../../utils/cartUtils';
+import { getCurrentItem } from '../../utils/getItem';
 
-export function Hit({ itemid, image, productName, manufacturer, setSelectedProduct, setRecommendedProduct }){
+export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
 	const { inventory } = state;
 	const { setShowModal } = useContext(ModalContext);
@@ -20,12 +22,12 @@ export function Hit({ itemid, image, productName, manufacturer, setSelectedProdu
 		if (productId === 'SM58') {
 			setShowModal(true);
 			setSelectedProduct('SM58');
-			setRecommendedProduct ('SM57');
+			setRecommendedProduct('SM57');
 		}
 	}
 
-	const currentItem = inventory.find(product => product.itemid === itemid);
-	const disabledButton = currentItem.available === 0 ? true : false;
+	const { available, image, manufacturer, price, productName } = getCurrentItem(inventory, itemid);
+	const disabledButton = available === 0 ? true : false;
 
 	return(
 		<li 
@@ -42,7 +44,8 @@ export function Hit({ itemid, image, productName, manufacturer, setSelectedProdu
 						<div className="name-manufacturer">
 							<h2>{ productName }</h2>
 							<h3>Made By: { manufacturer }</h3>
-							<p>Available: { currentItem.available }</p>
+							<p>Available: { available }</p>
+							<p>{ formatCurrency(price) }</p>
 						</div>
 						<button 
 							className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}

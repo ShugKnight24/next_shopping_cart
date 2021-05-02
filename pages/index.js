@@ -1,36 +1,24 @@
 import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Products } from '../Components/Products';
 import { CartContext } from '../context/CartProvider';
-import { InstantSearch } from '../Components/InstantSearch/InstantSearch';
 import { ModalContext } from '../context/ModalProvider';
 import { Modal } from '../Components/Modal';
+import { getCurrentItem } from '../utils/getItem';
+import { formatCurrency } from '../utils/cartUtils';
 
 export default function Home() {
-	const { state, dispatch } = useContext(CartContext);
+	const { showModal, setShowModal } = useContext(ModalContext);
+	const { state, dispatch } = useContext(CartContext)
 	const { inventory } = state;
-	const [showHitsClosed, setShowHitsClosed] = useState(null);
-	const { showModal } = useContext(ModalContext);
 
-	const [selectedProduct, setSelectedProduct] = useState('');
-	const [recommendedProduct, setRecommendedProduct] = useState('');
+	const [selectedProduct, setSelectedProduct] = useState(null);
+	const [recommendedProduct, setRecommendedProduct] = useState(null);
 	const [recItem, setRecItem] = useState(null);
 
-	function handleClick(event){
-		const element = document.querySelector('.instant-search');
-
-		// work around
-		// functional components won't rerender if state is reset to same
-		if (event.target !== element && !element.contains(event.target)) {
-			setShowHitsClosed(false);
-			setTimeout(() => {
-				setShowHitsClosed(null);
-			}, 500)
-		};
-	}
-
 	useEffect(() => {
-		const currentItem = inventory.find(product => product.itemid === recommendedProduct);
+		const currentItem = getCurrentItem(inventory, recommendedProduct);
 		setRecItem(currentItem ? currentItem : null);
 	}, [selectedProduct]);
 
@@ -44,98 +32,50 @@ export default function Home() {
 					<h1>Home Page</h1>
 					<h2>Our Most Popular Products</h2>
 				</div>
-				<div className="products-container"
-					onClick={
-						(event) => handleClick(event) 
-					}
-				>
-					<InstantSearch 
-						showHitsClosed={ showHitsClosed }
-						setSelectedProduct={ setSelectedProduct }
-						setRecommendedProduct={ setRecommendedProduct }
-					/>
-				{
-					inventory &&
-					inventory.map(product => {
-						const disabledButton = product.available === 0 ? true : false;
-						return(
-							<div
-								className="product"
-								key={ product.itemid }
-							>
-								<img 
-									src={ product.image }
-									alt={`${ product.productName } made by ${ product.manufacturer }`}
-								/>
-								<h2>{ product.productName }</h2>
-								<h3>Manufactured By: { product.manufacturer }</h3>
-								<div className="product-info">
-									{/* TODO:// Trim description Text `...Read More` */}
-									<p className="product-description">{ product.description }</p>
-									<p className="product-Price">Price: ${ product.price }</p>
-									{/* 
-										TODO:// Reduce this number as items are added to cart... 
-										Can't add more than currently available
-									*/}
-									<p className="product-quantity">Currently Available: { product.available }</p>
-									<div className="product-actions">
-										<Link href={`/products/${ product.itemid.toString() }`}>
-											<button className="button more-info-button">
-												<a>More Info</a>
-											</button>
-										</Link>
-										{/* TODO:// Add to cart functionality */}
-										<button 
-											className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
-											onClick={ () => dispatch({ 
-												type: 'ADD_ITEM',
-												payload: {
-													productId: product.itemid
-												}
-											}) }
-										>Add To Cart</button>
-									</div>
-								</div>
-							</div>
-						)
-					})
-				}
-					<Link href='/products'><a className="all-products-link">See All Products</a></Link>
-				</div>
+				<Products 
+					setSelectedProduct={ setSelectedProduct }
+					setRecommendedProduct={ setRecommendedProduct }
+				/>
+				<Link href='/products'>
+					<a className="all-products-link">See All Products</a>
+				</Link>
 				{ 
 					showModal ? (
 						<Modal>
 							<div className="modal-body">
-								You selected { selectedProduct }, it pairs well with { recommendedProduct }. want this too?
-
-								<h2>{ recommendedProduct } Details</h2>
+								You selected { selectedProduct }, it pairs well with { recommendedProduct }. Do you want to add this product to your cart as well?
 								{ recItem &&
 									(
-										<Link href={`/products/${ recItem.itemid.toString() }`}>
-										<a>
-											<div className="hit-content">
-												<img
-													className="hit-image"
-													src={ recItem.image }
-													alt={`${ recItem.productName } made by ${ recItem.manufacturer }`}
-												/>
-												<div className="name-manufacturer">
-													<h2>{ recItem.productName }</h2>
-													<h3>Made By: { recItem.manufacturer }</h3>
-													<p>Available: { recItem.available }</p>
-												</div>
-												<button 
-													className={`button add-cart-button`}
-													onClick={ () => dispatch({ 
+										<div className="hit-content">
+											<Link href={`/products/${ recItem.itemid.toString() }`}>
+												<a onClick={ () => setShowModal(false) }>
+													<h2>{ recommendedProduct } Details</h2>
+												</a>
+											</Link>
+											<img
+												className="hit-image"
+												src={ recItem.image }
+												alt={`${ recItem.productName } made by ${ recItem.manufacturer }`}
+											/>
+											<div className="product-info">
+												<h3>Made By: { recItem.manufacturer }</h3>
+												<p>{ recItem.description }</p>
+												<p>Available: { recItem.available }</p>
+												<p>Price: { formatCurrency(recItem.price) }</p>
+											</div>
+											<button 
+												className={`button add-cart-button`}
+												onClick={ () => {
+													dispatch({ 
 														type: 'ADD_ITEM',
 														payload: {
 															productId: recItem.itemid
 														}
-													}) }
-												>Add To Cart</button>
-											</div>
-										</a>
-									</Link>
+													});
+													setShowModal(false);
+												}}
+											>Add To Cart</button>
+										</div>
 									)
 								}
 							</div>

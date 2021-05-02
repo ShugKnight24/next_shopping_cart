@@ -58,6 +58,42 @@
 			}
 		}
 	}
+
+	a {
+		color: #1173A8;
+		text-decoration: none;
+		font-weight: bold;
+
+		&:hover {
+			color: #0D5982;
+		}
+	}
+
+	.add-cart-button {
+		background-color: #28A745;
+		color: #FFF;
+		border-color: #28A745;
+		padding: 15px;
+		font-size: 18px;
+		font-weight: bold;
+		
+		&:hover {
+			background-color: #218838;
+			border-color: #1E7E34;
+			cursor: pointer;
+		}
+
+		&.disabled {
+			background-color: #6C757D;
+			border-color: #6C757D;
+			
+			&:hover {
+				cursor: not-allowed;
+				background-color: #5A6268;
+				border-color: #545B62;
+			}
+		}
+	}
 }
 
 

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
-import { totalQuantity, totalPrice } from '../utils/cartUtils';
+import { formatCurrency, totalQuantity, totalPrice } from '../utils/cartUtils';
 
 export default function Cart(){
 	const { state, dispatch } = useContext(CartContext);
@@ -16,8 +16,8 @@ export default function Cart(){
 			</Head>
 			<div className="cart-container">
 				<div className="page-header">
-						<h1>Cart</h1>
-						<h2>Find everything okay?</h2>
+					<h1>Cart</h1>
+					<h2>Find everything okay?</h2>
 				</div>
 				{
 					itemsInCart
@@ -70,7 +70,7 @@ export default function Cart(){
 											>
 												<i className="far fa-trash-alt"></i>
 											</button>
-											<p className="product-price">${ (cartItem.price * cartItem.quantity).toFixed(2) }</p>
+											<p className="product-price">{ formatCurrency(cartItem.price * cartItem.quantity) }</p>
 										</div>
 									)
 								}
@@ -80,7 +80,7 @@ export default function Cart(){
 									<p>Total Items: { totalQuantity(cart) }</p>
 								</div>
 								<div className="total-price">
-									<p>SubTotal: ${ totalPrice(cart).toFixed(2) }</p>
+									<p>SubTotal: { formatCurrency(totalPrice(cart)) }</p>
 								</div>
 							</div>
 							<div className="cart-actions">
@@ -99,11 +99,11 @@ export default function Cart(){
 							</div>
 						</>
 					: (
-						<>
-							<p>Your cart is empty, add some items and come back</p>
+						<div className="empty-cart">
+							<p>Your cart is currently empty, add some items and come back</p>
 							<Link href="/"><a>Home</a></Link>
 							<Link href="/products"><a>Products</a></Link>
-						</>
+						</div>
 					)
 				}
 			</div>

@@ -18,7 +18,7 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 		-2.algolianet.com
 		-3.algolianet.com
 	*/
-	
+
 	const fetchAlgoliaData = (url) => fetch(url, {
 		method: 'GET',
 		withCredentials: true,
@@ -64,16 +64,13 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 				{
 					showHits
 					?
-						hitList !== undefined
+						hitList.length !== 0
 						?
 						hitList.map(product => {
 							return(
 								<Hit
 									key={ product.itemid }
 									itemid={ product.itemid }
-									image={ product.image }
-									productName={ product.productName }
-									manufacturer={ product.manufacturer }
 									setSelectedProduct={ setSelectedProduct }
 									setRecommendedProduct={ setRecommendedProduct }
 								/>
