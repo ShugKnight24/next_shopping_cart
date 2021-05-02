@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
@@ -22,7 +22,7 @@ export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 		if (productId === 'SM58') {
 			setShowModal(true);
 			setSelectedProduct('SM58');
-			setRecommendedProduct ('SM57');
+			setRecommendedProduct('SM57');
 		}
 	}
 

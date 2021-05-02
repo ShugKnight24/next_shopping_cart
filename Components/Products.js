@@ -4,7 +4,7 @@ import { CartContext } from '../context/CartProvider';
 import { InstantSearch } from './InstantSearch/InstantSearch';
 import { formatCurrency } from '../utils/cartUtils';
 
-export function Products(){
+export function Products({ setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
 	const { inventory } = state;
 	const [showHitsClosed, setShowHitsClosed] = useState(null);
@@ -34,8 +34,8 @@ export function Products(){
 			>
 				<InstantSearch 
 					showHitsClosed={ showHitsClosed }
-					// setSelectedProduct={ setSelectedProduct }
-					// setRecommendedProduct={ setRecommendedProduct }
+					setSelectedProduct={ setSelectedProduct }
+					setRecommendedProduct={ setRecommendedProduct }
 				/>
 			</div>
 		{

@@ -2,12 +2,15 @@ import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Products } from '../Components/Products';
+import { CartContext } from '../context/CartProvider';
 import { ModalContext } from '../context/ModalProvider';
 import { Modal } from '../Components/Modal';
 import { getCurrentItem } from '../utils/getItem';
 
 export default function Home() {
 	const { showModal } = useContext(ModalContext);
+	const { state, dispatch } = useContext(CartContext)
+	const { inventory } = state;
 
 	const [selectedProduct, setSelectedProduct] = useState('');
 	const [recommendedProduct, setRecommendedProduct] = useState('');
@@ -28,7 +31,10 @@ export default function Home() {
 					<h1>Home Page</h1>
 					<h2>Our Most Popular Products</h2>
 				</div>
-				<Products />
+				<Products 
+					setSelectedProduct={ setSelectedProduct }
+					setRecommendedProduct={ setRecommendedProduct }
+				/>
 				<Link href='/products'>
 					<a className="all-products-link">See All Products</a>
 				</Link>
