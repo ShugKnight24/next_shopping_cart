@@ -64,7 +64,7 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 				{
 					showHits
 					?
-						hitList !== undefined
+						hitList.length !== 0
 						?
 						hitList.map(product => {
 							return(
