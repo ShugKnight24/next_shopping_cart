@@ -13,8 +13,8 @@ export default function ProductsPage(){
 	const { state, dispatch } = useContext(CartContext)
 	const { inventory } = state;
 
-	const [selectedProduct, setSelectedProduct] = useState('');
-	const [recommendedProduct, setRecommendedProduct] = useState('');
+	const [selectedProduct, setSelectedProduct] = useState(null);
+	const [recommendedProduct, setRecommendedProduct] = useState(null);
 	const [recItem, setRecItem] = useState(null);
 
 	useEffect(() => {
@@ -40,15 +40,14 @@ export default function ProductsPage(){
 						<Modal>
 							<div className="modal-body">
 								You selected { selectedProduct }, it pairs well with { recommendedProduct }. Do you want to add this product to your cart as well?
-
-								<Link href={`/products/${ recItem.itemid.toString() }`}>
-									<a>
-										<h2>{ recommendedProduct } Details</h2>
-									</a>
-								</Link>
 								{ recItem &&
 									(
 										<div className="hit-content">
+											<Link href={`/products/${ recItem.itemid.toString() }`}>
+												<a onClick={ () => setShowModal(false) }>
+													<h2>{ recommendedProduct } Details</h2>
+												</a>
+											</Link>
 											<img
 												className="hit-image"
 												src={ recItem.image }

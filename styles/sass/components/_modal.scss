@@ -59,6 +59,16 @@
 		}
 	}
 
+	a {
+		color: #1173A8;
+		text-decoration: none;
+		font-weight: bold;
+
+		&:hover {
+			color: #0D5982;
+		}
+	}
+
 	.add-cart-button {
 		background-color: #28A745;
 		color: #FFF;
