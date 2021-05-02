@@ -31,6 +31,12 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
+## Future Ideas
+- Discount system on recommended products ...?
+  - How to best handle...
+    - Apply discount for each product pair... add to cart together
+- Discount Code system... 
+
 ## Implemented
 - [X] Added formatCurrency and getItem utils - 5/2/21
 - [X] Use SCSS - 5/2/21
