@@ -1,0 +1,37 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+		Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+	
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+/* Site Wrapper */
+.site-container {
+	max-width: 1440px;
+	margin: 0 auto;
+	
+	/* Generic Page Styles */
+	.page-header h1,
+	.page-header h2 {
+		text-align: center;
+		margin: 9px 0;
+	}
+}

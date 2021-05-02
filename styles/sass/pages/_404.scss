@@ -1,0 +1,28 @@
+/* 404 Styles */
+.not-found-body {
+	text-align: center;
+	
+	p {
+		margin: 9px 0;
+	}
+	
+	ul {
+		list-style-type: none;
+		
+		li {
+			margin: 3px 0;
+		}
+	}
+
+	a {
+		color: #1173A8;
+		text-decoration: none;
+		font-weight: bold;
+
+		&:hover {
+			color: #0D5982;
+		}
+	}
+}
+
+

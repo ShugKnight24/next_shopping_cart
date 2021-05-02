@@ -1,0 +1,11 @@
+.home-container {
+	.all-products-link {
+		color: #1173A8;
+		text-decoration: none;
+		font-weight: bold;
+
+		&:hover {
+			color: #0D5982;
+		}
+	}
+}

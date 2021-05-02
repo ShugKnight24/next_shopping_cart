@@ -21,12 +21,12 @@ If you want to add Algolia to your own local version, take a look at the `.examp
   - [ ] Improve responsiveness
   - [ ] Improve design
 
-- [ ] Move to SCSS
-  - [ ] Long term Chakra / Emotion ...?
+- [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
 ## Implemented
-- [X] Add Product Recommendation system - 4/30/21 
+- [X] Use SCSS - 5/2/21
+- [X] Add Product Recommendation system - 4/30/21
 - [X] Add Modal System - 4/30/21
 - [X] Add Custom Algolia Implementation - 4/30/21
 - [X] Persist cart state via Local Storage - 4/28/21
