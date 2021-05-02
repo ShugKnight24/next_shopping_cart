@@ -56,7 +56,9 @@ export default function ProductID({ currentProduct }){
 			</Head>
 			<div className="product-page">
 				<div className="product-container">
-				<Link href="/products"><a>All Products</a></Link>
+				<Link href="/products">
+					<a className="product-return">All Products</a>
+				</Link>
 				{
 					<div
 					className="product"

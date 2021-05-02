@@ -5,6 +5,16 @@
 	justify-content: center;
 	padding: 15px;
 
+	.product-return {
+		color: #1173A8;
+		text-decoration: none;
+		font-weight: bold;
+
+		&:hover {
+			color: #0D5982;
+		}
+	}
+
 	.product {
 		display: flex;
 		flex-direction: column;
