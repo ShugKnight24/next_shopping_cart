@@ -16,8 +16,8 @@ export default function Cart(){
 			</Head>
 			<div className="cart-container">
 				<div className="page-header">
-						<h1>Cart</h1>
-						<h2>Find everything okay?</h2>
+					<h1>Cart</h1>
+					<h2>Find everything okay?</h2>
 				</div>
 				{
 					itemsInCart
