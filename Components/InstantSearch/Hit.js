@@ -4,7 +4,7 @@ import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 
-export function Hit({ itemid, image, productName, manufacturer, setSelectedProduct, setRecommendedProduct }){
+export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
 	const { inventory } = state;
 	const { setShowModal } = useContext(ModalContext);
@@ -25,8 +25,8 @@ export function Hit({ itemid, image, productName, manufacturer, setSelectedProdu
 		}
 	}
 
-	const currentItem = inventory.find(product => product.itemid === itemid);
-	const disabledButton = currentItem.available === 0 ? true : false;
+	const { available, image, manufacturer, price, productName } = inventory.find(product => product.itemid === itemid);
+	const disabledButton = available === 0 ? true : false;
 
 	return(
 		<li 
@@ -43,7 +43,7 @@ export function Hit({ itemid, image, productName, manufacturer, setSelectedProdu
 						<div className="name-manufacturer">
 							<h2>{ productName }</h2>
 							<h3>Made By: { manufacturer }</h3>
-							<p>Available: { currentItem.available }</p>
+							<p>Available: { available }</p>
 							<p>{ formatCurrency(price) }</p>
 						</div>
 						<button 

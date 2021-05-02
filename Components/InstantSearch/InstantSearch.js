@@ -71,9 +71,6 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 								<Hit
 									key={ product.itemid }
 									itemid={ product.itemid }
-									image={ product.image }
-									productName={ product.productName }
-									manufacturer={ product.manufacturer }
 									setSelectedProduct={ setSelectedProduct }
 									setRecommendedProduct={ setRecommendedProduct }
 								/>
