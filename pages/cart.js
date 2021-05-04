@@ -2,12 +2,21 @@ import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
+import { ModalContext } from '../context/ModalProvider';
+import { Modal } from '../Components/Modal';
 import { formatCurrency, totalQuantity, totalPrice } from '../utils/cartUtils';
+import { ClearCart } from '../Components/Modals/ClearCart';
 
 export default function Cart(){
+	const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
 	const { state, dispatch } = useContext(CartContext);
 	const { cart } = state;
 	const itemsInCart = cart.length > 0 ? true : false;
+
+	function handleClearCart(){
+		setShowModal(true);
+		setModalType('Clear');
+	}
 
 	return(
 		<>
@@ -87,9 +96,7 @@ export default function Cart(){
 								{/* TODO:// Confirm Modal */}
 								<button
 									className="clear-cart"
-									onClick={ () => dispatch({ 
-										type: 'EMPTY_CART'
-									}) }
+									onClick={ () => handleClearCart() }
 								>
 									Empty Cart
 								</button>
@@ -105,6 +112,16 @@ export default function Cart(){
 							<Link href="/products"><a>Products</a></Link>
 						</div>
 					)
+				}
+				{ 
+					showModal ? (
+						<Modal>
+							{
+								modalType === 'Clear' &&
+								<ClearCart />
+							}
+						</Modal>
+					) : null
 				}
 			</div>
 		</>

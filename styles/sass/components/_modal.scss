@@ -110,6 +110,7 @@
 		}
 	}
 
+	.cancel,
 	.continue-shopping {
 		background-color: #007BFF;
 		border-color: #007BFF;
@@ -120,5 +121,13 @@
 		}
 	}
 
+	.clear-cart {
+		background-color: #D54140;
+		border-color: #D33636;
 
-
+		&:hover {
+			background-color: #C92C2C;
+			border-color: #B82828;
+		}
+	}
+}
