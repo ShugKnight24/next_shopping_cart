@@ -1,11 +1,13 @@
 import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
+import { ModalContext } from '../context/ModalProvider';
 import { InstantSearch } from './InstantSearch/InstantSearch';
 import { formatCurrency } from '../utils/cartUtils';
 
 export function Products({ setSelectedProduct, setRecommendedProduct }){
-	const { state, dispatch } = useContext(CartContext);
+	const { state } = useContext(CartContext);
+	const { setShowModal, setModalType } = useContext(ModalContext);
 	const { inventory } = state;
 	const [showHitsClosed, setShowHitsClosed] = useState(null);
 
@@ -20,6 +22,12 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 				setShowHitsClosed(null);
 			}, 500)
 		};
+	}
+
+	function handleAddToCart(itemid){
+		setShowModal(true);
+		setModalType('Add');
+		setSelectedProduct(itemid);
 	}
 
 	return(
@@ -70,12 +78,7 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 								</button>
 								<button
 									className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
-									onClick={ () => dispatch({ 
-										type: 'ADD_ITEM',
-										payload: {
-											productId: product.itemid
-										}
-									}) }
+									onClick={ () => handleAddToCart(product.itemid) }
 								>Add To Cart</button>
 							</div>
 						</div>

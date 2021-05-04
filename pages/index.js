@@ -7,9 +7,10 @@ import { ModalContext } from '../context/ModalProvider';
 import { Modal } from '../Components/Modal';
 // import { getCurrentItem } from '../utils/getItem';
 // import { formatCurrency } from '../utils/cartUtils';
+import { AddToCart } from '../Components/Modals/AddToCart';
 
 export default function Home() {
-	const { showModal, setShowModal } = useContext(ModalContext);
+	const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
 	const { state, dispatch } = useContext(CartContext)
 	const { inventory } = state;
 
@@ -39,9 +40,15 @@ export default function Home() {
 				<Link href='/products'>
 					<a className="all-products-link">See All Products</a>
 				</Link>
-				{ 
+				{
 					showModal ? (
 						<Modal>
+							{
+								modalType === 'Add' &&
+								<AddToCart
+									itemid={ selectedProduct }
+								/>
+							}
 						</Modal>
 					) : null
 				}

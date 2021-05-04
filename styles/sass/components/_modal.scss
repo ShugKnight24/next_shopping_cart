@@ -37,6 +37,8 @@
 			outline: 0;
 			border: 2px solid #CBD5E0;
 			border-radius: 50%;
+			padding: 0;
+			font-size: 100%;
 			
 			&:hover {
 				border-color: #C92C2C;
@@ -69,18 +71,31 @@
 		}
 	}
 
-	.add-cart-button {
-		background-color: #28A745;
+	.actions {
+		padding-top: 30px;
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	button {
 		color: #FFF;
-		border-color: #28A745;
 		padding: 15px;
 		font-size: 18px;
 		font-weight: bold;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+	.add-cart-button {
+		background-color: #28A745;
+		border-color: #28A745;
+		
 		
 		&:hover {
 			background-color: #218838;
 			border-color: #1E7E34;
-			cursor: pointer;
 		}
 
 		&.disabled {
@@ -94,8 +109,16 @@
 			}
 		}
 	}
-}
 
+	.continue-shopping {
+		background-color: #007BFF;
+		border-color: #007BFF;
+		
+		&:hover {
+			background-color: #0069D9;
+			border-color: #0062CC;
+		}
+	}
 
 
 
