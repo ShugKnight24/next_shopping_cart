@@ -55,9 +55,15 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 						<h3>Manufactured By: { product.manufacturer }</h3>
 						<div className="product-info">
 							{/* TODO:// Trim description Text `...Read More` => Head to Specific product */}
-							<p className="product-description">{ product.description }</p>
-							<p className="product-Price">Price: { formatCurrency(product.price) }</p>
-							<p className="product-quantity">Currently Available: { product.available }</p>
+							<p className="product-description">
+								<span className="bold-text">Description</span>: { product.description }
+							</p>
+							<p className="product-price">
+								<span className="bold-text">Price</span>: { formatCurrency(product.price) }
+							</p>
+							<p className="product-quantity">
+								<span className="bold-text">Currently Available</span>: { product.available }
+							</p>
 							<div className="product-actions">
 								<button className="button more-info-button">
 									<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
