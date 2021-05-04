@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
@@ -6,16 +6,24 @@ import { ModalContext } from '../context/ModalProvider';
 import { Modal } from '../Components/Modal';
 import { formatCurrency, totalQuantity, totalPrice } from '../utils/cartUtils';
 import { ClearCart } from '../Components/Modals/ClearCart';
+import { DeleteItem } from '../Components/Modals/DeleteItem';
 
 export default function Cart(){
 	const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
 	const { state, dispatch } = useContext(CartContext);
 	const { cart } = state;
 	const itemsInCart = cart.length > 0 ? true : false;
+	const [tempDelItem, setTempDelItem] = useState(null);
 
 	function handleClearCart(){
 		setShowModal(true);
 		setModalType('Clear');
+	}
+
+	function handleDeleteItem(itemid){
+		setShowModal(true);
+		setModalType('Delete');
+		setTempDelItem(itemid);
 	}
 
 	return(
@@ -70,12 +78,7 @@ export default function Cart(){
 												})}
 											/>
 											<button className="delete-item"
-												onClick={() =>  dispatch({ 
-													type: 'REMOVE_ITEM',
-													payload: {
-														productId: cartItem.itemid
-													}
-												})}
+												onClick={() => handleDeleteItem(cartItem.itemid) }
 											>
 												<i className="far fa-trash-alt"></i>
 											</button>
@@ -119,6 +122,12 @@ export default function Cart(){
 							{
 								modalType === 'Clear' &&
 								<ClearCart />
+							}
+							{
+								modalType === 'Delete' &&
+								<DeleteItem 
+									itemid={ tempDelItem }
+								/>
 							}
 						</Modal>
 					) : null
