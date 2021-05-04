@@ -7,6 +7,16 @@ export const initialState = {
 	cart: [],
 };
 
+function findCurrentKey(targetArray, desiredValue){
+	for(let i = 0; i < targetArray.length; i++){
+		for (var key in targetArray[i]){
+			if(targetArray[i][key] === desiredValue){
+				return targetArray[i];
+			}
+		}
+	}
+}
+
 export const reducer = (state, action) => {
 	const { inventory, cart } = state;
 	let productId;
@@ -43,7 +53,7 @@ export const reducer = (state, action) => {
 			return { ...state };
 		case 'REMOVE_ITEM':
 			productId = action.payload.productId;
-			const currentCartItemIndex = cart.indexOf((product) => product.itemid === productId);
+			const currentCartItemIndex = findCurrentKey(cart, productId);
 			currentItem = getCurrentItem(inventory, productId);
 			currentItem.available += 1;
 			cart.splice(currentCartItemIndex, 1);
