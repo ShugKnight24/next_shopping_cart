@@ -10,11 +10,11 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 
 ## To-Dos
 - [ ] Refactor
-  - Sloppy Implementation for Modal & Recommendation system in favor of speed
+  - Recommendation system
     - Avoid prop drilling for recs
   - Add subcomponents for dupe code
     - Further refactor
-  - Leverage destructuring
+  - Leverage destructuring where applicable
 
 - [ ] Improve Algolia Implementation
   - Further refactor
@@ -31,13 +31,20 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
+- Think about modals
+  - Adds another step / click for user when adding a product
+    - Good for clear & delete
+    - Not a fan of button color combo when clear & delete
+
 ## Future Ideas
 - Discount system on recommended products ...?
   - How to best handle...
     - Apply discount for each product pair... add to cart together
-- Discount Code system... 
+- Discount Code system...
 
 ## Implemented
+- [X] Fixed delete item bug that caused wrong item to be deleted - 5/4/21
+- [X] Refactored Modal system - 5/4/21
 - [X] Added formatCurrency and getItem utils - 5/2/21
 - [X] Use SCSS - 5/2/21
 - [X] Add Product Recommendation system - 4/30/21
