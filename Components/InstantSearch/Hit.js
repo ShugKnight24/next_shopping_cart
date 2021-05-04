@@ -19,11 +19,11 @@ export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 			}
 		});
 
-		if (productId === 'SM58') {
-			setShowModal(true);
-			setSelectedProduct('SM58');
-			setRecommendedProduct('SM57');
-		}
+		// if (productId === 'SM58') {
+		// 	setShowModal(true);
+		// 	setSelectedProduct('SM58');
+		// 	setRecommendedProduct('SM57');
+		// }
 	}
 
 	const { available, image, manufacturer, price, productName } = getCurrentItem(inventory, itemid);
