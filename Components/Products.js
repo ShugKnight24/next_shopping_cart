@@ -1,11 +1,13 @@
 import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
+import { ModalContext } from '../context/ModalProvider';
 import { InstantSearch } from './InstantSearch/InstantSearch';
 import { formatCurrency } from '../utils/cartUtils';
 
 export function Products({ setSelectedProduct, setRecommendedProduct }){
-	const { state, dispatch } = useContext(CartContext);
+	const { state } = useContext(CartContext);
+	const { setShowModal, setModalType } = useContext(ModalContext);
 	const { inventory } = state;
 	const [showHitsClosed, setShowHitsClosed] = useState(null);
 
@@ -20,6 +22,12 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 				setShowHitsClosed(null);
 			}, 500)
 		};
+	}
+
+	function handleAddToCart(itemid){
+		setShowModal(true);
+		setModalType('Add');
+		setSelectedProduct(itemid);
 	}
 
 	return(
@@ -55,21 +63,22 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 						<h3>Manufactured By: { product.manufacturer }</h3>
 						<div className="product-info">
 							{/* TODO:// Trim description Text `...Read More` => Head to Specific product */}
-							<p className="product-description">{ product.description }</p>
-							<p className="product-Price">Price: { formatCurrency(product.price) }</p>
-							<p className="product-quantity">Currently Available: { product.available }</p>
+							<p className="product-description">
+								<span className="bold-text">Description</span>: { product.description }
+							</p>
+							<p className="product-price">
+								<span className="bold-text">Price</span>: { formatCurrency(product.price) }
+							</p>
+							<p className="product-quantity">
+								<span className="bold-text">Currently Available</span>: { product.available }
+							</p>
 							<div className="product-actions">
 								<button className="button more-info-button">
 									<Link href={`/products/${ product.itemid.toString() }`}><a>More Info</a></Link>
 								</button>
 								<button
 									className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
-									onClick={ () => dispatch({ 
-										type: 'ADD_ITEM',
-										payload: {
-											productId: product.itemid
-										}
-									}) }
+									onClick={ () => handleAddToCart(product.itemid) }
 								>Add To Cart</button>
 							</div>
 						</div>
