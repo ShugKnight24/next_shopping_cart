@@ -32,8 +32,7 @@ export function ProductCard({
 				src={ image }
 				alt={`${ productName } made by ${ manufacturer }`}
 			/>
-			<h2>{ productName }</h2>
-			<h3>Manufactured By: { manufacturer }</h3>
+			<h2>{ manufacturer } { productName }</h2>
 			<div className="product-info">
 				<p className="product-description">
 					{ description }

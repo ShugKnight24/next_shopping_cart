@@ -64,8 +64,7 @@ export default function ProductID({ currentProduct }){
 						key={ itemid }
 					>
 						<div className="page-header">
-							<h1>{ productName } Details</h1>
-							<h2>Manufactured By: { manufacturer }</h2>
+							<h1>{ manufacturer } { productName }</h1>
 						</div>
 						<img 
 							src={ image }
