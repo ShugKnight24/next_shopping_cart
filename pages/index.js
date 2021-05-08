@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Products } from '../Components/Products';
+import { Products } from '../Components/Products/Products';
 import { CartContext } from '../context/CartProvider';
 import { ModalContext } from '../context/ModalProvider';
 import { Modal } from '../Components/Modal';
