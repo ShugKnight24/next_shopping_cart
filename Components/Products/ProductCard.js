@@ -35,12 +35,11 @@ export function ProductCard({
 			<h2>{ productName }</h2>
 			<h3>Manufactured By: { manufacturer }</h3>
 			<div className="product-info">
-				{/* TODO:// Trim description Text `...Read More` => Head to Specific product */}
 				<p className="product-description">
-					<span className="bold-text">Description</span>: { description }
+					{ description }
 				</p>
 				<p className="product-price">
-					<span className="bold-text">Price</span>: { formatCurrency(price) }
+					{ formatCurrency(price) }
 				</p>
 				<p className="product-quantity">
 					<span className="bold-text">Currently Available</span>: { available }
@@ -52,7 +51,9 @@ export function ProductCard({
 					<button
 						className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
 						onClick={ () => handleAddToCart(itemid) }
-					>Add To Cart</button>
+					>Add To Cart
+						<i className="fas fa-cart-plus"></i>
+					</button>
 				</div>
 			</div>
 		</div>

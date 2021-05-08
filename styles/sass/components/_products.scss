@@ -42,7 +42,9 @@
 		}
 
 		.product-actions {
-			text-align: center;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
 			
 			button {
 				padding: 15px;
@@ -50,7 +52,11 @@
 				font-weight: bold;
 				color: white;
 				outline: 0;
-				border: 1px solid transparent;
+				border: 1px outset transparent;
+				border-radius: 9px;
+				box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+					0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+					0px 1px 18px 0px rgba(0, 0, 0, 0.3);
 				
 				&:hover {
 					cursor: pointer;
@@ -70,6 +76,11 @@
 			.add-cart-button {
 				background-color: #28A745;
 				border-color: #28A745;
+
+				.fa-cart-plus {
+					font-size: 24px;
+					vertical-align: middle;
+				}
 				
 				&:hover {
 					background-color: #218838;
