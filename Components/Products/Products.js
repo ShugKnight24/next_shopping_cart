@@ -50,7 +50,6 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 						manufacturer={ manufacturer }
 						price={ price }
 						productName={ productName }
-						setSelectedProduct={ setSelectedProduct }
 					/>
 				)
 			})

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import Link from 'next/link';
-import { ModalContext } from '../../context/ModalProvider';
+import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 
 export function ProductCard({ 
@@ -11,14 +11,16 @@ export function ProductCard({
 	manufacturer,
 	price,
 	productName,
-	setSelectedProduct
 }){
-	const { setShowModal, setModalType } = useContext(ModalContext);
+	const { dispatch } = useContext(CartContext);
 
 	function handleAddToCart(itemid){
-		setShowModal(true);
-		setModalType('Add');
-		setSelectedProduct(itemid);
+		dispatch({ 
+			type: 'ADD_ITEM',
+			payload: {
+				productId: itemid
+			}
+		});
 	}
 
 	const disabledButton = available === 0 ? true : false;
