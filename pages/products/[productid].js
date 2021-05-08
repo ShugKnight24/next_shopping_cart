@@ -37,6 +37,7 @@ export default function ProductID({ currentProduct }){
 	const { inventory } = state;
 	const currentItem = getCurrentItem(inventory, currentProduct.itemid)
 	const disabledButton = currentItem.available === 0 ? true : false;
+	const { available, description, image, itemid, manufacturer, price, productName } = currentProduct;
 
 	// TODO: Finish Add to Cart functionality
 	// function handleSubmit(event){
@@ -44,43 +45,41 @@ export default function ProductID({ currentProduct }){
 	// 	console.log(event);
 	// }
 
-	// Long Term Goal
-	// Product Added Modal
-		// Continue shopping ...
-		// Go to cart ...
-
 	return(
 		<>
 			<Head>
-				<title>{ currentProduct.productName } | Product Page</title>
+				<title>{ productName } | Product Page</title>
 			</Head>
 			<div className="product-page">
 				<div className="product-container">
 				<Link href="/products">
-					<a className="product-return">All Products</a>
+					<a className="product-return">
+						<i className="fas fa-chevron-left"></i>
+						All Products
+					</a>
 				</Link>
 				{
 					<div
-					className="product"
-					key={ currentProduct.itemid }
+						className="product"
+						key={ itemid }
 					>
 						<div className="page-header">
-							<h1>{ currentProduct.productName } Details</h1>
-							<h2>Manufactured By: { currentProduct.manufacturer }</h2>
+							<h1>{ productName } Details</h1>
+							<h2>Manufactured By: { manufacturer }</h2>
 						</div>
 						<img 
-							src={ currentProduct.image }
-							alt={`${ currentProduct.productName } by ${ currentProduct.manufacturer }`}
+							src={ image }
+							alt={`${ productName } by ${ manufacturer }`}
 							/>
-						<p className="product-description"></p>
-						<p className="product-price">Price: { formatCurrency(currentProduct.price) }</p>
+						<p className="product-description">{ description }</p>
+						<p className="product-price">{ formatCurrency(price) }</p>
 						<p className="product-quantity">Currently Available: { currentItem.available }</p>
 						<button
 							className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
 							onClick={ () => dispatch({ 
 								type: 'ADD_ITEM',
 								payload: {
-									productId: currentProduct.itemid
+									productId: itemid
 								}
 							}) }
 						>Add To Cart</button>

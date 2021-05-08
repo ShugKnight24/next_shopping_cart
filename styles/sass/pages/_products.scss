@@ -9,6 +9,11 @@
 		color: #1173A8;
 		text-decoration: none;
 		font-weight: bold;
+		font-size: 24px;
+
+		.fa-chevron-left {
+			margin-right: 6px;
+		}
 
 		&:hover {
 			color: #0D5982;
@@ -18,11 +23,26 @@
 	.product {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		align-items: flex-start;
 		justify-content: center;
+		padding: 1.2em 1.5em;
+		margin-top: 1.2em;
+		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+			0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+			0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+		border-radius: 9px;
 	
 		img {
+			align-self: center;
 			max-width: 250px;
+		}
+
+		.product-description {
+			max-width: 300px;
+		}
+
+		p {
+			margin: 0.3em;
 		}
 			
 		button {
@@ -31,7 +51,11 @@
 			font-weight: bold;
 			color: white;
 			outline: 0;
-			border: 1px solid transparent;
+			border: 1px outset transparent;
+			border-radius: 9px;
+			box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+				0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+				0px 1px 18px 0px rgba(0, 0, 0, 0.3);
 			
 			&:hover {
 				cursor: pointer;
@@ -39,6 +63,7 @@
 		}
 		
 		.add-cart-button {
+			margin-top: 0.3em;
 			background-color: #28A745;
 			border-color: #28A745;
 			
