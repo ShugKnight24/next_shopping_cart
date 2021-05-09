@@ -45,8 +45,14 @@
 				position: absolute;
 				left: 30px;
 				top: 15px;
-				color: #FFF;
+				background-color: #FFF;
+				color: #D54140;
 				font-size: 21px;
+				padding: 3px 9px;
+				border: 1px solid #D54140;
+				border-radius: 50%;
+				transform: scale(1) translate(50%, -50%);
+				transform-origin: 100% 0%;
 			}
 		}
 	}
