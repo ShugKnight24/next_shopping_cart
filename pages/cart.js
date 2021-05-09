@@ -69,22 +69,24 @@ export default function Cart(){
 														/>
 														<h2>{ cartItem.productName }</h2>
 													</div>
-													<input
-														id="cart-quantity"
-														className="quantity-input"
-														type="number"
-														name="quantity"
-														value={ cartItem.quantity }
-														min="1"
-														max={ cartItem.available }
-														onChange={(event) =>  dispatch({ 
-															type: 'UPDATE_QUANTITY',
-															payload: {
-																productId: cartItem.itemid,
-																quantity: event.target.value
-															}
-														})}
-													/>
+													<div className="product-quantity">
+														<input
+															id="cart-quantity"
+															className="quantity-input"
+															type="number"
+															name="quantity"
+															value={ cartItem.quantity }
+															min="1"
+															max={ cartItem.available }
+															onChange={(event) =>  dispatch({ 
+																type: 'UPDATE_QUANTITY',
+																payload: {
+																	productId: cartItem.itemid,
+																	quantity: event.target.value
+																}
+															})}
+														/>
+													</div>
 													<p className="product-price">{ formatCurrency(cartItem.price) }</p>
 													<p className="product-subtotal">{ formatCurrency(cartItem.price * cartItem.quantity) }</p>
 												</div>

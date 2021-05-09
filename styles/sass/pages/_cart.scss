@@ -21,6 +21,7 @@
 				background-color: #148CCC;
 				text-align: left;
 				flex-basis: 100%;
+				max-height: 48px;
 				
 				span {
 					color: white;
@@ -29,11 +30,11 @@
 					text-align: center;
 					padding: 15px 0;
 					
-					&.product-header { flex-basis: 45%; }
+					&.product-header { flex-basis: 40%; }
 					&.quantity { flex-basis: 15%; }
 					&.remove { flex-basis: 20%; }
 					&.price,
-					&.subtotal { flex-basis: 10%; }
+					&.subtotal { flex-basis: 20%; }
 				}
 			}
 
@@ -55,11 +56,14 @@
 					}
 				}
 				
-				#cart-quantity {
-					align-self: center;
+				.product-quantity {
 					flex-basis: 15%;
-					max-height: 50px;
-					max-width: 50px;
+					align-self: center;
+					
+					#cart-quantity {
+						max-height: 50px;
+						max-width: 50px;
+					}
 				}
 				
 				.delete-item {
@@ -112,6 +116,7 @@
 				background-color: #148CCC;
 				text-align: left;
 				flex-basis: 100%;
+				max-height: 48px;
 				
 				span {
 					color: white;
