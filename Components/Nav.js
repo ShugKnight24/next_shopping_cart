@@ -6,6 +6,7 @@ import { totalQuantity } from '../utils/cartUtils';
 export default function Nav(){
 	const { state } = useContext(CartContext);
 	const { cart } = state;
+	const cartCount = totalQuantity(cart) > 99 ? '99+' : totalQuantity(cart);
 
 	return(
 		<div className="nav-container">
@@ -14,7 +15,7 @@ export default function Nav(){
 				<Link href="/products"><a>Products</a></Link>
 				<Link href="/cart">
 					<a className="cart-nav-item">
-						<span className="cart-count">{ totalQuantity(cart) }</span>
+						<span className="cart-count">{ cartCount }</span>
 					</a>
 				</Link>
 			</nav>
