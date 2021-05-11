@@ -1,0 +1,20 @@
+[
+	{
+		"productName": "Apple iPhone 12",
+		"slideText": "The Next Generation of TeleCommunication",
+		"slideMemeText": "Mildy Improved. In Every Way. Except Price. We Increased That :)",
+		"slideImage": "../static/img/iphone.jpeg"
+	},
+	{
+		"productName": "Apple MacBook Pro",
+		"slideText": "The best for the brightest",
+		"slideMemeText": "Same MacBook. Slightly Better. Only The Best",
+		"slideImage": "../static/img/macbookpro.webp"
+	},
+	{
+		"productName": "Pro Office Setup",
+		"slideText": "Developers of the Future Need the Office of the Future",
+		"slideMemeText": "Who goes to offices anymore. Remote is love. Remote is life.",
+		"slideImage": "../static/img/office_setup.jpeg"
+	}
+]
