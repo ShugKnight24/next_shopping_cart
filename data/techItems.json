@@ -1,0 +1,85 @@
+[
+	{
+		"itemid": "AirPods Pro",
+		"productName": "AirPods Pro",
+		"manufacturer": "Apple",
+		"quantity": 1,
+		"price": 249.00,
+		"description": "Active noise cancellation for immersive sound. Transparency mode for hearing and connecting with the world around you. A more customizable fit for all-day comfort. Sweat- and water-resistant. All in a super light, in-ear headphone that's easy to set up",
+		"image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MWP22?wid=1144&hei=1144&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1572990352299",
+		"available": 99
+	},
+	{
+		"itemid": "iPhone 12",
+		"productName": "iPhone 12",
+		"manufacturer": "Apple",
+		"quantity": 1,
+		"price": 749.00,
+		"description": "Meet the new iPhone 12. Superfast 5G.¹,² A14 Bionic, the fastest chip in a smartphone. An edge-to-edge OLED display. Pro camera system for next-level low-light photography. It's a beautiful leap forward. In reality, a minor upgrade to squeeze more money from you ;)",
+		"image": "https://pisces.bbystatic.com/image2/BestBuy_US/dam/SOL-80342-hero-purple-family-medium-2x-32f7d2ee-efb2-48aa-a217-77a001bd7c75.png",
+		"available": 99
+	},
+	{
+		"itemid": "Galaxy Fold Z Fold 5G",
+		"productName": "Galaxy Fold Z Fold 5G",
+		"manufacturer": "Samsung",
+		"price": 1799.00,
+		"description": "Galaxy Z Fold2 5G is the revolutionary mobile experience you've been waiting for. With a balanced, portable design and on-demand expansive viewing, bringing seamless interactivity, enhanced hypertasking, and a transformative camera experience.",
+		"image": "../static/img/galaxy_fold.jpeg",
+		"available": 99
+	},
+	{
+		"itemid": "Macbook Pro 16\"",
+		"productName": "Macbook Pro 16\"",
+		"manufacturer": "Apple",
+		"price": 2599.00,
+		"description": "Expand your view of everything on MacBook Pro thanks to a larger 16\" Retina display with sharper pixel resolution and support for millions of colors. Harness the power of 8-core processors and AMD Radeon Pro 5000M series graphics with 4GB of GDDR6 memory, together with an optimized thermal architecture for groundbreaking performance. Featuring 16GB memory and 1TB of storage. Touch ID and the Touch Bar. And all-day battery life. Designed for pros who put performance above all else",
+		"image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6366/6366572_sd.jpg",
+		"available": 99
+	},
+	{
+		"itemid": "iMac 27\"",
+		"productName": "iMac 27\"",
+		"manufacturer": "Apple",
+		"price": 1999.00,
+		"description": "The 27-inch iMac now comes packed with the latest processors, faster memory, powerful graphics, and ultrafast SSD storage. And the gorgeous Retina 5K display is better than ever with True Tone technology and optional nano-texture glass. With macOS and all its built-in apps, the 27-inch iMac is the total creative package—powered up",
+		"image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/5721/5721940_sd.jpg",
+		"available": 99
+	},
+	{
+		"itemid": "4 Professional Mechanical Keyboard",
+		"productName": "4 Professional Mechanical Keyboard",
+		"manufacturer": "Das Keyboard",
+		"price": 169.00,
+		"description": "The thinnest mechanical keyboard in the world! The combination of tactile feel, the psycho-acoustic experience and incredible craftsmanship all deliver an unmatched typing experience that only Das Keyboard 4 offers. With a Das Keyboard 4, you'll type faster and longer. It feels so good, you won't want to stop",
+		"image": "https://images-na.ssl-images-amazon.com/images/I/61dV%2BaYlNmL._AC_SX679_.jpg",
+		"available": 99
+	},
+	{
+		"itemid": "DeathAdder Chroma",
+		"productName": "DeathAdder Chroma",
+		"manufacturer": "Razer",
+		"price": 69.95,
+		"description": "Perfectly designed to fit snugly under your palm, the ergonomic shape of the Razer DeathAdder Chroma gives gamers the most comfortable gaming experience ever, especially during the most testing of battles",
+		"image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fc1.neweggimages.com%2FProductImageCompressAll1280%2FA4RE_1314792647857162147tT3srOu0T.jpg&f=1&nofb=1",
+		"available": 99
+	},
+	{
+		"itemid": "Magic Mouse 2",
+		"productName": "Magic Mouse 2",
+		"manufacturer": "Apple",
+		"price": 94.00,
+		"description": "Magic Mouse 2 is completely rechargeable, so you’ll eliminate the use of traditional batteries. It’s lighter, has fewer moving parts thanks to its built-in battery and continuous bottom shell, and has an optimized foot design — all helping Magic Mouse 2 track easier and move with less resistance across your desk. The Multi-Touch surface allows you to perform simple gestures such as swiping between web pages and scrolling through documents.",
+		"image": "https://m.media-amazon.com/images/I/41fdPS3gpWL._AC_SY679_.jpg",
+		"available": 99
+	},
+	{
+		"itemid": "Magic Keyboard with Numeric Keypad",
+		"productName": "Magic Keyboard with Numeric Keypad",
+		"manufacturer": "Apple",
+		"price": 136.50,
+		"description": "Magic Keyboard with Numeric Keypad features an extended layout, with document navigation controls for quick scrolling and full-size arrow keys for gaming. A scissor mechanism beneath each key allows for increased stability, while optimized key travel and a low profile provide a comfortable and precise typing experience. The numeric keypad is also great for spreadsheets and finance applications",
+		"image": "https://m.media-amazon.com/images/I/51Zc1jah-LL._AC_SX679_.jpg",
+		"available": 99
+	}
+]
