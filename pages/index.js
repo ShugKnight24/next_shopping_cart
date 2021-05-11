@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Carousel } from '../Components/Carousel/Carousel';
 import { Products } from '../Components/Products/Products';
 import { CartContext } from '../context/CartProvider';
 import { ModalContext } from '../context/ModalProvider';
@@ -23,12 +24,17 @@ export default function Home() {
 	// 	setRecItem(currentItem ? currentItem : null);
 	// }, [selectedProduct]);
 
+	const isBrowser = typeof window !== 'undefined';
+
 	return (
 		<>
 			<Head>
 				<title>Shopping Cart | Home</title>
 			</Head>
 			<div className="home-container">
+				{
+					isBrowser && <Carousel /> 
+				}
 				<div className="page-header">
 					<h1>Home Page</h1>
 					<h2>Our Most Popular Products</h2>
