@@ -31,18 +31,21 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
-- Think about modals
-  - Adds another step / click for user when adding a product
-    - Good for clear & delete
-    - Not a fan of button color combo when clear & delete
+- Modal Colors
+  - Not a fan of button color combo when clear & delete
 
 ## Future Ideas
-- Discount system on recommended products ...?
-  - How to best handle...
-    - Apply discount for each product pair... add to cart together
 - Discount Code system...
+  - Discount system on recommended products ...?
+    - How to best handle...
+      - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Refactor Cart Counter - 5/10/21
+- [X] Add more Items - 5/10/21
+- [X] Sticky Nav & Improve Cart Count - 5/9/21
+- [X] Improve Cart design - 5/9/21
+- [X] Product 'Card' subcomponents & improved styling - 5/8/21
 - [X] Fixed delete item bug that caused wrong item to be deleted - 5/4/21
 - [X] Refactored Modal system - 5/4/21
 - [X] Added formatCurrency and getItem utils - 5/2/21
@@ -51,3 +54,6 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [X] Add Modal System - 4/30/21
 - [X] Add Custom Algolia Implementation - 4/30/21
 - [X] Persist cart state via Local Storage - 4/28/21
+
+## Decisions
+Removed the 'Add to Cart' modal as it made the UX clunky. Keeping the component if anyone would like that implementation. I can see it's value with products that are highly customizable, but it's overkill in a generic cart system
