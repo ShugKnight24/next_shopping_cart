@@ -1,9 +1,10 @@
 import productList from '../data/items.json';
+import techProductsList from '../data/techItems.json';
 import { getCurrentItem } from '../utils/getItem';
 
-const initialInventory = JSON.parse(JSON.stringify(productList));
+const initialInventory = JSON.parse(JSON.stringify([...productList, ...techProductsList]));
 export const initialState = {
-	inventory: [...productList],
+	inventory: [...productList, ...techProductsList],
 	cart: [],
 };
 
