@@ -9,9 +9,11 @@
 
 		.cart {
 			flex-basis: 70%;
+			border-right: 3px solid #1173A8;
 
 			@include mq-max(1000px) {
 				flex-basis: 100%;
+				border-right: none;
 			}
 
 			.cart-header {
@@ -135,10 +137,10 @@
 				justify-content: space-between;
 				align-items: center;
 				border-bottom: 1px solid rgba(224, 224, 224, 1);
-				margin-right: 1.2em;
+				margin: 0 1.2em;
 
-				@include mq-max(1000px) {
-					padding-left: 1.5em;
+				p {
+					margin-bottom: 3px;
 				}
 			}
 
