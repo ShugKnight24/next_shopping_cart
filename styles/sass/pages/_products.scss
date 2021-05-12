@@ -6,7 +6,7 @@
 	padding: 15px;
 
 	.product-return {
-		color: #1173A8;
+		color: $blue-accent;
 		text-decoration: none;
 		font-weight: bold;
 		font-size: 24px;
@@ -16,7 +16,7 @@
 		}
 
 		&:hover {
-			color: #0D5982;
+			color: $blue-accent-hover;
 		}
 	}
 
@@ -64,22 +64,22 @@
 		
 		.add-cart-button {
 			margin-top: 0.3em;
-			background-color: #28A745;
-			border-color: #28A745;
+			background-color: $green;
+			border-color: $green;
 			
 			&:hover {
-				background-color: #218838;
-				border-color: #1E7E34;
+				background-color: $green-hover;
+				border-color: $green-border;
 			}
 	
 			&.disabled {
-				background-color: #6C757D;
-				border-color: #6C757D;
+				background-color: $disabled;
+				border-color: $disabled;
 				
 				&:hover {
 					cursor: not-allowed;
-					background-color: #5A6268;
-					border-color: #545B62;
+					background-color: $disabled-hover;
+					border-color: $disabled-border;
 				}
 			}
 		}

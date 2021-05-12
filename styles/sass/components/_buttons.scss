@@ -1,0 +1,56 @@
+/* Button Styles */
+button {
+	color: #FFF;
+	padding: 15px;
+	font-size: 18px;
+	font-weight: bold;
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.checkout,
+.add-cart-button {
+	background-color: $green;
+	border-color: $green;
+	
+	
+	&:hover {
+		background-color: $green-hover;
+		border-color: $green-border;
+	}
+
+	&.disabled {
+		background-color: $disabled;
+		border-color: $disabled;
+		
+		&:hover {
+			cursor: not-allowed;
+			background-color: $disabled-hover;
+			border-color: $disabled-border;
+		}
+	}
+}
+
+.cancel,
+.continue-shopping {
+	background-color: $blue;
+	border-color: $blue;
+	
+	&:hover {
+		background-color: $blue-hover;
+		border-color: $blue-border;
+	}
+}
+
+.delete-item,
+.clear-cart {
+	background-color: $red;
+	border-color: $red-border;
+
+	&:hover {
+		background-color: $red-hover;
+		border-color: $red-hover-border;
+	}
+}

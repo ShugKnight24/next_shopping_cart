@@ -64,38 +64,19 @@
 			}
 			
 			.more-info-button {
-				background-color: #007BFF;
-				border-color: #007BFF;
+				background-color: $blue;
+				border-color: $blue;
 				
 				&:hover {
-					background-color: #0069D9;
-					border-color: #0062CC;
+					background-color: $blue-hover;
+					border-color: $blue-border;
 				}
 			}
 			
 			.add-cart-button {
-				background-color: #28A745;
-				border-color: #28A745;
-
 				.fa-cart-plus {
 					font-size: 24px;
 					vertical-align: middle;
-				}
-				
-				&:hover {
-					background-color: #218838;
-					border-color: #1E7E34;
-				}
-
-				&.disabled {
-					background-color: #6C757D;
-					border-color: #6C757D;
-					
-					&:hover {
-						cursor: not-allowed;
-						background-color: #5A6268;
-						border-color: #545B62;
-					}
 				}
 			}
 		}

@@ -3,14 +3,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #1173A8;
+		color: $blue-accent;
 		text-decoration: none;
 		font-size: 1.5em;
 		font-weight: bold;
 		margin-top: .6em;
 
 		&:hover {
-			color: #0D5982;
+			color: $blue-accent-hover;
 		}
 	}
 }

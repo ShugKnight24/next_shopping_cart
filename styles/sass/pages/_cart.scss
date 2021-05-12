@@ -9,7 +9,7 @@
 
 		.cart {
 			flex-basis: 70%;
-			border-right: 3px solid #1173A8;
+			border-right: 3px solid $blue-accent;
 
 			@include mq-max(1000px) {
 				flex-basis: 100%;
@@ -20,7 +20,7 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				background-color: #148CCC;
+				background-color: $cart-header;
 				text-align: left;
 				flex-basis: 100%;
 				max-height: 48px;
@@ -43,7 +43,7 @@
 			.cart-item {
 				display: flex;
 				justify-content: space-around;
-				border-bottom: 3px solid #1173A8;
+				border-bottom: 3px solid $blue-accent;
 				padding: 30px 0;
 				
 				.cart-product-info {
@@ -79,11 +79,11 @@
 					
 					i {
 						font-size: 36px;
-						color: #D54140;
+						color: $red;
 					}
 					
 					&:hover i {
-						color: #C92C2C;
+						color: $red-hover;
 					}
 				}
 				
@@ -115,7 +115,7 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				background-color: #148CCC;
+				background-color: $cart-header;
 				text-align: left;
 				flex-basis: 100%;
 				max-height: 48px;
@@ -150,33 +150,9 @@
 				margin-top: 1.5em;
 				
 				button {
-					padding: 15px;
-					font-size: 18px;
-					font-weight: bold;
-					color: white;
 					outline: 0;
 					text-transform: uppercase;
-					border: 1px solid transparent;
-				}
-				
-				.clear-cart {
-					background-color: #D54140;
-					border-color: #D33636;
-		
-					&:hover {
-						background-color: #C92C2C;
-						border-color: #B82828;
-					}
-				}
-		
-				.checkout {
-					background-color: #28A745;
-					border-color: #28A745;
-		
-					&:hover {
-						background-color: #218838;
-						border-color: #1E7E34;
-					}
+					border: 1px outset transparent;
 				}
 			}
 		}
@@ -193,10 +169,10 @@
 			font-weight: bold;
 			text-transform: uppercase;
 			padding-bottom: 9px;
-			color: #007BFF;
+			color: $blue;
 			
 			&:hover {
-				color: #0069D9;
+				color: $blue-hover;
 			}
 		}
 	}

@@ -41,10 +41,10 @@
 			font-size: 100%;
 			
 			&:hover {
-				border-color: #C92C2C;
+				border-color: $red;
 				
 				.fa-times {
-					color: #C92C2C;
+					color: $red;
 				}
 			}
 			
@@ -55,19 +55,19 @@
 				color: #171923;
 				
 				.fa-times:hover {
-					color: #C92C2C;
+					color: $red;
 				}
 			}
 		}
 	}
 
 	a {
-		color: #1173A8;
+		color: $blue-accent;
 		text-decoration: none;
 		font-weight: bold;
 
 		&:hover {
-			color: #0D5982;
+			color: $blue-accent-hover;
 		}
 	}
 
@@ -75,60 +75,5 @@
 		padding-top: 30px;
 		display: flex;
 		justify-content: space-evenly;
-	}
-
-	button {
-		color: #FFF;
-		padding: 15px;
-		font-size: 18px;
-		font-weight: bold;
-
-		&:hover {
-			cursor: pointer;
-		}
-	}
-
-	.add-cart-button {
-		background-color: #28A745;
-		border-color: #28A745;
-		
-		
-		&:hover {
-			background-color: #218838;
-			border-color: #1E7E34;
-		}
-
-		&.disabled {
-			background-color: #6C757D;
-			border-color: #6C757D;
-			
-			&:hover {
-				cursor: not-allowed;
-				background-color: #5A6268;
-				border-color: #545B62;
-			}
-		}
-	}
-
-	.cancel,
-	.continue-shopping {
-		background-color: #007BFF;
-		border-color: #007BFF;
-		
-		&:hover {
-			background-color: #0069D9;
-			border-color: #0062CC;
-		}
-	}
-
-	.delete-item,
-	.clear-cart {
-		background-color: #D54140;
-		border-color: #D33636;
-
-		&:hover {
-			background-color: #C92C2C;
-			border-color: #B82828;
-		}
 	}
 }

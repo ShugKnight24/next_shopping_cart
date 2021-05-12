@@ -24,14 +24,14 @@
 	
 	.instant-search {
 		position: relative;
-		background-color: #1173A8;
+		background-color: $blue-accent;
 		color: #FFF;
 		outline: 0;
 		width: 100%;
 		max-width: 400px;
 		left: 50%;
 		transform: translateX(-50%);
-		border: 3px solid #D54140;
+		border: 3px solid $red;
 		border-radius: 9px;
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.19);
 		font-size: 36px;
@@ -51,10 +51,10 @@
 		position: relative;
 		
 		li {
-			background: #148CCC;
+			background: $cart-header;
 			color: #FFF;
 			list-style: none;
-			border-bottom: 3px solid #C92C2C;
+			border-bottom: 3px solid $red-hover;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
 			margin: 0;
 			padding: 0 15px;
@@ -66,12 +66,12 @@
 			
 			&:nth-child(even) {
 				transform: perspective(100px) rotateX(3deg) translateY(1px) scale(1.001);
-				background: linear-gradient(to bottom, #148CCC 0%,#1173A8 100%);
+				background: linear-gradient(to bottom, $cart-header 0%, $blue-accent 100%);
 			}
 
 			&:nth-child(odd) {
 				transform: perspective(100px) rotateX(-3deg) translateY(1px);
-				background: linear-gradient(to top, #148CCC 0%,#1173A8 100%);
+				background: linear-gradient(to top, $cart-header 0%, $blue-accent 100%);
 			}
 
 			a {
@@ -109,25 +109,25 @@
 					}
 					
 					.add-cart-button {
-						background-color: #28A745;
-						border-color: #28A745;
+						background-color: $green;
+						border-color: $green;
 						color: #FFF;
 						padding: 9px 15px;
 						border-radius: 9px;
 						
 						&:hover {
-							background-color: #218838;
-							border-color: #1E7E34;
+							background-color: $green-hover;
+							border-color: $green-border;
 						}
 
 						&.disabled {
-							background-color: #6C757D;
-							border-color: #6C757D;
+							background-color: $disabled;
+							border-color: $disabled;
 							
 							&:hover {
 								cursor: not-allowed;
-								background-color: #5A6268;
-								border-color: #545B62;
+								background-color: $disabled-hover;
+								border-color: $disabled-border;
 							}
 						}
 					}
