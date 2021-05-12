@@ -31,6 +31,9 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
+- [ ] Refactor Carousel Logic
+  - Clean up implementation
+
 - Modal Colors
   - Not a fan of button color combo when clear & delete
 
@@ -41,6 +44,7 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Add carousel to home page - 5/11/21
 - [X] Refactor Cart Counter - 5/10/21
 - [X] Add more Items - 5/10/21
 - [X] Sticky Nav & Improve Cart Count - 5/9/21
@@ -55,5 +59,5 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [X] Add Custom Algolia Implementation - 4/30/21
 - [X] Persist cart state via Local Storage - 4/28/21
 
-## Decisions
-Removed the 'Add to Cart' modal as it made the UX clunky. Keeping the component if anyone would like that implementation. I can see it's value with products that are highly customizable, but it's overkill in a generic cart system
+## Project Decisions
+Removed 'Add to Cart' modal as it made the UX clunky. Keeping the component if anyone would like that implementation. Can see it's value with products that are highly customizable, but it's overkill in a generic cart system
