@@ -20,7 +20,6 @@ export function Carousel(){
 				slides[i].classList.remove('active');
 				dots[i].classList.remove('active');
 			}
-
 			slides[slideIndex].classList.add('active');
 			dots[slideIndex].classList.add('active');
 		}
@@ -34,12 +33,12 @@ export function Carousel(){
 
 	function handlePreviousClick(){
 		const previous = currentSlide - 1;
-		setCurrentSlide(previous < 0 ? maxSlides : previous);
+		setCurrentSlide(previous < 0 ? maxSlides - 1 : previous);
 		showSlides(currentSlide);
 	}
 	
-	function handleDotClick(n) {
-		setCurrentSlide(n);
+	function handleDotClick(dotIndex) {
+		setCurrentSlide(dotIndex);
 		showSlides(currentSlide);
 	}
 
