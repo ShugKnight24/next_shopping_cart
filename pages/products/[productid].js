@@ -1,10 +1,13 @@
 import { useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import productList from '../../data/items.json';
+import items from '../../data/items.json';
+import techItems from '../../data/techItems.json';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
+
+const productList = [...items, ...techItems];
 
 export const getStaticPaths = async () => {
 	const pagePaths = productList.map(({ itemid }) => {
