@@ -37,8 +37,6 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 
 - Delete still not working properly
 
-- Fix new product sub pages
-
 ## Future Ideas
 - Discount Code system...
   - Discount system on recommended products ...?
@@ -46,6 +44,7 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Tech Items sub pages work properly - 5/12/21
 - [X] scss color vars & buttons - 5/12/21
 - [X] Add carousel to home page - 5/11/21
 - [X] Refactor Cart Counter - 5/10/21
