@@ -36,6 +36,10 @@
 
 			h2 {
 				font-size: 3em;
+
+				@include mq-max(600px) {
+					font-size: 2em;
+				}
 			}
 
 			h3 {
@@ -43,6 +47,14 @@
 
 				&:last-of-type {
 					margin-bottom: 1.5em;
+				}
+
+				@include mq-max(600px) {
+					font-size: 1.5em;
+
+					&:last-of-type {
+						margin-bottom: 0.75em;
+					}
 				}
 			}
 
@@ -80,11 +92,11 @@
 		}
 
 		.prev {
-			left: 0;
+			left: 15px;
 		}
 
 		.next {
-			right: 0;
+			right: 15px;
 		}
 
 		.fade {
