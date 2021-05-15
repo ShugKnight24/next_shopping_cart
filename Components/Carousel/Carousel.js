@@ -26,14 +26,12 @@ export function Carousel(){
 	}
 
 	function handleNextClick(){
-		const next = currentSlide + 1;
-		setCurrentSlide(next === maxSlides ? 0 : next);
+		setCurrentSlide(prevState => (prevState + 1 === maxSlides) ? 0 : prevState + 1);
 		showSlides(currentSlide);
 	}
 
 	function handlePreviousClick(){
-		const previous = currentSlide - 1;
-		setCurrentSlide(previous < 0 ? maxSlides - 1 : previous);
+		setCurrentSlide(prevState => (prevState - 1 < 0) ? maxSlides - 1 : prevState - 1);
 		showSlides(currentSlide);
 	}
 	

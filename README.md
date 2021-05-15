@@ -29,8 +29,10 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages
 
-- [ ] Refactor Carousel Logic
-  - Clean up implementation
+- [ ] Refactor Carousel Styles
+  - Especially when smaller horizontal screens and screens with little vertical space
+  - Also on really large screens - Arrows get pushed
+  - Add down arrow to next section
 
 - Modal Colors
   - Not a fan of button color combo when clear & delete
@@ -44,6 +46,7 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Refactored Carousel logic - 5/15/21
 - [X] Tech Items sub pages work properly - 5/12/21
 - [X] scss color vars & buttons - 5/12/21
 - [X] Add carousel to home page - 5/11/21
