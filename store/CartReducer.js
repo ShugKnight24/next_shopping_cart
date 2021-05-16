@@ -55,9 +55,11 @@ export const reducer = (state, action) => {
 		case 'REMOVE_ITEM':
 			productId = action.payload.productId;
 			const currentCartItemIndex = findCurrentKey(cart, productId);
+			const cartItemQuantity = currentCartItemIndex.quantity;
+			const cartItemIndex = cart.indexOf(currentCartItemIndex);
 			currentItem = getCurrentItem(inventory, productId);
-			currentItem.available += 1;
-			cart.splice(currentCartItemIndex, 1);
+			currentItem.available += cartItemQuantity;
+			cart.splice(cartItemIndex, 1);
 			return { ...state };
 		case 'EMPTY_CART':
 			state.cart = [];
