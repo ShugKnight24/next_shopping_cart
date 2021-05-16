@@ -49,6 +49,28 @@
 		margin: 0;
 		padding: 0;
 		position: relative;
+
+		.algolia-hit {
+			a {
+				padding-top: 0;
+				
+				.hit-content {
+					flex-direction: column;
+		
+					h2 {
+						font-size: 1.25rem;
+						margin: 9px 0;
+					}
+		
+					svg {
+						max-width: 300px;
+						background-color: #FFF;
+						padding: 15px;
+						margin-left: 15px;
+					}
+				}
+			}
+		}
 		
 		li {
 			background: $cart-header;
