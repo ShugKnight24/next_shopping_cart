@@ -1,13 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { Products } from '../../Components/Products/Products';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
-import { Modal } from '../../Components/Modal';
 // import { getCurrentItem } from '../../utils/getItem';
 // import { formatCurrency } from '../../utils/cartUtils';
-import { AddToCart } from '../../Components/Modals/AddToCart';
 
 export default function ProductsPage(){
 	const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
@@ -36,18 +33,6 @@ export default function ProductsPage(){
 					setSelectedProduct={ setSelectedProduct }
 					setRecommendedProduct={ setRecommendedProduct }
 				/>
-				{ 
-					showModal ? (
-						<Modal>
-							{
-								modalType === 'Add' &&
-								<AddToCart
-									itemid={ selectedProduct }
-								/>
-							}
-						</Modal>
-					) : null
-				}
 			</div>
 		</>
 	);

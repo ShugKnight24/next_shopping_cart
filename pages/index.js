@@ -5,10 +5,8 @@ import dynamic from 'next/dynamic'
 import { Products } from '../Components/Products/Products';
 import { CartContext } from '../context/CartProvider';
 import { ModalContext } from '../context/ModalProvider';
-import { Modal } from '../Components/Modal';
 // import { getCurrentItem } from '../utils/getItem';
 // import { formatCurrency } from '../utils/cartUtils';
-import { AddToCart } from '../Components/Modals/AddToCart';
 
 // For more info about Dynamic components and why they're used
 // Look @ https://nextjs.org/docs/advanced-features/dynamic-import
@@ -52,18 +50,6 @@ export default function Home() {
 				<Link href='/products'>
 					<a className="all-products-link">See All Products</a>
 				</Link>
-				{
-					showModal ? (
-						<Modal>
-							{
-								modalType === 'Add' &&
-								<AddToCart
-									itemid={ selectedProduct }
-								/>
-							}
-						</Modal>
-					) : null
-				}
 			</div>
 		</>
 	);
