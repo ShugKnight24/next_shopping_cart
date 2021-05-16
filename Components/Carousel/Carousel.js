@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Slide } from './Slide';
 import { Dot } from './Dot';
 import slideContent from '../../data/slides.json';
@@ -9,9 +9,9 @@ export function Carousel(){
 
 	useEffect(() => {
 		showSlides(currentSlide);
-	}, []);
+	}, [currentSlide, showSlides]);
 
-	function showSlides(slideIndex){
+	const showSlides = useCallback((slideIndex) => {
 		const slides = document.getElementsByClassName('slide');
 		const dots = document.getElementsByClassName('dot');
 
@@ -23,7 +23,7 @@ export function Carousel(){
 			slides[slideIndex].classList.add('active');
 			dots[slideIndex].classList.add('active');
 		}
-	}
+	}, []);
 
 	function handleNextClick(){
 		setCurrentSlide(prevState => (prevState + 1 === maxSlides) ? 0 : prevState + 1);
