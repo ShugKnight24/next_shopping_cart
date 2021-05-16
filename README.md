@@ -37,6 +37,8 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 - Modal Colors
   - Not a fan of button color combo when clear & delete
 
+- Refactor Hit to be robust enough to handle initial Algolia logo
+
 - Delete still not working properly
 
 ## Future Ideas
@@ -46,6 +48,7 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Add Algolia Logo and refactor misc logic - 5/16/21
 - [X] Refactored Carousel logic - 5/15/21
 - [X] Tech Items sub pages work properly - 5/12/21
 - [X] scss color vars & buttons - 5/12/21
