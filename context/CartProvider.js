@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer, useState } from 'react';
+import { createContext, useCallback, useEffect, useReducer, useState } from 'react';
 import { initialState, reducer } from '../store/CartReducer';
 
 export const CartContext = createContext();
@@ -8,13 +8,13 @@ export function CartProvider({ children }){
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const LOCAL_STORAGE_CART_KEY = 'shopping_cart.cart';
 	
-	function save(){
+	const save = useCallback(() => {
 		localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(state));
-	}
+	}, [state]);
 	
 	useEffect(() => {
 		if (isInitialized) save();
-	}, [state]);
+	}, [isInitialized, save]);
 	
 	useEffect(() => {
 		const localCartData = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
