@@ -3,6 +3,10 @@
 	position: relative;
 	width: 75%;
 	max-width: 600px;
+
+	@include mq-max(600px) {
+		width: 90%;
+	}
 	
 	&.populated {
 		margin-bottom: 120px;
@@ -11,6 +15,11 @@
 			position: absolute;
 			left: 0;
 			right: 0;
+
+			@include mq-max(600px) {
+				width: 105%;
+				left: -2.5%;
+			}
 
 			li.hit-container:nth-child(even) {
 				transform: perspective(100px) rotateX(3deg) translateY(-4px) scale(1.001);
