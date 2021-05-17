@@ -84,6 +84,14 @@
 			align-items: center;
 			justify-content: space-between;
 
+			@include mq-max(1100px) {
+				flex-direction: column;
+			}
+
+			@include mq-max(800px) {
+				flex-direction: row;
+			}
+
 			@include mq-max(600px) {
 				flex-direction: column;
 			}
@@ -99,7 +107,21 @@
 				box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
 					0px 6px 10px 0px rgba(0, 0, 0, 0.3),
 					0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+				
+				@include mq-max(1100px) {
+					width: 75%;
+					margin-bottom: 9px;
 
+					&:last-of-type {
+						margin-bottom: 0;
+					}
+				}
+
+				@include mq-max(800px) {
+					width: auto;
+					margin-bottom: 0;
+				}
+	
 				@include mq-max(600px) {
 					width: 75%;
 					margin-bottom: 9px;
