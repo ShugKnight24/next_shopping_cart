@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Hit } from './Hit';
+import PropTypes from 'prop-types';
 
 export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommendedProduct }){
 	const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
@@ -109,3 +110,10 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 		</div>
 	);
 }
+
+// TODO:// Update object shape when rec system is implemented
+InstantSearch.propTypes = {
+	showHitsClosed: PropTypes.bool,
+	setSelectedProduct: PropTypes.object,
+	setRecommendedProduct: PropTypes.object
+};

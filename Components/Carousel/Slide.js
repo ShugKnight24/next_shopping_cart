@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function Slide({ productName, slideText, slideMemeText, slideImage }){
 	return(
 		<div className="slide fade">
@@ -11,3 +13,10 @@ export function Slide({ productName, slideText, slideMemeText, slideImage }){
 		</div>
 	)
 }
+
+Slide.propTypes = {
+	productName: PropTypes.string.isRequired,
+	slideText: PropTypes.string.isRequired,
+	slideMemeText: PropTypes.string.isRequired,
+	slideImage: PropTypes.string.isRequired
+};

@@ -3,6 +3,7 @@ import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
 import { useRouter } from 'next/router';
 import { getCurrentItem } from '../../utils/getItem';
+import PropTypes from 'prop-types';
 
 export function AddToCart({ itemid }){
 	const { state, dispatch } = useContext(CartContext);
@@ -59,3 +60,7 @@ export function AddToCart({ itemid }){
 		</div>
 	)
 }
+
+AddToCart.propTypes = {
+	itemid: PropTypes.string.isRequired,
+};

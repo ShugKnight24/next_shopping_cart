@@ -2,12 +2,14 @@ import { useContext } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
+import PropTypes from 'prop-types';
 
 export function ProductCard({ 
 	available,
 	description,
 	image,
 	favorite,
+	isInCart,
 	itemid,
 	manufacturer,
 	price,
@@ -23,6 +25,16 @@ export function ProductCard({
 			}
 		});
 	}
+	
+	function handleRemoveFromCart(itemid){
+		dispatch({ 
+			type: 'REMOVE_ITEM',
+			payload: {
+				productId: itemid
+			}
+		});
+	}
+
 	function handleFavorite(){
 		dispatch({ 
 			type: 'ADD_FAVORITE',
@@ -42,11 +54,13 @@ export function ProductCard({
 	}
 
 	const disabledButton = available === 0 ? true : false;
+	const trimmedLowerProductName = productName.toLowerCase().replace(/\s+/g, '');
 	return (
 		<div
 			className="product"
 		>
-			<img 
+			<img
+				className={`product-image ${ trimmedLowerProductName }`}
 				src={ image }
 				alt={`${ productName } made by ${ manufacturer }`}
 			/>
@@ -84,6 +98,13 @@ export function ProductCard({
 					<button className="button more-info-button">
 						<Link href={`/products/${ itemid.toString() }`}><a>More Info</a></Link>
 					</button>
+					{
+						isInCart &&
+						<button
+							className="button delete-item"
+							onClick={ () => handleRemoveFromCart(itemid) }
+						>Remove Item</button>
+					}
 					<button
 						className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
 						onClick={ () => handleAddToCart(itemid) }
@@ -95,3 +116,15 @@ export function ProductCard({
 		</div>
 	)
 }
+
+ProductCard.propTypes = {
+	available: PropTypes.number,
+	description: PropTypes.string,
+	image: PropTypes.string,
+	favorite: PropTypes.bool,
+	isInCart: PropTypes.bool,
+	itemid: PropTypes.string,
+	manufacturer: PropTypes.string,
+	price: PropTypes.number,
+	productName: PropTypes.string
+};

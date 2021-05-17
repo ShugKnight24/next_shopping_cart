@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ModalContext } from '../context/ModalProvider';
+import PropTypes from 'prop-types';
 
 export function Modal({ children }){
 	const { setShowModal, setModalType } = useContext(ModalContext);
@@ -44,4 +45,8 @@ export function Modal({ children }){
 			{children}
 		</div>
 	, elementRef.current);
+};
+
+Modal.propTypes = {
+	children: PropTypes.element.isRequired
 };

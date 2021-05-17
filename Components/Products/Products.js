@@ -2,10 +2,12 @@ import { useContext, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { InstantSearch } from '../InstantSearch/InstantSearch';
 import { ProductCard } from './ProductCard';
+import { getCurrentItem } from '../../utils/getItem';
+import PropTypes from 'prop-types';
 
 export function Products({ setSelectedProduct, setRecommendedProduct }){
 	const { state } = useContext(CartContext);
-	const { inventory } = state;
+	const { inventory, cart } = state;
 	const [showHitsClosed, setShowHitsClosed] = useState(null);
 
 	function closeInstantSearch(event){
@@ -40,6 +42,7 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 		{
 			inventory &&
 			inventory.map(({ available, description, favorite, image, itemid, manufacturer, price, productName })=> {
+				const isInCart = getCurrentItem(cart, itemid) ? true : false;
 				return(
 					<ProductCard 
 						key={ itemid }
@@ -47,6 +50,7 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 						description={ description }
 						image={ image }
 						favorite={ favorite }
+						isInCart={ isInCart }
 						itemid={ itemid }
 						manufacturer={ manufacturer }
 						price={ price }
@@ -58,3 +62,9 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 		</div>
 	)
 }
+
+// TODO:// Update object shape when rec system is implemented
+Products.propTypes = {
+	setSelectedProduct: PropTypes.object,
+	setRecommendedProduct: PropTypes.object
+};

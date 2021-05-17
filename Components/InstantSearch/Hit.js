@@ -4,6 +4,7 @@ import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
+import PropTypes from 'prop-types';
 
 export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 	const { state, dispatch } = useContext(CartContext);
@@ -57,3 +58,10 @@ export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }){
 		</li>
 	)
 }
+
+// TODO:// Update object shape when rec system is implemented
+Hit.propTypes = {
+	itemid: PropTypes.string.isRequired,
+	setSelectedProduct: PropTypes.object,
+	setRecommendedProduct: PropTypes.object
+};

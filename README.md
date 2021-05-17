@@ -14,6 +14,7 @@ If you want to add Algolia to your own local version, take a look at the `.examp
     - Avoid prop drilling for recs
   - Add subcomponents for dupe code
     - Further refactor
+    - Favorites
   - Leverage destructuring where applicable
 
 - [ ] Improve Algolia Implementation
@@ -50,6 +51,9 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Add PropTypes - 5/17/21
+- [X] Refactor subproduct pages - 5/17/21
+- [X] Add remove from cart button to product cards - 5/17/21
 - [X] Implemented Favorites system - 5/16/21
 - [X] Fixed delete functionality and quantity correctly updated - 5/16/21
 - [X] Add Algolia Logo and refactor misc logic - 5/16/21

@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function Dot({ onClick }){
 	return(
 		<span className="dot"
@@ -5,3 +7,7 @@ export function Dot({ onClick }){
 		></span>
 	);
 }
+
+Dot.propTypes = {
+	onClick: PropTypes.func.isRequired,
+};

@@ -3,10 +3,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { CartContext } from '../context/CartProvider';
 import { ProductCard } from '../Components/Products/ProductCard';
+import { getCurrentItem } from '../utils/getItem';
 
 export default function Favorites(){
 	const { state } = useContext(CartContext)
-	const { inventory } = state;
+	const { inventory, cart } = state;
 
 	const filteredFavorites = inventory.filter((item) => {
 		if (item.favorite === null){
@@ -25,6 +26,8 @@ export default function Favorites(){
 				filteredFavorites.length > 0
 				?
 				filteredFavorites.map(({ available, description, favorite, image, itemid, manufacturer, price, productName }) => {
+					const isInCart = getCurrentItem(cart, itemid) ? true : false;
+
 					return(
 						<ProductCard 
 							key={ itemid }
@@ -32,6 +35,7 @@ export default function Favorites(){
 							description={ description }
 							favorite={ favorite }
 							image={ image }
+							isInCart={ isInCart }
 							itemid={ itemid }
 							manufacturer={ manufacturer }
 							price={ price }
