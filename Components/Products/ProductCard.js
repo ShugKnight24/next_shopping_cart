@@ -42,11 +42,13 @@ export function ProductCard({
 	}
 
 	const disabledButton = available === 0 ? true : false;
+	const trimmedLowerProductName = productName.toLowerCase().replace(/\s+/g, '');
 	return (
 		<div
 			className="product"
 		>
-			<img 
+			<img
+				className={`product-image ${ trimmedLowerProductName }`}
 				src={ image }
 				alt={`${ productName } made by ${ manufacturer }`}
 			/>
