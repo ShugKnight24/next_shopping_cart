@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
+import PropTypes from 'prop-types';
 
 export function ProductCard({ 
 	available,
@@ -115,3 +116,15 @@ export function ProductCard({
 		</div>
 	)
 }
+
+ProductCard.propTypes = {
+	available: PropTypes.number,
+	description: PropTypes.string,
+	image: PropTypes.string,
+	favorite: PropTypes.bool,
+	isInCart: PropTypes.bool,
+	itemid: PropTypes.string,
+	manufacturer: PropTypes.string,
+	price: PropTypes.number,
+	productName: PropTypes.string
+};

@@ -3,6 +3,7 @@ import { CartContext } from '../../context/CartProvider';
 import { InstantSearch } from '../InstantSearch/InstantSearch';
 import { ProductCard } from './ProductCard';
 import { getCurrentItem } from '../../utils/getItem';
+import PropTypes from 'prop-types';
 
 export function Products({ setSelectedProduct, setRecommendedProduct }){
 	const { state } = useContext(CartContext);
@@ -61,3 +62,9 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 		</div>
 	)
 }
+
+// TODO:// Update object shape when rec system is implemented
+Products.propTypes = {
+	setSelectedProduct: PropTypes.object,
+	setRecommendedProduct: PropTypes.object
+};

@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
 import { getCurrentItem } from '../../utils/getItem';
+import PropTypes from 'prop-types';
 
 export function DeleteItem({ itemid }){
 	const { state, dispatch } = useContext(CartContext);
@@ -50,3 +51,7 @@ export function DeleteItem({ itemid }){
 		</div>
 	)
 }
+
+DeleteItem.propTypes = {
+	itemid: PropTypes.string.isRequired,
+};

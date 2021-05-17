@@ -6,6 +6,7 @@ import techItems from '../../data/techItems.json';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
+import PropTypes from 'prop-types';
 
 const productList = [...items, ...techItems];
 
@@ -173,3 +174,16 @@ export default function ProductID({ currentProduct }){
 		</>
 	);
 }
+
+ProductID.propTypes = {
+	currentProduct: PropTypes.shape({
+		description: PropTypes.string,
+		image: PropTypes.string,
+		favorite: PropTypes.bool,
+		isInCart: PropTypes.bool,
+		itemid: PropTypes.string,
+		manufacturer: PropTypes.string,
+		price: PropTypes.number,
+		productName: PropTypes.string
+	})
+};
