@@ -39,7 +39,9 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 
 - Refactor Hit to be robust enough to handle initial Algolia logo
 
-- Delete still not working properly
+- Improve Product Cards and Favorites Card
+  - Differentiate or make robust enough to distinguish between
+- Create a popular items list
 
 ## Future Ideas
 - Discount Code system...
@@ -48,6 +50,8 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Implemented Favorites system - 5/16/21
+- [X] Fixed delete functionality and quantity correctly updated - 5/16/21
 - [X] Add Algolia Logo and refactor misc logic - 5/16/21
 - [X] Refactored Carousel logic - 5/15/21
 - [X] Tech Items sub pages work properly - 5/12/21
