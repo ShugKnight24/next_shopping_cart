@@ -8,6 +8,7 @@ export function ProductCard({
 	description,
 	image,
 	favorite,
+	isInCart,
 	itemid,
 	manufacturer,
 	price,
@@ -23,6 +24,16 @@ export function ProductCard({
 			}
 		});
 	}
+	
+	function handleRemoveFromCart(itemid){
+		dispatch({ 
+			type: 'REMOVE_ITEM',
+			payload: {
+				productId: itemid
+			}
+		});
+	}
+
 	function handleFavorite(){
 		dispatch({ 
 			type: 'ADD_FAVORITE',
@@ -86,6 +97,13 @@ export function ProductCard({
 					<button className="button more-info-button">
 						<Link href={`/products/${ itemid.toString() }`}><a>More Info</a></Link>
 					</button>
+					{
+						isInCart &&
+						<button
+							className="button delete-item"
+							onClick={ () => handleRemoveFromCart(itemid) }
+						>Remove Item</button>
+					}
 					<button
 						className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
 						onClick={ () => handleAddToCart(itemid) }
