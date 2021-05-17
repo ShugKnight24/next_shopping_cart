@@ -7,6 +7,7 @@ export function ProductCard({
 	available,
 	description,
 	image,
+	favorite,
 	itemid,
 	manufacturer,
 	price,
@@ -22,6 +23,23 @@ export function ProductCard({
 			}
 		});
 	}
+	function handleFavorite(){
+		dispatch({ 
+			type: 'ADD_FAVORITE',
+			payload: {
+				productId: itemid
+			}
+		});
+	}
+
+	function handleRemoveFavorite(){
+		dispatch({ 
+			type: 'REMOVE_FAVORITE',
+			payload: {
+				productId: itemid
+			}
+		});
+	}
 
 	const disabledButton = available === 0 ? true : false;
 	return (
@@ -32,7 +50,26 @@ export function ProductCard({
 				src={ image }
 				alt={`${ productName } made by ${ manufacturer }`}
 			/>
-			<h2>{ manufacturer } { productName }</h2>
+			<div className="name-favorite">
+				<h2 className="product-name">{ manufacturer } { productName }</h2>
+				{
+					favorite === null
+					?
+						<button
+							className="favorite-button add-favorite"
+							onClick={ () => handleFavorite() }
+						>
+							<i className="fas fa-heart"></i>
+						</button>
+					:
+						<button
+							className="favorite-button remove-favorite"
+							onClick={ () => handleRemoveFavorite() }
+						>
+							<i className="far fa-heart"></i>
+						</button>
+				}
+			</div>
 			<div className="product-info">
 				<p className="product-description">
 					{ description }

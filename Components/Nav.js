@@ -13,6 +13,7 @@ export default function Nav(){
 		<div className="nav-container">
 			<nav>
 				<Link href="/"><a>Shop</a></Link>
+				<Link href="/favorites"><a>Favorites</a></Link>
 				<Link href="/products"><a>Products</a></Link>
 				<Link href="/cart">
 					<a className="cart-nav-item">

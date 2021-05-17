@@ -65,6 +65,16 @@ export const reducer = (state, action) => {
 			state.cart = [];
 			state.inventory = [...JSON.parse(JSON.stringify(initialInventory))];
 			return { ...state };
+		case 'ADD_FAVORITE':
+			productId = action.payload.productId;
+			currentItem = getCurrentItem(inventory, productId);
+			currentItem.favorite = true;
+			return { ...state };
+		case 'REMOVE_FAVORITE':
+			productId = action.payload.productId;
+			currentItem = getCurrentItem(inventory, productId);
+			currentItem.favorite = null;
+			return { ...state };
 		default:
 			throw new Error(`No recognized action was run... ${ action.type }`);
 	}

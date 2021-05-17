@@ -39,13 +39,14 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 			</div>
 		{
 			inventory &&
-			inventory.map(({ available, description, image, itemid, manufacturer, price, productName })=> {
+			inventory.map(({ available, description, favorite, image, itemid, manufacturer, price, productName })=> {
 				return(
 					<ProductCard 
 						key={ itemid }
 						available={ available }
 						description={ description }
 						image={ image }
+						favorite={ favorite }
 						itemid={ itemid }
 						manufacturer={ manufacturer }
 						price={ price }
