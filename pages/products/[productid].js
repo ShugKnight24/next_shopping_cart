@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import items from '../../data/items.json';
@@ -25,7 +25,6 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = (context) => {
-
 	const currentid = context.params.productid;
 	const currentProduct = getCurrentItem(productList, currentid);
 	return {
@@ -37,16 +36,55 @@ export const getStaticProps = (context) => {
 
 export default function ProductID({ currentProduct }){
 	const { state, dispatch } = useContext(CartContext);
-	const { inventory } = state;
+	const { inventory, cart } = state;
 	const currentItem = getCurrentItem(inventory, currentProduct.itemid)
+	const isInCart = getCurrentItem(cart, currentProduct.itemid) ? true : false;
 	const disabledButton = currentItem.available === 0 ? true : false;
-	const { available, description, image, itemid, manufacturer, price, productName } = currentProduct;
-
+	const { description, favorite, image, itemid, manufacturer, price, productName } = currentProduct;
+	const [isFavorite, setIsFavorite] = useState(favorite);
 	// TODO: Finish Add to Cart functionality
 	// function handleSubmit(event){
 	// 	event.preventDefault();
 	// 	console.log(event);
 	// }
+
+	function handleAddToCart(itemid){
+		dispatch({ 
+			type: 'ADD_ITEM',
+			payload: {
+				productId: itemid
+			}
+		});
+	}
+
+	function handleRemoveFromCart(itemid){
+		dispatch({ 
+			type: 'REMOVE_ITEM',
+			payload: {
+				productId: itemid
+			}
+		});
+	}
+
+	function handleFavorite(itemid){
+		dispatch({ 
+			type: 'ADD_FAVORITE',
+			payload: {
+				productId: itemid
+			}
+		});
+		setIsFavorite(true);
+	}
+
+	function handleRemoveFavorite(itemid){
+		dispatch({ 
+			type: 'REMOVE_FAVORITE',
+			payload: {
+				productId: itemid
+			}
+		});
+		setIsFavorite(false);
+	}
 
 	return(
 		<>
@@ -67,7 +105,26 @@ export default function ProductID({ currentProduct }){
 						key={ itemid }
 					>
 						<div className="page-header">
-							<h1>{ manufacturer } { productName }</h1>
+							<div className="name-favorite">
+								<h1 className="product-name">{ manufacturer } { productName }</h1>
+								{
+									isFavorite
+									?
+										<button
+											className="favorite-button remove-favorite"
+											onClick={ () => handleRemoveFavorite(itemid) }
+										>
+											<i className="far fa-heart"></i>
+										</button>
+									:
+										<button
+											className="favorite-button add-favorite"
+											onClick={ () => handleFavorite(itemid) }
+										>
+											<i className="fas fa-heart"></i>
+										</button>
+								}
+							</div>
 						</div>
 						<img 
 							src={ image }
@@ -76,15 +133,19 @@ export default function ProductID({ currentProduct }){
 						<p className="product-description">{ description }</p>
 						<p className="product-price">{ formatCurrency(price) }</p>
 						<p className="product-quantity">Currently Available: { currentItem.available }</p>
-						<button
-							className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
-							onClick={ () => dispatch({ 
-								type: 'ADD_ITEM',
-								payload: {
-									productId: itemid
-								}
-							}) }
-						>Add To Cart</button>
+						<div className="product-actions">
+							{
+								isInCart &&
+								<button
+									className="button delete-item"
+									onClick={ () => handleRemoveFromCart(itemid) }
+								>Remove Item</button>
+							}
+							<button
+								className={`button add-cart-button ${ disabledButton ? 'disabled' : '' }`}
+								onClick={ () => handleAddToCart(itemid) }
+							>Add To Cart</button>
+						</div>
 						{/* <form
 							className="add-to-cart-form"
 							onSubmit={ (event) => handleSubmit(event) }
