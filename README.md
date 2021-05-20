@@ -4,9 +4,15 @@ Shopping cart built utilizing NextJS and the React Context API
 
 ## Setup
 
+### Algolia
 If you want to add Algolia to your own local version, take a look at the `.example.env` file and add the necessary info from Algolia's API
-  - Rename based on your own project
-  - Refer to [NextJS Docs](https://nextjs.org/docs/basic-features/environment-variables) for more info
+
+### Google Analytics
+In order to add Google Analytics, add your App's tracking ID to the `.example.env`, which will start basic tracking. Look at the docs for Events and PageViews for more customized tracking in [More Info](#more-info)
+
+### Environment Variable
+- Rename `.example.env` based on your own project
+- Refer to [NextJS Docs](https://nextjs.org/docs/basic-features/environment-variables) for more info
 
 ## To-Dos
 - [ ] Refactor
@@ -51,6 +57,7 @@ If you want to add Algolia to your own local version, take a look at the `.examp
       - Apply discount for each product pair... add to cart together
 
 ## Implemented
+- [X] Add Google Analytics - 5/20/21
 - [X] Add PropTypes - 5/17/21
 - [X] Refactor subproduct pages - 5/17/21
 - [X] Add remove from cart button to product cards - 5/17/21
@@ -77,3 +84,13 @@ If you want to add Algolia to your own local version, take a look at the `.examp
 
 ## Project Decisions
 Removed 'Add to Cart' modal as it made the UX clunky. Keeping the component if anyone would like that implementation. Can see it's value with products that are highly customizable, but it's overkill in a generic cart system
+
+## More Info
+
+### Analytics
+
+#### Google Analytics Setup
+
+- [Events](https://developers.google.com/analytics/devguides/collection/gtagjs/events)
+- [PageViews](https://developers.google.com/analytics/devguides/collection/gtagjs/pages)
+- [Next Custom Document](https://nextjs.org/docs/advanced-features/custom-document)
