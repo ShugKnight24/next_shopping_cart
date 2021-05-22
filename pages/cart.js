@@ -129,6 +129,7 @@ export default function Cart(){
 						<div className="empty-cart">
 							<p>Your cart is currently empty, add some items and come back</p>
 							<Link href="/"><a>Home</a></Link>
+							<Link href="/favorites"><a>Favorites</a></Link>
 							<Link href="/products"><a>Products</a></Link>
 						</div>
 					)
