@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { HorizontalRule } from '../Components/HorizontalRule';
+import { SocialIcons } from '../Components/SocialIcons';
 
 export default function Footer(){
 	return(
@@ -12,6 +13,7 @@ export default function Footer(){
 							<h2>Cart Commerce</h2>
 						</div>
 						<p>Our store provides quality products at their lowest retail prices</p>
+						<SocialIcons />
 					</div>
 					<div className="store-links">
 						<div className="shopping">
