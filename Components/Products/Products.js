@@ -65,6 +65,6 @@ export function Products({ setSelectedProduct, setRecommendedProduct }){
 
 // TODO:// Update object shape when rec system is implemented
 Products.propTypes = {
-	setSelectedProduct: PropTypes.object,
-	setRecommendedProduct: PropTypes.object
+	setSelectedProduct: PropTypes.func,
+	setRecommendedProduct: PropTypes.func
 };

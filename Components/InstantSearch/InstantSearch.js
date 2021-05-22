@@ -114,6 +114,6 @@ export function InstantSearch({ showHitsClosed, setSelectedProduct, setRecommend
 // TODO:// Update object shape when rec system is implemented
 InstantSearch.propTypes = {
 	showHitsClosed: PropTypes.bool,
-	setSelectedProduct: PropTypes.object,
-	setRecommendedProduct: PropTypes.object
+	setSelectedProduct: PropTypes.func,
+	setRecommendedProduct: PropTypes.func
 };

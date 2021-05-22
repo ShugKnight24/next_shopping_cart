@@ -132,7 +132,7 @@ export default function ProductID({ currentProduct }){
 							alt={`${ productName } by ${ manufacturer }`}
 							/>
 						<p className="product-description">{ description }</p>
-						<p className="product-price">{ formatCurrency(price) }</p>
+						<p className="product-price bold-text">{ formatCurrency(price) }</p>
 						<p className="product-quantity">Currently Available: { currentItem.available }</p>
 						<div className="product-actions">
 							{

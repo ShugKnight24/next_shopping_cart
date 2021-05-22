@@ -44,7 +44,7 @@ export default function Home() {
 				<Reasons />
 				<HorizontalRule 
 					color={ '#1173A8' }
-					borderWidth={ 3 }
+					borderWidth={ 1 }
 				/>
 				<div className="page-header">
 					<h1>Home Page</h1>
