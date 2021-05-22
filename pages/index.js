@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import dynamic from 'next/dynamic'
+import { HorizontalRule } from '../Components/HorizontalRule';
 import { Reasons } from '../Components/Reasons';
 import { Products } from '../Components/Products/Products';
 import { CartContext } from '../context/CartProvider';
@@ -41,6 +42,10 @@ export default function Home() {
 					isBrowser && <DynamicCarousel /> 
 				}
 				<Reasons />
+				<HorizontalRule 
+					color={ '#1173A8' }
+					borderWidth={ 3 }
+				/>
 				<div className="page-header">
 					<h1>Home Page</h1>
 					<h2>Our Most Popular Products</h2>
