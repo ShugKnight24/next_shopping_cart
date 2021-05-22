@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file
 
+- [X] Update Footer & Social Icons - 5/22/21
+- [X] Add Reasons section & Horizontal Rule component - 5/21/21
 - [X] Add Google Analytics - 5/20/21
 - [X] Add PropTypes - 5/17/21
 - [X] Refactor subproduct pages - 5/17/21
