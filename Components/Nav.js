@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import Link from 'next/link';
+import { Logo } from './Logo';
 import { CartContext } from '../context/CartProvider';
 import { totalQuantity } from '../utils/cartUtils';
 
@@ -11,6 +12,7 @@ export default function Nav(){
 
 	return(
 		<div className="nav-container">
+			<Logo />
 			<nav>
 				<Link href="/"><a>Shop</a></Link>
 				<Link href="/favorites"><a>Favorites</a></Link>
