@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Logo } from './Logo';
 import { HorizontalRule } from '../Components/HorizontalRule';
 import { SocialIcons } from '../Components/SocialIcons';
 
@@ -8,10 +9,7 @@ export default function Footer(){
 			<footer>
 				<div className="store-info">
 					<div className="store-description">
-						<div className="image-name">
-							<i className="fas fa-shopping-cart"></i>
-							<h2>Cart Commerce</h2>
-						</div>
+						<Logo />
 						<p>Our store provides quality products at their lowest retail prices</p>
 						<SocialIcons />
 					</div>
