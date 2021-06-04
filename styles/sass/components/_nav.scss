@@ -7,13 +7,42 @@
 	background-color: #FFF;
 	box-shadow: 0 3px $blue-accent;
 	z-index: 1;
+	display: flex;
+	justify-content: space-between;
+
+	@include mq-max(550px) {
+		flex-direction: column;
+	}
+
+	svg {
+		margin: 0 0 0 1.2em;
+		width: 100%;
+		max-width: 300px;
+
+		@include mq-max(700px) {
+			margin: 0 0 0 0.6em;
+			max-width: 200px;
+		}
+
+		@include mq-max(550px) {
+			align-self: center;
+			margin: 0.6em 0 0 0;
+		}
+	}
 
 	nav {
-		margin: 9px auto 0;
-		padding: 15px 1.2em;
+		margin: 9px 0 0 1.2em;
+		padding: 15px 0.6em 15px 0;
 		display: flex;
 		justify-content: flex-end;
-		align-items: flex-end;
+		align-items: center;
+
+		@include mq-max(700px) {
+			align-self: flex-end;
+			position: sticky;
+			margin: 0;
+			padding: 0.6em 0.6em 0.6em 0;
+		}
 		
 		a {
 			margin-left: 15px;
@@ -21,6 +50,21 @@
 			text-transform: uppercase;
 			font-size: 18px;
 			font-weight: bold;
+
+			@include mq-max(700px) {
+				font-size: 15px;
+				margin-left: 9px;
+			}
+			
+			@include mq-max(550px) {
+				font-size: 18px;
+				margin-left: 15px;
+			}
+			
+			@include mq-max(400px) {
+				font-size: 15px;
+				margin-left: 9px;
+			}
 			
 			&:last-of-type {
 				margin-right: 15px;
@@ -39,6 +83,14 @@
 				font-size: 60px;
 				font-weight: 900;
 				content: "\f07a";
+
+				@include mq-max(700px) {
+					font-size: 40px;
+				}
+				
+				@include mq-max(550px) {
+					font-size: 36px;
+				}
 			}
 			
 			.cart-count {
@@ -54,15 +106,40 @@
 				transform: scale(1) translate(50%, -50%);
 				transform-origin: 100% 0%;
 
+				@include mq-max(700px) {
+					font-size: 18px;
+					left: 9px;
+					top: 9px;
+				}
+
 				&.xl {
 					left: 24px;
 					padding: 9px;
+
+					@include mq-max(700px) {
+						padding: 6px;
+						left: 9px;
+					}
+
+					@include mq-max(550px) {
+						font-size: 15px;
+					}
 				}
 
 				&.huge {
 					left: 0;
 					padding: 12px;
 					font-size: 18px;
+
+					@include mq-max(700px) {
+						padding: 6px;
+						left: 0;
+						font-size: 15px;
+					}
+
+					@include mq-max(550px) {
+						font-size: 12px;
+					}
 				}
 			}
 		}
