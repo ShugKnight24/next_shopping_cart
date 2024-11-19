@@ -5,7 +5,7 @@ import { ModalProvider } from '../context/ModalProvider';
 import { useRouter } from 'next/router';
 import { handlePageView } from '../analytics/google';
 
-import '../styles/app.scss';
+// import '../styles/app.scss';
 
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
