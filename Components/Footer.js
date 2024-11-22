@@ -1,7 +1,9 @@
 import Link from 'next/link';
-import { Logo } from './Logo';
 import { HorizontalRule } from '../Components/HorizontalRule';
 import { SocialIcons } from '../Components/SocialIcons';
+import { Logo } from './Logo';
+
+const currentYear = new Date().getFullYear();
 
 export default function Footer() {
   return (
@@ -74,7 +76,7 @@ export default function Footer() {
         </div>
         <HorizontalRule color={'#1173A8'} borderWidth={1} />
         <div className="copyright">
-          Copyright 2021 &copy; Shugmi Shumunov All Rights Reserved
+          Copyright {currentYear} &copy; Shugmi Shumunov All Rights Reserved
         </div>
       </footer>
     </div>
