@@ -1,72 +1,85 @@
+@use '../colors' as colors;
+@use '../mixins' as mixins;
+
 .reasons-why-container {
-	padding: 1.5em 0 0;
+  padding: 1.5em 0 0;
 
-	h2,
-	h3 {
-		margin: 9px 0;
-		text-align: center;
-	}
+  h2,
+  h3 {
+    margin: 9px 0;
+    text-align: center;
+  }
 
-	h2 {
-		font-size: 2em;
+  h2 {
+    font-size: 2em;
 
-		@include mq-max(900px) {
-			margin-bottom: 0.6em
-		}
-	}
+    @include mixins.mq-max(900px) {
+      margin-bottom: 0.6em;
+    }
+  }
 
-	h3 {
-		font-size: 1.5em;
-	}
+  h3 {
+    font-size: 1.5em;
+  }
 
-	.reasons-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 1.5em;
+  .reasons-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.5em;
 
-		@include mq-max(900px) {
-			flex-direction: column;
-		}
+    @include mixins.mq-max(900px) {
+      flex-wrap: wrap;
+    }
 
-		.reason {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			flex-basis: 25%;
+    @include mixins.mq-max(700px) {
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
 
-			@include mq-max(900px) {
-				width: 100%;
-				flex-basis: 100%;
-				margin-bottom: 0.6em
-			}
+    .reason {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 25%;
 
-			i {
-				font-size: 3em;
-				padding: 1.25rem;
-				background-color: $blue-accent;
-				color: #FFF;
-				border-radius: 1.25rem;
-				border: 3px solid $red;
+      @include mixins.mq-max(900px) {
+        width: 50%;
+        flex-basis: 50%;
+        margin-bottom: 0.6em;
+      }
 
-				&:hover {
-					background-color: $blue-accent-hover;
-				}
+      @include mixins.mq-max(700px) {
+        width: 100%;
+        flex-basis: 100%;
+      }
 
-				@include mq-max(900px) {
-					font-size: 4.5em;
-				}
-			}
+      i {
+        font-size: 3em;
+        padding: 1.25rem;
+        background-color: colors.$blue-accent;
+        color: #fff;
+        border-radius: 1.25rem;
+        border: 3px solid colors.$red;
 
-			p {
-				margin: 9px 0;
+        &:hover {
+          background-color: colors.$blue-accent-hover;
+        }
 
-				@include mq-max(900px) {
-					max-width: 300px;
-					margin: 9px auto;
-				}
-			}
-		}
-	}
+        @include mixins.mq-max(900px) {
+          font-size: 4.5em;
+        }
+      }
+
+      p {
+        margin: 9px 0;
+
+        @include mixins.mq-max(900px) {
+          max-width: 300px;
+          margin: 9px auto;
+        }
+      }
+    }
+  }
 }

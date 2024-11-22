@@ -31,6 +31,15 @@ In order to add Google Analytics, add your App's tracking ID to the `.example.en
   - Update to use the latest from both API updates
   - Integrate React 19
 
+- [ ] Sass clean up
+
+  - Refactor new app.css / old import system not needed
+    - utilize `@forward` and `@use` correctly
+  - Refactor to use more variables
+  - Fix any broken system
+  - Remove duplicate styles
+  - Move to scss modules?
+
 - Recommendation system
   - Avoid prop drilling for recs
 - Add subcomponents for dupe code
@@ -45,10 +54,6 @@ In order to add Google Analytics, add your App's tracking ID to the `.example.en
     - [ ] Match can be found in algolia response
   - [ ] Improve responsiveness
   - [ ] Improve design
-
-- [ ] Further utilize sass
-
-  - Other repeated styles
 
 - [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
 - [ ] Handle different quantity adding on subproduct pages

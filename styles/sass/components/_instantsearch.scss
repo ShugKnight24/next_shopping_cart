@@ -1,169 +1,183 @@
+@use '../colors' as colors;
+@use '../mixins' as mixins;
+
 /* Instant Search */
 .instant-search-container {
-	position: relative;
-	width: 75%;
-	max-width: 600px;
+  position: relative;
+  width: 75%;
+  max-width: 600px;
 
-	@include mq-max(600px) {
-		width: 90%;
-	}
-	
-	&.populated {
-		margin-bottom: 120px;
+  @include mixins.mq-max(600px) {
+    width: 90%;
+  }
 
-		.instant-list {
-			position: absolute;
-			left: 0;
-			right: 0;
+  &.populated {
+    margin-bottom: 120px;
 
-			@include mq-max(600px) {
-				width: 105%;
-				left: -2.5%;
-			}
+    .instant-list {
+      position: absolute;
+      left: 0;
+      right: 0;
 
-			li.hit-container:nth-child(even) {
-				transform: perspective(100px) rotateX(3deg) translateY(-4px) scale(1.001);
-			}
-			
-			li.hit-container:nth-child(odd) {
-				transform: perspective(100px) rotateX(-3deg) translateY(4px);
-			}
-		}
-	}
-	
-	.instant-search {
-		position: relative;
-		background-color: $blue-accent;
-		color: #FFF;
-		outline: 0;
-		width: 100%;
-		max-width: 400px;
-		left: 50%;
-		transform: translateX(-50%);
-		border: 3px solid $red;
-		border-radius: 9px;
-		box-shadow: 0 0 5px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.19);
-		font-size: 36px;
-		text-align: left;
-		text-transform: uppercase;
-		padding: 6px 15px;	
-		
-		&::placeholder {
-			color: #FFF;
-			font-size: 24px;
-		}
-	}
+      @include mixins.mq-max(600px) {
+        width: 105%;
+        left: -2.5%;
+      }
 
-	.instant-list {
-		margin: 0;
-		padding: 0;
-		position: relative;
+      li.hit-container:nth-child(even) {
+        transform: perspective(100px) rotateX(3deg) translateY(-4px)
+          scale(1.001);
+      }
 
-		.algolia-hit {
-			a {
-				padding-top: 0;
-				
-				.hit-content {
-					flex-direction: column;
-		
-					h2 {
-						font-size: 1.25rem;
-						margin: 9px 0;
-					}
-		
-					svg {
-						max-width: 300px;
-						background-color: #FFF;
-						padding: 15px;
-						margin-left: 15px;
-					}
-				}
-			}
-		}
-		
-		li {
-			background: $cart-header;
-			color: #FFF;
-			list-style: none;
-			border-bottom: 3px solid $red-hover;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
-			margin: 0;
-			padding: 0 15px;
-			transition: background 0.2s;
-			display: flex;
-			font-weight: bold;
-			font-size: 24px;
-			text-transform: capitalize;
-			
-			&:nth-child(even) {
-				transform: perspective(100px) rotateX(3deg) translateY(1px) scale(1.001);
-				background: linear-gradient(to bottom, $cart-header 0%, $blue-accent 100%);
-			}
+      li.hit-container:nth-child(odd) {
+        transform: perspective(100px) rotateX(-3deg) translateY(4px);
+      }
+    }
+  }
 
-			&:nth-child(odd) {
-				transform: perspective(100px) rotateX(-3deg) translateY(1px);
-				background: linear-gradient(to top, $cart-header 0%, $blue-accent 100%);
-			}
+  .instant-search {
+    position: relative;
+    background-color: colors.$blue-accent;
+    color: #fff;
+    outline: 0;
+    width: 100%;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid colors.$red;
+    border-radius: 9px;
+    box-shadow:
+      0 0 5px rgba(0, 0, 0, 0.12),
+      inset 0 0 2px rgba(0, 0, 0, 0.19);
+    font-size: 36px;
+    text-align: left;
+    text-transform: uppercase;
+    padding: 6px 15px;
 
-			a {
-				width: 100%;
-				padding: 15px 0;
+    &::placeholder {
+      color: #fff;
+      font-size: 24px;
+    }
+  }
 
-				.hit-content {
-					display: flex;
-					align-items: center;
-					justify-content: space-evenly;
-					
-					.hit-image {
-						max-width: 75px;
-						margin-right: 25px;
-					}
-					
-					.name-manufacturer {
-						display: flex;
-						flex-direction: column;
-						
-						h2,
-						h3,
-						p {
-							margin: 6px 0;
-							padding: 0 3px;
-						}
-						
-						h2 {
-							font-size: 24px;
-						}
-						
-						h3 {
-							font-size: 18px;
-						}
-					}
-					
-					.add-cart-button {
-						background-color: $green;
-						border-color: $green;
-						color: #FFF;
-						padding: 9px 15px;
-						border-radius: 9px;
-						
-						&:hover {
-							background-color: $green-hover;
-							border-color: $green-border;
-						}
+  .instant-list {
+    margin: 0;
+    padding: 0;
+    position: relative;
 
-						&.disabled {
-							background-color: $disabled;
-							border-color: $disabled;
-							
-							&:hover {
-								cursor: not-allowed;
-								background-color: $disabled-hover;
-								border-color: $disabled-border;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    .algolia-hit {
+      a {
+        padding-top: 0;
+
+        .hit-content {
+          flex-direction: column;
+
+          h2 {
+            font-size: 1.25rem;
+            margin: 9px 0;
+          }
+
+          svg {
+            max-width: 300px;
+            background-color: #fff;
+            padding: 15px;
+            margin-left: 15px;
+          }
+        }
+      }
+    }
+
+    li {
+      background: colors.$cart-header;
+      color: #fff;
+      list-style: none;
+      border-bottom: 3px solid colors.$red-hover;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+      margin: 0;
+      padding: 0 15px;
+      transition: background 0.2s;
+      display: flex;
+      font-weight: bold;
+      font-size: 24px;
+      text-transform: capitalize;
+
+      &:nth-child(even) {
+        transform: perspective(100px) rotateX(3deg) translateY(1px) scale(1.001);
+        background: linear-gradient(
+          to bottom,
+          colors.$cart-header 0%,
+          colors.$blue-accent 100%
+        );
+      }
+
+      &:nth-child(odd) {
+        transform: perspective(100px) rotateX(-3deg) translateY(1px);
+        background: linear-gradient(
+          to top,
+          colors.$cart-header 0%,
+          colors.$blue-accent 100%
+        );
+      }
+
+      a {
+        width: 100%;
+        padding: 15px 0;
+
+        .hit-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-evenly;
+
+          .hit-image {
+            max-width: 75px;
+            margin-right: 25px;
+          }
+
+          .name-manufacturer {
+            display: flex;
+            flex-direction: column;
+
+            h2,
+            h3,
+            p {
+              margin: 6px 0;
+              padding: 0 3px;
+            }
+
+            h2 {
+              font-size: 24px;
+            }
+
+            h3 {
+              font-size: 18px;
+            }
+          }
+
+          .add-cart-button {
+            background-color: colors.$green;
+            border-color: colors.$green;
+            color: #fff;
+            padding: 9px 15px;
+            border-radius: 9px;
+
+            &:hover {
+              background-color: colors.$green-hover;
+              border-color: colors.$green-border;
+            }
+
+            &.disabled {
+              background-color: colors.$disabled;
+              border-color: colors.$disabled;
+
+              &:hover {
+                cursor: not-allowed;
+                background-color: colors.$disabled-hover;
+                border-color: colors.$disabled-border;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

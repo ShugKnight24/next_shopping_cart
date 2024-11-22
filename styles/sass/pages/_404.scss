@@ -1,28 +1,28 @@
+@use '../colors' as colors;
+
 /* 404 Styles */
 .not-found-body {
-	text-align: center;
-	
-	p {
-		margin: 9px 0;
-	}
-	
-	ul {
-		list-style-type: none;
-		
-		li {
-			margin: 3px 0;
-		}
-	}
+  text-align: center;
 
-	a {
-		color: $blue;
-		text-decoration: none;
-		font-weight: bold;
+  p {
+    margin: 9px 0;
+  }
 
-		&:hover {
-			color: $blue-hover;
-		}
-	}
+  ul {
+    list-style-type: none;
+
+    li {
+      margin: 3px 0;
+    }
+  }
+
+  a {
+    color: colors.$blue;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      color: colors.$blue-hover;
+    }
+  }
 }
-
-
