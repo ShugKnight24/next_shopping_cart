@@ -26,20 +26,17 @@ In order to add Google Analytics, add your App's tracking ID to the `.example.en
 
 ## To-Dos
 
-- [ ] Upgrade deps & dev environment
+- [ ] Refactor issues from NextJS & React API changes
 
-  - Get sass working again
+  - Update to use the latest from both API updates
+  - Integrate React 19
 
-    - [ ] css-loader, postcss-loader, & sass-loader???
-
-  - [ ] Refactor issues from NextJS & React API changes
-
-  - Recommendation system
-    - Avoid prop drilling for recs
-  - Add subcomponents for dupe code
-    - Further refactor
-    - Favorites
-  - Leverage destructuring where applicable
+- Recommendation system
+  - Avoid prop drilling for recs
+- Add subcomponents for dupe code
+  - Further refactor
+  - Favorites
+- Leverage destructuring where applicable
 
 - [ ] Improve Algolia Implementation
 
