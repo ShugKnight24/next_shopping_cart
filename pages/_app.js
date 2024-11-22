@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { handlePageView } from '../analytics/google';
 import Layout from '../Components/Layout';
@@ -33,5 +34,10 @@ function MyApp({ Component, pageProps }) {
     </ModalProvider>
   );
 }
+
+MyApp.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired,
+};
 
 export default MyApp;

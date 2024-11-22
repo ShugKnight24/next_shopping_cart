@@ -24,7 +24,7 @@ export function Reasons(){
 					<p className="reason-description">Mistakes happen. If a product is damaged products or not what you wanted, send it back</p>
 				</div>
 			</div>
-			<h3>Don't take our word, see for yourself!</h3>
+			<h3>Don&apos;t take our word, see for yourself!</h3>
 		</div>
 	)
 }

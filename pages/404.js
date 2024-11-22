@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function NotFound() {
   const router = useRouter();
@@ -19,7 +19,9 @@ export default function NotFound() {
       </div>
       <div className="not-found-body">
         <p>Use the links below to navigate to our most popular pages</p>
-        <p>You'll be redirected to the homepage in 5 seconds automatically</p>
+        <p>
+          You&apos;ll be redirected to the homepage in 5 seconds automatically
+        </p>
         <ul>
           Return:
           <li>

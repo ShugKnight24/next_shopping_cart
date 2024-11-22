@@ -2,7 +2,8 @@
 
 All notable changes to this project will be documented in this file
 
-- [x] Update dependencies, remove <a> from Next Link, resolve sass loading issue - 11/20-21/24
+- [x] Temporarily resovle ESLint issues & prevent build issues in the future - 11/22/24
+- [x] Update dependencies, remove `<a>` from Next Link, resolve sass loading issue - 11/18-21/24
 - [x] Add Logo to Nav & Footer - 6/4/21
 - [x] Update Footer & Social Icons - 5/22/21
 - [x] Add Reasons section & Horizontal Rule component - 5/21/21

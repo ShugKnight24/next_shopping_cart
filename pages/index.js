@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+import { useState } from 'react';
 import { HorizontalRule } from '../Components/HorizontalRule';
-import { Reasons } from '../Components/Reasons';
 import { Products } from '../Components/Products/Products';
-import { CartContext } from '../context/CartProvider';
-import { ModalContext } from '../context/ModalProvider';
+import { Reasons } from '../Components/Reasons';
 // import { getCurrentItem } from '../utils/getItem';
 // import { formatCurrency } from '../utils/cartUtils';
 
@@ -17,14 +15,15 @@ const DynamicCarousel = dynamic(() =>
 );
 
 export default function Home() {
-  const { showModal, setShowModal, modalType, setModalType } =
-    useContext(ModalContext);
-  const { state, dispatch } = useContext(CartContext);
-  const { inventory } = state;
+  // TODO: Implement the modal system, selectedProduct, and recommendedProduct properly
+  // const { showModal, setShowModal, modalType, setModalType } =
+  //   useContext(ModalContext);
+  // const { state, dispatch } = useContext(CartContext);
+  // const { inventory } = state;
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [recommendedProduct, setRecommendedProduct] = useState(null);
-  const [recItem, setRecItem] = useState(null);
+  const [_, setSelectedProduct] = useState(null);
+  const [_1, setRecommendedProduct] = useState(null);
+  const [_2, _3] = useState(null);
 
   // useEffect(() => {
   // 	const currentItem = getCurrentItem(inventory, recommendedProduct);
