@@ -1,16 +1,18 @@
-.home-container {
-	.all-products-link {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: $blue-accent;
-		text-decoration: none;
-		font-size: 1.5em;
-		font-weight: bold;
-		margin-top: .6em;
+@use '../colors' as colors;
 
-		&:hover {
-			color: $blue-accent-hover;
-		}
-	}
+.home-container {
+  .all-products-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: colors.$blue-accent;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 0.6em;
+
+    &:hover {
+      color: colors.$blue-accent-hover;
+    }
+  }
 }

@@ -1,56 +1,57 @@
+@use '../colors' as colors;
+
 /* Button Styles */
 button {
-	color: #FFF;
-	padding: 15px;
-	font-size: 18px;
-	font-weight: bold;
+  color: #fff;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
 
-	&:hover {
-		cursor: pointer;
-	}
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .checkout,
 .add-cart-button {
-	background-color: $green;
-	border-color: $green;
-	
-	
-	&:hover {
-		background-color: $green-hover;
-		border-color: $green-border;
-	}
+  background-color: colors.$green;
+  border-color: colors.$green;
 
-	&.disabled {
-		background-color: $disabled;
-		border-color: $disabled;
-		
-		&:hover {
-			cursor: not-allowed;
-			background-color: $disabled-hover;
-			border-color: $disabled-border;
-		}
-	}
+  &:hover {
+    background-color: colors.$green-hover;
+    border-color: colors.$green-border;
+  }
+
+  &.disabled {
+    background-color: colors.$disabled;
+    border-color: colors.$disabled;
+
+    &:hover {
+      cursor: not-allowed;
+      background-color: colors.$disabled-hover;
+      border-color: colors.$disabled-border;
+    }
+  }
 }
 
 .cancel,
 .continue-shopping {
-	background-color: $blue;
-	border-color: $blue;
-	
-	&:hover {
-		background-color: $blue-hover;
-		border-color: $blue-border;
-	}
+  background-color: colors.$blue;
+  border-color: colors.$blue;
+
+  &:hover {
+    background-color: colors.$blue-hover;
+    border-color: colors.$blue-border;
+  }
 }
 
 .delete-item,
 .clear-cart {
-	background-color: $red;
-	border-color: $red-border;
+  background-color: colors.$red;
+  border-color: colors.$red-border;
 
-	&:hover {
-		background-color: $red-hover;
-		border-color: $red-hover-border;
-	}
+  &:hover {
+    background-color: colors.$red-hover;
+    border-color: colors.$red-hover-border;
+  }
 }

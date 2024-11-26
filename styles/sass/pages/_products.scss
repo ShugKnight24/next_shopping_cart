@@ -1,125 +1,132 @@
+@use '../colors' as colors;
+@use '../mixins' as mixins;
+
 /* Sub Product Pages */
 .product-page {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
 
-	.product-return {
-		color: $blue-accent;
-		text-decoration: none;
-		font-weight: bold;
-		font-size: 24px;
+  .product-return {
+    color: colors.$blue-accent;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 24px;
 
-		.fa-chevron-left {
-			margin-right: 6px;
-		}
+    .fa-chevron-left {
+      margin-right: 6px;
+    }
 
-		&:hover {
-			color: $blue-accent-hover;
-		}
-	}
+    &:hover {
+      color: colors.$blue-accent-hover;
+    }
+  }
 
-	.product {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		justify-content: center;
-		padding: 1.2em 1.5em;
-		margin-top: 1.2em;
-		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
-			0px 6px 10px 0px rgba(0, 0, 0, 0.3),
-			0px 1px 18px 0px rgba(0, 0, 0, 0.3);
-		border-radius: 9px;
+  .product {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1.2em 1.5em;
+    margin-top: 1.2em;
+    box-shadow:
+      0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+      0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+      0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 9px;
 
-		.product-name {
-			text-align: left;
-		}
+    .page-header {
+      width: 100%;
 
-		.name-favorite {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 100%;
-			padding-top: 9px;
-		
-			.product-name {
-				flex-basis: 75%;
-			}
+      .name-favorite {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding-top: 9px;
 
-			.favorite-button {
-				flex-basis: 25%;
-				text-align: center;
-				background-color: transparent;
-				outline: 0;
-				border: 0;
-				padding: 0;
+        .product-name {
+          text-align: left;
+          flex-basis: 75%;
+        }
 
-				.fa-heart {
-					font-size: 1.5em;
-					color: #F50057;
-				}
+        .favorite-button {
+          flex-basis: 25%;
+          text-align: center;
+          background-color: transparent;
+          outline: 0;
+          border: 0;
+          padding: 0;
 
-				&:hover {
-					cursor: pointer;
+          .fa-heart {
+            font-size: 1.5em;
+            color: colors.$red-heart;
+          }
 
-					.fa-heart {
-						color: #CC0047;
-					}
-				}
-			}
-		}
-	
-		img {
-			align-self: center;
-			max-width: 250px;
-		}
+          &:hover {
+            cursor: pointer;
 
-		.product-description {
-			max-width: 300px;
-			margin: 0 auto;
+            .fa-heart {
+              color: colors.$red-heart-hover;
+            }
+          }
+        }
+      }
+    }
 
-			@include mq-min(1000px) {
-				max-width: 600px;
-			}
-		}
+    img {
+      align-self: center;
+      max-width: 250px;
+      margin-bottom: 9px;
+    }
 
-		p {
-			margin: 0.3em;
-		}
-		
-		.product-actions {
-			display: flex;
-			width: 100%;
-			justify-content: space-between;
-			margin-top: 9px;
-			
-			button {
-				outline: 0;
-				border: 1px outset transparent;
-				border-radius: 9px;
-				box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
-					0px 6px 10px 0px rgba(0, 0, 0, 0.3),
-					0px 1px 18px 0px rgba(0, 0, 0, 0.3);
-				
-				&:hover {
-					cursor: pointer;
-				}
+    .product-description {
+      max-width: 300px;
+      margin: 0 auto;
 
-				&.add-cart-button {
-					margin-left: auto;
-				}
-			}
-		}
+      @include mixins.mq-min(1000px) {
+        max-width: 600px;
+      }
+    }
 
-		// TODO Implement add w/ Quantity
-		.add-to-cart-form {
-			display: flex;
-			flex-direction: column;
-			
-			.quantity-input {
-				margin-bottom: 9px;
-			}
-		}
-	}
+    p {
+      margin: 0.3em;
+    }
+
+    .product-actions {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin-top: 9px;
+
+      button {
+        outline: 0;
+        border: 1px outset transparent;
+        border-radius: 9px;
+        box-shadow:
+          0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+          0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+          0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &.add-cart-button {
+          margin-left: auto;
+        }
+      }
+    }
+
+    // TODO: Implement add w/ Quantity
+    .add-to-cart-form {
+      display: flex;
+      flex-direction: column;
+
+      .quantity-input {
+        margin-bottom: 9px;
+      }
+    }
+  }
 }

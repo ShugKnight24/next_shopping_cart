@@ -1,168 +1,172 @@
+@use '../colors' as colors;
+@use '../mixins' as mixins;
+
 /* Products */
 .products-container {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-end;
-	justify-content: center;
-	padding: 0 30px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 30px;
 
-	.product-search-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-basis: 100%;
-		margin-bottom: 30px;
-	}
-	
-	.product {
-		flex-basis: 47.5%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: 1.2em 1.5em;
-		margin: 1.2em 1.25%;
-		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
-			0px 6px 10px 0px rgba(0, 0, 0, 0.3),
-			0px 1px 18px 0px rgba(0, 0, 0, 0.3);
-		border-radius: 9px;
-		
-		@include mq-max(800px) {
-			flex-basis: 100%;
-			margin-bottom: 15px;
-		}
-		
-		img {
-			max-width: 250px;
+  .product-search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 100%;
+    margin-bottom: 30px;
+  }
 
-			&.magicmouse2 {
-				width: 125px;
-			}
-		}
+  .product {
+    flex-basis: 47.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2em 1.5em;
+    margin: 1.2em 1.25%;
+    box-shadow:
+      0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+      0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+      0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 9px;
 
-		h2,
-		p {
-			margin: 9px 0;
-		}
-		
-		.name-favorite {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 100%;
-			padding-top: 9px;
-		
-			.product-name {
-				flex-basis: 70%;
-			}
+    @include mixins.mq-max(800px) {
+      flex-basis: 100%;
+      margin-bottom: 15px;
+    }
 
-			.favorite-button {
-				flex-basis: 30%;
-				text-align: center;
-				background-color: transparent;
-				outline: 0;
-				border: 0;
-				padding: 0;
+    img {
+      max-width: 250px;
 
-				.fa-heart {
-					font-size: 1.5em;
-					color: #F50057;
-				}
+      &.magicmouse2 {
+        width: 125px;
+      }
+    }
 
-				&:hover {
-					cursor: pointer;
+    h2,
+    p {
+      margin: 9px 0;
+    }
 
-					.fa-heart {
-						color: #CC0047;
-					}
-				}
-			}
-		}
+    .name-favorite {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding-top: 9px;
 
-		.product-actions {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
+      .product-name {
+        flex-basis: 70%;
+      }
 
-			@include mq-max(1100px) {
-				flex-direction: column;
-			}
+      .favorite-button {
+        flex-basis: 30%;
+        text-align: center;
+        background-color: transparent;
+        outline: 0;
+        border: 0;
+        padding: 0;
 
-			@include mq-max(800px) {
-				flex-direction: row;
-			}
+        .fa-heart {
+          font-size: 1.5em;
+          color: colors.$red-heart;
+        }
 
-			@include mq-max(600px) {
-				flex-direction: column;
-			}
+        &:hover {
+          cursor: pointer;
 
-			button {
-				padding: 15px;
-				font-size: 18px;
-				font-weight: bold;
-				color: white;
-				outline: 0;
-				border: 1px outset transparent;
-				border-radius: 9px;
-				box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.3),
-					0px 6px 10px 0px rgba(0, 0, 0, 0.3),
-					0px 1px 18px 0px rgba(0, 0, 0, 0.3);
-				
-				@include mq-max(1100px) {
-					width: 75%;
-					margin-bottom: 9px;
+          .fa-heart {
+            color: colors.$red-heart-hover;
+          }
+        }
+      }
+    }
 
-					&:last-of-type {
-						margin-bottom: 0;
-					}
-				}
+    .product-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-				@include mq-max(800px) {
-					width: auto;
-					margin-bottom: 0;
-				}
-	
-				@include mq-max(600px) {
-					width: 75%;
-					margin-bottom: 9px;
+      @include mixins.mq-max(1100px) {
+        flex-direction: column;
+      }
 
-					&:last-of-type {
-						margin-bottom: 0;
-					}
-				}
+      @include mixins.mq-max(800px) {
+        flex-direction: row;
+      }
 
-				&:hover {
-					cursor: pointer;
-				}
-			}
-			
-			.more-info-button {
-				background-color: $blue;
-				border-color: $blue;
-				
-				&:hover {
-					background-color: $blue-hover;
-					border-color: $blue-border;
-				}
-			}
-			
-			.add-cart-button {
-				.fa-cart-plus {
-					font-size: 24px;
-					vertical-align: middle;
-				}
-			}
-		}
+      @include mixins.mq-max(600px) {
+        flex-direction: column;
+      }
 
-		// TODO Implement add w/ Quantity
-		.add-to-cart-form {
-			display: flex;
-			flex-direction: column;
-			
-			.quantity-input {
-				margin-bottom: 9px;
-			}
-		}
-		
-	}
+      button {
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        outline: 0;
+        border: 1px outset transparent;
+        border-radius: 9px;
+        box-shadow:
+          0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+          0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+          0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+
+        @include mixins.mq-max(1100px) {
+          width: 75%;
+          margin-bottom: 9px;
+
+          &:last-of-type {
+            margin-bottom: 0;
+          }
+        }
+
+        @include mixins.mq-max(800px) {
+          width: auto;
+          margin-bottom: 0;
+        }
+
+        @include mixins.mq-max(600px) {
+          width: 75%;
+          margin-bottom: 9px;
+
+          &:last-of-type {
+            margin-bottom: 0;
+          }
+        }
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .more-info-button {
+        background-color: colors.$blue;
+        border-color: colors.$blue;
+
+        &:hover {
+          background-color: colors.$blue-hover;
+          border-color: colors.$blue-border;
+        }
+      }
+
+      .add-cart-button {
+        .fa-cart-plus {
+          font-size: 24px;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    // TODO: Implement add w/ Quantity
+    .add-to-cart-form {
+      display: flex;
+      flex-direction: column;
+
+      .quantity-input {
+        margin-bottom: 9px;
+      }
+    }
+  }
 }

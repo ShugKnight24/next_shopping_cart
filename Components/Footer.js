@@ -1,85 +1,84 @@
 import Link from 'next/link';
-import { Logo } from './Logo';
 import { HorizontalRule } from '../Components/HorizontalRule';
 import { SocialIcons } from '../Components/SocialIcons';
+import { Logo } from './Logo';
 
-export default function Footer(){
-	return(
-		<div className="footer-container">
-			<footer>
-				<div className="store-info">
-					<div className="store-description">
-						<Logo />
-						<p>Our store provides quality products at their lowest retail prices</p>
-						<SocialIcons />
-					</div>
-					<div className="store-links">
-						<div className="shopping">
-							<h3>Online Shopping</h3>
-							<ul>
-								<li>
-									<Link href="#"><a>New Products</a></Link>
-								</li>
-								{/* Consolidate under an FAQ? */}
-								<li>
-									<Link href="#"><a>Order Status</a></Link>
-								</li>
-								<li>
-									<Link href="#"><a>Shipping and Delivery</a></Link>
-								</li>
-								<li>
-									<Link href="#"><a>Returns</a></Link>
-								</li>
-								<li>
-									<Link href="#"><a>Payment Options</a></Link>
-								</li>
-							</ul>
-						</div>
-						<div className="info">
-							<h3>Shop Info</h3>
-							<ul>
-								<li>
-									<Link href="#"><a>About Us</a></Link>
-								</li>
-								<li>
-									<Link href="#"><a>Blog</a></Link>
-								</li>
-								<li>
-									<Link href="#"><a>Location</a></Link>
-								</li>
-								<li>
-									<Link href="#"><a>Feedback</a></Link>
-								</li>
-							</ul>
-						</div>
-						<div className="contact">
-							<h3>Contact</h3>
-							<ul>
-								<li>
-									<Link href="#"><a>Contact Us</a></Link>
-								</li>
-								<li>
-									<Link href="mailto:customersupport@storename.com">
-										<a>customersupport@storename.com</a>
-									</Link>
-								</li>
-								<li>
-									<Link href="tel:12345678900">
-										<a>1-234-567-8900</a>
-									</Link>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<HorizontalRule 
-					color={ '#1173A8' }
-					borderWidth={ 1 }
-				/>
-				<div className="copyright">
-					Copyright 2021 &copy; Shugmi Shumunov All Rights Reserved
-				</div>
-			</footer>
-		</div>
-	)
+const currentYear = new Date().getFullYear();
+
+export default function Footer() {
+  return (
+    <div className="footer-container">
+      <footer>
+        <div className="store-info">
+          <div className="store-description">
+            <Logo />
+            <p>
+              Our store provides quality products at their lowest retail prices
+            </p>
+            <SocialIcons />
+          </div>
+          <div className="store-links">
+            <div className="shopping">
+              <h3>Online Shopping</h3>
+              <ul>
+                <li>
+                  <Link href="#">New Products</Link>
+                </li>
+                {/* Consolidate under an FAQ? */}
+                <li>
+                  <Link href="#">Order Status</Link>
+                </li>
+                <li>
+                  <Link href="#">Shipping and Delivery</Link>
+                </li>
+                <li>
+                  <Link href="#">Returns</Link>
+                </li>
+                <li>
+                  <Link href="#">Payment Options</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="info">
+              <h3>Shop Info</h3>
+              <ul>
+                <li>
+                  <Link href="#">About Us</Link>
+                </li>
+                <li>
+                  <Link href="#">Blog</Link>
+                </li>
+                <li>
+                  <Link href="#">Location</Link>
+                </li>
+                <li>
+                  <Link href="#">Feedback</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="contact">
+              <h3>Contact</h3>
+              <ul>
+                <li>
+                  <Link href="#">Contact Us</Link>
+                </li>
+                <li>
+                  <Link href="mailto:customersupport@storename.com">
+                    customersupport@storename.com
+                  </Link>
+                </li>
+                <li>
+                  <Link href="tel:12345678900">1-234-567-8900</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <HorizontalRule color={'#1173A8'} borderWidth={1} />
+        <div className="copyright">
+          Copyright {currentYear} &copy; Shugmi Shumunov All Rights Reserved
+        </div>
+      </footer>
+    </div>
+  );
 }

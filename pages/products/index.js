@@ -1,39 +1,38 @@
-import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useState } from 'react';
 import { Products } from '../../Components/Products/Products';
-import { CartContext } from '../../context/CartProvider';
-import { ModalContext } from '../../context/ModalProvider';
 // import { getCurrentItem } from '../../utils/getItem';
 // import { formatCurrency } from '../../utils/cartUtils';
 
-export default function ProductsPage(){
-	const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
-	const { state, dispatch } = useContext(CartContext)
-	const { inventory } = state;
+export default function ProductsPage() {
+  // TODO: Implement the modal system, selectedProduct, and recommendedProduct properly
+  // const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
+  // const { state, dispatch } = useContext(CartContext)
+  // const { inventory } = state;
 
-	const [selectedProduct, setSelectedProduct] = useState(null);
-	const [recommendedProduct, setRecommendedProduct] = useState(null);
-	const [recItem, setRecItem] = useState(null);
+  const [_, setSelectedProduct] = useState(null);
+  const [_1, setRecommendedProduct] = useState(null);
+  const [_2, _3] = useState(null);
 
-	// useEffect(() => {
-	// 	const currentItem = getCurrentItem(inventory, recommendedProduct);
-	// 	setRecItem(currentItem ? currentItem : null);
-	// }, [selectedProduct]);
+  // useEffect(() => {
+  // 	const currentItem = getCurrentItem(inventory, recommendedProduct);
+  // 	setRecItem(currentItem ? currentItem : null);
+  // }, [selectedProduct]);
 
-	return(
-		<>
-			<Head>
-				<title>Shopping Cart | All Products Page</title>
-			</Head>
-			<div className="products-page">
-				<div className="page-header">
-					<h1>All Products</h1>
-				</div>
-				<Products
-					setSelectedProduct={ setSelectedProduct }
-					setRecommendedProduct={ setRecommendedProduct }
-				/>
-			</div>
-		</>
-	);
+  return (
+    <>
+      <Head>
+        <title>Shopping Cart | All Products Page</title>
+      </Head>
+      <div className="products-page">
+        <div className="page-header">
+          <h1>All Products</h1>
+        </div>
+        <Products
+          setSelectedProduct={setSelectedProduct}
+          setRecommendedProduct={setRecommendedProduct}
+        />
+      </div>
+    </>
+  );
 }
