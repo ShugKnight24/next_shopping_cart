@@ -1,0 +1,22 @@
+.promoBanner {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: #b61f24;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #fff;
+}

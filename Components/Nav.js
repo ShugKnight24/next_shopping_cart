@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { CartContext } from '../context/CartProvider';
 import { totalQuantity } from '../utils/cartUtils';
 import { Logo } from './Logo';
+import PromoBanner from './PromoBanner/PromoBanner';
 
 export default function Nav() {
   const { state } = useContext(CartContext);
@@ -13,23 +14,26 @@ export default function Nav() {
 
   return (
     <div className="nav-container">
-      <Link href="/" aria-label="Home / Shop">
-        <Logo />
-      </Link>
-      <nav>
+      <div>
         <Link href="/" aria-label="Home / Shop">
-          Shop
+          <Logo />
         </Link>
-        <Link href="/favorites" aria-label="Favorites">
-          Favorites
-        </Link>
-        <Link href="/products" aria-label="Products">
-          Products
-        </Link>
-        <Link className="cart-nav-item" href="/cart" aria-label="Cart">
-          <span className={`cart-count ${cartIconSize}`}>{cartCount}</span>
-        </Link>
-      </nav>
+        <nav>
+          <Link href="/" aria-label="Home / Shop">
+            Shop
+          </Link>
+          <Link href="/favorites" aria-label="Favorites">
+            Favorites
+          </Link>
+          <Link href="/products" aria-label="Products">
+            Products
+          </Link>
+          <Link className="cart-nav-item" href="/cart" aria-label="Cart">
+            <span className={`cart-count ${cartIconSize}`}>{cartCount}</span>
+          </Link>
+        </nav>
+      </div>
+      <PromoBanner />
     </div>
   );
 }
