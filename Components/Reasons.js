@@ -4,7 +4,10 @@ export function Reasons() {
       <h2>Why Shop With Us?</h2>
       <div className="reasons-container">
         <div className="reason">
-          <i class="fad fa-hands-heart" aria-label="Support Local Charities" />
+          <i
+            className="fad fa-hands-heart"
+            aria-label="Support Local Charities"
+          />
           <h3 className="reason-header">Support Local Charities</h3>
           <p className="reason-description">
             <span>10%</span> of our profits support local charities and make a
@@ -43,7 +46,7 @@ export function Reasons() {
         </div>
         <div className="reason">
           <i
-            class="fad fa-comment-alt-smile"
+            className="fad fa-comment-alt-smile"
             aria-label="Don’t Take Our Word for It"
           />
           <h3 className="reason-header">Don’t Take Our Word for It</h3>
