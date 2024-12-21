@@ -1,0 +1,21 @@
+.payment-methods {
+  margin-bottom: 20px;
+  padding: 0;
+
+  ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      img {
+        width: 100%;
+        min-width: 60px;
+        height: auto;
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 @use '../mixins' as mixins;
 
 .reasons-why-container {
-  padding: 1.5em 0 0;
+  padding: 0.75em 0 0;
 
   h2,
   h3 {
@@ -11,7 +11,7 @@
   }
 
   h2 {
-    font-size: 2em;
+    font-size: 1.5em;
 
     @include mixins.mq-max(900px) {
       margin-bottom: 0.6em;
@@ -26,7 +26,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 1.5em;
+    padding: 0 0.75em;
 
     @include mixins.mq-max(900px) {
       flex-wrap: wrap;
@@ -42,7 +42,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-basis: 25%;
+      flex-basis: 20%;
 
       @include mixins.mq-max(900px) {
         width: 50%;
@@ -57,14 +57,15 @@
 
       i {
         font-size: 3em;
-        padding: 1.25rem;
+        padding: 1.5rem;
         background-color: colors.$blue-accent;
         color: #fff;
-        border-radius: 1.25rem;
-        border: 3px solid colors.$red;
+        border-radius: 1.5rem;
+        border: 3px solid colors.$red-border;
 
         &:hover {
           background-color: colors.$blue-accent-hover;
+          border-color: colors.$red-hover-border;
         }
 
         @include mixins.mq-max(900px) {
