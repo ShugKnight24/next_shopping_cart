@@ -30,21 +30,13 @@ In order to add Google Analytics, add your App's tracking ID to the `.example.en
 
   - Update to use the latest from both API updates
   - Integrate React 19
+    - Use RSC for static data
 
 - Refactor to update content
 
-  - [ ] Add promo bar
-
   - [ ] Add loading assets
 
-  - [ ] Update design system
-
-    - Modernize the aesthetic
-
-  - [ ] Add Payment methods accepted
-
-    - In footer below the socials
-    - Include Visa, Mastercard, Amex, Discover, Paypal, Apple Pay, Google Pay, Afterpay, Klarna, Paypal etc...
+  - [ ] Continue updating the design system
 
   - Add indicators for secure shopping
     - SSL, Secure Checkout, etc...
@@ -62,9 +54,15 @@ In order to add Google Analytics, add your App's tracking ID to the `.example.en
       - Add a carousel of each category?
       - Unique assets of grouped products
   - [ ] Update Products
-    - Update to latest
     - More depth, properties, & variety
-    - Add variants
+    - Update Product Data structure
+      - Add brand logos
+      - Add variants
+      - Add sizing
+      - Add other properties
+        - MPN / UPC / SKU / Etc
+    - Finalize product page tabs
+      - Details, Reviews, Discussion, etc...
 
 - [ ] Improve error handling
 
