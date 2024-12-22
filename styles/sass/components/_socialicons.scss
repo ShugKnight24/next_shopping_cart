@@ -17,6 +17,12 @@
     }
   }
 
+  .discord {
+    &:hover {
+      color: #5865f2;
+    }
+  }
+
   .facebook {
     &:hover {
       color: #4267b2;
@@ -59,6 +65,7 @@
         #d6249f 60%,
         #285aeb 90%
       );
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -67,6 +74,21 @@
   .linkedin {
     &:hover {
       color: #0073b1;
+    }
+  }
+
+  .pinterest {
+    &:hover {
+      color: #bd081c;
+    }
+  }
+
+  .tiktok {
+    &:hover {
+      color: #111111;
+
+      filter: drop-shadow(3px 0px 0px #fe2c55)
+        drop-shadow(-3px -3px 0px #25f4ee);
     }
   }
 
@@ -85,6 +107,21 @@
   .youtube {
     &:hover {
       color: #ff0000;
+    }
+  }
+
+  .x {
+    width: 3em;
+    height: 3em;
+    padding: 0.5rem;
+
+    &:hover {
+      border-radius: 0.5rem;
+      background-color: #000;
+
+      path {
+        fill: #fff;
+      }
     }
   }
 }

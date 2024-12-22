@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { XLogo } from './Logos/XLogo';
+
 const socialLinks = [
   {
     href: 'https://facebook.com/#',
@@ -62,6 +64,14 @@ export function SocialIcons() {
           <i className={link.className} />
         </Link>
       ))}
+      <Link
+        href="x.com/#"
+        aria-label="Company X Account"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <XLogo />
+      </Link>
     </div>
   );
 }
