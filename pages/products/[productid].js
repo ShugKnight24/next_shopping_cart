@@ -8,6 +8,9 @@ import techItems from '../../data/techItems.json';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
 
+import { Star } from '../../Components/Icons/Star';
+import { ProductTabs } from '../../Components/Products/ProductTabs';
+
 const productList = [...items, ...techItems];
 
 export const getStaticPaths = async () => {
@@ -153,18 +156,11 @@ export default function ProductID({ currentProduct }) {
               </h1>
             </div>
             <div className="product-reviews">
+              {/* TODO: Clicking the reviews should toggle the reviews tab and focus */}
               <span>{reviews.length} Reviews</span>
               <div className="review-stars">
                 {Array.from({ length: 5 }, (_, i) => (
-                  <svg
-                    key={i}
-                    className={
-                      i < reviews.average ? 'filled-star' : 'empty-star'
-                    }
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.897l-7.334 3.868 1.4-8.168L.132 9.21l8.2-1.192z" />
-                  </svg>
+                  <Star averageRating={reviews.average} index={i} key={i} />
                 ))}
               </div>
             </div>
@@ -238,11 +234,7 @@ export default function ProductID({ currentProduct }) {
           </div>
         </div>
         {/* TODO: Properly implement this below the fold */}
-        <div className="product-tabs">
-          <button className="tab">Details</button>
-          <button className="tab">Product Reviews</button>
-          <button className="tab">Discussion</button>
-        </div>
+        <ProductTabs product={currentProduct} />
       </div>
     </>
   );

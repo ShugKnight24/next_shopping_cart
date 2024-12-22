@@ -1,0 +1,41 @@
+@use '../../styles/sass/colors' as colors;
+
+.tabsContainer {
+  margin-top: 2rem;
+}
+
+.tabHeaders {
+  display: flex;
+  border-bottom: 1px solid colors.$red;
+}
+
+.tabHeader {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background-color: colors.$blue;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  border-right: 1px solid colors.$red;
+}
+
+.tabHeader:hover {
+  background-color: colors.$red;
+}
+
+.tabHeader:last-child {
+  border-right: none;
+}
+
+.tabHeader.active {
+  background-color: colors.$red;
+  border-bottom: 3px solid colors.$red;
+}
+
+.tabContent {
+  padding: 1rem;
+  background-color: #f9f9f9;
+}

@@ -199,26 +199,6 @@
           }
         }
       }
-
-      .product-tabs {
-        display: flex;
-        margin-top: 2rem;
-      }
-
-      // TODO: Properly style once additional tabs are implemented
-      // TODO: Toggle active tabs
-      .tab {
-        flex: 1;
-        padding: 1rem;
-        text-align: center;
-        cursor: pointer;
-        border: 1px solid #ccc;
-        background: none;
-      }
-
-      .tab:not(:last-child) {
-        border-right: none;
-      }
     }
 
     // TODO: Implement add w/ Quantity
