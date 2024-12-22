@@ -4,28 +4,37 @@
 /* Sub Product Pages */
 .product-page {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding: 15px;
+  padding: 2rem;
 
-  .product-return {
-    color: colors.$blue-accent;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 24px;
+  .product-breadcrumbs {
+    margin-bottom: 1rem;
 
-    .fa-chevron-left {
-      margin-right: 6px;
+    .fa-chevron-right {
+      font-size: 18px;
+      color: colors.$blue-accent;
+      margin: 0 0.25rem;
     }
 
-    &:hover {
-      color: colors.$blue-accent-hover;
+    a {
+      color: colors.$blue-accent;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 24px;
+
+      .fa-chevron-left {
+        margin-right: 6px;
+      }
+
+      &:hover {
+        color: colors.$blue-accent-hover;
+      }
     }
   }
 
-  .product {
+  .product-container {
     display: flex;
-    flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     padding: 1.2em 1.5em;
@@ -36,19 +45,136 @@
       0px 1px 18px 0px rgba(0, 0, 0, 0.3);
     border-radius: 9px;
 
-    .page-header {
-      width: 100%;
+    // TODO: Properly style once additional images & lighthouse are implemented
+    .product-images {
+      flex: 1;
+      margin-right: 2rem;
 
-      .name-favorite {
+      img {
+        max-width: 100%;
+        margin-bottom: 1rem;
+        cursor: pointer;
+      }
+
+      .additional-images {
+        img {
+          width: 20%;
+          margin-right: 1rem;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .product-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      flex: 1;
+
+      .product-brand {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding-top: 9px;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .brand-logo {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+        }
 
         .product-name {
+          margin: 0;
           text-align: left;
           flex-basis: 75%;
+        }
+      }
+
+      .product-reviews {
+        display: flex;
+        align-items: center;
+
+        .review-stars {
+          display: flex;
+          margin-left: 0.5rem;
+          width: 75px;
+          height: 75px;
+
+          .filled-star {
+            fill: #ffd700;
+          }
+
+          .empty-star {
+            fill: #ccc;
+          }
+        }
+      }
+
+      .product-description {
+        max-width: 300px;
+        margin: 0 auto;
+
+        @include mixins.mq-min(1000px) {
+          max-width: 600px;
+        }
+      }
+
+      .product-price {
+        font-size: 1.5rem;
+        margin-top: 0.25rem;
+      }
+
+      .product-available-quantity {
+        margin-top: 0.25rem;
+      }
+
+      .product-variants,
+      .product-sizes {
+        margin-top: 0.25rem;
+      }
+
+      .variant-button,
+      .size-button {
+        margin-right: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        background: none;
+        cursor: pointer;
+      }
+
+      .size-button.unavailable {
+        color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .size-guide {
+        display: inline-block;
+        margin-left: 0.5rem;
+        cursor: pointer;
+      }
+
+      .product-actions {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+
+        .add-cart-button {
+          outline: 0;
+          border: 1px outset transparent;
+          border-radius: 9px;
+          box-shadow:
+            0px 3px 5px -1px rgba(0, 0, 0, 0.3),
+            0px 6px 10px 0px rgba(0, 0, 0, 0.3),
+            0px 1px 18px 0px rgba(0, 0, 0, 0.3);
+
+          &:hover {
+            cursor: pointer;
+          }
+
+          &.add-cart-button {
+            margin-left: auto;
+          }
         }
 
         .favorite-button {
@@ -75,58 +201,14 @@
       }
     }
 
-    img {
-      align-self: center;
-      max-width: 250px;
-      margin-bottom: 9px;
-    }
-
-    .product-description {
-      max-width: 300px;
-      margin: 0 auto;
-
-      @include mixins.mq-min(1000px) {
-        max-width: 600px;
-      }
-    }
-
-    p {
-      margin: 0.3em;
-    }
-
-    .product-actions {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      margin-top: 9px;
-
-      button {
-        outline: 0;
-        border: 1px outset transparent;
-        border-radius: 9px;
-        box-shadow:
-          0px 3px 5px -1px rgba(0, 0, 0, 0.3),
-          0px 6px 10px 0px rgba(0, 0, 0, 0.3),
-          0px 1px 18px 0px rgba(0, 0, 0, 0.3);
-
-        &:hover {
-          cursor: pointer;
-        }
-
-        &.add-cart-button {
-          margin-left: auto;
-        }
-      }
-    }
-
     // TODO: Implement add w/ Quantity
-    .add-to-cart-form {
-      display: flex;
-      flex-direction: column;
+    // .add-to-cart-form {
+    //   display: flex;
+    //   flex-direction: column;
 
-      .quantity-input {
-        margin-bottom: 9px;
-      }
-    }
+    //   .quantity-input {
+    //     margin-bottom: 9px;
+    //   }
+    // }
   }
 }

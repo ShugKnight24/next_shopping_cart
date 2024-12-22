@@ -1,25 +1,76 @@
 import Link from 'next/link';
 
+import { XLogo } from './Logos/XLogo';
+
+const socialLinks = [
+  {
+    href: 'https://facebook.com/#',
+    className: 'fab fa-facebook-square facebook',
+    label: 'Facebook',
+  },
+  {
+    href: 'https://discord.com/#',
+    className: 'fab fa-discord discord',
+    label: 'Discord',
+  },
+  {
+    href: 'https://instagram.com/#',
+    className: 'fab fa-instagram instagram',
+    label: 'Instagram',
+  },
+  {
+    href: 'https://linkedin.com/#',
+    className: 'fab fa-linkedin linkedin',
+    label: 'LinkedIn',
+  },
+  {
+    href: 'https://pinterest.com/#',
+    className: 'fab fa-pinterest-square pinterest',
+    label: 'Pinterest',
+  },
+  {
+    href: 'https://tiktok.com/#',
+    className: 'fab fa-tiktok tiktok',
+    label: 'TikTok',
+  },
+  {
+    href: 'https://twitch.com/#',
+    className: 'fab fa-twitch twitch',
+    label: 'Twitch',
+  },
+  {
+    href: 'https://twitter.com/#',
+    className: 'fab fa-twitter-square twitter',
+    label: 'Twitter',
+  },
+  {
+    href: 'https://youtube.com/#',
+    className: 'fab fa-youtube youtube',
+    label: 'YouTube',
+  },
+];
+
 export function SocialIcons() {
   return (
     <div className="social-icons-container">
-      <Link href="https://facebook.com/#">
-        <i className="fab fa-facebook-square facebook"></i>
-      </Link>
-      <Link href="https://instagram.com/#">
-        <i className="fab fa-instagram instagram"></i>
-      </Link>
-      <Link href="https://linkedin.com/#">
-        <i className="fab fa-linkedin linkedin"></i>
-      </Link>
-      <Link href="https://twitch.com/#">
-        <i className="fab fa-twitch twitch"></i>
-      </Link>
-      <Link href="https://twitter.com/#">
-        <i className="fab fa-twitter-square twitter"></i>
-      </Link>
-      <Link href="https://youtube.com/#">
-        <i className="fab fa-youtube youtube"></i>
+      {socialLinks.map((link, index) => (
+        <Link
+          key={index}
+          href={link.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          aria-label={link.label}
+        >
+          <i className={link.className} />
+        </Link>
+      ))}
+      <Link
+        href="x.com/#"
+        aria-label="Company X Account"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <XLogo />
       </Link>
     </div>
   );

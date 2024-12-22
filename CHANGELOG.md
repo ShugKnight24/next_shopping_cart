@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file
 
+- [x] Update carousel content, add promo banner, update product page layout, update footer
 - [x] Move away from deprecated sass `@imports`, update misc styles - 11/22/24
 - [x] Temporarily resovle ESLint issues & prevent build issues in the future - 11/22/24
 - [x] Update dependencies, remove `<a>` from Next Link, resolve sass loading issue - 11/18-21/24

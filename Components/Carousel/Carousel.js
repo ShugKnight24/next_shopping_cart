@@ -5,19 +5,17 @@ import { Slide } from './Slide';
 
 export function Carousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const maxSlides = 3;
+  const maxSlides = slideContent.length;
 
   const showSlides = useCallback((slideIndex) => {
     const slides = document.getElementsByClassName('slide');
     const dots = document.getElementsByClassName('dot');
 
     if (slides.length > 0) {
-      for (let i = 0; i < slides.length; i++) {
-        slides[i].classList.remove('active');
-        dots[i].classList.remove('active');
-      }
-      slides[slideIndex].classList.add('active');
-      dots[slideIndex].classList.add('active');
+      Array.from(slides).forEach((slide, index) => {
+        slide.classList.toggle('active', index === slideIndex);
+        dots[index].classList.toggle('active', index === slideIndex);
+      });
     }
   }, []);
 
@@ -25,52 +23,54 @@ export function Carousel() {
     showSlides(currentSlide);
   }, [currentSlide, showSlides]);
 
-  function handleNextClick() {
-    setCurrentSlide((prevState) =>
-      prevState + 1 === maxSlides ? 0 : prevState + 1
-    );
-    showSlides(currentSlide);
-  }
+  const handleNextClick = () => {
+    setCurrentSlide((prevState) => (prevState + 1) % maxSlides);
+  };
 
-  function handlePreviousClick() {
-    setCurrentSlide((prevState) =>
-      prevState - 1 < 0 ? maxSlides - 1 : prevState - 1
-    );
-    showSlides(currentSlide);
-  }
+  const handlePreviousClick = () => {
+    setCurrentSlide((prevState) => (prevState - 1 + maxSlides) % maxSlides);
+  };
 
-  function handleDotClick(dotIndex) {
+  const handleDotClick = (dotIndex) => {
     setCurrentSlide(dotIndex);
-    showSlides(currentSlide);
-  }
+  };
 
   return (
     <section className="carousel-container">
       <div className="product-carousel">
         {slideContent.map(
-          ({ productName, slideText, slideMemeText, slideImage }) => {
+          ({
+            productName,
+            slideCTA,
+            slideImage,
+            slideMemeText,
+            slideSubHeading,
+            slideText,
+          }) => {
             return (
               <Slide
                 key={productName}
                 productName={productName}
-                slideText={slideText}
-                slideMemeText={slideMemeText}
+                slideCTA={slideCTA}
                 slideImage={slideImage}
+                slideMemeText={slideMemeText}
+                slideSubHeading={slideSubHeading}
+                slideText={slideText}
               />
             );
           }
         )}
         <button className="prev" onClick={() => handlePreviousClick()}>
-          <i className="fas fa-chevron-circle-left"></i>
+          <i className="fas fa-chevron-circle-left" />
         </button>
         <button className="next" onClick={() => handleNextClick()}>
-          <i className="fas fa-chevron-circle-right"></i>
+          <i className="fas fa-chevron-circle-right" />
         </button>
       </div>
       <div className="dots-container">
-        {slideContent.map((slide, index) => {
-          return <Dot key={index} onClick={() => handleDotClick(index)} />;
-        })}
+        {slideContent.map((_, index) => (
+          <Dot key={index} onClick={() => handleDotClick(index)} />
+        ))}
       </div>
     </section>
   );

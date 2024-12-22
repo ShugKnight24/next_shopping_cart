@@ -1,20 +1,30 @@
 [
-	{
-		"productName": "Apple iPhone 12",
-		"slideText": "The Next Generation of TeleCommunication",
-		"slideMemeText": "Mildy Improved. In Every Way. Except Price. We Increased That :)",
-		"slideImage": "../static/img/iphone.jpeg"
-	},
-	{
-		"productName": "Apple MacBook Pro",
-		"slideText": "The best for the brightest",
-		"slideMemeText": "Same MacBook. Slightly Better. Only The Best",
-		"slideImage": "../static/img/macbookpro.webp"
-	},
-	{
-		"productName": "Pro Office Setup",
-		"slideText": "Developers of the Future Need the Office of the Future",
-		"slideMemeText": "Who goes to offices anymore. Remote is love. Remote is life.",
-		"slideImage": "../static/img/office_setup.jpeg"
-	}
+  {
+    "productName": "Let's Make a Deal!",
+    "slideText": "The best deals on the planet (probably).",
+    "slideMemeText": "We have the best deals. The best. Believe me. No one does it better. No one. We guarantee it.",
+    "slideSubHeading": "See something you like? Reach out to us and we'll make it happen.",
+    "slideImage": "../static/img/deal.jpg",
+    "slideCTA": "Name Your Price!"
+  },
+  {
+    "productName": "Apple iPhone 16",
+    "slideText": "Telecommunication Reinvented (Again).",
+    "slideMemeText": "Subtly Enhanced. In Every Possible Way. Not the price. We had to raise that.",
+    "slideSubHeading": "Including Apple Intelligence. We gave the machines access to your data. It's cool. Trust us.",
+    "slideImage": "../static/img/iphone_16.jpg"
+  },
+  {
+    "productName": "Apple MacBook M4 Pro",
+    "slideText": "Our Best MacBook. Ever. Probably.",
+    "slideMemeText": "Now in space black. We know you love space. We love space too.",
+    "slideImage": "../static/img/macbook_m4.webp"
+  },
+  {
+    "productName": "Open Office Pod",
+    "slideText": "The Future of Work. Now.",
+    "slideSubHeading": "Your office in a pod. It's like a spaceship, for work. We have to tell you it's not a spaceship.",
+    "slideMemeText": "Go to the office, in your office. Office-ception.",
+    "slideImage": "../static/img/office_pod.avif"
+  }
 ]

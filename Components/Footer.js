@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { HorizontalRule } from '../Components/HorizontalRule';
+import { PaymentMethods } from '../Components/PaymentMethods';
 import { SocialIcons } from '../Components/SocialIcons';
 import { Logo } from './Logo';
 
@@ -11,11 +12,14 @@ export default function Footer() {
       <footer>
         <div className="store-info">
           <div className="store-description">
-            <Logo />
+            <Link href="/" aria-label="Home / Shop">
+              <Logo />
+            </Link>
             <p>
               Our store provides quality products at their lowest retail prices
             </p>
-            <SocialIcons />
+            {/* TODO: Place payment methods below footer */}
+            <PaymentMethods />
           </div>
           <div className="store-links">
             <div className="shopping">
@@ -24,7 +28,7 @@ export default function Footer() {
                 <li>
                   <Link href="#">New Products</Link>
                 </li>
-                {/* Consolidate under an FAQ? */}
+                {/* TODO: Consolidate under an FAQ? */}
                 <li>
                   <Link href="#">Order Status</Link>
                 </li>
@@ -71,6 +75,7 @@ export default function Footer() {
                   <Link href="tel:12345678900">1-234-567-8900</Link>
                 </li>
               </ul>
+              <SocialIcons />
             </div>
           </div>
         </div>

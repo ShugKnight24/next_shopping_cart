@@ -30,6 +30,49 @@ In order to add Google Analytics, add your App's tracking ID to the `.example.en
 
   - Update to use the latest from both API updates
   - Integrate React 19
+    - Use RSC for static data
+
+- Refactor to update content
+
+  - [ ] Add loading assets
+
+  - [ ] Continue updating the design system
+
+  - Add indicators for secure shopping
+    - SSL, Secure Checkout, etc...
+  - add indicators for free shipping
+
+    - Free Shipping, Free Returns, global shipping, etc...
+
+  - [ ] Update Home Page
+    - assets, copy, design
+    - Carousel - categories, popular & featured products, Make a deal / best offer, etc...
+    - Categories, Featured Products, Popular Products
+      - Retarget from carousel w/ more depth
+        - Other assets, features, etc
+      - Unique landing pages per category?
+      - Add a carousel of each category?
+      - Unique assets of grouped products
+  - [ ] Update Products
+    - More depth, properties, & variety
+    - Update Product Data structure
+      - Add brand logos
+      - Add variants
+      - Add sizing
+      - Add other properties
+        - MPN / UPC / SKU / Etc
+    - Finalize product page tabs
+      - Details, Reviews, Discussion, etc...
+
+- [ ] Improve error handling
+
+  - Add error boundaries
+
+- [ ] Fix - `<Head>` `<Title>` error on sub product pages
+
+  - Likely due to conflict w/ All Products page
+
+- [ ] Add tests
 
 - [ ] Sass clean up
 

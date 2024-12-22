@@ -1,54 +1,127 @@
 .social-icons-container {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-	i {
-		font-size: 3em;
-		
-		&:hover {
-			cursor: pointer;
-		}
-	}
+  i {
+    font-size: 3em;
 
-	.facebook {
-		&:hover {
-			color: #4267B2;
-		}
-	}
+    &:hover {
+      cursor: pointer;
+    }
 
-	.instagram {
-		&:hover {
-			background: -webkit-radial-gradient(30% 107%, circle, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-			background: -o-radial-gradient(30% 107%, circle, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-			background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-			background: -webkit-radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-		}
-	}
+    margin-right: 0.25rem;
 
-	.linkedin {
-		&:hover {
-			color: #0073B1
-		}
-	}
+    &:not(:last-child) {
+      margin-right: 0;
+    }
+  }
 
-	.twitch {
-		&:hover {
-			color: #A970FF;
-		}
-	}
-	
-	.twitter {
-		&:hover {
-			color: #1DA1F2;
-		}
-	}
-	
-	.youtube {
-		&:hover {
-			color: #FF0000;
-		}
-	}
+  .discord {
+    &:hover {
+      color: #5865f2;
+    }
+  }
+
+  .facebook {
+    &:hover {
+      color: #4267b2;
+    }
+  }
+
+  .instagram {
+    &:hover {
+      background: -webkit-radial-gradient(
+        30% 107%,
+        circle,
+        #fdf497 0%,
+        #fdf497 5%,
+        #fd5949 45%,
+        #d6249f 60%,
+        #285aeb 90%
+      );
+      background: -o-radial-gradient(
+        30% 107%,
+        circle,
+        #fdf497 0%,
+        #fdf497 5%,
+        #fd5949 45%,
+        #d6249f 60%,
+        #285aeb 90%
+      );
+      background: radial-gradient(
+        circle at 30% 107%,
+        #fdf497 0%,
+        #fdf497 5%,
+        #fd5949 45%,
+        #d6249f 60%,
+        #285aeb 90%
+      );
+      background: -webkit-radial-gradient(
+        circle at 30% 107%,
+        #fdf497 0%,
+        #fdf497 5%,
+        #fd5949 45%,
+        #d6249f 60%,
+        #285aeb 90%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .linkedin {
+    &:hover {
+      color: #0073b1;
+    }
+  }
+
+  .pinterest {
+    &:hover {
+      color: #bd081c;
+    }
+  }
+
+  .tiktok {
+    &:hover {
+      color: #111111;
+
+      filter: drop-shadow(3px 0px 0px #fe2c55)
+        drop-shadow(-3px -3px 0px #25f4ee);
+    }
+  }
+
+  .twitch {
+    &:hover {
+      color: #a970ff;
+    }
+  }
+
+  .twitter {
+    &:hover {
+      color: #1da1f2;
+    }
+  }
+
+  .youtube {
+    &:hover {
+      color: #ff0000;
+    }
+  }
+
+  .x {
+    width: 3em;
+    height: 3em;
+    padding: 0.5rem;
+
+    &:hover {
+      border-radius: 0.5rem;
+      background-color: #000;
+
+      path {
+        fill: #fff;
+      }
+    }
+  }
 }
