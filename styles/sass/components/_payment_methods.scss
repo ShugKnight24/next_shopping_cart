@@ -1,5 +1,4 @@
 .payment-methods {
-  margin-bottom: 20px;
   padding: 0;
 
   ul {
@@ -13,6 +12,7 @@
     li {
       img {
         width: 100%;
+        max-width: 60px;
         min-width: 60px;
         height: auto;
       }

@@ -18,8 +18,6 @@ export default function Footer() {
             <p>
               Our store provides quality products at their lowest retail prices
             </p>
-            {/* TODO: Place payment methods below footer */}
-            <PaymentMethods />
           </div>
           <div className="store-links">
             <div className="shopping">
@@ -75,9 +73,13 @@ export default function Footer() {
                   <Link href="tel:12345678900">1-234-567-8900</Link>
                 </li>
               </ul>
-              <SocialIcons />
             </div>
           </div>
+        </div>
+        <HorizontalRule color={'#1173A8'} borderWidth={1} />
+        <div className="payment-social">
+          <PaymentMethods />
+          <SocialIcons />
         </div>
         <HorizontalRule color={'#1173A8'} borderWidth={1} />
         <div className="copyright">

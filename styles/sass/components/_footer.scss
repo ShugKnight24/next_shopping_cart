@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: center;
     border-top: 3px solid colors.$blue-accent;
-    padding: 30px 0;
+    padding: 0.5em 0;
 
     .store-description {
       svg {
@@ -106,6 +106,12 @@
       > div {
         padding: 0 0.6em;
       }
+    }
+
+    .payment-social {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
     }
   }
 }
