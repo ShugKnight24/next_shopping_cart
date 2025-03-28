@@ -10,6 +10,7 @@ import { getCurrentItem } from '../../utils/getItem';
 
 import { Star } from '../../Components/Icons/Star';
 import { ProductTabs } from '../../Components/Products/ProductTabs';
+import { ProductVariants } from '../../Components/Products/ProductVariants';
 
 const productList = [...items, ...techItems];
 
@@ -170,15 +171,12 @@ export default function ProductID({ currentProduct }) {
               Currently Available: {currentItem.available}
             </p>
             {variants && (
-              // TODO: Implement
-              <div className="product-variants">
-                <h3>Variants</h3>
-                {variants.map((variant, index) => (
-                  <button key={index} className="variant-button">
-                    {variant}
-                  </button>
-                ))}
-              </div>
+              // TODO: Implement once data is finalized
+              <ProductVariants
+                variants={variants}
+                onSelect={(variant) => console.log(variant)}
+                selectedVariant={currentItem.variant}
+              />
             )}
             {sizes && (
               // TODO: Implement
