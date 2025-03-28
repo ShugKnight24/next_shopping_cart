@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { HorizontalRule } from '../Components/HorizontalRule';
 import { Products } from '../Components/Products/Products';
 import { Reasons } from '../Components/Reasons';
@@ -38,7 +38,10 @@ export default function Home() {
         <title>Shopping Cart | Home</title>
       </Head>
       <div className="home-container">
-        {isBrowser && <DynamicCarousel />}
+        {/* TODO: Create a loading component */}
+        <Suspense fallback={<div>Loading carousel...</div>}>
+          {isBrowser && <DynamicCarousel />}
+        </Suspense>
         <Reasons />
         <HorizontalRule color={'#1173A8'} borderWidth={1} />
         <div className="page-header">
