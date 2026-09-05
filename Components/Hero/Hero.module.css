@@ -1099,3 +1099,466 @@
     animation: none;
   }
 }
+
+/* ============================================================================
+   HERO ANIMATION SWITCHER
+   ============================================================================ */
+.switcherContainer {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem auto 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.switcherTrack {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  background: rgba(15, 39, 68, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.switcherButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.switcherButton:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.switcherActive {
+  background: linear-gradient(135deg, #daa520 0%, #b8860b 100%) !important;
+  color: #0f2744 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(218, 165, 32, 0.4);
+}
+
+.switcherIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.switcherLabel {
+  letter-spacing: 0.02em;
+}
+
+.switcherBadge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  color: inherit;
+}
+
+.switcherActive .switcherBadge {
+  background: rgba(15, 39, 68, 0.25);
+  color: #0f2744;
+}
+
+/* ============================================================================
+   HERO SHOWCASE STAGE WRAPPER
+   ============================================================================ */
+.heroShowcaseStage {
+  position: relative;
+  width: 100%;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+/* ============================================================================
+   VAULT ANIMATION (2D VECTOR LUXURY)
+   ============================================================================ */
+.vaultContainer {
+  width: 100%;
+  max-width: 780px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 0 auto;
+}
+
+.vaultSvg {
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  filter: drop-shadow(0 16px 40px rgba(0, 0, 0, 0.4));
+}
+
+.spinRingSlow {
+  transform-origin: 300px 310px;
+  animation: vaultSpin 30s linear infinite;
+}
+
+.spinRingReverse {
+  transform-origin: 300px 310px;
+  animation: vaultSpinRev 20s linear infinite;
+}
+
+@keyframes vaultSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes vaultSpinRev {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.scanningLaser {
+  animation: scanSweep 3s ease-in-out infinite alternate;
+}
+
+@keyframes scanSweep {
+  0% { transform: translateY(-70px); opacity: 0.3; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(60px); opacity: 0.3; }
+}
+
+.containmentBeam {
+  animation: beamPulse 4s ease-in-out infinite;
+}
+
+@keyframes beamPulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+.vaultItem {
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.vaultItemActive {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+  animation: levitateItem 4s ease-in-out infinite alternate;
+}
+
+@keyframes levitateItem {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-12px) scale(1.02); }
+}
+
+.particleP1 { animation: floatP1 4s ease-in-out infinite alternate; }
+.particleP2 { animation: floatP2 3.5s ease-in-out infinite alternate; }
+.particleP3 { animation: floatP1 5s ease-in-out infinite alternate; }
+.particleP4 { animation: floatP2 4.5s ease-in-out infinite alternate; }
+.particleP5 { animation: floatP1 3s ease-in-out infinite alternate; }
+
+@keyframes floatP1 {
+  from { transform: translate(0, 0); opacity: 0.3; }
+  to { transform: translate(-10px, -20px); opacity: 0.9; }
+}
+
+@keyframes floatP2 {
+  from { transform: translate(0, 0); opacity: 0.4; }
+  to { transform: translate(12px, -18px); opacity: 1; }
+}
+
+/* ============================================================================
+   3D ISOMETRIC SHOWCASE (CSS 3D / SPATIAL)
+   ============================================================================ */
+.iso3dViewport {
+  width: 100%;
+  max-width: 820px;
+  min-height: 400px;
+  perspective: 1200px;
+  perspective-origin: center 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: grab;
+  padding: 1.5rem;
+}
+
+.iso3dScene {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iso3dPedestal {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  transform: rotateX(75deg) translateZ(-60px);
+  transform-style: preserve-3d;
+}
+
+.pedestalTop {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1e3a5f 0%, #0a1829 100%);
+  border: 3px solid #daa520;
+  box-shadow: 0 0 35px rgba(218, 165, 32, 0.4), inset 0 0 25px rgba(56, 189, 248, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pedestalGlowRing {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(218, 165, 32, 0.7);
+  animation: vaultSpin 25s linear infinite;
+}
+
+.pedestalCore {
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #38bdf8 0%, transparent 80%);
+  opacity: 0.6;
+}
+
+.iso3dCenterOrb {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, #daa520 40%, #1e3a5f 90%);
+  box-shadow: 0 0 30px rgba(218, 165, 32, 0.8), 0 0 60px rgba(56, 189, 248, 0.5);
+  transform: translateZ(30px);
+  animation: orbLevitate 3s ease-in-out infinite alternate;
+}
+
+@keyframes orbLevitate {
+  from { transform: translateZ(20px); }
+  to { transform: translateZ(45px); }
+}
+
+.isoCard {
+  position: absolute;
+  width: 190px;
+  padding: 1rem 1.1rem;
+  background: rgba(15, 39, 68, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(218, 165, 32, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.isoCard:hover,
+.isoCardFocused {
+  border-color: #daa520;
+  box-shadow: 0 20px 48px rgba(218, 165, 32, 0.35), 0 0 24px rgba(56, 189, 248, 0.4);
+  filter: brightness(1.1);
+}
+
+.cardGlare {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.cardEmoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.cardBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid;
+}
+
+.cardTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.2rem;
+  line-height: 1.25;
+}
+
+.cardSubtitle {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 0.6rem;
+}
+
+.cardPriceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cardPrice {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #daa520;
+}
+
+.cardAction {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.iso3dHint {
+  position: absolute;
+  bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ============================================================================
+   WEBGL COSMIC VORTEX
+   ============================================================================ */
+.webglContainer {
+  width: 100%;
+  max-width: 860px;
+  min-height: 380px;
+  height: 380px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.webglCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.webglFallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallbackVortex {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(218,165,32,0.3) 0%, rgba(30,58,95,0.6) 60%, transparent 80%);
+  animation: vaultSpin 12s linear infinite;
+}
+
+.webglEmblem {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+
+.emblemCore {
+  width: 70px;
+  height: 70px;
+  animation: orbLevitate 3s ease-in-out infinite alternate;
+}
+
+.emblemSvg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 16px #daa520);
+}
+
+.emblemLabel {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #daa520;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.webglHud {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .switcherTrack {
+    gap: 0.2rem;
+    padding: 0.25rem;
+  }
+  .switcherButton {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.75rem;
+  }
+  .switcherBadge {
+    display: none;
+  }
+  .iso3dScene {
+    transform: scale(0.85) !important;
+  }
+  .webglHud {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+}

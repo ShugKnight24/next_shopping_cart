@@ -7,6 +7,10 @@ import {
   WatchIcon,
 } from '../Icons';
 import { AnimatedCart } from './AnimatedCart';
+import { HeroAnimationSwitcher } from './HeroAnimationSwitcher';
+import { Isometric3DHero } from './Isometric3DHero';
+import { VaultAnimation } from './VaultAnimation';
+import { WebGLCosmicHero } from './WebGLCosmicHero';
 import styles from './Hero.module.css';
 
 // Product shelf items that will jump into the cart
@@ -284,6 +288,7 @@ function CartPatternBackground({ className }) {
 
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
+  const [animationMode, setAnimationMode] = useState('track');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -507,156 +512,181 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Cart Track Section with Product Shelves */}
-      <div className={styles.cartTrackSection}>
-        {/* Product Shelves - Items that jump into cart */}
-        <div className={styles.productShelves}>
-          {shelfProducts.map((product, index) => (
-            <div
-              key={product.id}
-              className={`${styles.shelfItem} ${styles[`shelfItem${index + 1}`]}`}
-              style={{
-                '--jump-delay': `${product.delay}s`,
-                '--item-color': product.color,
-              }}
-            >
-              <div className={styles.shelfProduct}>
+      {/* Interactive Hero Animation Mode Switcher */}
+      <HeroAnimationSwitcher
+        activeMode={animationMode}
+        onSelectMode={setAnimationMode}
+      />
+
+      {/* Dynamic Hero Showcase Stage */}
+      <div
+        className={styles.heroShowcaseStage}
+        id={`hero-animation-${animationMode}`}
+      >
+        {animationMode === 'track' && (
+          <div className={styles.cartTrackSection}>
+            {/* Product Shelves - Items that jump into cart */}
+            <div className={styles.productShelves}>
+              {shelfProducts.map((product, index) => (
                 <div
-                  className={styles.productIconWrapper}
-                  style={{ backgroundColor: product.color }}
+                  key={product.id}
+                  className={`${styles.shelfItem} ${styles[`shelfItem${index + 1}`]}`}
+                  style={{
+                    '--jump-delay': `${product.delay}s`,
+                    '--item-color': product.color,
+                  }}
                 >
-                  {getProductIcon(product.icon, 32)}
+                  <div className={styles.shelfProduct}>
+                    <div
+                      className={styles.productIconWrapper}
+                      style={{ backgroundColor: product.color }}
+                    >
+                      {getProductIcon(product.icon, 32)}
+                    </div>
+                    <span className={styles.productLabel}>{product.label}</span>
+                  </div>
+                  <div className={styles.shelf}>
+                    <div className={styles.shelfTop} />
+                    <div className={styles.shelfFront} />
+                  </div>
                 </div>
-                <span className={styles.productLabel}>{product.label}</span>
-              </div>
-              <div className={styles.shelf}>
-                <div className={styles.shelfTop} />
-                <div className={styles.shelfFront} />
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Track line */}
-        <div className={styles.cartTrack}>
-          <svg
-            viewBox="0 0 1440 20"
-            preserveAspectRatio="none"
-            className={styles.trackSvg}
-          >
-            <defs>
-              <linearGradient
-                id="trackGradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
+            {/* Track line */}
+            <div className={styles.cartTrack}>
+              <svg
+                viewBox="0 0 1440 20"
+                preserveAspectRatio="none"
+                className={styles.trackSvg}
               >
-                <stop offset="0%" stopColor="transparent" />
-                <stop offset="20%" stopColor="rgba(184, 134, 11, 0.3)" />
-                <stop offset="50%" stopColor="rgba(218, 165, 32, 0.5)" />
-                <stop offset="80%" stopColor="rgba(184, 134, 11, 0.3)" />
-                <stop offset="100%" stopColor="transparent" />
-              </linearGradient>
-            </defs>
-            <line
-              x1="0"
-              y1="10"
-              x2="1440"
-              y2="10"
-              stroke="url(#trackGradient)"
-              strokeWidth="3"
-            />
-          </svg>
-        </div>
+                <defs>
+                  <linearGradient
+                    id="trackGradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" stopColor="transparent" />
+                    <stop offset="20%" stopColor="rgba(184, 134, 11, 0.3)" />
+                    <stop offset="50%" stopColor="rgba(218, 165, 32, 0.5)" />
+                    <stop offset="80%" stopColor="rgba(184, 134, 11, 0.3)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </linearGradient>
+                </defs>
+                <line
+                  x1="0"
+                  y1="10"
+                  x2="1440"
+                  y2="10"
+                  stroke="url(#trackGradient)"
+                  strokeWidth="3"
+                />
+              </svg>
+            </div>
 
-        {/* Animated Cart on the track */}
-        <div className={styles.cartOnTrack}>
-          <AnimatedCart className={styles.animatedCart} />
-        </div>
+            {/* Animated Cart on the track */}
+            <div className={styles.cartOnTrack}>
+              <AnimatedCart className={styles.animatedCart} />
+            </div>
 
-        {/* Checkout Register - Cart destination */}
-        <div className={styles.checkoutRegister}>
-          <svg
-            viewBox="0 0 120 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient
-                id="registerBody"
-                x1="0%"
-                y1="0%"
-                x2="0%"
-                y2="100%"
+            {/* Checkout Register - Cart destination */}
+            <div className={styles.checkoutRegister}>
+              <svg
+                viewBox="0 0 120 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <stop offset="0%" stopColor="#daa520" />
-                <stop offset="50%" stopColor="#b8860b" />
-                <stop offset="100%" stopColor="#8b6914" />
-              </linearGradient>
-              <linearGradient id="screenGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#10b981" />
-                <stop offset="100%" stopColor="#059669" />
-              </linearGradient>
-            </defs>
-            {/* Register body */}
-            <rect
-              x="10"
-              y="30"
-              width="100"
-              height="60"
-              rx="6"
-              fill="url(#registerBody)"
-            />
-            {/* Screen */}
-            <rect
-              x="20"
-              y="40"
-              width="50"
-              height="30"
-              rx="3"
-              fill="url(#screenGlow)"
-            />
-            {/* Screen content - dollar sign */}
-            <text
-              x="45"
-              y="62"
-              fontSize="20"
-              fontWeight="bold"
-              fill="#fff"
-              textAnchor="middle"
-            >
-              $
-            </text>
-            {/* Keypad area */}
-            <rect x="75" y="40" width="28" height="40" rx="2" fill="#2d5a87" />
-            {/* Keypad buttons */}
-            <g fill="#ffffff" opacity="0.8">
-              <rect x="78" y="44" width="6" height="5" rx="1" />
-              <rect x="86" y="44" width="6" height="5" rx="1" />
-              <rect x="94" y="44" width="6" height="5" rx="1" />
-              <rect x="78" y="52" width="6" height="5" rx="1" />
-              <rect x="86" y="52" width="6" height="5" rx="1" />
-              <rect x="94" y="52" width="6" height="5" rx="1" />
-              <rect x="78" y="60" width="6" height="5" rx="1" />
-              <rect x="86" y="60" width="6" height="5" rx="1" />
-              <rect x="94" y="60" width="6" height="5" rx="1" />
-            </g>
-            {/* Card reader slot */}
-            <rect x="75" y="70" width="28" height="6" rx="1" fill="#1e3a5f" />
-            {/* Checkout label */}
-            <text
-              x="60"
-              y="22"
-              fontSize="10"
-              fontWeight="bold"
-              fill="#daa520"
-              textAnchor="middle"
-            >
-              CHECKOUT
-            </text>
-          </svg>
-        </div>
+                <defs>
+                  <linearGradient
+                    id="registerBody"
+                    x1="0%"
+                    y1="0%"
+                    x2="0%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stopColor="#daa520" />
+                    <stop offset="50%" stopColor="#b8860b" />
+                    <stop offset="100%" stopColor="#8b6914" />
+                  </linearGradient>
+                  <linearGradient id="screenGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#10b981" />
+                    <stop offset="100%" stopColor="#059669" />
+                  </linearGradient>
+                </defs>
+                {/* Register body */}
+                <rect
+                  x="10"
+                  y="30"
+                  width="100"
+                  height="60"
+                  rx="6"
+                  fill="url(#registerBody)"
+                />
+                {/* Screen */}
+                <rect
+                  x="20"
+                  y="40"
+                  width="50"
+                  height="30"
+                  rx="3"
+                  fill="url(#screenGlow)"
+                />
+                {/* Screen content - dollar sign */}
+                <text
+                  x="45"
+                  y="62"
+                  fontSize="20"
+                  fontWeight="bold"
+                  fill="#fff"
+                  textAnchor="middle"
+                >
+                  $
+                </text>
+                {/* Keypad area */}
+                <rect x="75" y="40" width="28" height="40" rx="2" fill="#2d5a87" />
+                {/* Keypad buttons */}
+                <g fill="#ffffff" opacity="0.8">
+                  <rect x="78" y="44" width="6" height="5" rx="1" />
+                  <rect x="86" y="44" width="6" height="5" rx="1" />
+                  <rect x="94" y="44" width="6" height="5" rx="1" />
+                  <rect x="78" y="52" width="6" height="5" rx="1" />
+                  <rect x="86" y="52" width="6" height="5" rx="1" />
+                  <rect x="94" y="52" width="6" height="5" rx="1" />
+                  <rect x="78" y="60" width="6" height="5" rx="1" />
+                  <rect x="86" y="60" width="6" height="5" rx="1" />
+                  <rect x="94" y="60" width="6" height="5" rx="1" />
+                </g>
+                {/* Card reader slot */}
+                <rect x="75" y="70" width="28" height="6" rx="1" fill="#1e3a5f" />
+                {/* Checkout label */}
+                <text
+                  x="60"
+                  y="22"
+                  fontSize="10"
+                  fontWeight="bold"
+                  fill="#daa520"
+                  textAnchor="middle"
+                >
+                  CHECKOUT
+                </text>
+              </svg>
+            </div>
+          </div>
+        )}
+
+        {animationMode === 'vault' && (
+          <VaultAnimation />
+        )}
+
+        {animationMode === '3d' && (
+          <Isometric3DHero />
+        )}
+
+        {animationMode === 'webgl' && (
+          <WebGLCosmicHero />
+        )}
       </div>
 
       {/* Bottom fade to white */}
