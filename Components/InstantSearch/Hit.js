@@ -1,15 +1,13 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
-import { ModalContext } from '../../context/ModalProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
 import PropTypes from 'prop-types';
 
-export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }) {
+export function Hit({ itemid, setSelectedProduct: _setSelectedProduct, setRecommendedProduct: _setRecommendedProduct }) {
   const { state, dispatch } = useContext(CartContext);
   const { inventory } = state;
-  const { setShowModal } = useContext(ModalContext);
 
   function handleButtonClick(event, productId) {
     event.preventDefault();

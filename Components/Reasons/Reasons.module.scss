@@ -1,0 +1,629 @@
+@use '../../styles/sass/colors' as colors;
+@use '../../styles/sass/mixins' as mixins;
+
+// reasons
+
+.reasons {
+  position: relative;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  overflow: hidden;
+
+  @include mixins.mq-max(768px) {
+    padding: 1.5rem 0.75rem;
+  }
+}
+
+// ============================================================================
+// BACKGROUND DECORATIONS
+// ============================================================================
+
+.backgroundDecorations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.topGradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(
+    180deg,
+    rgba(30, 58, 95, 0.02) 0%,
+    transparent 100%
+  );
+}
+
+.bottomGradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(
+    0deg,
+    rgba(30, 58, 95, 0.03) 0%,
+    transparent 100%
+  );
+}
+
+.floatingShape1 {
+  position: absolute;
+  top: 10%;
+  left: -5%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(184, 134, 11, 0.05) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: float1 20s ease-in-out infinite;
+}
+
+.floatingShape2 {
+  position: absolute;
+  bottom: 15%;
+  right: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(
+    circle,
+    rgba(30, 58, 95, 0.04) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: float2 25s ease-in-out infinite;
+}
+
+@keyframes float1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, 20px) scale(1.1);
+  }
+}
+
+@keyframes float2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, -30px) scale(1.05);
+  }
+}
+
+// ============================================================================
+// SECTION HEADER
+// ============================================================================
+
+.sectionHeader {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: colors.$gold;
+  margin-bottom: 1rem;
+}
+
+.labelLine {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, colors.$gold, transparent);
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: colors.$blue-accent;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.highlight {
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0.1em;
+    left: 0;
+    right: 0;
+    height: 0.3em;
+    background: linear-gradient(
+      90deg,
+      rgba(184, 134, 11, 0.2),
+      rgba(184, 134, 11, 0.4),
+      rgba(184, 134, 11, 0.2)
+    );
+    z-index: -1;
+    transform: skewX(-5deg);
+  }
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: colors.$dark-grey;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ============================================================================
+// REASONS GRID
+// ============================================================================
+
+.reasonsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+
+  @include mixins.mq-max(1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include mixins.mq-max(900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mixins.mq-max(600px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+// ============================================================================
+// REASON CARD
+// ============================================================================
+
+.reasonCard {
+  position: relative;
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cardInner {
+  position: relative;
+  height: 100%;
+  padding: 2rem 1.5rem;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.02),
+    0 4px 8px rgba(0, 0, 0, 0.02),
+    0 8px 16px rgba(0, 0, 0, 0.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.04),
+      0 12px 24px rgba(0, 0, 0, 0.06),
+      0 24px 48px rgba(0, 0, 0, 0.08);
+
+    .iconGlow {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    .hoverLine {
+      transform: scaleX(1);
+    }
+
+    .gradientOrb {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+  }
+}
+
+.cardBackground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.gradientOrb {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  opacity: 0;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.patternOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 0
+  );
+  background-size: 20px 20px;
+  opacity: 0.5;
+}
+
+// Accent color variations
+.rose {
+  .gradientOrb {
+    background: radial-gradient(
+      circle,
+      rgba(183, 110, 121, 0.1) 0%,
+      transparent 50%
+    );
+  }
+  .iconContainer {
+    background: linear-gradient(
+      135deg,
+      rgba(183, 110, 121, 0.1) 0%,
+      rgba(183, 110, 121, 0.05) 100%
+    );
+  }
+  .icon {
+    color: #b76e79;
+  }
+  .statBadge {
+    background: rgba(183, 110, 121, 0.1);
+    color: #b76e79;
+  }
+  .hoverLine {
+    background: #b76e79;
+  }
+}
+
+.blue {
+  .gradientOrb {
+    background: radial-gradient(
+      circle,
+      rgba(30, 58, 95, 0.1) 0%,
+      transparent 50%
+    );
+  }
+  .iconContainer {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 58, 95, 0.1) 0%,
+      rgba(30, 58, 95, 0.05) 100%
+    );
+  }
+  .icon {
+    color: colors.$blue-accent;
+  }
+  .statBadge {
+    background: rgba(30, 58, 95, 0.1);
+    color: colors.$blue-accent;
+  }
+  .hoverLine {
+    background: colors.$blue-accent;
+  }
+}
+
+.gold {
+  .gradientOrb {
+    background: radial-gradient(
+      circle,
+      rgba(184, 134, 11, 0.1) 0%,
+      transparent 50%
+    );
+  }
+  .iconContainer {
+    background: linear-gradient(
+      135deg,
+      rgba(184, 134, 11, 0.1) 0%,
+      rgba(184, 134, 11, 0.05) 100%
+    );
+  }
+  .icon {
+    color: colors.$gold;
+  }
+  .statBadge {
+    background: rgba(184, 134, 11, 0.1);
+    color: colors.$gold;
+  }
+  .hoverLine {
+    background: colors.$gold;
+  }
+}
+
+.emerald {
+  .gradientOrb {
+    background: radial-gradient(
+      circle,
+      rgba(46, 125, 50, 0.1) 0%,
+      transparent 50%
+    );
+  }
+  .iconContainer {
+    background: linear-gradient(
+      135deg,
+      rgba(46, 125, 50, 0.1) 0%,
+      rgba(46, 125, 50, 0.05) 100%
+    );
+  }
+  .icon {
+    color: #2e7d32;
+  }
+  .statBadge {
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+  }
+  .hoverLine {
+    background: #2e7d32;
+  }
+}
+
+.violet {
+  .gradientOrb {
+    background: radial-gradient(
+      circle,
+      rgba(124, 58, 237, 0.1) 0%,
+      transparent 50%
+    );
+  }
+  .iconContainer {
+    background: linear-gradient(
+      135deg,
+      rgba(124, 58, 237, 0.1) 0%,
+      rgba(124, 58, 237, 0.05) 100%
+    );
+  }
+  .icon {
+    color: #7c3aed;
+  }
+  .statBadge {
+    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
+  }
+  .hoverLine {
+    background: #7c3aed;
+  }
+}
+
+// Icon
+.iconContainer {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+}
+
+.iconGlow {
+  position: absolute;
+  inset: -10px;
+  background: inherit;
+  border-radius: 20px;
+  opacity: 0;
+  filter: blur(15px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+// Content
+.cardContent {
+  position: relative;
+  z-index: 1;
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: colors.$charcoal;
+  margin: 0 0 0.75rem;
+  line-height: 1.3;
+}
+
+.cardDescription {
+  font-size: 0.875rem;
+  color: colors.$dark-grey;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// Stat badge
+.statBadge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.625rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+  opacity: 0.8;
+}
+
+// Hover line
+.hoverLine {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 0 16px 16px;
+}
+
+// ============================================================================
+// TRUST METRICS
+// ============================================================================
+
+.trustMetrics {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  max-width: 900px;
+  margin: 4rem auto 0;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.8s ease 0.4s,
+    transform 0.8s ease 0.4s;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @include mixins.mq-max(768px) {
+    flex-wrap: wrap;
+    gap: 1.5rem 2rem;
+    padding: 1.5rem;
+  }
+
+  @include mixins.mq-max(480px) {
+    gap: 1rem;
+  }
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.metricValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: colors.$blue-accent;
+  line-height: 1;
+
+  @include mixins.mq-max(480px) {
+    font-size: 1.5rem;
+  }
+}
+
+.metricLabel {
+  font-size: 0.75rem;
+  color: colors.$dark-grey;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+.metricDivider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    colors.$med-grey,
+    transparent
+  );
+
+  @include mixins.mq-max(768px) {
+    display: none;
+  }
+}
+
+// ============================================================================
+// REDUCED MOTION
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .floatingShape1,
+  .floatingShape2 {
+    animation: none;
+  }
+
+  .sectionHeader,
+  .reasonCard,
+  .trustMetrics {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .cardInner:hover {
+    transform: none;
+  }
+}

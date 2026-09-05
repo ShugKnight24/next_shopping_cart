@@ -56,16 +56,17 @@
         border: 0;
         padding: 0;
 
-        .fa-heart {
-          font-size: 1.5em;
+        svg {
           color: colors.$red-heart;
+          transition: color 0.2s ease, transform 0.2s ease;
         }
 
         &:hover {
           cursor: pointer;
 
-          .fa-heart {
+          svg {
             color: colors.$red-heart-hover;
+            transform: scale(1.1);
           }
         }
       }
@@ -140,8 +141,7 @@
       }
 
       .add-cart-button {
-        .fa-cart-plus {
-          font-size: 24px;
+        svg {
           vertical-align: middle;
         }
       }

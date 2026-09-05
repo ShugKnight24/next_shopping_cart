@@ -1,0 +1,94 @@
+// Tooltip Module Styles
+// Using direct color values for CSS module compatibility
+
+$charcoal: #374151;
+
+.trigger {
+  display: inline-flex;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.15s ease-out;
+
+  .content {
+    background: $charcoal;
+    color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    max-width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    word-wrap: break-word;
+  }
+
+  .arrow {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: $charcoal;
+    transform: rotate(45deg);
+  }
+
+  // Position variants
+  &.top {
+    .arrow {
+      bottom: -4px;
+      left: 50%;
+      margin-left: -4px;
+    }
+  }
+
+  &.bottom {
+    .arrow {
+      top: -4px;
+      left: 50%;
+      margin-left: -4px;
+    }
+  }
+
+  &.left {
+    .arrow {
+      right: -4px;
+      top: 50%;
+      margin-top: -4px;
+    }
+  }
+
+  &.right {
+    .arrow {
+      left: -4px;
+      top: 50%;
+      margin-top: -4px;
+    }
+  }
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    animation: none;
+  }
+}
