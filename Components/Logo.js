@@ -1,6 +1,6 @@
 export function Logo(){
 	return(
-		<svg enableBackground="new 0 0 391.1 89.4" viewBox="0 0 391.1 89.4" xmlns="http://www.w3.org/2000/svg">
+		<svg className="brand-logo-svg" enableBackground="new 0 0 391.1 89.4" viewBox="0 0 391.1 89.4" xmlns="http://www.w3.org/2000/svg">
 			<title>Cart Commerce Logo</title>
 			<text fill="#1173a8" fontFamily="Montserrat" fontSize="32" transform="translate(136.39505 54.515213)">Cart Commerce</text>
 			<text fill="#1173a8" fontFamily="Montserrat" fontSize="18" transform="translate(169.192413 82.037013)">Shopping Made Simple</text>
