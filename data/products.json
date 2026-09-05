@@ -4,17 +4,27 @@
     "productName": "SM57",
     "manufacturer": "Shure",
     "category": "Audio > Microphones > Dynamic",
-    "tags": ["microphone", "recording", "professional", "instrument", "studio"],
-    "price": 99.0,
+    "tags": [
+      "microphone",
+      "recording",
+      "professional",
+      "instrument",
+      "studio"
+    ],
+    "price": 99,
     "originalPrice": null,
     "available": 9,
     "quantity": 1,
     "description": "Dynamic Microphone with Cardioid Pickup Pattern, 40Hz-15kHz Frequency Response, Low Impedance, Includes Stand Adapter, and Zippered Carrying Case",
     "shortDescription": "Industry-standard dynamic instrument microphone",
     "image": "https://media.sweetwater.com/images/items/120/SM57-medium.jpg",
-    "images": ["https://media.sweetwater.com/images/items/120/SM57-medium.jpg"],
+    "images": [
+      "https://media.sweetwater.com/images/items/120/SM57-medium.jpg"
+    ],
     "url": "https://www.sweetwater.com/store/detail/SM57",
-    "badges": ["bestseller"],
+    "badges": [
+      "bestseller"
+    ],
     "rating": {
       "average": 4.9,
       "count": 2847
@@ -54,16 +64,25 @@
         "helpful": 23
       }
     ],
-    "relatedProducts": ["SM58", "R16"]
+    "relatedProducts": [
+      "SM58",
+      "R16"
+    ]
   },
   {
     "itemid": "SGS17HCCH",
     "productName": "SG Standard",
     "manufacturer": "Gibson",
     "category": "Instruments > Guitars > Electric",
-    "tags": ["guitar", "electric", "rock", "professional", "mahogany"],
-    "price": 1169.0,
-    "originalPrice": 1499.0,
+    "tags": [
+      "guitar",
+      "electric",
+      "rock",
+      "professional",
+      "mahogany"
+    ],
+    "price": 1169,
+    "originalPrice": 1499,
     "available": 1,
     "quantity": 1,
     "serial": "170099523",
@@ -74,7 +93,10 @@
       "https://media.sweetwater.com/api/i/f-webp__q-82__ha-d074da576794e566__hmac-f13d64ca315c00e4c5e288e72bb577873020c566/images/items/750/SGSTHCCH-large.jpg"
     ],
     "url": "https://www.sweetwater.com/store/detail/SGS17HCCH/sn170099523",
-    "badges": ["sale", "limited"],
+    "badges": [
+      "sale",
+      "limited"
+    ],
     "rating": {
       "average": 4.7,
       "count": 156
@@ -134,24 +156,37 @@
         "helpful": 31
       }
     ],
-    "relatedProducts": ["SM57", "SM58"]
+    "relatedProducts": [
+      "SM57",
+      "SM58"
+    ]
   },
   {
     "itemid": "SM58",
     "productName": "SM58",
     "manufacturer": "Shure",
     "category": "Audio > Microphones > Dynamic",
-    "tags": ["microphone", "vocal", "professional", "live", "studio"],
-    "price": 99.0,
+    "tags": [
+      "microphone",
+      "vocal",
+      "professional",
+      "live",
+      "studio"
+    ],
+    "price": 99,
     "originalPrice": null,
     "available": 6,
     "quantity": 3,
     "description": "Dynamic Vocal Microphone with Cardioid Pickup Pattern and 50Hz-15kHz Frequency Response, Includes Stand Adapter, and Zippered Carrying Case",
     "shortDescription": "The world's most popular vocal microphone",
     "image": "https://media.sweetwater.com/images/items/120/SM58-medium.jpg",
-    "images": ["https://media.sweetwater.com/images/items/120/SM58-medium.jpg"],
+    "images": [
+      "https://media.sweetwater.com/images/items/120/SM58-medium.jpg"
+    ],
     "url": "https://www.sweetwater.com/store/detail/SM58",
-    "badges": ["bestseller"],
+    "badges": [
+      "bestseller"
+    ],
     "rating": {
       "average": 4.9,
       "count": 4521
@@ -181,14 +216,23 @@
         "helpful": 89
       }
     ],
-    "relatedProducts": ["SM57", "R16"]
+    "relatedProducts": [
+      "SM57",
+      "R16"
+    ]
   },
   {
     "itemid": "R16",
     "productName": "R16",
     "manufacturer": "Zoom",
     "category": "Audio > Recording > Interfaces",
-    "tags": ["recorder", "interface", "portable", "multitrack", "studio"],
+    "tags": [
+      "recorder",
+      "interface",
+      "portable",
+      "multitrack",
+      "studio"
+    ],
     "price": 399.99,
     "originalPrice": 449.99,
     "available": 14,
@@ -196,9 +240,13 @@
     "description": "16-track Portable SD Recorder, USB Audio Interface, and DAW Control Surface with 8 Microphone Inputs, Built-in Stereo Condenser Microphones, Built-in Effects, 1GB SD Card, and USB - Mac/PC",
     "shortDescription": "All-in-one portable recording solution",
     "image": "https://media.sweetwater.com/images/items/120/R16-medium.jpg",
-    "images": ["https://media.sweetwater.com/images/items/120/R16-medium.jpg"],
+    "images": [
+      "https://media.sweetwater.com/images/items/120/R16-medium.jpg"
+    ],
     "url": "https://www.sweetwater.com/store/detail/R16",
-    "badges": ["sale"],
+    "badges": [
+      "sale"
+    ],
     "rating": {
       "average": 4.5,
       "count": 342
@@ -228,15 +276,25 @@
         "helpful": 18
       }
     ],
-    "relatedProducts": ["SM57", "SM58"]
+    "relatedProducts": [
+      "SM57",
+      "SM58"
+    ]
   },
   {
     "itemid": "IPHONE16PRO",
     "productName": "iPhone 16 Pro",
     "manufacturer": "Apple",
     "category": "Electronics > Phones > Smartphones",
-    "tags": ["phone", "smartphone", "apple", "ios", "camera", "5g"],
-    "price": 1199.0,
+    "tags": [
+      "phone",
+      "smartphone",
+      "apple",
+      "ios",
+      "camera",
+      "5g"
+    ],
+    "price": 1199,
     "originalPrice": null,
     "available": 25,
     "quantity": 1,
@@ -247,7 +305,9 @@
       "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch_AV1?wid=400&hei=400"
     ],
     "url": "https://www.apple.com/shop/buy-iphone/iphone-16-pro",
-    "badges": ["new"],
+    "badges": [
+      "new"
+    ],
     "rating": {
       "average": 4.8,
       "count": 1247
@@ -291,10 +351,26 @@
       }
     ],
     "sizes": [
-      { "size": "128GB", "available": true, "priceModifier": 0 },
-      { "size": "256GB", "available": true, "priceModifier": 100 },
-      { "size": "512GB", "available": true, "priceModifier": 300 },
-      { "size": "1TB", "available": true, "priceModifier": 500 }
+      {
+        "size": "128GB",
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "size": "256GB",
+        "available": true,
+        "priceModifier": 100
+      },
+      {
+        "size": "512GB",
+        "available": true,
+        "priceModifier": 300
+      },
+      {
+        "size": "1TB",
+        "available": true,
+        "priceModifier": 500
+      }
     ],
     "specifications": {
       "Display": "6.3\" Super Retina XDR",
@@ -320,15 +396,25 @@
         "helpful": 156
       }
     ],
-    "relatedProducts": ["MACBOOKM4", "AIRPODSPRO"]
+    "relatedProducts": [
+      "MACBOOKM4",
+      "AIRPODSPRO"
+    ]
   },
   {
     "itemid": "MACBOOKM4",
     "productName": "MacBook Pro M4",
     "manufacturer": "Apple",
     "category": "Electronics > Computers > Laptops",
-    "tags": ["laptop", "apple", "macbook", "pro", "m4", "creative"],
-    "price": 1999.0,
+    "tags": [
+      "laptop",
+      "apple",
+      "macbook",
+      "pro",
+      "m4",
+      "creative"
+    ],
+    "price": 1999,
     "originalPrice": null,
     "available": 12,
     "quantity": 1,
@@ -339,7 +425,10 @@
       "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spaceblack-select-202410?wid=400&hei=400"
     ],
     "url": "https://www.apple.com/shop/buy-mac/macbook-pro",
-    "badges": ["new", "bestseller"],
+    "badges": [
+      "new",
+      "bestseller"
+    ],
     "rating": {
       "average": 4.9,
       "count": 892
@@ -365,8 +454,16 @@
       }
     ],
     "sizes": [
-      { "size": "14-inch", "available": true, "priceModifier": 0 },
-      { "size": "16-inch", "available": true, "priceModifier": 400 }
+      {
+        "size": "14-inch",
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "size": "16-inch",
+        "available": true,
+        "priceModifier": 400
+      }
     ],
     "specifications": {
       "Display": "Liquid Retina XDR",
@@ -381,6 +478,1386 @@
       "estimate": "2-3 business days"
     },
     "reviews": [],
-    "relatedProducts": ["IPHONE16PRO"]
+    "relatedProducts": [
+      "IPHONE16PRO"
+    ]
+  },
+  {
+    "itemid": "JORDAN-1-LOST-FOUND",
+    "productName": "Air Jordan 1 Retro High OG 'Lost & Found'",
+    "manufacturer": "Nike / Jordan",
+    "category": "Footwear > Jordans",
+    "tags": [
+      "jordan",
+      "sneakers",
+      "streetwear",
+      "chicago",
+      "retro",
+      "lost and found"
+    ],
+    "price": 425,
+    "originalPrice": 480,
+    "available": 6,
+    "quantity": 1,
+    "description": "The Air Jordan 1 Retro High OG 'Lost & Found' brings back the iconic 1985 Chicago colorway with reimagined vintage storytelling. Featuring cracked leather collars, aged sail midsoles, and an authentic retro receipt in the box.",
+    "shortDescription": "Iconic 1985 Chicago colorway with vintage aesthetics and aged detailing",
+    "image": "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.nike.com/jordan",
+    "badges": [
+      "exclusive",
+      "collector"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 1840
+    },
+    "variants": [
+      "US 8.5",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Colorway": "Varsity Red / Black / Sail / Muslin",
+      "Upper Material": "Premium Cracked & Smooth Full-Grain Leather",
+      "Cushioning": "Encapsulated Nike Air-Sole unit in heel",
+      "Release Year": "2022",
+      "Packaging": "Collector aged mismatched shoebox with vintage sales receipt"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Next-day signature delivery"
+    },
+    "reviews": [
+      {
+        "id": "rev-j1-1",
+        "author": "Marcus B.",
+        "rating": 5,
+        "date": "2025-11-12",
+        "title": "The ultimate Chicago tribute",
+        "content": "The cracked leather collar and aged sail midsole look phenomenal in person. Hands down sneaker of the decade.",
+        "verified": true,
+        "helpful": 89
+      }
+    ],
+    "relatedProducts": [
+      "JORDAN-4-BRED-REIM",
+      "KOBE-6-REVERSE-GRINCH"
+    ]
+  },
+  {
+    "itemid": "JORDAN-4-BRED-REIM",
+    "productName": "Air Jordan 4 Retro 'Bred Reimagined'",
+    "manufacturer": "Nike / Jordan",
+    "category": "Footwear > Jordans",
+    "tags": [
+      "jordan",
+      "air-jordan-4",
+      "bred",
+      "basketball",
+      "sneakers",
+      "reimagined"
+    ],
+    "price": 310,
+    "originalPrice": 350,
+    "available": 8,
+    "quantity": 1,
+    "description": "The Air Jordan 4 Retro 'Bred Reimagined' upgrades the legendary 1989 Tinker Hatfield design with premium black tumbled leather instead of traditional nubuck, paired with signature Fire Red accents and Nike Air heel branding.",
+    "shortDescription": "Legendary 1989 silhouette upgraded with premium tumbled leather",
+    "image": "https://images.unsplash.com/photo-1579338559194-a162d19bf842?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1579338559194-a162d19bf842?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.nike.com/jordan",
+    "badges": [
+      "bestseller",
+      "trending"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 1210
+    },
+    "variants": [
+      "US 8.0",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.5",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Colorway": "Black / Fire Red / Cement Grey / Summit White",
+      "Upper": "Supple Tumbled Leather with quarter panel mesh netting",
+      "Heel Branding": "Original Nike Air logo stamp",
+      "Outsole": "Herringbone traction pattern with flex grooves"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [
+      {
+        "id": "rev-j4-1",
+        "author": "Derrick K.",
+        "rating": 5,
+        "date": "2025-10-20",
+        "title": "So much easier to keep clean than nubuck",
+        "content": "The leather upgrade makes this the most wearable Bred 4 ever made. Fits true to size and looks deadly on foot.",
+        "verified": true,
+        "helpful": 42
+      }
+    ],
+    "relatedProducts": [
+      "JORDAN-1-LOST-FOUND",
+      "NIKE-LEBRON-21"
+    ]
+  },
+  {
+    "itemid": "KOBE-6-REVERSE-GRINCH",
+    "productName": "Nike Kobe 6 Protro 'Reverse Grinch'",
+    "manufacturer": "Nike Basketball",
+    "category": "Footwear > Basketball",
+    "tags": [
+      "kobe",
+      "mamba",
+      "nike-basketball",
+      "protro",
+      "reverse-grinch",
+      "sneakers"
+    ],
+    "price": 685,
+    "originalPrice": 750,
+    "available": 4,
+    "quantity": 1,
+    "description": "Inverting the iconic holiday 2010 colorway, the Nike Kobe 6 Protro 'Reverse Grinch' features an aggressive Bright Crimson polyurethane snake-scale upper with Electric Green laces and Swoosh accents.",
+    "shortDescription": "Inverted holiday colorway with polyurethane snake-scale upper",
+    "image": "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.nike.com/basketball",
+    "badges": [
+      "rare",
+      "exclusive"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 960
+    },
+    "variants": [
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Cushioning": "Flexible Air Zoom Turbo unit in forefoot with soft responsive foam",
+      "Traction": "Low-profile micro-tread pattern for sharp multidirectional cuts",
+      "Heel Counter": "TPU heel clip with signature Kobe Bryant script"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Signature tracked express"
+    },
+    "reviews": [
+      {
+        "id": "rev-kobe-1",
+        "author": "Jason W.",
+        "rating": 5,
+        "date": "2025-12-04",
+        "title": "Mamba mentality on court",
+        "content": "Traction is god-tier on hardwood. The Zoom Turbo gives unbeatable court feel. An instant grail.",
+        "verified": true,
+        "helpful": 67
+      }
+    ],
+    "relatedProducts": [
+      "NIKE-LEBRON-21",
+      "JORDAN-1-LOST-FOUND"
+    ]
+  },
+  {
+    "itemid": "NIKE-LEBRON-21",
+    "productName": "Nike LeBron 21 'Akoya'",
+    "manufacturer": "Nike Basketball",
+    "category": "Footwear > Basketball",
+    "tags": [
+      "lebron",
+      "nike",
+      "basketball",
+      "performance",
+      "akoya"
+    ],
+    "price": 200,
+    "originalPrice": 220,
+    "available": 12,
+    "quantity": 1,
+    "description": "Inspired by the lustrous Akoya oyster pearl, the LeBron 21 features a low-profile lightweight venting system with 360-degree zonal cabling and bottom-loaded Zoom Air for explosive power and court security.",
+    "shortDescription": "Low-profile powerhouse with Zoom Turbo and 360-degree cabling",
+    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.nike.com/basketball",
+    "badges": [
+      "featured"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 540
+    },
+    "variants": [
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Forefoot Cushion": "Top-loaded Zoom Turbo unit",
+      "Heel Cushion": "13mm bottom-loaded Zoom Air unit",
+      "Midfoot": "Carbon fiber midfoot shank for torsional rigidity"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "KOBE-6-REVERSE-GRINCH",
+      "NIKE-ALPHAFLY-3"
+    ]
+  },
+  {
+    "itemid": "NIKE-ALPHAFLY-3",
+    "productName": "Nike Alphafly 3 'Volt' Marathon Super-Shoe",
+    "manufacturer": "Nike Running",
+    "category": "Footwear > Running",
+    "tags": [
+      "marathon",
+      "running",
+      "alphafly",
+      "super-shoe",
+      "carbon-plate",
+      "racing"
+    ],
+    "price": 285,
+    "originalPrice": null,
+    "available": 9,
+    "quantity": 1,
+    "description": "The world record-holding marathon super-shoe engineered for elite energy return. Powered by continuous dual Air Zoom pods, a full-length carbon fiber Flyplate, and ultra-responsive ZoomX foam.",
+    "shortDescription": "World-record marathon super-shoe with continuous dual Air Zoom pods",
+    "image": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.nike.com/running",
+    "badges": [
+      "bestseller",
+      "world-record"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 830
+    },
+    "variants": [
+      "US 8.5",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0"
+    ],
+    "specifications": {
+      "Weight": "7.7 oz (218g in Men US 10)",
+      "Plate": "Full-length stiff carbon fiber Flyplate",
+      "Foam": "100% ZoomX ultra-lightweight foam",
+      "Upper": "Atomknit 3.0 breathable seamless weave"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "1-2 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "HOKA-CLIFTON-9",
+      "ALTRA-TORIN-7"
+    ]
+  },
+  {
+    "itemid": "HOKA-CLIFTON-9",
+    "productName": "Hoka Clifton 9 Max-Cushion Road Runner",
+    "manufacturer": "Hoka",
+    "category": "Footwear > Running",
+    "tags": [
+      "hoka",
+      "clifton",
+      "max-cushion",
+      "marathon",
+      "recovery",
+      "road-running"
+    ],
+    "price": 145,
+    "originalPrice": 160,
+    "available": 18,
+    "quantity": 1,
+    "description": "The ninth iteration of Hoka's award-winning Clifton franchise adds 3mm in stack height while trimming weight. Formulated with a responsive new CMEVA foam and an improved outsole design.",
+    "shortDescription": "Lighter and more cushioned everyday road runner",
+    "image": "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.hoka.com/clifton-9",
+    "badges": [
+      "comfort",
+      "bestseller"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 2450
+    },
+    "variants": [
+      "US 8.0",
+      "US 8.5",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Drop": "5mm (32mm heel / 27mm forefoot)",
+      "Weight": "8.7 oz (248g)",
+      "Midsole": "Compression-molded EVA foam",
+      "Meta-Rocker": "Early-stage rocker for smooth roll-through"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-4 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "HOKA-SPEEDGOAT-5",
+      "ALTRA-TORIN-7"
+    ]
+  },
+  {
+    "itemid": "HOKA-SPEEDGOAT-5",
+    "productName": "Hoka Speedgoat 5 Vibram Trail Runner",
+    "manufacturer": "Hoka",
+    "category": "Footwear > Trail Running",
+    "tags": [
+      "hoka",
+      "speedgoat",
+      "trail",
+      "vibram",
+      "ultramarathon",
+      "mountain"
+    ],
+    "price": 155,
+    "originalPrice": null,
+    "available": 14,
+    "quantity": 1,
+    "description": "A workhorse designed for technical trails, the Speedgoat 5 features a Vibram Megagrip outsole with Traction Lug 5mm stepped lugs, paired with a lighter midsole compound and double-jacquard mesh.",
+    "shortDescription": "Technical trail master with Vibram Megagrip 5mm stepped lugs",
+    "image": "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.hoka.com/speedgoat-5",
+    "badges": [
+      "trail-ready"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 1890
+    },
+    "variants": [
+      "US 8.5",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Outsole": "Vibram Megagrip with Traction Lug 5mm",
+      "Drop": "4mm (33mm heel / 29mm forefoot)",
+      "Upper": "Dynamic vamp double jacquard recycled mesh",
+      "Toe Protection": "Protective TPU toe bumper"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "ALTRA-LONE-PEAK-8",
+      "HOKA-CLIFTON-9"
+    ]
+  },
+  {
+    "itemid": "ALTRA-LONE-PEAK-8",
+    "productName": "Altra Lone Peak 8 Zero-Drop Trail Shoe",
+    "manufacturer": "Altra Running",
+    "category": "Footwear > Trail Running",
+    "tags": [
+      "altra",
+      "zero-drop",
+      "wide-toe-box",
+      "lone-peak",
+      "trail-running",
+      "hiking"
+    ],
+    "price": 140,
+    "originalPrice": null,
+    "available": 15,
+    "quantity": 1,
+    "description": "The trail legend built for natural movement. Featuring Altra's Original FootShape toe box for natural splay, 0mm drop balanced cushioning, and a grippy MaxTrac outsole with refined ripstop mesh.",
+    "shortDescription": "Zero-drop trail classic with wide FootShape toe box and MaxTrac grip",
+    "image": "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.altrarunning.com/lone-peak-8",
+    "badges": [
+      "zero-drop",
+      "natural-fit"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 1420
+    },
+    "variants": [
+      "US 8.5",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Drop": "0mm Balanced Cushioning",
+      "Stack Height": "25mm",
+      "Midsole": "Altra EGO responsive foam",
+      "Outsole": "MaxTrac multidirectional angled lugs"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-4 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "ALTRA-TORIN-7",
+      "HOKA-SPEEDGOAT-5"
+    ]
+  },
+  {
+    "itemid": "ALTRA-TORIN-7",
+    "productName": "Altra Torin 7 Zero-Drop Road Runner",
+    "manufacturer": "Altra Running",
+    "category": "Footwear > Running",
+    "tags": [
+      "altra",
+      "torin",
+      "zero-drop",
+      "road-running",
+      "wide-toe-box"
+    ],
+    "price": 150,
+    "originalPrice": 165,
+    "available": 11,
+    "quantity": 1,
+    "description": "Every stitch and contour of the Torin 7 was redeveloped for maximum comfort. Stack height boosted to 30mm of premium Altra EGO MAX foam with an engineered mesh upper and molded collar.",
+    "shortDescription": "Plush 30mm stack zero-drop road shoe with Altra EGO MAX foam",
+    "image": "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.altrarunning.com/torin-7",
+    "badges": [
+      "plush"
+    ],
+    "rating": {
+      "average": 4.7,
+      "count": 980
+    },
+    "variants": [
+      "US 8.5",
+      "US 9.0",
+      "US 9.5",
+      "US 10.0",
+      "US 10.5",
+      "US 11.0",
+      "US 12.0"
+    ],
+    "specifications": {
+      "Drop": "0mm",
+      "Stack Height": "30mm",
+      "Cushioning": "Altra EGO MAX lightweight compound",
+      "FootShape": "Standard natural foot profile"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "ALTRA-LONE-PEAK-8",
+      "HOKA-CLIFTON-9"
+    ]
+  },
+  {
+    "itemid": "MTG-BLACK-LOTUS",
+    "productName": "Magic: The Gathering Black Lotus (Alpha Limited Edition)",
+    "manufacturer": "Wizards of the Coast",
+    "category": "Collectibles > Trading Card Games > MTG",
+    "tags": [
+      "mtg",
+      "magic-the-gathering",
+      "power-nine",
+      "black-lotus",
+      "vintage",
+      "reserved-list"
+    ],
+    "price": 495000,
+    "originalPrice": null,
+    "available": 1,
+    "quantity": 1,
+    "description": "The crown jewel of trading card games. An authentic 1993 Limited Edition Alpha Black Lotus, graded BGS 9.5 Gem Mint with quad 9.5+ subgrades. Illustrated by the late Christopher Rush, this legendary artifact taps to add three mana of any one color at 0 cost.",
+    "shortDescription": "BGS 9.5 Gem Mint 1993 Alpha Black Lotus illustrated by Christopher Rush",
+    "image": "https://images.unsplash.com/photo-1614680376593-902f749f7ffc?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1614680376593-902f749f7ffc?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://magic.wizards.com",
+    "badges": [
+      "holy-grail",
+      "certified-authentic"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 32
+    },
+    "variants": [
+      "BGS 9.5 Gem Mint (Subgrades: Centering 9.5 / Corners 9.5 / Edges 9.0 / Surface 10.0)"
+    ],
+    "specifications": {
+      "Card Name": "Black Lotus",
+      "Set": "Limited Edition Alpha (August 1993)",
+      "Artist": "Christopher Rush",
+      "Card Type": "Artifact (Mono)",
+      "Mana Cost": "0",
+      "Grading Service": "Beckett Grading Services (BGS) #001294819"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Armored courier vault delivery"
+    },
+    "reviews": [
+      {
+        "id": "rev-lotus-1",
+        "author": "Post M.",
+        "rating": 5,
+        "date": "2025-08-14",
+        "title": "Beyond words",
+        "content": "Historical artifact of tabletop gaming. Flawless preservation in UV-resistant archival acrylic.",
+        "verified": true,
+        "helpful": 120
+      }
+    ],
+    "relatedProducts": [
+      "MTG-ONE-RING-001",
+      "MTG-MOX-DIAMOND"
+    ]
+  },
+  {
+    "itemid": "MTG-ONE-RING-001",
+    "productName": "Magic: The Gathering The One Ring (Serialized 001/001)",
+    "manufacturer": "Wizards of the Coast",
+    "category": "Collectibles > Trading Card Games > MTG",
+    "tags": [
+      "mtg",
+      "lord-of-the-rings",
+      "one-ring",
+      "serialized",
+      "unique",
+      "one-of-one"
+    ],
+    "price": 2000000,
+    "originalPrice": null,
+    "available": 1,
+    "quantity": 1,
+    "description": "One Ring to rule them all. The singular, serialized 001 of 001 foil card printed with Tengwar script in the Black Speech of Mordor. Graded PSA 9 Mint, this is the rarest and most renowned tabletop collectible in existence.",
+    "shortDescription": "The singular 001/001 serialized foil printed in Black Speech Tengwar",
+    "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://magic.wizards.com",
+    "badges": [
+      "1-of-1",
+      "legendary"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 48
+    },
+    "variants": [
+      "PSA 9 Mint (Serialized 001 of 001 Certified)"
+    ],
+    "specifications": {
+      "Card Name": "The One Ring",
+      "Set": "The Lord of the Rings: Tales of Middle-earth",
+      "Serial Number": "001 / 001",
+      "Printing": "Traditional Foil with Gold Tengwar calligraphy",
+      "Authentication": "PSA Encapsulation #78294103"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "White-glove private security transit"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "MTG-BLACK-LOTUS",
+      "MTG-MOX-DIAMOND"
+    ]
+  },
+  {
+    "itemid": "MTG-MOX-DIAMOND",
+    "productName": "Magic: The Gathering Mox Diamond (Stronghold Reserved List)",
+    "manufacturer": "Wizards of the Coast",
+    "category": "Collectibles > Trading Card Games > MTG",
+    "tags": [
+      "mtg",
+      "mox-diamond",
+      "reserved-list",
+      "stronghold",
+      "commander",
+      "legacy"
+    ],
+    "price": 680,
+    "originalPrice": 750,
+    "available": 3,
+    "quantity": 1,
+    "description": "From the 1998 Stronghold expansion on Magic's Reserved List. Mox Diamond costs 0 mana and allows discarding a land to tap for one mana of any color. An essential staple for cEDH and Legacy formats.",
+    "shortDescription": "1998 Stronghold Reserved List artifact staple for cEDH and Legacy",
+    "image": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://magic.wizards.com",
+    "badges": [
+      "reserved-list"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 180
+    },
+    "variants": [
+      "Near Mint (English)",
+      "Lightly Played (English)"
+    ],
+    "specifications": {
+      "Set": "Stronghold (March 1998)",
+      "Artist": "Dan Frazier",
+      "Card Type": "Artifact",
+      "Mana Cost": "0",
+      "Condition": "NM (Near Mint, Unplayed)"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Insured tracked priority"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "MTG-BLACK-LOTUS",
+      "WH40K-MORTARION"
+    ]
+  },
+  {
+    "itemid": "WH40K-MORTARION",
+    "productName": "Warhammer 40k: Mortarion, Daemon Primarch of Nurgle",
+    "manufacturer": "Games Workshop",
+    "category": "Collectibles > Miniatures & Tabletop > Warhammer 40k",
+    "tags": [
+      "warhammer",
+      "40k",
+      "death-guard",
+      "nurgle",
+      "mortarion",
+      "miniature",
+      "citadel"
+    ],
+    "price": 170,
+    "originalPrice": null,
+    "available": 5,
+    "quantity": 1,
+    "description": "Towering above the battlefield on rotten leathery wings, Mortarion swoops down amidst droning plague flies. This multi-part plastic kit builds the Daemon Primarch of Nurgle with the scythe Silence and pistol Lantern.",
+    "shortDescription": "Citadel centerpiece multi-part plastic kit with rot wings and scythe",
+    "image": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.warhammer.com",
+    "badges": [
+      "citadel-centrepiece"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 320
+    },
+    "variants": [
+      "Unassembled Multi-part Plastic Kit",
+      "Pro-Studio Painted Display Edition"
+    ],
+    "specifications": {
+      "Faction": "Death Guard / Chaos Space Marines",
+      "Components": "78 precision Citadel plastic components",
+      "Base Size": "100mm Round Citadel Base",
+      "Height": "7.5 inches wingspan"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "WH40K-CAPTAIN-GRAVIS",
+      "WH40K-CUSTODES-JETBIKES"
+    ]
+  },
+  {
+    "itemid": "WH40K-CAPTAIN-GRAVIS",
+    "productName": "Warhammer 40k: Primaris Space Marine Captain in Gravis Armour",
+    "manufacturer": "Games Workshop",
+    "category": "Collectibles > Miniatures & Tabletop > Warhammer 40k",
+    "tags": [
+      "warhammer",
+      "40k",
+      "space-marines",
+      "adeptus-astartes",
+      "captain",
+      "gravis"
+    ],
+    "price": 42,
+    "originalPrice": null,
+    "available": 15,
+    "quantity": 1,
+    "description": "Encased in dense Gravis armour, Space Marine Captains march unstoppably into enemy fire. Armed with a master-crafted boltstorm gauntlet and choice of master-crafted power sword or chainsword.",
+    "shortDescription": "Heavily armored Space Marine commander with boltstorm gauntlet",
+    "image": "https://images.unsplash.com/photo-1618336753974-aae8e04506aa?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1618336753974-aae8e04506aa?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.warhammer.com",
+    "badges": [
+      "bestseller"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 210
+    },
+    "variants": [
+      "Multi-part Plastic Kit with 3 weapon options"
+    ],
+    "specifications": {
+      "Faction": "Adeptus Astartes / Space Marines",
+      "Components": "22 plastic components",
+      "Base": "40mm Citadel round"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-4 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "WH40K-MORTARION",
+      "WH40K-CUSTODES-JETBIKES"
+    ]
+  },
+  {
+    "itemid": "WH40K-CUSTODES-JETBIKES",
+    "productName": "Warhammer 40k: Adeptus Custodes Vertus Praetors",
+    "manufacturer": "Games Workshop",
+    "category": "Collectibles > Miniatures & Tabletop > Warhammer 40k",
+    "tags": [
+      "warhammer",
+      "40k",
+      "custodes",
+      "jetbikes",
+      "emperor",
+      "miniatures"
+    ],
+    "price": 65,
+    "originalPrice": null,
+    "available": 9,
+    "quantity": 1,
+    "description": "Veterans who have fought across hundreds of worlds, the Vertus Praetors ride into battle on Dawneagle jetbikes fashioned from auramite. Armed with interceptor lances and salvo launchers.",
+    "shortDescription": "Box of 3 Dawneagle jetbike models armed with interceptor lances",
+    "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.warhammer.com",
+    "badges": [
+      "popular"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 175
+    },
+    "variants": [
+      "Box of 3 Jetbike Miniatures"
+    ],
+    "specifications": {
+      "Faction": "Adeptus Custodes",
+      "Quantity": "3 Miniatures",
+      "Bases": "3 Citadel 75mm Oval Flying Bases"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-4 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "WH40K-CAPTAIN-GRAVIS",
+      "MTG-BLACK-LOTUS"
+    ]
+  },
+  {
+    "itemid": "FENDER-CS-60-STRAT",
+    "productName": "Fender Custom Shop '60s Relic Stratocaster - Olympic White",
+    "manufacturer": "Fender Custom Shop",
+    "category": "Musical Instruments > Guitars > Electric",
+    "tags": [
+      "guitar",
+      "fender",
+      "custom-shop",
+      "stratocaster",
+      "relic",
+      "vintage-tone"
+    ],
+    "price": 4850,
+    "originalPrice": null,
+    "available": 2,
+    "quantity": 1,
+    "description": "Crafted by the master builders in Corona, California. Featuring a two-piece select alder body with nitrocellulose Olympic White relic finish, quartersawn maple 1960 Oval 'C' neck, and hand-wound Texas Special pickups.",
+    "shortDescription": "Hand-wound Custom Shop relic with nitro Olympic White finish",
+    "image": "https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.fendercustomshop.com",
+    "badges": [
+      "custom-shop",
+      "master-built"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 64
+    },
+    "variants": [
+      "Olympic White (Heavy Relic)",
+      "Aged Seafoam Green"
+    ],
+    "specifications": {
+      "Body": "2-Piece Select Alder with Nitrocellulose Lacquer",
+      "Neck": "Quartersawn Maple 1960 Oval \"C\" profile",
+      "Fingerboard": "AAA Rosewood with 9.5\" radius",
+      "Pickups": "Hand-Wound Custom Shop Texas Special Strat Single-Coils",
+      "Case": "Deluxe Hardshell Case with Certificate of Authenticity"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-day insured express"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "MARTIN-D28-STANDARD",
+      "SGS17HCCH"
+    ]
+  },
+  {
+    "itemid": "MARTIN-D28-STANDARD",
+    "productName": "Martin D-28 Standard Dreadnought Acoustic Guitar",
+    "manufacturer": "C.F. Martin & Co.",
+    "category": "Musical Instruments > Guitars > Acoustic",
+    "tags": [
+      "guitar",
+      "acoustic",
+      "martin",
+      "d28",
+      "dreadnought",
+      "tonewood",
+      "rosewood"
+    ],
+    "price": 3199,
+    "originalPrice": null,
+    "available": 3,
+    "quantity": 1,
+    "description": "The dreadnought by which all others are judged. Handcrafted in Nazareth, Pennsylvania with a solid Sitka spruce top, East Indian rosewood back and sides, and non-scalloped forward-shifted bracing for deep bass and rich projection.",
+    "shortDescription": "The definitive dreadnought with Sitka spruce and East Indian rosewood",
+    "image": "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.martinguitar.com/guitars/standard-series/d-28.html",
+    "badges": [
+      "legendary-tone"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 320
+    },
+    "variants": [
+      "Natural Gloss Aging Toner"
+    ],
+    "specifications": {
+      "Top Wood": "Solid Sitka Spruce",
+      "Back & Sides": "East Indian Rosewood",
+      "Bracing": "Non-Scalloped Forward-Shifted X-Brace",
+      "Neck Shape": "Modified Low Oval with High-Performance Taper",
+      "Nut Width": "1-3/4\""
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Insured temperature-controlled shipping"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "FENDER-CS-60-STRAT",
+      "SM58"
+    ]
+  },
+  {
+    "itemid": "NORD-STAGE-4-88",
+    "productName": "Nord Stage 4 88-Key Flagship Stage Keyboard",
+    "manufacturer": "Nord Keyboards",
+    "category": "Musical Instruments > Pianos & Keyboards > Stage Pianos",
+    "tags": [
+      "keyboard",
+      "piano",
+      "synthesizer",
+      "nord",
+      "nord-stage-4",
+      "organ",
+      "performance"
+    ],
+    "price": 5699,
+    "originalPrice": 5999,
+    "available": 3,
+    "quantity": 1,
+    "description": "The flagship instrument for world-touring keyboardists. Featuring a triple sensor fully-weighted keybed with aftertouch, dedicated LED fader controllers for each layer, Nord Wave 2 Synth engine, and award-winning Piano and Organ engines.",
+    "shortDescription": "Triple-sensor weighted 88-key stage piano with Wave 2 synth engine",
+    "image": "https://images.unsplash.com/photo-1520523839898-50712825e617?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1520523839898-50712825e617?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.nordkeyboards.com/products/nord-stage-4",
+    "badges": [
+      "pro-audio",
+      "flagship"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 110
+    },
+    "variants": [
+      "88 Fully Weighted Triple Sensor Keys",
+      "73 Semi-Weighted Waterfall Keys"
+    ],
+    "specifications": {
+      "Keybed": "88-note Triple Sensor hammer action with aftertouch",
+      "Memory": "2GB Piano Library / 1GB Sample Library",
+      "Synth Engine": "Nord Wave 2 Synth with Virtual Analog, FM, and Wavetable",
+      "Effects": "Independent per-layer modulation, delay, amp sim, and reverb"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "White-glove freight delivery"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "YAMAHA-CLAVINOVA-909",
+      "TE-OP1-FIELD"
+    ]
+  },
+  {
+    "itemid": "YAMAHA-CLAVINOVA-909",
+    "productName": "Yamaha Clavinova CVP-909 Grand Piano",
+    "manufacturer": "Yamaha",
+    "category": "Musical Instruments > Pianos & Keyboards > Digital Pianos",
+    "tags": [
+      "piano",
+      "grand-piano",
+      "yamaha",
+      "clavinova",
+      "digital-grand",
+      "concert-grand"
+    ],
+    "price": 16999,
+    "originalPrice": 18500,
+    "available": 1,
+    "quantity": 1,
+    "description": "Yamaha's pinnacle digital concert grand piano. Housed in a magnificent polished ebony grand cabinet with GrandTouch wooden keys, binaurally sampled Yamaha CFX and Bösendorfer Imperial concert grands, and an expressive 6-way sound system.",
+    "shortDescription": "Pinnacle digital grand piano with wooden GrandTouch keys and CFX samples",
+    "image": "https://images.unsplash.com/photo-1552422535-c45813c61732?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1552422535-c45813c61732?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://usa.yamaha.com",
+    "badges": [
+      "concert-grand",
+      "luxury"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 18
+    },
+    "variants": [
+      "Polished Ebony Grand Cabinet"
+    ],
+    "specifications": {
+      "Keyboard": "GrandTouch Keyboard with wooden keys, synthetic ebony & ivory tops, escapement",
+      "Sound Samples": "Yamaha CFX and Bösendorfer Imperial Concert Grands",
+      "Amplifiers": "(40W + 30W + 20W) x 2 + 80W subwoofer",
+      "Display": "9.0-inch TFT Color Touch Screen (800 x 480 dots)"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "White-glove scheduled room-of-choice installation"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "NORD-STAGE-4-88",
+      "FENDER-CS-60-STRAT"
+    ]
+  },
+  {
+    "itemid": "ROGUE-OHIO-BAR",
+    "productName": "Rogue Ohio Bar (20kg Cerakote Olympic Barbell)",
+    "manufacturer": "Rogue Fitness",
+    "category": "Fitness > Strength & Weights > Barbells",
+    "tags": [
+      "weights",
+      "barbell",
+      "rogue",
+      "crossfit",
+      "powerlifting",
+      "olympic-lifting"
+    ],
+    "price": 350,
+    "originalPrice": null,
+    "available": 22,
+    "quantity": 1,
+    "description": "Manufactured in Columbus, Ohio. The benchmark multipurpose barbell featuring a 190,000 PSI tensile strength steel shaft, corrosion-resistant Cerakote ceramic coating, composite bronze bushings, and four-season knurl.",
+    "shortDescription": "190,000 PSI multipurpose Cerakote barbell with bronze bushings",
+    "image": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.roguefitness.com/the-ohio-bar",
+    "badges": [
+      "made-in-usa",
+      "lifetime-warranty"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 3410
+    },
+    "variants": [
+      "Matte Black Shaft / Chrome Sleeves",
+      "Red Cerakote / Black Sleeves",
+      "Desert Tan"
+    ],
+    "specifications": {
+      "Weight": "20kg (44 lbs)",
+      "Diameter": "28.5mm",
+      "Tensile Strength": "190,000 PSI",
+      "Knurl": "Standard Ohio dual knurl marks without center knurl",
+      "Warranty": "Lifetime warranty against bending"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Heavy freight 2-4 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "ELEIKO-IPF-POWERLIFTING",
+      "BOWFLEX-SELECTTECH-552"
+    ]
+  },
+  {
+    "itemid": "ELEIKO-IPF-POWERLIFTING",
+    "productName": "Eleiko IPF Calibrated Competition Disc Set (185kg)",
+    "manufacturer": "Eleiko",
+    "category": "Fitness > Strength & Weights > Plates",
+    "tags": [
+      "weights",
+      "eleiko",
+      "ipf",
+      "calibrated-plates",
+      "powerlifting",
+      "competition"
+    ],
+    "price": 2650,
+    "originalPrice": 2850,
+    "available": 4,
+    "quantity": 1,
+    "description": "Certified by the International Powerlifting Federation (IPF) for world record competition. Cast iron thin profile discs calibrated to within precision +/- 10 grams, finished in vibrant Olympic color coding.",
+    "shortDescription": "IPF certified calibrated competition cast iron disc set within +/- 10g",
+    "image": "https://images.unsplash.com/photo-1584466977773-e625c37cdd50?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1584466977773-e625c37cdd50?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.eleiko.com",
+    "badges": [
+      "ipf-approved",
+      "world-standard"
+    ],
+    "rating": {
+      "average": 5,
+      "count": 95
+    },
+    "variants": [
+      "185kg Full Competition Set (Pair of 25kg, 20kg, 15kg, 10kg, 5kg, 2.5kg, 1.25kg, 0.5kg, 0.25kg)"
+    ],
+    "specifications": {
+      "Certification": "International Powerlifting Federation (IPF)",
+      "Tolerance": "Calibrated to within +/- 10 grams per disc",
+      "Material": "Cast Iron with precision machined edge",
+      "Hole Diameter": "50.5mm olympic specification"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Palletized freight delivery"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "ROGUE-OHIO-BAR",
+      "BOWFLEX-SELECTTECH-552"
+    ]
+  },
+  {
+    "itemid": "BOWFLEX-SELECTTECH-552",
+    "productName": "Bowflex SelectTech 552 Adjustable Dumbbells (Pair)",
+    "manufacturer": "Bowflex",
+    "category": "Fitness > Strength & Weights > Dumbbells",
+    "tags": [
+      "weights",
+      "dumbbells",
+      "bowflex",
+      "adjustable",
+      "home-gym",
+      "fitness"
+    ],
+    "price": 429,
+    "originalPrice": 549,
+    "available": 16,
+    "quantity": 1,
+    "description": "Replace 15 pairs of weights with one compact dial-adjusted system. Adjusts from 5 to 52.5 lbs per dumbbell in 2.5 lb increments with a simple turn of the selector dial.",
+    "shortDescription": "Replaces 15 pairs of weights with rapid dial adjustment from 5 to 52.5 lbs",
+    "image": "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.bowflex.com/selecttech-552",
+    "badges": [
+      "space-saver",
+      "bestseller"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 5200
+    },
+    "variants": [
+      "Pair (5 to 52.5 lbs each with storage trays)"
+    ],
+    "specifications": {
+      "Weight Range": "5 to 52.5 lbs (2.3 to 23.8 kg) each",
+      "Adjustment Settings": "15 weight settings (5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 30, 35, 40, 45, 50, 52.5 lbs)",
+      "Dimensions": "15.75\" L x 8\" W x 9\" H each"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-4 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "ROGUE-OHIO-BAR",
+      "ELEIKO-IPF-POWERLIFTING"
+    ]
+  },
+  {
+    "itemid": "TE-OP1-FIELD",
+    "productName": "Teenage Engineering OP-1 Field Synthesizer & Sampler",
+    "manufacturer": "Teenage Engineering",
+    "category": "Audio & Tech > Synthesizers & Production",
+    "tags": [
+      "synth",
+      "sampler",
+      "teenage-engineering",
+      "op-1",
+      "portable",
+      "music-tech"
+    ],
+    "price": 1999,
+    "originalPrice": null,
+    "available": 7,
+    "quantity": 1,
+    "description": "The portable all-in-one synthesizer, sampler, and 4-track tape recorder refined with 100 new features. Anodized aluminum unibody, 24-hour battery, stereo signal chain throughout, and ultra-crisp high-resolution screen.",
+    "shortDescription": "Stereo portable synthesizer, sampler, and 4-track tape workstation",
+    "image": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://teenage.engineering/products/op-1",
+    "badges": [
+      "design-award",
+      "cult-classic"
+    ],
+    "rating": {
+      "average": 4.9,
+      "count": 430
+    },
+    "variants": [
+      "Anodized Aluminum Unibody with Bluetooth MIDI"
+    ],
+    "specifications": {
+      "Audio Quality": "32-bit audio throughout 96kHz",
+      "Battery Life": "24 hours rechargeable via USB-C",
+      "Display": "High-resolution flush glass color screen",
+      "FM Transmitter": "Passive passive-radiator stereo bass loudspeaker"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "NORD-STAGE-4-88",
+      "SONY-WH1000XM5"
+    ]
+  },
+  {
+    "itemid": "SONY-WH1000XM5",
+    "productName": "Sony WH-1000XM5 Wireless Noise-Canceling Headphones",
+    "manufacturer": "Sony",
+    "category": "Audio & Tech > Headphones",
+    "tags": [
+      "headphones",
+      "sony",
+      "noise-canceling",
+      "bluetooth",
+      "audiophile",
+      "travel"
+    ],
+    "price": 398,
+    "originalPrice": 429,
+    "available": 25,
+    "quantity": 1,
+    "description": "Industry-leading active noise cancellation powered by two processors and 8 microphones. Specially engineered 30mm carbon fiber drivers deliver crystal clear acoustics with LDAC high-resolution wireless streaming.",
+    "shortDescription": "Dual processor active noise canceling with 30-hour battery life",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://electronics.sony.com",
+    "badges": [
+      "top-rated",
+      "bestseller"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 6800
+    },
+    "variants": [
+      "Midnight Black",
+      "Silver / Platinum",
+      "Smoky Pink"
+    ],
+    "specifications": {
+      "Battery": "Up to 30 hours with ANC on (3-min charge gives 3 hours)",
+      "Drivers": "30mm soft edge with carbon fiber composite dome",
+      "Weight": "250 grams",
+      "Connectivity": "Bluetooth 5.2, Multipoint connection, 3.5mm jack"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "1-2 business days"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "APPLE-VISION-PRO",
+      "TE-OP1-FIELD"
+    ]
+  },
+  {
+    "itemid": "APPLE-VISION-PRO",
+    "productName": "Apple Vision Pro Spatial Computing Headset",
+    "manufacturer": "Apple",
+    "category": "Audio & Tech > Spatial Computing & VR",
+    "tags": [
+      "apple",
+      "vision-pro",
+      "spatial-computing",
+      "vr",
+      "mixed-reality",
+      "tech"
+    ],
+    "price": 3499,
+    "originalPrice": null,
+    "available": 5,
+    "quantity": 1,
+    "description": "Apple's first spatial computer seamlessly blends digital content with your physical space. Powered by dual micro-OLED displays boasting 23 million pixels, eye and hand tracking without controllers, and dual-chip M2 + R1 architecture.",
+    "shortDescription": "Groundbreaking spatial computer with dual 4K micro-OLED displays",
+    "image": "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=800&q=80"
+    ],
+    "url": "https://www.apple.com/apple-vision-pro",
+    "badges": [
+      "future-tech",
+      "flagship"
+    ],
+    "rating": {
+      "average": 4.8,
+      "count": 420
+    },
+    "variants": [
+      "256GB Storage",
+      "512GB Storage",
+      "1TB Storage"
+    ],
+    "specifications": {
+      "Displays": "23 million pixels across two micro-OLED 3D displays",
+      "Chips": "Apple M2 (8-core CPU, 10-core GPU) + Apple R1 real-time sensor chip",
+      "Tracking": "High-performance eye tracking, spatial audio, LiDAR Scanner",
+      "Operating System": "visionOS"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "Signature tracked express"
+    },
+    "reviews": [],
+    "relatedProducts": [
+      "SONY-WH1000XM5",
+      "TE-OP1-FIELD"
+    ]
   }
 ]
