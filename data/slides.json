@@ -1,30 +1,38 @@
 [
   {
-    "productName": "Let's Make a Deal!",
-    "slideText": "The best deals on the planet (probably).",
+    "productName": "Exclusive Deals",
+    "slideText": "Unbeatable prices on premium products.",
     "slideMemeText": "We have the best deals. The best. Believe me. No one does it better. No one. We guarantee it.",
-    "slideSubHeading": "See something you like? Reach out to us and we'll make it happen.",
+    "slideSubHeading": "See something you like? Reach out and we'll make it happen.",
     "slideImage": "../static/img/deal.jpg",
-    "slideCTA": "Name Your Price!"
+    "slideCTA": "Shop Deals",
+    "slideCTALink": "/products"
   },
   {
-    "productName": "Apple iPhone 16",
-    "slideText": "Telecommunication Reinvented (Again).",
-    "slideMemeText": "Subtly Enhanced. In Every Possible Way. Not the price. We had to raise that.",
-    "slideSubHeading": "Including Apple Intelligence. We gave the machines access to your data. It's cool. Trust us.",
-    "slideImage": "../static/img/iphone_16.jpg"
+    "productName": "iPhone 16 Pro",
+    "slideText": "Intelligence. Redefined.",
+    "slideMemeText": "The most advanced iPhone ever. Now with Apple Intelligence built in.",
+    "slideSubHeading": "Pro camera. Pro display. Pro performance.",
+    "slideImage": "../static/img/iphone_16.jpg",
+    "slideCTA": "Learn More",
+    "slideCTALink": "/products/IPHONE16PRO"
   },
   {
-    "productName": "Apple MacBook M4 Pro",
-    "slideText": "Our Best MacBook. Ever. Probably.",
-    "slideMemeText": "Now in space black. We know you love space. We love space too.",
-    "slideImage": "../static/img/macbook_m4.webp"
+    "productName": "MacBook Pro M4",
+    "slideText": "Supercharged by M4 Pro.",
+    "slideMemeText": "Now in space black. The most powerful MacBook ever made.",
+    "slideSubHeading": "Up to 22 hours of battery life. Liquid Retina XDR display.",
+    "slideImage": "../static/img/macbook_m4.webp",
+    "slideCTA": "Explore",
+    "slideCTALink": "/products/MACBOOKM4"
   },
   {
-    "productName": "Open Office Pod",
-    "slideText": "The Future of Work. Now.",
-    "slideSubHeading": "Your office in a pod. It's like a spaceship, for work. We have to tell you it's not a spaceship.",
-    "slideMemeText": "Go to the office, in your office. Office-ception.",
-    "slideImage": "../static/img/office_pod.avif"
+    "productName": "Office Pod",
+    "slideText": "The Future of Work.",
+    "slideSubHeading": "Premium workspace solutions for the modern professional.",
+    "slideMemeText": "Your private sanctuary. Designed for focus, built for productivity.",
+    "slideImage": "../static/img/office_pod.avif",
+    "slideCTA": "Discover",
+    "slideCTALink": "/products"
   }
 ]

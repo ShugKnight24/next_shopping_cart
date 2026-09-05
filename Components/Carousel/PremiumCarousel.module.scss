@@ -1,0 +1,422 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 85vh;
+  min-height: 600px;
+  max-height: 900px;
+  overflow: hidden;
+  background: #0f172a;
+
+  @media (max-width: 768px) {
+    height: 100vh;
+    min-height: 500px;
+  }
+}
+
+// Background with Ken Burns effect
+.backgroundContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.background {
+  position: absolute;
+  inset: -5%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.05);
+  transition:
+    opacity 0.8s ease-out,
+    transform 8s ease-out;
+
+  &.active {
+    opacity: 1;
+    transform: scale(1);
+    animation: kenBurns 8s ease-out forwards;
+  }
+}
+
+@keyframes kenBurns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 1;
+}
+
+// Light theme adjustments
+.light {
+  .overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
+  }
+
+  .content {
+    color: #1a1a1a;
+  }
+
+  .productName {
+    color: #1e3a5f;
+  }
+
+  .description {
+    color: #4a4a4a;
+  }
+
+  .ctaButton {
+    background: #1e3a5f;
+    color: #fff;
+
+    &:hover {
+      background: #0f2744;
+    }
+  }
+
+  .navButton {
+    background: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .indicator {
+    color: #4a4a4a;
+  }
+
+  .progressBar {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .progressFill {
+    background: #1e3a5f;
+  }
+
+  .counter {
+    color: #1a1a1a;
+  }
+}
+
+// Content layout
+.content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+
+  @media (max-width: 1024px) {
+    padding: 60px 40px;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    padding: 40px 24px;
+  }
+}
+
+.slideContent {
+  max-width: 600px;
+  animation: slideIn 0.8s ease-out;
+
+  @media (max-width: 1024px) {
+    max-width: 100%;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #c62828;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.productName {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #b8860b;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.subheadline {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 400;
+  margin: 0 0 20px;
+  opacity: 0.9;
+}
+
+.description {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 0 0 32px;
+  opacity: 0.8;
+  max-width: 500px;
+
+  @media (max-width: 1024px) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    background: #f5f5f5;
+    transform: translateX(4px);
+
+    svg {
+      transform: translateX(4px);
+    }
+  }
+}
+
+// Product image (for split layout)
+.productImage {
+  display: none; // Hidden by default, can be enabled for certain layouts
+  max-width: 500px;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+  }
+}
+
+// Navigation buttons
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  &.prev {
+    left: 24px;
+
+    @media (max-width: 768px) {
+      left: 12px;
+    }
+  }
+
+  &.next {
+    right: 24px;
+
+    @media (max-width: 768px) {
+      right: 12px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 44px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Progress indicators
+.indicators {
+  position: absolute;
+  bottom: 40px;
+  left: 60px;
+  right: 60px;
+  z-index: 10;
+  display: flex;
+  gap: 24px;
+  max-width: 800px;
+
+  @media (max-width: 1024px) {
+    left: 40px;
+    right: 40px;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    gap: 12px;
+  }
+}
+
+.indicator {
+  flex: 1;
+  max-width: 200px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+
+  @media (max-width: 768px) {
+    max-width: none;
+  }
+}
+
+.indicatorLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .active & {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.progressBar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+// Slide counter
+.counter {
+  position: absolute;
+  bottom: 40px;
+  right: 60px;
+  z-index: 10;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: 'Roboto Mono', monospace;
+  color: #fff;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}
+
+.current {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.separator {
+  font-size: 18px;
+  opacity: 0.5;
+  margin: 0 4px;
+}
+
+.total {
+  font-size: 18px;
+  opacity: 0.5;
+}

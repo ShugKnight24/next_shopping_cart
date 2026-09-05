@@ -1,3 +1,4 @@
+@use '../colors' as colors;
 @use '../mixins' as mixins;
 
 .carousel-container {
@@ -5,106 +6,123 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 75vh;
-  background-color: #000;
+  position: relative;
+  min-height: 70vh;
+  background: colors.$gradient-dark;
+  overflow: hidden;
 
   .product-carousel {
     position: relative;
-    max-width: 100vw;
-    max-height: 75vh;
+    width: 100%;
+    max-width: 1440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .slide {
       display: none;
-      width: 100vw;
-      flex-direction: column;
+      width: 100%;
+      padding: 2rem;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      -webkit-animation: slideContent 0.3s 0.6s ease-out forwards;
-      animation: slideContent 0.3s 0.6s ease-out forwards;
+      gap: 3rem;
 
-      @include mixins.mq-min(1440px) {
-        max-width: 1440px;
-      }
-
-      @include mixins.mq-max(1440px) {
-        width: 90vw;
-      }
-
-      h2,
-      h3 {
-        text-align: center;
-        margin: 9px auto;
-        color: #fff;
-        opacity: 0;
-        -webkit-animation: slideContent 0.6s 0.9s ease-out forwards;
-        animation: slideContent 0.6s 0.9s ease-out forwards;
-      }
-
-      h2 {
-        font-size: 3em;
-
-        @include mixins.mq-max(600px) {
-          font-size: 2em;
-        }
-      }
-
-      h3 {
-        font-size: 2em;
-
-        &:last-of-type {
-          margin-bottom: 0.5em;
-        }
-
-        @include mixins.mq-max(600px) {
-          font-size: 1.5em;
-
-          &:last-of-type {
-            margin-bottom: 0.25em;
-          }
-        }
-      }
-
-      h4 {
-        font-size: 1.5em;
-        margin: 0.5em 0;
-        color: #fff;
-        opacity: 0;
-        -webkit-animation: slideContent 0.6s 1.2s ease-out forwards;
-        animation: slideContent 0.6s 1.2s ease-out forwards;
-      }
-
-      button {
-        background-color: #fff;
-        color: #000;
-        border: 0;
-        padding: 0.5em 1em;
-        margin: 0 0 0.5em;
-        font-size: 1.5em;
-        font-weight: bold;
-        transition: 0.6s ease;
-        border-radius: 9px;
-        border: 1px solid #000;
-
-        &:hover {
-          cursor: pointer;
-          background-color: #000;
-          color: #fff;
-          border: 1px solid #fff;
-        }
+      @include mixins.mq-max(900px) {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
       }
 
       &.active {
         display: flex;
       }
 
-      img {
-        max-width: 100vw;
-        max-height: 30vh;
-        border-radius: 9px;
+      .slide-content {
+        flex: 1;
+        max-width: 600px;
+        opacity: 0;
+        transform: translateX(-30px);
+        animation: slideInContent 0.6s 0.2s ease-out forwards;
 
-        @include mixins.mq-min(1500px) {
-          max-height: 50vh;
+        @include mixins.mq-max(900px) {
+          text-align: center;
+          transform: translateY(-20px);
+        }
+      }
+
+      h2 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        color: #fff;
+        margin: 0 0 0.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      h3 {
+        font-size: clamp(1rem, 2.5vw, 1.5rem);
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0.5rem 0;
+        font-weight: 400;
+        line-height: 1.4;
+
+        &.slide-meme {
+          color: colors.$gold-light;
+          font-style: italic;
+          font-size: clamp(0.9rem, 2vw, 1.25rem);
+        }
+      }
+
+      h4 {
+        font-size: clamp(0.875rem, 1.5vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 1rem 0;
+        font-weight: 400;
+      }
+
+      .slide-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: colors.$gold;
+        color: #fff;
+        border: none;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin-top: 1rem;
+
+        &:hover {
+          background: colors.$gold-hover;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(colors.$gold, 0.4);
+        }
+      }
+
+      .slide-image-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: scale(0.9);
+        animation: slideInImage 0.8s 0.4s ease-out forwards;
+      }
+
+      img {
+        max-width: 100%;
+        max-height: 50vh;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        object-fit: cover;
+
+        @include mixins.mq-max(900px) {
+          max-height: 35vh;
         }
       }
     }
@@ -112,107 +130,173 @@
     .prev,
     .next {
       position: absolute;
-      top: 70%;
-      width: auto;
-      padding: 1px;
-      margin-top: -36px;
-      color: black;
-      background-color: white;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
-      transition: 0.6s ease;
-      user-select: none;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
 
       &:hover {
-        cursor: pointer;
-        opacity: 0.75;
-        color: white;
-        background-color: black;
-        box-shadow:
-          0px 3px 5px -1px rgba(255, 255, 255, 0.3),
-          0px 6px 10px 0px rgba(255, 255, 255, 0.3),
-          0px 1px 18px 0px rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      &:focus-visible {
+        outline: 2px solid colors.$gold;
+        outline-offset: 2px;
       }
 
       i {
-        font-size: 40px;
+        font-size: 24px;
+      }
+
+      @include mixins.mq-max(600px) {
+        width: 40px;
+        height: 40px;
+
+        i {
+          font-size: 18px;
+        }
       }
     }
 
     .prev {
-      left: 15px;
+      left: 1rem;
+
+      @include mixins.mq-max(600px) {
+        left: 0.5rem;
+      }
     }
 
     .next {
-      right: 15px;
-    }
+      right: 1rem;
 
-    .fade {
-      -webkit-animation-name: fade;
-      -webkit-animation-duration: 0.9s;
-      animation-name: fade;
-      animation-duration: 0.9s;
-    }
-
-    @-webkit-keyframes fade {
-      from {
-        opacity: 0.4;
-        transform: scale(1.5);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    @keyframes fade {
-      from {
-        opacity: 0.4;
-        transform: scale(1.5);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    @-webkit-keyframes slideContent {
-      0% {
-        transform: translateY(-15px);
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    @keyframes slideContent {
-      0% {
-        transform: translateY(-15px);
-      }
-      100% {
-        opacity: 1;
+      @include mixins.mq-max(600px) {
+        right: 0.5rem;
       }
     }
   }
 
+  .carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0 1.5rem;
+  }
+
   .dots-container {
     display: flex;
+    gap: 0.5rem;
 
     .dot {
-      height: 30px;
-      width: 30px;
-      margin: 0 10px;
-      background-color: #bbb;
+      width: 12px;
+      height: 12px;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
       border-radius: 50%;
-      transition: background-color 0.6s ease;
-
-      &.active,
-      &:hover {
-        background-color: #717171;
-      }
+      cursor: pointer;
+      transition: all 0.3s ease;
 
       &:hover {
-        cursor: pointer;
+        background: rgba(255, 255, 255, 0.5);
+        transform: scale(1.2);
       }
+
+      &.active {
+        background: colors.$gold;
+        transform: scale(1.2);
+      }
+
+      &:focus-visible {
+        outline: 2px solid colors.$gold;
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  .play-pause-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid colors.$gold;
+      outline-offset: 2px;
+    }
+
+    i {
+      font-size: 12px;
+    }
+
+    &.paused i {
+      margin-left: 2px; // Visual centering for play icon
+    }
+  }
+
+  .carousel-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+
+    .carousel-progress-bar {
+      height: 100%;
+      background: colors.$gold;
+      transition: width 0.05s linear;
+    }
+  }
+
+  // Animations
+  @keyframes slideInContent {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInImage {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  // Reduced motion
+  @media (prefers-reduced-motion: reduce) {
+    .slide .slide-content,
+    .slide .slide-image-container {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .carousel-progress-bar {
+      transition: none;
     }
   }
 }
