@@ -5,19 +5,8 @@ import { Products } from '../../Components/Products/Products';
 // import { formatCurrency } from '../../utils/cartUtils';
 
 export default function ProductsPage() {
-  // TODO: Implement the modal system, selectedProduct, and recommendedProduct properly
-  // const { showModal, setShowModal, modalType, setModalType } = useContext(ModalContext);
-  // const { state, dispatch } = useContext(CartContext)
-  // const { inventory } = state;
-
-  const [_, setSelectedProduct] = useState(null);
-  const [_1, setRecommendedProduct] = useState(null);
-  const [_2, _3] = useState(null);
-
-  // useEffect(() => {
-  // 	const currentItem = getCurrentItem(inventory, recommendedProduct);
-  // 	setRecItem(currentItem ? currentItem : null);
-  // }, [selectedProduct]);
+  const [, setSelectedProduct] = useState(null);
+  const [, setRecommendedProduct] = useState(null);
 
   return (
     <>

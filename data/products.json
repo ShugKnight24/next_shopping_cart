@@ -1,0 +1,386 @@
+[
+  {
+    "itemid": "SM57",
+    "productName": "SM57",
+    "manufacturer": "Shure",
+    "category": "Audio > Microphones > Dynamic",
+    "tags": ["microphone", "recording", "professional", "instrument", "studio"],
+    "price": 99.0,
+    "originalPrice": null,
+    "available": 9,
+    "quantity": 1,
+    "description": "Dynamic Microphone with Cardioid Pickup Pattern, 40Hz-15kHz Frequency Response, Low Impedance, Includes Stand Adapter, and Zippered Carrying Case",
+    "shortDescription": "Industry-standard dynamic instrument microphone",
+    "image": "https://media.sweetwater.com/images/items/120/SM57-medium.jpg",
+    "images": ["https://media.sweetwater.com/images/items/120/SM57-medium.jpg"],
+    "url": "https://www.sweetwater.com/store/detail/SM57",
+    "badges": ["bestseller"],
+    "rating": {
+      "average": 4.9,
+      "count": 2847
+    },
+    "variants": [],
+    "specifications": {
+      "Type": "Dynamic",
+      "Polar Pattern": "Cardioid",
+      "Frequency Response": "40Hz - 15kHz",
+      "Impedance": "Low (150 ohms)",
+      "Connector": "XLR",
+      "Weight": "10 oz (284g)"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [
+      {
+        "id": "r1",
+        "author": "StudioPro",
+        "rating": 5,
+        "date": "2025-10-15",
+        "title": "The industry standard for a reason",
+        "content": "I've used SM57s for over 20 years. There's a reason every studio has at least a few of these. Incredible on snare drums, guitar amps, and even vocals in a pinch.",
+        "verified": true,
+        "helpful": 47
+      },
+      {
+        "id": "r2",
+        "author": "HomeRecorder",
+        "rating": 5,
+        "date": "2025-09-22",
+        "title": "Perfect for beginners and pros alike",
+        "content": "My first 'real' microphone and it still gets used on every session. Built like a tank and sounds great on everything.",
+        "verified": true,
+        "helpful": 23
+      }
+    ],
+    "relatedProducts": ["SM58", "R16"]
+  },
+  {
+    "itemid": "SGS17HCCH",
+    "productName": "SG Standard",
+    "manufacturer": "Gibson",
+    "category": "Instruments > Guitars > Electric",
+    "tags": ["guitar", "electric", "rock", "professional", "mahogany"],
+    "price": 1169.0,
+    "originalPrice": 1499.0,
+    "available": 1,
+    "quantity": 1,
+    "serial": "170099523",
+    "description": "Solidbody Electric Guitar with Mahogany Body, Mahogany Neck, Rosewood Fingerboard, and 2 Humbucking Pickups - Heritage Cherry",
+    "shortDescription": "Classic rock tone in iconic Heritage Cherry",
+    "image": "https://media.sweetwater.com/api/i/f-webp__q-82__ha-d074da576794e566__hmac-f13d64ca315c00e4c5e288e72bb577873020c566/images/items/750/SGSTHCCH-large.jpg",
+    "images": [
+      "https://media.sweetwater.com/api/i/f-webp__q-82__ha-d074da576794e566__hmac-f13d64ca315c00e4c5e288e72bb577873020c566/images/items/750/SGSTHCCH-large.jpg"
+    ],
+    "url": "https://www.sweetwater.com/store/detail/SGS17HCCH/sn170099523",
+    "badges": ["sale", "limited"],
+    "rating": {
+      "average": 4.7,
+      "count": 156
+    },
+    "variants": [
+      {
+        "id": "hc",
+        "name": "Heritage Cherry",
+        "type": "color",
+        "value": "#8B0000",
+        "image": "https://media.sweetwater.com/api/i/f-webp__q-82__ha-d074da576794e566__hmac-f13d64ca315c00e4c5e288e72bb577873020c566/images/items/750/SGSTHCCH-large.jpg",
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "id": "eb",
+        "name": "Ebony",
+        "type": "color",
+        "value": "#1a1a1a",
+        "image": null,
+        "available": false,
+        "priceModifier": 0
+      },
+      {
+        "id": "vw",
+        "name": "Vintage White",
+        "type": "color",
+        "value": "#f5f5dc",
+        "image": null,
+        "available": true,
+        "priceModifier": 50
+      }
+    ],
+    "specifications": {
+      "Body": "Mahogany",
+      "Neck": "Mahogany, Rounded",
+      "Fingerboard": "Rosewood, 22 Frets",
+      "Pickups": "490R & 490T Humbuckers",
+      "Bridge": "Tune-o-matic with Stopbar",
+      "Scale Length": "24.75\"",
+      "Nut Width": "1.695\"",
+      "Finish": "Nitrocellulose Lacquer"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "3-5 business days"
+    },
+    "reviews": [
+      {
+        "id": "r1",
+        "author": "RockLegend",
+        "rating": 5,
+        "date": "2025-11-01",
+        "title": "Tone for days",
+        "content": "The SG Standard delivers that classic rock tone I've been chasing. The slim neck profile is incredibly comfortable for fast playing. Worth every penny.",
+        "verified": true,
+        "helpful": 31
+      }
+    ],
+    "relatedProducts": ["SM57", "SM58"]
+  },
+  {
+    "itemid": "SM58",
+    "productName": "SM58",
+    "manufacturer": "Shure",
+    "category": "Audio > Microphones > Dynamic",
+    "tags": ["microphone", "vocal", "professional", "live", "studio"],
+    "price": 99.0,
+    "originalPrice": null,
+    "available": 6,
+    "quantity": 3,
+    "description": "Dynamic Vocal Microphone with Cardioid Pickup Pattern and 50Hz-15kHz Frequency Response, Includes Stand Adapter, and Zippered Carrying Case",
+    "shortDescription": "The world's most popular vocal microphone",
+    "image": "https://media.sweetwater.com/images/items/120/SM58-medium.jpg",
+    "images": ["https://media.sweetwater.com/images/items/120/SM58-medium.jpg"],
+    "url": "https://www.sweetwater.com/store/detail/SM58",
+    "badges": ["bestseller"],
+    "rating": {
+      "average": 4.9,
+      "count": 4521
+    },
+    "variants": [],
+    "specifications": {
+      "Type": "Dynamic",
+      "Polar Pattern": "Cardioid",
+      "Frequency Response": "50Hz - 15kHz",
+      "Impedance": "Low (150 ohms)",
+      "Connector": "XLR",
+      "Weight": "10.5 oz (298g)"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [
+      {
+        "id": "r1",
+        "author": "VocalCoach",
+        "rating": 5,
+        "date": "2025-10-28",
+        "title": "Cannot go wrong with an SM58",
+        "content": "Every venue, every studio, every rehearsal space has these for a reason. Reliable, great sounding, and virtually indestructible.",
+        "verified": true,
+        "helpful": 89
+      }
+    ],
+    "relatedProducts": ["SM57", "R16"]
+  },
+  {
+    "itemid": "R16",
+    "productName": "R16",
+    "manufacturer": "Zoom",
+    "category": "Audio > Recording > Interfaces",
+    "tags": ["recorder", "interface", "portable", "multitrack", "studio"],
+    "price": 399.99,
+    "originalPrice": 449.99,
+    "available": 14,
+    "quantity": 1,
+    "description": "16-track Portable SD Recorder, USB Audio Interface, and DAW Control Surface with 8 Microphone Inputs, Built-in Stereo Condenser Microphones, Built-in Effects, 1GB SD Card, and USB - Mac/PC",
+    "shortDescription": "All-in-one portable recording solution",
+    "image": "https://media.sweetwater.com/images/items/120/R16-medium.jpg",
+    "images": ["https://media.sweetwater.com/images/items/120/R16-medium.jpg"],
+    "url": "https://www.sweetwater.com/store/detail/R16",
+    "badges": ["sale"],
+    "rating": {
+      "average": 4.5,
+      "count": 342
+    },
+    "variants": [],
+    "specifications": {
+      "Tracks": "16 simultaneous",
+      "Inputs": "8 XLR/TRS combo",
+      "Built-in Mics": "Stereo condenser",
+      "Effects": "150+ built-in",
+      "Storage": "SD/SDHC card",
+      "Connectivity": "USB 2.0"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [
+      {
+        "id": "r1",
+        "author": "FieldRecorder",
+        "rating": 4,
+        "date": "2025-09-15",
+        "title": "Great for mobile recording",
+        "content": "Perfect for recording band rehearsals and live shows. The built-in effects are a nice bonus. Only wish it had more simultaneous tracks.",
+        "verified": true,
+        "helpful": 18
+      }
+    ],
+    "relatedProducts": ["SM57", "SM58"]
+  },
+  {
+    "itemid": "IPHONE16PRO",
+    "productName": "iPhone 16 Pro",
+    "manufacturer": "Apple",
+    "category": "Electronics > Phones > Smartphones",
+    "tags": ["phone", "smartphone", "apple", "ios", "camera", "5g"],
+    "price": 1199.0,
+    "originalPrice": null,
+    "available": 25,
+    "quantity": 1,
+    "description": "The most advanced iPhone ever. Featuring Apple Intelligence, A18 Pro chip, 48MP camera system with 5x optical zoom, titanium design, and all-day battery life.",
+    "shortDescription": "Pro. Beyond. With Apple Intelligence.",
+    "image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch_AV1?wid=400&hei=400",
+    "images": [
+      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch_AV1?wid=400&hei=400"
+    ],
+    "url": "https://www.apple.com/shop/buy-iphone/iphone-16-pro",
+    "badges": ["new"],
+    "rating": {
+      "average": 4.8,
+      "count": 1247
+    },
+    "variants": [
+      {
+        "id": "desert",
+        "name": "Desert Titanium",
+        "type": "color",
+        "value": "#c4b49a",
+        "image": null,
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "id": "natural",
+        "name": "Natural Titanium",
+        "type": "color",
+        "value": "#a8a9ad",
+        "image": null,
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "id": "white",
+        "name": "White Titanium",
+        "type": "color",
+        "value": "#f5f5f0",
+        "image": null,
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "id": "black",
+        "name": "Black Titanium",
+        "type": "color",
+        "value": "#1a1a1a",
+        "image": null,
+        "available": true,
+        "priceModifier": 0
+      }
+    ],
+    "sizes": [
+      { "size": "128GB", "available": true, "priceModifier": 0 },
+      { "size": "256GB", "available": true, "priceModifier": 100 },
+      { "size": "512GB", "available": true, "priceModifier": 300 },
+      { "size": "1TB", "available": true, "priceModifier": 500 }
+    ],
+    "specifications": {
+      "Display": "6.3\" Super Retina XDR",
+      "Chip": "A18 Pro",
+      "Camera": "48MP Main, 48MP Ultra Wide, 12MP Telephoto",
+      "Battery": "All-day battery life",
+      "Storage": "128GB - 1TB",
+      "Material": "Titanium design"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "1-2 business days"
+    },
+    "reviews": [
+      {
+        "id": "r1",
+        "author": "TechEnthusiast",
+        "rating": 5,
+        "date": "2025-11-20",
+        "title": "Best iPhone yet",
+        "content": "The camera improvements are stunning. Apple Intelligence features are genuinely useful. The titanium feels premium in hand.",
+        "verified": true,
+        "helpful": 156
+      }
+    ],
+    "relatedProducts": ["MACBOOKM4", "AIRPODSPRO"]
+  },
+  {
+    "itemid": "MACBOOKM4",
+    "productName": "MacBook Pro M4",
+    "manufacturer": "Apple",
+    "category": "Electronics > Computers > Laptops",
+    "tags": ["laptop", "apple", "macbook", "pro", "m4", "creative"],
+    "price": 1999.0,
+    "originalPrice": null,
+    "available": 12,
+    "quantity": 1,
+    "description": "The most advanced Mac ever. M4 Pro chip delivers exceptional performance for demanding workflows. Stunning Liquid Retina XDR display. Up to 22 hours of battery life.",
+    "shortDescription": "Supercharged by M4 Pro.",
+    "image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spaceblack-select-202410?wid=400&hei=400",
+    "images": [
+      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spaceblack-select-202410?wid=400&hei=400"
+    ],
+    "url": "https://www.apple.com/shop/buy-mac/macbook-pro",
+    "badges": ["new", "bestseller"],
+    "rating": {
+      "average": 4.9,
+      "count": 892
+    },
+    "variants": [
+      {
+        "id": "spaceblack",
+        "name": "Space Black",
+        "type": "color",
+        "value": "#1d1d1f",
+        "image": null,
+        "available": true,
+        "priceModifier": 0
+      },
+      {
+        "id": "silver",
+        "name": "Silver",
+        "type": "color",
+        "value": "#e3e4e5",
+        "image": null,
+        "available": true,
+        "priceModifier": 0
+      }
+    ],
+    "sizes": [
+      { "size": "14-inch", "available": true, "priceModifier": 0 },
+      { "size": "16-inch", "available": true, "priceModifier": 400 }
+    ],
+    "specifications": {
+      "Display": "Liquid Retina XDR",
+      "Chip": "M4 Pro (14-core CPU, 20-core GPU)",
+      "Memory": "24GB Unified Memory",
+      "Storage": "512GB SSD",
+      "Battery": "Up to 22 hours",
+      "Ports": "3x Thunderbolt 5, HDMI, SD, MagSafe"
+    },
+    "shipping": {
+      "free": true,
+      "estimate": "2-3 business days"
+    },
+    "reviews": [],
+    "relatedProducts": ["IPHONE16PRO"]
+  }
+]
