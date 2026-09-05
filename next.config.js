@@ -2,14 +2,22 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'media.sweetwater.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
   sassOptions: {
-    fibers: false,
     implementation: 'sass',
     includePaths: ['./styles/app.scss'],
-    silenceDeprecations: ['legacy-js-api'],
+    silenceDeprecations: ['legacy-js-api', 'color-functions', 'import', 'global-builtin'],
   },
 };
 

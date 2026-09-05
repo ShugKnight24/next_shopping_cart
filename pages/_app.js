@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { handlePageView } from '../analytics/google';
 import Layout from '../Components/Layout';
+import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
 import { ModalProvider } from '../context/ModalProvider';
-
+import '../static/normalize.css';
 import '../styles/app.scss';
 
 function MyApp({ Component, pageProps }) {
@@ -25,13 +26,15 @@ function MyApp({ Component, pageProps }) {
   }, [router.events]);
 
   return (
-    <ModalProvider>
-      <CartProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </CartProvider>
-    </ModalProvider>
+    <ToastProvider>
+      <ModalProvider>
+        <CartProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </CartProvider>
+      </ModalProvider>
+    </ToastProvider>
   );
 }
 
