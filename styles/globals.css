@@ -1,0 +1,255 @@
+@import './tokens.css';
+
+/* ============================================================================
+   Global Resets & Base Styles
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: #fafbfc;
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+}
+
+/* ============================================================================
+   Site Layout & Shared Containers
+   ============================================================================ */
+
+.site-container {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-container .page-header h1,
+.site-container .page-header h2 {
+  text-align: center;
+  margin: 9px 0;
+}
+
+.horizontal-rule {
+  width: 100%;
+  margin: 0.5em 0;
+  border: none;
+  height: 1px;
+  background: var(--color-primary-accent);
+  box-shadow: 0 1px var(--color-primary-accent);
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+/* ============================================================================
+   Global Interactive Button Classes
+   ============================================================================ */
+
+.checkout,
+.add-cart-button {
+  background-color: var(--color-green);
+  border: 1px solid var(--color-green);
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.checkout:hover,
+.add-cart-button:hover {
+  background-color: var(--color-green-hover);
+  border-color: var(--color-green-border);
+}
+
+.checkout.disabled,
+.add-cart-button.disabled {
+  background-color: var(--color-disabled);
+  border-color: var(--color-disabled);
+  cursor: not-allowed;
+}
+
+.checkout.disabled:hover,
+.add-cart-button.disabled:hover {
+  background-color: var(--color-disabled-hover);
+  border-color: var(--color-disabled-border);
+}
+
+.cancel,
+.continue-shopping {
+  background-color: var(--color-blue);
+  border: 1px solid var(--color-blue);
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.cancel:hover,
+.continue-shopping:hover {
+  background-color: var(--color-blue-hover);
+  border-color: var(--color-blue-border);
+}
+
+.delete-item,
+.clear-cart {
+  background-color: var(--color-red);
+  border: 1px solid var(--color-red-border);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.delete-item:hover,
+.clear-cart:hover {
+  background-color: var(--color-red-hover);
+  border-color: var(--color-red-hover);
+}
+
+/* ============================================================================
+   Keyframe Animations
+   ============================================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================================================
+   Global Modal Portal Container
+   ============================================================================ */
+
+#modal {
+  background-color: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+#modal:empty {
+  display: none;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

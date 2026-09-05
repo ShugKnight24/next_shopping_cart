@@ -1,8 +1,7 @@
 import Head from 'next/head';
 import { useState } from 'react';
 import { Products } from '../../Components/Products/Products';
-// import { getCurrentItem } from '../../utils/getItem';
-// import { formatCurrency } from '../../utils/cartUtils';
+import styles from '../../styles/pages/Products.module.css';
 
 export default function ProductsPage() {
   const [, setSelectedProduct] = useState(null);
@@ -13,7 +12,7 @@ export default function ProductsPage() {
       <Head>
         <title>Shopping Cart | All Products Page</title>
       </Head>
-      <div className="products-page">
+      <div className={`${styles.productsPage} products-page`}>
         <div className="page-header">
           <h1>All Products</h1>
         </div>

@@ -10,7 +10,7 @@ import {
   totalQuantity,
 } from '../../utils/cartUtils';
 import { CloseIcon, CartIcon, TrashIcon } from '../Icons';
-import styles from './CartDrawer.module.scss';
+import styles from './CartDrawer.module.css';
 
 const FREE_SHIPPING_THRESHOLD = 150;
 

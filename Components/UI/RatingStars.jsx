@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './RatingStars.module.scss';
+import styles from './RatingStars.module.css';
 
 export function RatingStars({
   rating = 0,

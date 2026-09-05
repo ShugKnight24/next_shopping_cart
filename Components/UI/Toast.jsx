@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { createContext, useCallback, useContext, useState } from 'react';
-import styles from './Toast.module.scss';
+import styles from './Toast.module.css';
 
 const ToastContext = createContext(null);
 

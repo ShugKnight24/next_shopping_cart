@@ -14,6 +14,7 @@ import { ProductTabs } from '../../Components/Products/ProductTabs';
 import { ReviewList } from '../../Components/Products/ReviewCard';
 import { Badge, RatingStars } from '../../Components/UI';
 import { useToast } from '../../Components/UI/Toast';
+import styles from '../../styles/pages/Products.module.css';
 import {
   ChevronRight,
   AlertTriangleIcon,
@@ -150,7 +151,7 @@ export default function ProductID({ currentProduct, enhancedProduct }) {
         <title>{productName} | Product Page</title>
         <meta name="description" content={description} />
       </Head>
-      <div className="product-page premium">
+      <div className={`${styles.productsPage} product-page premium`}>
         {/* Breadcrumbs */}
         <nav className="product-breadcrumbs" aria-label="Breadcrumb">
           <Link href="/">Home</Link>

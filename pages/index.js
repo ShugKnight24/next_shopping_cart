@@ -7,10 +7,11 @@ import { Hero } from '../Components/Hero/Hero';
 import { HowItWorks } from '../Components/HowItWorks';
 import { Products } from '../Components/Products/Products';
 import { Reasons } from '../Components/Reasons/Reasons';
+import styles from '../styles/pages/Home.module.css';
 
 const CarouselLoading = () => (
-  <div className="carousel-loading">
-    <div className="loading-spinner" />
+  <div className={styles.carouselLoading}>
+    <div className={styles.loadingSpinner} />
     <span>Loading featured products...</span>
   </div>
 );
@@ -42,7 +43,7 @@ export default function Home() {
         />
       </Head>
 
-      <div className="home-container premium">
+      <div className={`${styles.homeContainer} ${styles.premium}`}>
         <Hero />
         {/* How It Works Section */}
         <HowItWorks />
@@ -57,11 +58,11 @@ export default function Home() {
         {/* Value Propositions */}
         <Reasons />
         {/* Products Section */}
-        <section className="products-section">
-          <div className="section-header-wrapper">
-            <span className="section-eyebrow">Shop Now</span>
-            <h2 className="section-title">Premium Collection</h2>
-            <p className="section-subtitle">
+        <section className={styles.productsSection}>
+          <div className={styles.sectionHeaderWrapper}>
+            <span className={styles.sectionEyebrow}>Shop Now</span>
+            <h2 className={styles.sectionTitle}>Premium Collection</h2>
+            <p className={styles.sectionSubtitle}>
               Curated selection of our finest products, handpicked for quality
               and excellence.
             </p>
@@ -72,8 +73,8 @@ export default function Home() {
             setRecommendedProduct={setRecommendedProduct}
           />
 
-          <div className="products-cta-wrapper">
-            <Link className="all-products-link" href="/products">
+          <div className={styles.productsCtaWrapper}>
+            <Link className={styles.allProductsLink} href="/products">
               <span>Explore Full Collection</span>
               <svg
                 width="20"

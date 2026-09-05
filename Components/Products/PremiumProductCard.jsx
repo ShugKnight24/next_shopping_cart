@@ -5,7 +5,7 @@ import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
-import styles from './PremiumProductCard.module.scss';
+import styles from './PremiumProductCard.module.css';
 
 export function PremiumProductCard({
   product,

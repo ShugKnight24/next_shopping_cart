@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import styles from './Tooltip.module.scss';
+import styles from './Tooltip.module.css';
 
 export function Tooltip({
   children,

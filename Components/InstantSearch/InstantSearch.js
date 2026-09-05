@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { Hit } from './Hit';
+import styles from './InstantSearch.module.css';
 
 export function InstantSearch({
   showHitsClosed,
@@ -51,16 +52,16 @@ export function InstantSearch({
   }, [showHitsClosed]);
 
   return (
-    <div className={`instant-search-container ${showHits ? 'populated' : ''}`}>
+    <div className={`${styles.instantSearchContainer} ${showHits ? styles.populated : ''}`.trim()}>
       <input
-        className="instant-search"
+        className={styles.instantSearch}
         type="text"
         placeholder="Search Products"
         value={searchQuery}
         onFocus={() => setShowHits(true)}
         onChange={handleInput}
       />
-      <ul className="instant-list">
+      <ul className={styles.instantList}>
         {showHits ? (
           hitList.length !== 0 ? (
             hitList.map((product) => (

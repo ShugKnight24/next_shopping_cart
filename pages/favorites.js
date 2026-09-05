@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { ProductCard } from '../Components/Products/ProductCard';
 import { CartContext } from '../context/CartProvider';
 import { getCurrentItem } from '../utils/getItem';
+import styles from '../styles/pages/Favorites.module.css';
 
 export default function Favorites() {
   const { state } = useContext(CartContext);
@@ -16,13 +17,13 @@ export default function Favorites() {
       <Head>
         <title>Shopping Cart | Favorites</title>
       </Head>
-      <div className="favorites-container">
-        <div className="page-header">
+      <div className={styles.favoritesContainer}>
+        <div className={styles.pageHeader}>
           <h1>Your Favorites</h1>
           <h2>Items you&apos;ve saved for later</h2>
         </div>
         {filteredFavorites.length > 0 ? (
-          <div className="favorites-grid">
+          <div className={styles.favoritesGrid}>
             {filteredFavorites.map(
               ({
                 available,
@@ -54,7 +55,7 @@ export default function Favorites() {
             )}
           </div>
         ) : (
-          <div className="no-favorites">
+          <div className={styles.noFavorites}>
             <p>No favorites yet</p>
             <ul>
               <li>

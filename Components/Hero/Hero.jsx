@@ -7,7 +7,7 @@ import {
   WatchIcon,
 } from '../Icons';
 import { AnimatedCart } from './AnimatedCart';
-import styles from './Hero.module.scss';
+import styles from './Hero.module.css';
 
 // Product shelf items that will jump into the cart
 const shelfProducts = [

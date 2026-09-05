@@ -1,5 +1,5 @@
 // TODO: Convert into it's own module
-import styles from './Hero.module.scss';
+import styles from './Hero.module.css';
 
 export function AnimatedCart({ className }) {
   return (

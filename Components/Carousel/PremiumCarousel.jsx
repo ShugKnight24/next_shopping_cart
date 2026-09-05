@@ -2,7 +2,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import slideContent from '../../data/slides.json';
-import styles from './PremiumCarousel.module.scss';
+import styles from './PremiumCarousel.module.css';
 
 // Slide data - can be moved to a separate file or fetched from API
 // const defaultSlides = [

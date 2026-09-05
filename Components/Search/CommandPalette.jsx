@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
-import styles from './CommandPalette.module.scss';
+import styles from './CommandPalette.module.css';
 
 export function CommandPalette({
   isOpen,

@@ -1,0 +1,148 @@
+/* SocialIcons CSS Module */
+
+.socialIconsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.socialHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headingIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--color-gold);
+}
+
+.headingIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.headingText h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.headingText span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.socialIconsContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+}
+
+.socialLink svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.socialLink:hover {
+  transform: translateY(-3px);
+}
+
+.socialLink:hover svg {
+  transform: scale(1.15);
+}
+
+.facebook:hover {
+  color: #1877f2;
+  border-color: rgba(24, 119, 242, 0.5);
+  background: rgba(24, 119, 242, 0.15);
+  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.3);
+}
+
+.discord:hover {
+  color: #5865f2;
+  border-color: rgba(88, 101, 242, 0.5);
+  background: rgba(88, 101, 242, 0.15);
+  box-shadow: 0 4px 14px rgba(88, 101, 242, 0.3);
+}
+
+.instagram:hover {
+  color: #e1306c;
+  border-color: rgba(225, 48, 108, 0.5);
+  background: radial-gradient(
+    circle at 30% 107%,
+    rgba(253, 244, 151, 0.2) 0%,
+    rgba(253, 89, 73, 0.2) 45%,
+    rgba(214, 36, 159, 0.2) 60%,
+    rgba(40, 90, 235, 0.2) 90%
+  );
+  box-shadow: 0 4px 14px rgba(225, 48, 108, 0.3);
+}
+
+.linkedin:hover {
+  color: #0a66c2;
+  border-color: rgba(10, 102, 194, 0.5);
+  background: rgba(10, 102, 194, 0.15);
+  box-shadow: 0 4px 14px rgba(10, 102, 194, 0.3);
+}
+
+.pinterest:hover {
+  color: #e60023;
+  border-color: rgba(230, 0, 35, 0.5);
+  background: rgba(230, 0, 35, 0.15);
+  box-shadow: 0 4px 14px rgba(230, 0, 35, 0.3);
+}
+
+.tiktok:hover {
+  color: #00f2fe;
+  border-color: rgba(254, 44, 85, 0.5);
+  background: rgba(254, 44, 85, 0.15);
+  box-shadow: 0 4px 14px rgba(254, 44, 85, 0.3);
+  filter: drop-shadow(1px 1px 0 #fe2c55);
+}
+
+.twitch:hover {
+  color: #a970ff;
+  border-color: rgba(169, 112, 255, 0.5);
+  background: rgba(169, 112, 255, 0.15);
+  box-shadow: 0 4px 14px rgba(169, 112, 255, 0.3);
+}
+
+.youtube:hover {
+  color: #ff0000;
+  border-color: rgba(255, 0, 0, 0.5);
+  background: rgba(255, 0, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(255, 0, 0, 0.3);
+}
+
+.x:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+}

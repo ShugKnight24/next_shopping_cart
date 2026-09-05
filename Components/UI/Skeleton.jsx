@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './Skeleton.module.scss';
+import styles from './Skeleton.module.css';
 
 export function Skeleton({
   variant = 'rectangular',

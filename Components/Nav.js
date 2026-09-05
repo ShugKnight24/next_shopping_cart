@@ -7,6 +7,7 @@ import PromoBanner from './PromoBanner/PromoBanner';
 import { CommandPalette } from './Search/CommandPalette';
 import { CartDrawer } from './Cart/CartDrawer';
 import { SearchIcon, CartIcon } from './Icons';
+import styles from './Nav.module.css';
 
 // Import product data for search
 import items from '../data/items.json';
@@ -89,13 +90,13 @@ export default function Nav() {
   }, []);
 
   return (
-    <div className="nav-container">
-      <div className="nav-header">
-        <Link href="/" className="nav-logo-link" aria-label="Cart Commerce Home">
-          <Logo />
+    <div className={styles.navContainer}>
+      <div className={styles.navHeader}>
+        <Link href="/" className={styles.navLogoLink} aria-label="Cart Commerce Home">
+          <Logo className={styles.brandLogoSvg} />
         </Link>
-        <div className="nav-controls">
-          <nav className="nav-links" aria-label="Main Navigation">
+        <div className={styles.navControls}>
+          <nav className={styles.navLinks} aria-label="Main Navigation">
             <Link href="/" aria-label="Home / Shop">
               Shop
             </Link>
@@ -106,24 +107,24 @@ export default function Nav() {
               Products
             </Link>
           </nav>
-          <div className="nav-actions">
+          <div className={styles.navActions}>
             <button
               type="button"
-              className="search-trigger"
+              className={styles.searchTrigger}
               onClick={() => setIsSearchOpen(true)}
               aria-label="Search products"
             >
               <SearchIcon size={16} />
-              <span className="search-shortcut">⌘K</span>
+              <span className={styles.searchShortcut}>⌘K</span>
             </button>
             <button
               type="button"
-              className="cart-nav-item"
+              className={styles.cartNavItem}
               onClick={() => setIsCartOpen(true)}
               aria-label={`Open Cart Bag (${cartCount} ${cartCount === 1 ? 'item' : 'items'})`}
             >
-              <CartIcon size={24} className="cart-nav-svg" />
-              <span className={`cart-count ${cartIconSize}`}>{cartCount}</span>
+              <CartIcon size={24} className={styles.cartNavSvg} />
+              <span className={`${styles.cartCount} ${cartIconSize ? styles[cartIconSize] : ''}`.trim()}>{cartCount}</span>
             </button>
           </div>
         </div>
@@ -131,9 +132,9 @@ export default function Nav() {
       <PromoBanner />
 
       {/* Scroll Progress Indicator */}
-      <div className="scroll-progress-track">
+      <div className={styles.scrollProgressTrack}>
         <div
-          className="scroll-progress-bar"
+          className={styles.scrollProgressBar}
           style={{ width: `${scrollProgress}%` }}
         />
       </div>

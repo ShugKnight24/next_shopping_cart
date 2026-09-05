@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './Badge.module.scss';
+import styles from './Badge.module.css';
 
 const BADGE_CONFIG = {
   new: { label: 'New', icon: '✨' },

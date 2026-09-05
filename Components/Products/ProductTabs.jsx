@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-import styles from './ProductTabs.module.scss';
+import styles from './ProductTabs.module.css';
 
 export const ProductTabs = ({ product }) => {
   const [activeTab, setActiveTab] = useState(0);

@@ -1,4 +1,5 @@
 import { PAYMENT_BADGES } from './PaymentMethods/Badges';
+import styles from './PaymentMethods/PaymentMethods.module.css';
 
 // Shield/Lock icon for secure payments
 function SecureIcon() {
@@ -19,22 +20,22 @@ function SecureIcon() {
 
 export function PaymentMethods() {
   return (
-    <div className="payment-methods">
-      <div className="payment-heading">
-        <span className="heading-icon">
+    <div className={styles.paymentMethods}>
+      <div className={styles.paymentHeading}>
+        <span className={styles.headingIcon}>
           <SecureIcon />
         </span>
-        <div className="heading-text">
+        <div className={styles.headingText}>
           <h4>Secure Checkout</h4>
           <span>100% encrypted & protected</span>
         </div>
       </div>
-      <ul aria-label="Accepted payment methods">
+      <ul className={styles.badgeList} aria-label="Accepted payment methods">
         {PAYMENT_BADGES.map((method) => {
           const BadgeComponent = method.Component;
           return (
-            <li key={method.id} title={method.name}>
-              <BadgeComponent className="payment-badge-svg" />
+            <li key={method.id} title={method.name} className={styles.badgeItem}>
+              <BadgeComponent className={styles.paymentBadgeSvg} />
             </li>
           );
         })}

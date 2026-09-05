@@ -5,7 +5,7 @@ import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
-import styles from './QuickView.module.scss';
+import styles from './QuickView.module.css';
 
 export function QuickView({ product, isOpen, onClose }) {
   const { dispatch } = useContext(CartContext);

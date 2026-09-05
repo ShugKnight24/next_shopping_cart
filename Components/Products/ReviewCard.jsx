@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { RatingStars } from '../UI/RatingStars';
-import styles from './ReviewCard.module.scss';
+import styles from './ReviewCard.module.css';
 
 export function ReviewCard({ review }) {
   const [isHelpful, setIsHelpful] = useState(false);

@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { ModalContext } from '../../context/ModalProvider';
 import { getCurrentItem } from '../../utils/getItem';
+import styles from '../Modal.module.css';
 
 export function DeleteItem({ itemid }) {
   const { state, dispatch } = useContext(CartContext);
@@ -30,20 +31,18 @@ export function DeleteItem({ itemid }) {
   }
 
   return (
-    <div className="delete-item-modal">
-      <div className="modal-content">
-        <h2>Remove Item?</h2>
-        <p>
-          You&apos;re about to remove <strong>{currentItem.productName}</strong>{' '}
-          from your cart.
-        </p>
-        <p>Would you like to continue?</p>
-      </div>
-      <div className="actions add-to-cart-actions">
-        <button className="cancel-action" onClick={() => handleCancel()}>
+    <div className={styles.modalContent}>
+      <h2>Remove Item?</h2>
+      <p>
+        You&apos;re about to remove <strong>{currentItem.productName}</strong>{' '}
+        from your cart.
+      </p>
+      <p>Would you like to continue?</p>
+      <div className={styles.actions}>
+        <button className={styles.cancelAction} onClick={() => handleCancel()}>
           Keep Item
         </button>
-        <button className="danger-action" onClick={() => handleDeleteItem()}>
+        <button className={styles.dangerAction} onClick={() => handleDeleteItem()}>
           Remove
         </button>
       </div>

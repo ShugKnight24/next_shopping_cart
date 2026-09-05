@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './BackToTop.module.scss';
+import styles from './BackToTop.module.css';
 
 export function BackToTop() {
   const [scrollProgress, setScrollProgress] = useState(0);

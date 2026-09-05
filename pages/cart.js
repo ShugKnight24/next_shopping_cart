@@ -15,6 +15,7 @@ import {
   totalQuantity,
 } from '../utils/cartUtils';
 import { TrashIcon } from '../Components/Icons';
+import styles from '../styles/pages/Cart.module.css';
 
 // Trust badge icons
 const ShieldIcon = () => (
@@ -120,7 +121,7 @@ export default function Cart() {
       <Head>
         <title>Shopping Cart | Cart</title>
       </Head>
-      <div className="cart-container">
+      <div className={`${styles.cartPage} cart-container`}>
         <div className="page-header">
           <h1>Shopping Cart</h1>
           <h2>Review your items before checkout</h2>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import styles from '../styles/pages/NotFound.module.css';
 
 export default function NotFound() {
   const router = useRouter();
@@ -22,9 +23,9 @@ export default function NotFound() {
   }, [router]);
 
   return (
-    <div className="not-found-body">
-      <div className="error-card">
-        <div className="error-code">404</div>
+    <div className={styles.notFoundBody}>
+      <div className={styles.errorCard}>
+        <div className={styles.errorCode}>404</div>
         <h1>Page Not Found</h1>
         <p>
           Oops! The page you&apos;re looking for doesn&apos;t exist or has been
@@ -32,14 +33,14 @@ export default function NotFound() {
           <br />
           Redirecting to home in <strong>{countdown}</strong> seconds...
         </p>
-        <div className="quick-links">
-          <Link href="/" className="primary-link">
+        <div className={styles.quickLinks}>
+          <Link href="/" className={styles.primaryLink}>
             Go Home
           </Link>
-          <Link href="/products" className="secondary-link">
+          <Link href="/products" className={styles.secondaryLink}>
             Browse Products
           </Link>
-          <Link href="/cart" className="secondary-link">
+          <Link href="/cart" className={styles.secondaryLink}>
             View Cart
           </Link>
         </div>

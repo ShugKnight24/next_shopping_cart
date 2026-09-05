@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import styles from './HowItWorks.module.scss';
+import styles from './HowItWorks.module.css';
 
 const steps = [
   {

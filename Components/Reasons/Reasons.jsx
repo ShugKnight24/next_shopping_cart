@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import styles from './Reasons.module.scss';
+import styles from './Reasons.module.css';
 
 const reasons = [
   {

@@ -1,0 +1,256 @@
+.howItWorks {
+  position: relative;
+  padding: 120px 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.howItWorks.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.howItWorks::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.03) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 20px;
+  background: rgba(218, 165, 32, 0.1);
+  border: 1px solid rgba(218, 165, 32, 0.2);
+  border-radius: 50px;
+  color: #b8860b;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 16px;
+}
+
+.accent {
+  background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #6b7c93;
+  margin: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.stepsContainer {
+  position: relative;
+  margin-bottom: 60px;
+}
+
+.progressLine {
+  position: absolute;
+  top: 60px;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  z-index: 1;
+}
+@media (max-width: 768px) {
+  .progressLine {
+    display: none;
+  }
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #daa520 0%, #f4d03f 100%);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 1024px) {
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.step {
+  position: relative;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+.step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  border-color: rgba(218, 165, 32, 0.3);
+}
+.step.active {
+  border-color: #daa520;
+  box-shadow: 0 12px 40px rgba(218, 165, 32, 0.15);
+  transform: translateY(-8px);
+}
+.step.active .stepNumber {
+  background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+  color: #ffffff;
+  transform: scale(1.1);
+}
+.step.active .stepIcon {
+  color: #daa520;
+  transform: scale(1.1);
+}
+.step.completed .stepNumber {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.stepNumber {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #6b7c93;
+  transition: all 0.3s ease;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.stepNumber svg {
+  width: 18px;
+  height: 18px;
+}
+
+.stepIcon {
+  width: 64px;
+  height: 64px;
+  margin: 20px auto 20px;
+  color: #1e3a5f;
+  transition: all 0.3s ease;
+}
+.stepIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.stepTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin: 0 0 10px;
+}
+
+.stepDescription {
+  font-size: 0.9rem;
+  color: #6b7c93;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cta {
+  text-align: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(30, 58, 95, 0.3);
+}
+.ctaButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(30, 58, 95, 0.4);
+}
+.ctaButton svg {
+  transition: transform 0.3s ease;
+}
+.ctaButton:hover svg {
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .howItWorks {
+    padding: 80px 0;
+  }
+  .header {
+    margin-bottom: 50px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .howItWorks {
+    transition: none;
+  }
+  .step,
+  .stepNumber,
+  .stepIcon,
+  .ctaButton,
+  .progressFill {
+    transition: none;
+  }
+}

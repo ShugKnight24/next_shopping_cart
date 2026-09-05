@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { HorizontalRule } from '../Components/HorizontalRule';
 import { PaymentMethods } from '../Components/PaymentMethods';
 import { SocialIcons } from '../Components/SocialIcons';
-import styles from './Footer.module.scss';
+import styles from './Footer.module.css';
 import { Logo } from './Logo';
 
 const currentYear = new Date().getFullYear();
@@ -280,10 +280,10 @@ function GiftBoxIcon() {
 
 export default function Footer() {
   return (
-    <div className="footer-container">
-      <footer>
-        <div className="store-info">
-          <div className="store-description">
+    <div className={styles.footerContainer}>
+      <footer className={styles.siteFooter}>
+        <div className={styles.storeInfo}>
+          <div className={styles.storeDescription}>
             <Link href="/" aria-label="Home / Shop">
               <Logo />
             </Link>
@@ -291,8 +291,8 @@ export default function Footer() {
               Our store provides quality products at their lowest retail prices
             </p>
           </div>
-          <div className="store-links">
-            <div className="shopping">
+          <div className={styles.storeLinks}>
+            <div className={styles.shopping}>
               <h3>Online Shopping</h3>
               <ul>
                 <li>
@@ -313,7 +313,7 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            <div className="info">
+            <div className={styles.info}>
               <h3>Shop Info</h3>
               <ul>
                 <li>
@@ -330,7 +330,7 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            <div className="contact">
+            <div className={styles.contact}>
               <h3>Contact</h3>
               <ul>
                 <li>
@@ -349,24 +349,24 @@ export default function Footer() {
           </div>
         </div>
         <HorizontalRule color={'#1173A8'} borderWidth={1} />
-        <div className="payment-social">
+        <div className={styles.paymentSocial}>
           <PaymentMethods />
           <SocialIcons />
         </div>
         <HorizontalRule color={'#1173A8'} borderWidth={1} />
-        <div className="copyright">
+        <div className={styles.copyright}>
           Copyright {currentYear} &copy; Shugmi Shumunov All Rights Reserved
         </div>
 
         {/* Premium Gold Divider */}
-        <div className="gold-divider">
-          <span className="divider-line" />
-          <div className="divider-ornament">
-            <span className="ornament-dot" />
-            <span className="ornament-diamond" />
-            <span className="ornament-dot" />
+        <div className={styles.goldDivider}>
+          <span className={styles.dividerLine} />
+          <div className={styles.dividerOrnament}>
+            <span className={styles.ornamentDot} />
+            <span className={styles.ornamentDiamond} />
+            <span className={styles.ornamentDot} />
           </div>
-          <span className="divider-line" />
+          <span className={styles.dividerLine} />
         </div>
 
         {/* Developer Attribution */}

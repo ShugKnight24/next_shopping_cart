@@ -11,6 +11,7 @@ import {
   totalQuantity,
 } from '../utils/cartUtils';
 import { CreditCardIcon, AppleIcon, GoogleIcon } from '../Components/Icons';
+import styles from '../styles/pages/Checkout.module.css';
 
 const SHIPPING_OPTIONS = [
   {
@@ -175,7 +176,7 @@ export default function Checkout() {
 
   if (cart.length === 0 && step !== 5) {
     return (
-      <div className="checkout-page empty-checkout">
+      <div className={`${styles.checkoutPage} checkout-page empty-checkout`}>
         <Head>
           <title>Checkout | Cart Commerce</title>
         </Head>
@@ -196,7 +197,7 @@ export default function Checkout() {
         <title>Checkout | Cart Commerce</title>
       </Head>
 
-      <div className="checkout-container">
+      <div className={`${styles.checkoutPage} checkout-container`}>
         {step < 5 && (
           <div className="checkout-stepper">
             <div className={`step-item ${step >= 1 ? 'active' : ''} ${step > 1 ? 'completed' : ''}`}>

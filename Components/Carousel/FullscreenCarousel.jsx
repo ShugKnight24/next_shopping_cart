@@ -24,7 +24,7 @@ import {
   PauseIcon,
   PlayIcon,
 } from '../Icons';
-import styles from './FullscreenCarousel.module.scss';
+import styles from './FullscreenCarousel.module.css';
 
 // Default slide data matching slides.json structure
 const defaultSlides = [

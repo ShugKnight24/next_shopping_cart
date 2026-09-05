@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './PromoBanner.module.scss';
+import styles from './PromoBanner.module.css';
 
 export default function PromoBanner({
   message = 'Get 15% off your first order!',

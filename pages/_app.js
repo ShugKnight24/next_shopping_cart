@@ -7,7 +7,7 @@ import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
 import { ModalProvider } from '../context/ModalProvider';
 import '../static/normalize.css';
-import '../styles/app.scss';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();

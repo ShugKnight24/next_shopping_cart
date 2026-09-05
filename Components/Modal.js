@@ -4,6 +4,8 @@ import { ModalContext } from '../context/ModalProvider';
 import PropTypes from 'prop-types';
 import { CloseIcon } from './Icons';
 
+import styles from './Modal.module.css';
+
 export function Modal({ children }){
 	const { setShowModal, setModalType } = useContext(ModalContext);
 	const elementRef = useRef(null);
@@ -32,11 +34,11 @@ export function Modal({ children }){
 	}
 
 	return createPortal(
-		<div className="modal-container">
-			<div className="modal-header">
-				<div className="modal-actions">
+		<div className={styles.modalContainer}>
+			<div className={styles.modalHeader}>
+				<div className={styles.modalActions}>
 					<button
-						className="close-modal"
+						className={styles.closeModal}
 						onClick={ () => closeModal() }
 						aria-label="Close modal"
 					>

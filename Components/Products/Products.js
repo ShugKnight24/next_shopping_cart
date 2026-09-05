@@ -4,6 +4,7 @@ import { CartContext } from '../../context/CartProvider';
 import { getCurrentItem } from '../../utils/getItem';
 import { InstantSearch } from '../InstantSearch/InstantSearch';
 import { ProductCard } from './ProductCard';
+import styles from './Products.module.css';
 
 export function Products({ setSelectedProduct, setRecommendedProduct }) {
   const { state } = useContext(CartContext);
@@ -25,7 +26,7 @@ export function Products({ setSelectedProduct, setRecommendedProduct }) {
 
   return (
     <div
-      className="products-container"
+      className={`${styles.productsWrapper} products-container`}
       onClick={(event) => closeInstantSearch(event)}
     >
       <div className="product-search-container">

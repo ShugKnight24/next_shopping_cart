@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import styles from './SocialIcons.module.css';
 
 import { XLogo } from './Logos/XLogo';
 import {
@@ -90,24 +91,24 @@ const socialLinks = [
 
 export function SocialIcons() {
   return (
-    <div className="social-icons-section">
-      <div className="social-heading">
-        <span className="heading-icon">
+    <div className={styles.socialIconsSection}>
+      <div className={styles.socialHeading}>
+        <span className={styles.headingIcon}>
           <ConnectIcon />
         </span>
-        <div className="heading-text">
+        <div className={styles.headingText}>
           <h4>Join the Community</h4>
           <span>Stay connected & inspired</span>
         </div>
       </div>
-      <div className="social-icons-container">
+      <div className={styles.socialIconsContainer}>
         {socialLinks.map((link) => {
           const IconComponent = link.Icon;
           return (
             <Link
               key={link.label}
               href={link.href}
-              className={link.className}
+              className={`${styles.socialLink} ${styles[link.className] || ''}`.trim()}
               rel="noopener noreferrer"
               target="_blank"
               aria-label={link.label}
@@ -120,3 +121,4 @@ export function SocialIcons() {
     </div>
   );
 }
+

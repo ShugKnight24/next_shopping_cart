@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useState } from 'react';
-import styles from './ImageGallery.module.scss';
+import styles from './ImageGallery.module.css';
 
 export function ImageGallery({ images = [], productName = '' }) {
   const [selectedIndex, setSelectedIndex] = useState(0);

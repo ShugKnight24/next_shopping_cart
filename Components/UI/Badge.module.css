@@ -1,0 +1,49 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.badge.small {
+  padding: 2px 6px;
+  font-size: 10px;
+}
+.badge.large {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+.badge .icon {
+  font-size: 1em;
+}
+.badge.new {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+  color: #fff;
+}
+.badge.sale {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+  color: #fff;
+}
+.badge.bestseller {
+  background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+  color: #fff;
+}
+.badge.limited {
+  background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
+  color: #fff;
+}
+.badge.lowstock {
+  background: linear-gradient(135deg, #e65100 0%, #ff9800 100%);
+  color: #fff;
+}
+
+.badgeGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

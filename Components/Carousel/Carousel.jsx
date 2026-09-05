@@ -11,7 +11,7 @@ import {
   PlayIcon,
   StarFilled,
 } from '../Icons';
-import styles from './Carousel.module.scss';
+import styles from './Carousel.module.css';
 
 function Slide({
   productName,

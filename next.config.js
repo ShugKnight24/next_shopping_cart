@@ -14,11 +14,6 @@ const nextConfig = {
       },
     ],
   },
-  sassOptions: {
-    implementation: 'sass',
-    includePaths: ['./styles/app.scss'],
-    silenceDeprecations: ['legacy-js-api', 'color-functions', 'import', 'global-builtin'],
-  },
 };
 
 module.exports = nextConfig;
