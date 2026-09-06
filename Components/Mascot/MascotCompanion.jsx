@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useMascot } from '../../context/MascotProvider';
-import { MASCOTS } from '../../config/mascots';
-import { CartySvg, LeoSvg } from './MascotArtwork';
+import { CartySvg, LeoSvg, PennySvg, DexterSvg, SparkySvg } from './MascotArtwork';
 import { SparklesIcon, CloseIcon, RotateCcwIcon } from '../Icons';
 import styles from './MascotCompanion.module.css';
 
@@ -12,6 +11,8 @@ export function MascotCompanion() {
     activeMascotId,
     setMascot,
     activeMascot,
+    availableMascots,
+    currentRealm,
     speech,
     dismissSpeech,
     speak,
@@ -46,6 +47,26 @@ export function MascotCompanion() {
     setMascot(id);
     setIsSwitcherOpen(false);
   };
+
+  const renderMascotArtwork = () => {
+    switch (activeMascotId) {
+      case 'sparky':
+        return <SparkySvg size={96} />;
+      case 'leo':
+        return <LeoSvg size={96} />;
+      case 'penny':
+        return <PennySvg size={96} />;
+      case 'dexter':
+        return <DexterSvg size={96} />;
+      case 'carty':
+      default:
+        return <CartySvg size={96} />;
+    }
+  };
+
+  const mascotList = availableMascots && availableMascots.length > 0 ? availableMascots : [activeMascot];
+  const otherMascots = mascotList.filter((m) => m.id !== activeMascotId);
+  const nextMascotName = otherMascots.length > 0 ? otherMascots[0].name.split(' ')[0] : 'Next';
 
   return (
     <aside className={styles.companionRoot} aria-label="Interactive Brand Companion">
@@ -84,9 +105,11 @@ export function MascotCompanion() {
           {/* Character Switcher Popover */}
           {isSwitcherOpen && (
             <div className={styles.switcherDrawer}>
-              <div className={styles.switcherTitle}>Choose Your Companion:</div>
+              <div className={styles.switcherTitle}>
+                {currentRealm === 'kids' ? 'Kids Companions:' : 'Store Companions:'}
+              </div>
               <div className={styles.switcherOptions}>
-                {Object.values(MASCOTS).map((m) => (
+                {mascotList.map((m) => (
                   <button
                     key={m.id}
                     type="button"
@@ -115,11 +138,7 @@ export function MascotCompanion() {
           onClick={handleMascotClick}
           aria-label={`Interact with ${activeMascot.name}`}
         >
-          {activeMascotId === 'leo' ? (
-            <LeoSvg size={96} />
-          ) : (
-            <CartySvg size={96} />
-          )}
+          {renderMascotArtwork()}
         </button>
       </div>
 
@@ -136,18 +155,21 @@ export function MascotCompanion() {
           <span>Turn Off</span>
         </button>
 
-        <button
-          type="button"
-          className={styles.swapPill}
-          onClick={() => {
-            const nextId = activeMascotId === 'carty' ? 'leo' : 'carty';
-            handleSelectMascot(nextId);
-          }}
-          title="Switch between Carty and Leo"
-          aria-label="Switch between Carty and Leo"
-        >
-          <span>{activeMascotId === 'carty' ? 'Switch to Leo' : 'Switch to Carty'}</span>
-        </button>
+        {mascotList.length > 1 && (
+          <button
+            type="button"
+            className={styles.swapPill}
+            onClick={() => {
+              const curIndex = mascotList.findIndex((m) => m.id === activeMascotId);
+              const nextIndex = (curIndex + 1) % mascotList.length;
+              handleSelectMascot(mascotList[nextIndex].id);
+            }}
+            title={`Switch to next companion (${nextMascotName})`}
+            aria-label={`Switch between companions`}
+          >
+            <span>Switch to {nextMascotName}</span>
+          </button>
+        )}
       </div>
     </aside>
   );

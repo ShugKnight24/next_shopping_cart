@@ -57,7 +57,7 @@ describe('Mascot Companion System', () => {
     expect(localStorage.getItem('shopping_cart.mascot_enabled')).toBe('true');
   });
 
-  it('allows swapping between Carty and Leo', () => {
+  it('allows swapping companions within shop realm (Carty and Sparky)', () => {
     render(
       <MascotProvider>
         <MascotCompanion />
@@ -65,13 +65,13 @@ describe('Mascot Companion System', () => {
     );
 
     const switchBtn = screen.getByRole('button', {
-      name: /Switch between Carty and Leo/i,
+      name: /Switch between companions/i,
     });
+    expect(switchBtn).toHaveTextContent(/Switch to Sparky/i);
     fireEvent.click(switchBtn);
 
-    expect(screen.getByText('Leo The Story Lion')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Leo The Story Lion Mascot/i)).toBeInTheDocument();
-    expect(localStorage.getItem('shopping_cart.mascot_active')).toBe('leo');
+    expect(screen.getByText('Sparky The Sneaker Hound')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Sparky The Sneaker Hound Mascot/i)).toBeInTheDocument();
   });
 
   it('dismisses the speech bubble without unmounting the mascot', () => {

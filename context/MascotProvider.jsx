@@ -45,6 +45,27 @@ export function MascotProvider({ children }) {
     setIsInitialized(true);
   }, []);
 
+  const currentRealm = router.pathname.startsWith('/studio') ? 'kids' : 'shop';
+
+  const availableMascots = useMemo(
+    () => Object.values(MASCOTS).filter((m) => m.realm === currentRealm),
+    [currentRealm]
+  );
+
+  // Auto-switch mascot realm when switching between shop and kids platform
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    const currentMascot = MASCOTS[activeMascotId];
+    if (currentRealm === 'kids' && (!currentMascot || currentMascot.realm !== 'kids')) {
+      const savedKids = localStorage.getItem('shopping_cart.mascot_active_kids');
+      setActiveMascotId(savedKids && MASCOTS[savedKids] ? savedKids : 'leo');
+    } else if (currentRealm === 'shop' && (!currentMascot || currentMascot.realm !== 'shop')) {
+      const savedShop = localStorage.getItem('shopping_cart.mascot_active_shop');
+      setActiveMascotId(savedShop && MASCOTS[savedShop] ? savedShop : 'carty');
+    }
+  }, [currentRealm, isInitialized, activeMascotId]);
+
   const activeMascot = useMemo(
     () => MASCOTS[activeMascotId] || MASCOTS[DEFAULT_MASCOT_ID],
     [activeMascotId]
@@ -63,10 +84,16 @@ export function MascotProvider({ children }) {
   }, []);
 
   const setMascot = useCallback((mascotId) => {
-    if (!MASCOTS[mascotId]) return;
+    const target = MASCOTS[mascotId];
+    if (!target) return;
     setActiveMascotId(mascotId);
     try {
       localStorage.setItem(STORAGE_KEY_ACTIVE, mascotId);
+      if (target.realm === 'kids') {
+        localStorage.setItem('shopping_cart.mascot_active_kids', mascotId);
+      } else {
+        localStorage.setItem('shopping_cart.mascot_active_shop', mascotId);
+      }
     } catch {
       // ignore
     }
@@ -121,6 +148,8 @@ export function MascotProvider({ children }) {
       activeMascotId,
       setMascot,
       activeMascot,
+      availableMascots,
+      currentRealm,
       speech,
       speak,
       dismissSpeech,
@@ -131,6 +160,8 @@ export function MascotProvider({ children }) {
       activeMascotId,
       setMascot,
       activeMascot,
+      availableMascots,
+      currentRealm,
       speech,
       speak,
       dismissSpeech,
