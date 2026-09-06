@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { useToast } from '../UI/Toast';
 import {
@@ -9,13 +9,15 @@ import {
   totalPrice,
   totalQuantity,
 } from '../../utils/cartUtils';
+import { getAllProducts } from '../../utils/productCatalog';
 import {
+  trackAddToCart,
   trackApplyPromotion,
   trackBeginCheckout,
   trackRemoveFromCart,
   trackViewCart,
 } from '../../analytics/google';
-import { CloseIcon, CartIcon, TrashIcon, CheckCircleIcon } from '../Icons';
+import { CloseIcon, CartIcon, TrashIcon, CheckCircleIcon, SparklesIcon } from '../Icons';
 import styles from './CartDrawer.module.css';
 
 const FREE_SHIPPING_THRESHOLD = 150;
@@ -61,6 +63,29 @@ export function CartDrawer() {
     (rawSubtotal / FREE_SHIPPING_THRESHOLD) * 100
   );
   const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - rawSubtotal;
+
+  const allCatalogProducts = useMemo(() => getAllProducts(), []);
+  const cartItemIds = useMemo(() => new Set(cart.map((i) => i.itemid)), [cart]);
+
+  // Compute complementary cross-sell recommendations
+  const crossSellRecommendations = useMemo(() => {
+    if (cart.length === 0) return [];
+    return allCatalogProducts
+      .filter((p) => !cartItemIds.has(p.itemid) && p.available > 0)
+      .slice(0, 3);
+  }, [allCatalogProducts, cartItemIds, cart.length]);
+
+  const handleQuickAddCrossSell = (product) => {
+    trackAddToCart(product, 1);
+    dispatch({
+      type: 'ADD_ITEM',
+      payload: {
+        productId: product.itemid,
+        quantity: 1,
+      },
+    });
+    showToast(`Added ${product.productName} to your bag`, 'success');
+  };
 
   useEffect(() => {
     if (isCartOpen && cart.length > 0) {
@@ -207,7 +232,8 @@ export function CartDrawer() {
               </button>
             </div>
           ) : (
-            <ul className={styles.itemList}>
+            <>
+              <ul className={styles.itemList}>
               {cart.map((item) => (
                 <li key={item.itemid} className={styles.cartItem}>
                   <div className={styles.itemImage}>
@@ -279,6 +305,45 @@ export function CartDrawer() {
                 </li>
               ))}
             </ul>
+
+            {/* Frequently Paired With / Cross-Sell Shelf */}
+            {crossSellRecommendations.length > 0 && (
+              <div className={styles.crossSellSection}>
+                <div className={styles.crossSellHeader}>
+                  <SparklesIcon size={14} />
+                  <span>Frequently Paired With</span>
+                </div>
+                <div className={styles.crossSellList}>
+                  {crossSellRecommendations.map((rec) => (
+                    <div key={rec.itemid} className={styles.crossSellItem}>
+                      <div className={styles.crossSellImage}>
+                        <img src={rec.image} alt={rec.productName} />
+                      </div>
+                      <div className={styles.crossSellInfo}>
+                        <span className={styles.crossSellBrand}>
+                          {rec.manufacturer}
+                        </span>
+                        <span className={styles.crossSellName}>
+                          {rec.productName}
+                        </span>
+                        <span className={styles.crossSellPrice}>
+                          {formatCurrency(rec.price)}
+                        </span>
+                      </div>
+                      <button
+                        className={styles.crossSellAddBtn}
+                        onClick={() => handleQuickAddCrossSell(rec)}
+                        aria-label={`Quick add ${rec.productName} to bag`}
+                        type="button"
+                      >
+                        + Add
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
           )}
         </div>
 

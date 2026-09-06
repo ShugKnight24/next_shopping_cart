@@ -99,6 +99,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
     faqs = [],
     originalPrice,
     images = [],
+    image = images[0] || '',
+    category = '',
+    available = currentItem.available ?? 1,
   } = currentProduct;
 
   const initialFavorite = Boolean(currentItem?.favorite);
