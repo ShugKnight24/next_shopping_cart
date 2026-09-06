@@ -1,26 +1,124 @@
 import Link from 'next/link';
+import styles from './SocialIcons.module.css';
+
+import { XLogo } from './Logos/XLogo';
+import {
+  FacebookIcon,
+  DiscordIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  PinterestIcon,
+  TikTokIcon,
+  TwitchIcon,
+  YouTubeIcon,
+} from './Icons';
+
+// Globe/Connect icon
+function ConnectIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+const socialLinks = [
+  {
+    href: 'https://facebook.com/#',
+    label: 'Facebook',
+    className: 'facebook',
+    Icon: FacebookIcon,
+  },
+  {
+    href: 'https://discord.com/#',
+    label: 'Discord',
+    className: 'discord',
+    Icon: DiscordIcon,
+  },
+  {
+    href: 'https://instagram.com/#',
+    label: 'Instagram',
+    className: 'instagram',
+    Icon: InstagramIcon,
+  },
+  {
+    href: 'https://linkedin.com/#',
+    label: 'LinkedIn',
+    className: 'linkedin',
+    Icon: LinkedInIcon,
+  },
+  {
+    href: 'https://pinterest.com/#',
+    label: 'Pinterest',
+    className: 'pinterest',
+    Icon: PinterestIcon,
+  },
+  {
+    href: 'https://tiktok.com/#',
+    label: 'TikTok',
+    className: 'tiktok',
+    Icon: TikTokIcon,
+  },
+  {
+    href: 'https://twitch.com/#',
+    label: 'Twitch',
+    className: 'twitch',
+    Icon: TwitchIcon,
+  },
+  {
+    href: 'https://youtube.com/#',
+    label: 'YouTube',
+    className: 'youtube',
+    Icon: YouTubeIcon,
+  },
+  {
+    href: 'https://x.com/#',
+    label: 'X',
+    className: 'x',
+    Icon: XLogo,
+  },
+];
 
 export function SocialIcons() {
   return (
-    <div className="social-icons-container">
-      <Link href="https://facebook.com/#">
-        <i className="fab fa-facebook-square facebook"></i>
-      </Link>
-      <Link href="https://instagram.com/#">
-        <i className="fab fa-instagram instagram"></i>
-      </Link>
-      <Link href="https://linkedin.com/#">
-        <i className="fab fa-linkedin linkedin"></i>
-      </Link>
-      <Link href="https://twitch.com/#">
-        <i className="fab fa-twitch twitch"></i>
-      </Link>
-      <Link href="https://twitter.com/#">
-        <i className="fab fa-twitter-square twitter"></i>
-      </Link>
-      <Link href="https://youtube.com/#">
-        <i className="fab fa-youtube youtube"></i>
-      </Link>
+    <div className={styles.socialIconsSection}>
+      <div className={styles.socialHeading}>
+        <span className={styles.headingIcon}>
+          <ConnectIcon />
+        </span>
+        <div className={styles.headingText}>
+          <h4>Join the Community</h4>
+          <span>Stay connected & inspired</span>
+        </div>
+      </div>
+      <div className={styles.socialIconsContainer}>
+        {socialLinks.map((link) => {
+          const IconComponent = link.Icon;
+          return (
+            <Link
+              key={link.label}
+              href={link.href}
+              className={`${styles.socialLink} ${styles[link.className] || ''}`.trim()}
+              rel="noopener noreferrer"
+              target="_blank"
+              aria-label={link.label}
+            >
+              <IconComponent size={18} />
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }
+

@@ -1,47 +1,382 @@
 [
-	{
-		"image": "https://media.sweetwater.com/images/items/120/SM57-medium.jpg",
-		"url": "https://www.sweetwater.com/store/detail/SM57",
-		"manufacturer": "Shure",
-		"productName": "Sm57",
-		"itemid": "SM57",
-		"quantity": 1,
-		"price": 99.00,
-		"description": "Dynamic Microphone with Cardioid Pickup Pattern, 40Hz-15kHz Frequency Response, Low Impedance, Includes Stand Adapter, and Zippered Carrying Case",
-		"available": 9
-	},
-	{
-		"image": "https://media.sweetwater.com/api/i/f-webp__q-82__ha-d074da576794e566__hmac-f13d64ca315c00e4c5e288e72bb577873020c566/images/items/750/SGSTHCCH-large.jpg",
-		"url": "https://www.sweetwater.com/store/detail/SGS17HCCH/sn170099523",
-		"manufacturer": "Gibson",
-		"productName": "SG Standard 2017 T - Heritage Cherry",
-		"itemid": "SGS17HCCH",
-		"quantity": 1,
-		"price": 1169.00,
-		"serial": 170099523,
-		"description": "Solidbody Electric Guitar with Mahogany Body, Mahogany Neck, Rosewood Fingerboard, and 2 Humbucking Pickups - Heritage Cherry",
-		"available": 1
-	},
-	{
-		"image": "https://media.sweetwater.com/images/items/120/SM58-medium.jpg",
-		"url": "https://www.sweetwater.com/store/detail/SM58",
-		"manufacturer": "Shure",
-		"productName": "SM58",
-		"itemid": "SM58",
-		"quantity": 3,
-		"price": 99.00,
-		"description": "Dynamic Vocal Microphone with Cardioid Pickup Pattern and 50Hz-15kHz Frequency Response, Includes Stand Adapter, and Zippered Carrying Case",
-		"available": 6
-	},
-	{
-		"image": "https://media.sweetwater.com/images/items/120/R16-medium.jpg",
-		"url": "https://www.sweetwater.com/store/detail/R16",
-		"manufacturer": "Zoom",
-		"productName": "R16",
-		"itemid": "R16",
-		"quantity": 1,
-		"price": 399.99,
-		"description": "16-track Portable SD Recorder, USB Audio Interface, and DAW Control Surface with 8 Microphone Inputs, Built-in Stereo Condenser Microphones, Built-in Effects, 1GB SD Card, and USB - Mac/PC",
-		"available": 14
-	}
+  {
+    "image": "https://media.sweetwater.com/images/items/750/SM57-large.jpg",
+    "url": "https://www.sweetwater.com/store/detail/SM57",
+    "manufacturer": "Shure",
+    "productName": "Sm57",
+    "itemid": "SM57",
+    "quantity": 1,
+    "price": 99,
+    "description": "Dynamic Microphone with Cardioid Pickup Pattern, 40Hz-15kHz Frequency Response, Low Impedance, Includes Stand Adapter, and Zippered Carrying Case",
+    "available": 9
+  },
+  {
+    "image": "https://media.sweetwater.com/api/i/f-webp__q-82__ha-d074da576794e566__hmac-f13d64ca315c00e4c5e288e72bb577873020c566/images/items/750/SGSTHCCH-large.jpg",
+    "url": "https://www.sweetwater.com/store/detail/SGS17HCCH/sn170099523",
+    "manufacturer": "Gibson",
+    "productName": "SG Standard 2017 T - Heritage Cherry",
+    "itemid": "SGS17HCCH",
+    "quantity": 1,
+    "price": 1169,
+    "serial": 170099523,
+    "description": "Solidbody Electric Guitar with Mahogany Body, Mahogany Neck, Rosewood Fingerboard, and 2 Humbucking Pickups - Heritage Cherry",
+    "available": 1
+  },
+  {
+    "image": "https://media.sweetwater.com/images/items/750/SM58-large.jpg",
+    "url": "https://www.sweetwater.com/store/detail/SM58",
+    "manufacturer": "Shure",
+    "productName": "SM58",
+    "itemid": "SM58",
+    "quantity": 3,
+    "price": 99,
+    "description": "Dynamic Vocal Microphone with Cardioid Pickup Pattern and 50Hz-15kHz Frequency Response, Includes Stand Adapter, and Zippered Carrying Case",
+    "available": 6
+  },
+  {
+    "image": "https://media.sweetwater.com/images/items/750/R16-large.jpg",
+    "url": "https://www.sweetwater.com/store/detail/R16",
+    "manufacturer": "Zoom",
+    "productName": "R16",
+    "itemid": "R16",
+    "quantity": 1,
+    "price": 399.99,
+    "description": "16-track Portable SD Recorder, USB Audio Interface, and DAW Control Surface with 8 Microphone Inputs, Built-in Stereo Condenser Microphones, Built-in Effects, 1GB SD Card, and USB - Mac/PC",
+    "available": 14
+  },
+  {
+    "image": "/images/products/jordan-1-lost-found.jpg",
+    "url": "https://www.nike.com/jordan",
+    "manufacturer": "Nike / Jordan",
+    "productName": "Air Jordan 1 Retro High OG 'Lost & Found'",
+    "itemid": "JORDAN-1-LOST-FOUND",
+    "quantity": 1,
+    "price": 425,
+    "description": "The Air Jordan 1 Retro High OG 'Lost & Found' brings back the iconic 1985 Chicago colorway with reimagined vintage storytelling. Featuring cracked leather collars, aged sail midsoles, and an authentic retro receipt in the box.",
+    "available": 6,
+    "images": [
+      "/images/products/jordan-1-lost-found.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/jordan-4-bred-reimagined.jpg",
+    "url": "https://www.nike.com/jordan",
+    "manufacturer": "Nike / Jordan",
+    "productName": "Air Jordan 4 Retro 'Bred Reimagined'",
+    "itemid": "JORDAN-4-BRED-REIM",
+    "quantity": 1,
+    "price": 310,
+    "description": "The Air Jordan 4 Retro 'Bred Reimagined' upgrades the legendary 1989 Tinker Hatfield design with premium black tumbled leather instead of traditional nubuck, paired with signature Fire Red accents and Nike Air heel branding.",
+    "available": 8,
+    "images": [
+      "/images/products/jordan-4-bred-reimagined.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/kobe-6-reverse-grinch.jpg",
+    "url": "https://www.nike.com/basketball",
+    "manufacturer": "Nike Basketball",
+    "productName": "Nike Kobe 6 Protro 'Reverse Grinch'",
+    "itemid": "KOBE-6-REVERSE-GRINCH",
+    "quantity": 1,
+    "price": 685,
+    "description": "Inverting the iconic holiday 2010 colorway, the Nike Kobe 6 Protro 'Reverse Grinch' features an aggressive Bright Crimson polyurethane snake-scale upper with Electric Green laces and Swoosh accents.",
+    "available": 4,
+    "images": [
+      "/images/products/kobe-6-reverse-grinch.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/nike-lebron-21-akoya.jpg",
+    "url": "https://www.nike.com/basketball",
+    "manufacturer": "Nike Basketball",
+    "productName": "Nike LeBron 21 'Akoya'",
+    "itemid": "NIKE-LEBRON-21",
+    "quantity": 1,
+    "price": 200,
+    "description": "Inspired by the lustrous Akoya oyster pearl, the LeBron 21 features a low-profile lightweight venting system with 360-degree zonal cabling and bottom-loaded Zoom Air for explosive power and court security.",
+    "available": 12,
+    "images": [
+      "/images/products/nike-lebron-21-akoya.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/nike-alphafly-3.jpg",
+    "url": "https://www.nike.com/running",
+    "manufacturer": "Nike Running",
+    "productName": "Nike Alphafly 3 'Volt' Marathon Super-Shoe",
+    "itemid": "NIKE-ALPHAFLY-3",
+    "quantity": 1,
+    "price": 285,
+    "description": "The world record-holding marathon super-shoe engineered for elite energy return. Powered by continuous dual Air Zoom pods, a full-length carbon fiber Flyplate, and ultra-responsive ZoomX foam.",
+    "available": 9,
+    "images": [
+      "/images/products/nike-alphafly-3.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/hoka-clifton.jpg",
+    "url": "https://www.hoka.com/clifton-9",
+    "manufacturer": "Hoka",
+    "productName": "Hoka Clifton 9 Max-Cushion Road Runner",
+    "itemid": "HOKA-CLIFTON-9",
+    "quantity": 1,
+    "price": 145,
+    "description": "The ninth iteration of Hoka's award-winning Clifton franchise adds 3mm in stack height while trimming weight. Formulated with a responsive new CMEVA foam and an improved outsole design.",
+    "available": 18,
+    "images": [
+      "/images/products/hoka-clifton.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/hoka-speedgoat.jpg",
+    "url": "https://www.hoka.com/speedgoat-5",
+    "manufacturer": "Hoka",
+    "productName": "Hoka Speedgoat 5 Vibram Trail Runner",
+    "itemid": "HOKA-SPEEDGOAT-5",
+    "quantity": 1,
+    "price": 155,
+    "description": "A workhorse designed for technical trails, the Speedgoat 5 features a Vibram Megagrip outsole with Traction Lug 5mm stepped lugs, paired with a lighter midsole compound and double-jacquard mesh.",
+    "available": 14,
+    "images": [
+      "/images/products/hoka-speedgoat.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/altra-lone-peak.jpg",
+    "url": "https://www.altrarunning.com/lone-peak-8",
+    "manufacturer": "Altra Running",
+    "productName": "Altra Lone Peak 8 Zero-Drop Trail Shoe",
+    "itemid": "ALTRA-LONE-PEAK-8",
+    "quantity": 1,
+    "price": 140,
+    "description": "The trail legend built for natural movement. Featuring Altra's Original FootShape toe box for natural splay, 0mm drop balanced cushioning, and a grippy MaxTrac outsole with refined ripstop mesh.",
+    "available": 15,
+    "images": [
+      "/images/products/altra-lone-peak.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/altra-torin.png",
+    "url": "https://www.altrarunning.com/torin-7",
+    "manufacturer": "Altra Running",
+    "productName": "Altra Torin 7 Zero-Drop Road Runner",
+    "itemid": "ALTRA-TORIN-7",
+    "quantity": 1,
+    "price": 150,
+    "description": "Every stitch and contour of the Torin 7 was redeveloped for maximum comfort. Stack height boosted to 30mm of premium Altra EGO MAX foam with an engineered mesh upper and molded collar.",
+    "available": 11,
+    "images": [
+      "/images/products/altra-torin.png"
+    ]
+  },
+  {
+    "image": "https://cards.scryfall.io/large/front/b/d/bd8fa327-dd41-4737-8f19-2cf5eb1f7cdd.jpg?1783939332",
+    "url": "https://magic.wizards.com",
+    "manufacturer": "Wizards of the Coast",
+    "productName": "Magic: The Gathering Black Lotus (Alpha Limited Edition)",
+    "itemid": "MTG-BLACK-LOTUS",
+    "quantity": 1,
+    "price": 495000,
+    "description": "The crown jewel of trading card games. An authentic 1993 Limited Edition Alpha Black Lotus, graded BGS 9.5 Gem Mint with quad 9.5+ subgrades. Illustrated by the late Christopher Rush, this legendary artifact taps to add three mana of any one color at 0 cost.",
+    "available": 1
+  },
+  {
+    "image": "https://cards.scryfall.io/large/front/d/5/d5806e68-1054-458e-866d-1f2470f682b2.jpg?1783916239",
+    "url": "https://magic.wizards.com",
+    "manufacturer": "Wizards of the Coast",
+    "productName": "Magic: The Gathering The One Ring (Serialized 001/001)",
+    "itemid": "MTG-ONE-RING-001",
+    "quantity": 1,
+    "price": 2000000,
+    "description": "One Ring to rule them all. The singular, serialized 001 of 001 foil card printed with Tengwar script in the Black Speech of Mordor. Graded PSA 9 Mint, this is the rarest and most renowned tabletop collectible in existence.",
+    "available": 1
+  },
+  {
+    "image": "https://cards.scryfall.io/large/front/b/f/bf9fecfd-d122-422f-bd0a-5bf69b434dfe.jpg?1783938445",
+    "url": "https://magic.wizards.com",
+    "manufacturer": "Wizards of the Coast",
+    "productName": "Magic: The Gathering Mox Diamond (Stronghold Reserved List)",
+    "itemid": "MTG-MOX-DIAMOND",
+    "quantity": 1,
+    "price": 680,
+    "description": "From the 1998 Stronghold expansion on Magic's Reserved List. Mox Diamond costs 0 mana and allows discarding a land to tap for one mana of any color. An essential staple for cEDH and Legacy formats.",
+    "available": 3
+  },
+  {
+    "image": "/images/products/wh40k-mortarion.jpg",
+    "url": "https://www.warhammer.com",
+    "manufacturer": "Games Workshop",
+    "productName": "Warhammer 40k: Mortarion, Daemon Primarch of Nurgle",
+    "itemid": "WH40K-MORTARION",
+    "quantity": 1,
+    "price": 170,
+    "description": "Towering above the battlefield on rotten leathery wings, Mortarion swoops down amidst droning plague flies. This multi-part plastic kit builds the Daemon Primarch of Nurgle with the scythe Silence and pistol Lantern.",
+    "available": 5,
+    "images": [
+      "/images/products/wh40k-mortarion.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/wh40k-space-marine.jpg",
+    "url": "https://www.warhammer.com",
+    "manufacturer": "Games Workshop",
+    "productName": "Warhammer 40k: Primaris Space Marine Captain in Gravis Armour",
+    "itemid": "WH40K-CAPTAIN-GRAVIS",
+    "quantity": 1,
+    "price": 42,
+    "description": "Encased in dense Gravis armour, Space Marine Captains march unstoppably into enemy fire. Armed with a master-crafted boltstorm gauntlet and choice of master-crafted power sword or chainsword.",
+    "available": 15,
+    "images": [
+      "/images/products/wh40k-space-marine.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/wh40k-custodes.jpg",
+    "url": "https://www.warhammer.com",
+    "manufacturer": "Games Workshop",
+    "productName": "Warhammer 40k: Adeptus Custodes Vertus Praetors",
+    "itemid": "WH40K-CUSTODES-JETBIKES",
+    "quantity": 1,
+    "price": 65,
+    "description": "Veterans who have fought across hundreds of worlds, the Vertus Praetors ride into battle on Dawneagle jetbikes fashioned from auramite. Armed with interceptor lances and salvo launchers.",
+    "available": 9,
+    "images": [
+      "/images/products/wh40k-custodes.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/fender-stratocaster-white.jpg",
+    "url": "https://www.fendercustomshop.com",
+    "manufacturer": "Fender Custom Shop",
+    "productName": "Fender Custom Shop '60s Relic Stratocaster - Olympic White",
+    "itemid": "FENDER-CS-60-STRAT",
+    "quantity": 1,
+    "price": 4850,
+    "description": "Crafted by the master builders in Corona, California. Featuring a two-piece select alder body with nitrocellulose Olympic White relic finish, quartersawn maple 1960 Oval 'C' neck, and hand-wound Texas Special pickups.",
+    "available": 2,
+    "images": [
+      "/images/products/fender-stratocaster-white.jpg"
+    ]
+  },
+  {
+    "image": "https://media.sweetwater.com/images/items/750/D28-large.jpg",
+    "url": "https://www.martinguitar.com/guitars/standard-series/d-28.html",
+    "manufacturer": "C.F. Martin & Co.",
+    "productName": "Martin D-28 Standard Dreadnought Acoustic Guitar",
+    "itemid": "MARTIN-D28-STANDARD",
+    "quantity": 1,
+    "price": 3199,
+    "description": "The dreadnought by which all others are judged. Handcrafted in Nazareth, Pennsylvania with a solid Sitka spruce top, East Indian rosewood back and sides, and non-scalloped forward-shifted bracing for deep bass and rich projection.",
+    "available": 3
+  },
+  {
+    "image": "/images/products/nord-stage-keyboard.jpg",
+    "url": "https://www.nordkeyboards.com/products/nord-stage-4",
+    "manufacturer": "Nord Keyboards",
+    "productName": "Nord Stage 4 88-Key Flagship Stage Keyboard",
+    "itemid": "NORD-STAGE-4-88",
+    "quantity": 1,
+    "price": 5699,
+    "description": "The flagship instrument for world-touring keyboardists. Featuring a triple sensor fully-weighted keybed with aftertouch, dedicated LED fader controllers for each layer, Nord Wave 2 Synth engine, and award-winning Piano and Organ engines.",
+    "available": 3,
+    "images": [
+      "/images/products/nord-stage-keyboard.jpg"
+    ]
+  },
+  {
+    "image": "https://media.sweetwater.com/images/items/750/CVP909PE-large.jpg",
+    "url": "https://usa.yamaha.com",
+    "manufacturer": "Yamaha",
+    "productName": "Yamaha Clavinova CVP-909 Grand Piano",
+    "itemid": "YAMAHA-CLAVINOVA-909",
+    "quantity": 1,
+    "price": 16999,
+    "description": "Yamaha's pinnacle digital concert grand piano. Housed in a magnificent polished ebony grand cabinet with GrandTouch wooden keys, binaurally sampled Yamaha CFX and B\u00f6sendorfer Imperial concert grands, and an expressive 6-way sound system.",
+    "available": 1
+  },
+  {
+    "image": "/images/products/olympic-barbell.jpg",
+    "url": "https://www.roguefitness.com/the-ohio-bar",
+    "manufacturer": "Rogue Fitness",
+    "productName": "Rogue Ohio Bar (20kg Cerakote Olympic Barbell)",
+    "itemid": "ROGUE-OHIO-BAR",
+    "quantity": 1,
+    "price": 350,
+    "description": "Manufactured in Columbus, Ohio. The benchmark multipurpose barbell featuring a 190,000 PSI tensile strength steel shaft, corrosion-resistant Cerakote ceramic coating, composite bronze bushings, and four-season knurl.",
+    "available": 22,
+    "images": [
+      "/images/products/olympic-barbell.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/competition-disc-set.jpg",
+    "url": "https://www.eleiko.com",
+    "manufacturer": "Eleiko",
+    "productName": "Eleiko IPF Calibrated Competition Disc Set (185kg)",
+    "itemid": "ELEIKO-IPF-POWERLIFTING",
+    "quantity": 1,
+    "price": 2650,
+    "description": "Certified by the International Powerlifting Federation (IPF) for world record competition. Cast iron thin profile discs calibrated to within precision +/- 10 grams, finished in vibrant Olympic color coding.",
+    "available": 4,
+    "images": [
+      "/images/products/competition-disc-set.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/adjustable-dumbbells.jpg",
+    "url": "https://www.bowflex.com/selecttech-552",
+    "manufacturer": "Bowflex",
+    "productName": "Bowflex SelectTech 552 Adjustable Dumbbells (Pair)",
+    "itemid": "BOWFLEX-SELECTTECH-552",
+    "quantity": 1,
+    "price": 429,
+    "description": "Replace 15 pairs of weights with one compact dial-adjusted system. Adjusts from 5 to 52.5 lbs per dumbbell in 2.5 lb increments with a simple turn of the selector dial.",
+    "available": 16,
+    "images": [
+      "/images/products/adjustable-dumbbells.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/teenage-engineering-op1.jpg",
+    "url": "https://teenage.engineering/products/op-1",
+    "manufacturer": "Teenage Engineering",
+    "productName": "Teenage Engineering OP-1 Field Synthesizer & Sampler",
+    "itemid": "TE-OP1-FIELD",
+    "quantity": 1,
+    "price": 1999,
+    "description": "The portable all-in-one synthesizer, sampler, and 4-track tape recorder refined with 100 new features. Anodized aluminum unibody, 24-hour battery, stereo signal chain throughout, and ultra-crisp high-resolution screen.",
+    "available": 7,
+    "images": [
+      "/images/products/teenage-engineering-op1.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/sony-wh1000xm5.jpg",
+    "url": "https://electronics.sony.com",
+    "manufacturer": "Sony",
+    "productName": "Sony WH-1000XM5 Wireless Noise-Canceling Headphones",
+    "itemid": "SONY-WH1000XM5",
+    "quantity": 1,
+    "price": 398,
+    "description": "Industry-leading active noise cancellation powered by two processors and 8 microphones. Specially engineered 30mm carbon fiber drivers deliver crystal clear acoustics with LDAC high-resolution wireless streaming.",
+    "available": 25,
+    "images": [
+      "/images/products/sony-wh1000xm5.jpg"
+    ]
+  },
+  {
+    "image": "/images/products/apple-vision-pro.jpg",
+    "url": "https://www.apple.com/apple-vision-pro",
+    "manufacturer": "Apple",
+    "productName": "Apple Vision Pro Spatial Computing Headset",
+    "itemid": "APPLE-VISION-PRO",
+    "quantity": 1,
+    "price": 3499,
+    "description": "Apple's first spatial computer seamlessly blends digital content with your physical space. Powered by dual micro-OLED displays boasting 23 million pixels, eye and hand tracking without controllers, and dual-chip M2 + R1 architecture.",
+    "available": 5,
+    "images": [
+      "/images/products/apple-vision-pro.jpg"
+    ]
+  }
 ]

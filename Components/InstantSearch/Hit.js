@@ -1,15 +1,14 @@
+import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
-import { ModalContext } from '../../context/ModalProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
-import PropTypes from 'prop-types';
+import styles from './InstantSearch.module.css';
 
-export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }) {
+export function Hit({ itemid, setSelectedProduct: _setSelectedProduct, setRecommendedProduct: _setRecommendedProduct }) {
   const { state, dispatch } = useContext(CartContext);
   const { inventory } = state;
-  const { setShowModal } = useContext(ModalContext);
 
   function handleButtonClick(event, productId) {
     event.preventDefault();
@@ -19,12 +18,6 @@ export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }) {
         productId,
       },
     });
-
-    // if (productId === 'SM58') {
-    // 	setShowModal(true);
-    // 	setSelectedProduct('SM58');
-    // 	setRecommendedProduct('SM57');
-    // }
   }
 
   const { available, image, manufacturer, price, productName } = getCurrentItem(
@@ -34,22 +27,22 @@ export function Hit({ itemid, setSelectedProduct, setRecommendedProduct }) {
   const disabledButton = available === 0 ? true : false;
 
   return (
-    <li className="hit-container">
+    <li className={styles.hitContainer}>
       <Link href={`/products/${itemid.toString()}`}>
-        <div className="hit-content">
+        <div className={styles.hitContent}>
           <img
-            className="hit-image"
+            className={styles.hitImage}
             src={image}
             alt={`${productName} made by ${manufacturer}`}
           />
-          <div className="name-manufacturer">
+          <div className={styles.nameManufacturer}>
             <h2>{productName}</h2>
             <h3>Made By: {manufacturer}</h3>
             <p>Available: {available}</p>
             <p>{formatCurrency(price)}</p>
           </div>
           <button
-            className={`button add-cart-button ${disabledButton ? 'disabled' : ''}`}
+            className={`${styles.addCartButton} ${disabledButton ? styles.disabled : ''}`.trim()}
             onClick={(event) => handleButtonClick(event, itemid)}
           >
             Add To Cart

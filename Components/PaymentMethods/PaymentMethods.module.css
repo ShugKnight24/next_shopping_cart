@@ -1,0 +1,82 @@
+/* PaymentMethods CSS Module */
+
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paymentHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headingIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--color-gold);
+}
+
+.headingIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.headingText h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.headingText span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.badgeList {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+}
+
+.badgeItem {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 4px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  cursor: default;
+}
+
+.paymentBadgeSvg {
+  display: block;
+  width: 50px;
+  height: 32px;
+  border-radius: 4px;
+  transition: filter 0.25s ease, box-shadow 0.25s ease;
+}
+
+.badgeItem:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.badgeItem:hover .paymentBadgeSvg {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  filter: brightness(1.05);
+}

@@ -1,57 +1,94 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState } from 'react';
-import { HorizontalRule } from '../Components/HorizontalRule';
+import { useEffect, useState } from 'react';
+import { FullscreenCarousel } from '../Components/Carousel/FullscreenCarousel';
+import { Hero } from '../Components/Hero/Hero';
+import { HowItWorks } from '../Components/HowItWorks';
 import { Products } from '../Components/Products/Products';
-import { Reasons } from '../Components/Reasons';
-// import { getCurrentItem } from '../utils/getItem';
-// import { formatCurrency } from '../utils/cartUtils';
+import { Reasons } from '../Components/Reasons/Reasons';
+import styles from '../styles/pages/Home.module.css';
 
-// For more info about Dynamic components and why they're used
-// Look @ https://nextjs.org/docs/advanced-features/dynamic-import
-const DynamicCarousel = dynamic(() =>
-  import('../Components/Carousel/Carousel').then((mod) => mod.Carousel)
+const CarouselLoading = () => (
+  <div className={styles.carouselLoading}>
+    <div className={styles.loadingSpinner} />
+    <span>Loading featured products...</span>
+  </div>
+);
+
+const DynamicCarousel = dynamic(
+  () => import('../Components/Carousel/Carousel').then((mod) => mod.Carousel),
+  {
+    ssr: false,
+    loading: () => <CarouselLoading />,
+  }
 );
 
 export default function Home() {
-  // TODO: Implement the modal system, selectedProduct, and recommendedProduct properly
-  // const { showModal, setShowModal, modalType, setModalType } =
-  //   useContext(ModalContext);
-  // const { state, dispatch } = useContext(CartContext);
-  // const { inventory } = state;
+  const [, setSelectedProduct] = useState(null);
+  const [, setRecommendedProduct] = useState(null);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  const [_, setSelectedProduct] = useState(null);
-  const [_1, setRecommendedProduct] = useState(null);
-  const [_2, _3] = useState(null);
-
-  // useEffect(() => {
-  // 	const currentItem = getCurrentItem(inventory, recommendedProduct);
-  // 	setRecItem(currentItem ? currentItem : null);
-  // }, [selectedProduct]);
-
-  const isBrowser = typeof window !== 'undefined';
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   return (
     <>
       <Head>
-        <title>Shopping Cart | Home</title>
-      </Head>
-      <div className="home-container">
-        {isBrowser && <DynamicCarousel />}
-        <Reasons />
-        <HorizontalRule color={'#1173A8'} borderWidth={1} />
-        <div className="page-header">
-          <h1>Home Page</h1>
-          <h2>Our Most Popular Products</h2>
-        </div>
-        <Products
-          setSelectedProduct={setSelectedProduct}
-          setRecommendedProduct={setRecommendedProduct}
+        <title>Cart Commerce | Home</title>
+        <meta
+          name="description"
+          content="Discover our curated collection of premium products. Award-winning quality, free shipping, and exceptional customer service."
         />
-        <Link className="all-products-link" href="/products">
-          See All Products
-        </Link>
+      </Head>
+
+      <div className={`${styles.homeContainer} ${styles.premium}`}>
+        <Hero />
+        {/* How It Works Section */}
+        <HowItWorks />
+        {/* Featured Products Carousel */}
+        {hasMounted ? (
+          <DynamicCarousel autoPlayInterval={7000} variant="card" />
+        ) : (
+          <CarouselLoading />
+        )}
+        <FullscreenCarousel />
+        {/* <PremiumCarousel /> */}
+        {/* Value Propositions */}
+        <Reasons />
+        {/* Products Section */}
+        <section className={styles.productsSection}>
+          <div className={styles.sectionHeaderWrapper}>
+            <span className={styles.sectionEyebrow}>Shop Now</span>
+            <h2 className={styles.sectionTitle}>Premium Collection</h2>
+            <p className={styles.sectionSubtitle}>
+              Curated selection of our finest products, handpicked for quality
+              and excellence.
+            </p>
+          </div>
+
+          <Products
+            setSelectedProduct={setSelectedProduct}
+            setRecommendedProduct={setRecommendedProduct}
+          />
+
+          <div className={styles.productsCtaWrapper}>
+            <Link className={styles.allProductsLink} href="/products">
+              <span>Explore Full Collection</span>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </section>
       </div>
     </>
   );

@@ -25,7 +25,7 @@
 		"manufacturer": "Samsung",
 		"price": 1799.00,
 		"description": "Galaxy Z Fold2 5G is the revolutionary mobile experience you've been waiting for. With a balanced, portable design and on-demand expansive viewing, bringing seamless interactivity, enhanced hypertasking, and a transformative camera experience.",
-		"image": "../static/img/galaxy_fold.jpeg",
+		"image": "/static/img/galaxy_fold.jpeg",
 		"available": 99
 	},
 	{

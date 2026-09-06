@@ -1,39 +1,49 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import styles from '../styles/pages/NotFound.module.css';
 
 export default function NotFound() {
   const router = useRouter();
+  const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    const redirect = setTimeout(() => {
       router.push('/');
     }, 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(redirect);
+    };
   }, [router]);
 
   return (
-    <div className="not-found-container">
-      <div className="page-header">
+    <div className={styles.notFoundBody}>
+      <div className={styles.errorCard}>
+        <div className={styles.errorCode}>404</div>
         <h1>Page Not Found</h1>
-        <h2>Sure you have the right address?</h2>
-      </div>
-      <div className="not-found-body">
-        <p>Use the links below to navigate to our most popular pages</p>
         <p>
-          You&apos;ll be redirected to the homepage in 5 seconds automatically
+          Oops! The page you&apos;re looking for doesn&apos;t exist or has been
+          moved.
+          <br />
+          Redirecting to home in <strong>{countdown}</strong> seconds...
         </p>
-        <ul>
-          Return:
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/products">Products</Link>
-          </li>
-          <li>
-            <Link href="/cart">Cart</Link>
-          </li>
-        </ul>
+        <div className={styles.quickLinks}>
+          <Link href="/" className={styles.primaryLink}>
+            Go Home
+          </Link>
+          <Link href="/products" className={styles.secondaryLink}>
+            Browse Products
+          </Link>
+          <Link href="/cart" className={styles.secondaryLink}>
+            View Cart
+          </Link>
+        </div>
       </div>
     </div>
   );

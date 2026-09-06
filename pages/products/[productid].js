@@ -1,23 +1,46 @@
-import { useContext, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import items from '../../data/items.json';
-import techItems from '../../data/techItems.json';
+import PropTypes from 'prop-types';
+import { useContext, useMemo, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
-import PropTypes from 'prop-types';
+import {
+  getAllProducts,
+  getProductById,
+  getRelatedProducts,
+} from '../../utils/productCatalog';
 
-const productList = [...items, ...techItems];
+import { ImageGallery } from '../../Components/Products/ImageGallery';
+import { ProductTabs } from '../../Components/Products/ProductTabs';
+import { TrustBadges } from '../../Components/Products/TrustBadges';
+import { StickyBuyBar } from '../../Components/Products/StickyBuyBar';
+import { RelatedProducts } from '../../Components/Products/RelatedProducts';
+import { RecentlyViewed } from '../../Components/Products/RecentlyViewed';
+import { Badge, RatingStars } from '../../Components/UI';
+import { useToast } from '../../Components/UI/Toast';
+import styles from '../../styles/pages/Products.module.css';
+import {
+  ChevronRight,
+  AlertTriangleIcon,
+  CheckCircleIcon,
+  TimesCircleIcon,
+  MinusIcon,
+  PlusIcon,
+  CartIcon,
+  HeartIcon,
+  TrashIcon,
+  ShareIcon,
+  SparklesIcon,
+} from '../../Components/Icons';
 
 export const getStaticPaths = async () => {
-  const pagePaths = productList.map(({ itemid }) => {
-    return {
-      params: {
-        productid: itemid.toString(),
-      },
-    };
-  });
+  const all = getAllProducts();
+  const pagePaths = all.map(({ itemid }) => ({
+    params: {
+      productid: itemid.toString(),
+    },
+  }));
 
   return {
     paths: pagePaths,
@@ -27,147 +50,440 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = (context) => {
   const currentid = context.params.productid;
-  const currentProduct = getCurrentItem(productList, currentid);
+  const product = getProductById(currentid);
+
+  if (!product) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const related = getRelatedProducts(product, 4);
+
   return {
     props: {
-      currentProduct: currentProduct,
+      currentProduct: product,
+      relatedProducts: related,
     },
   };
 };
 
-export default function ProductID({ currentProduct }) {
+export default function ProductID({ currentProduct, relatedProducts = [] }) {
   const { state, dispatch } = useContext(CartContext);
   const { inventory, cart } = state;
-  const currentItem = getCurrentItem(inventory, currentProduct.itemid);
-  const isInCart = getCurrentItem(cart, currentProduct.itemid) ? true : false;
-  const disabledButton = currentItem.available === 0 ? true : false;
-  const { description, image, itemid, manufacturer, price, productName } =
-    currentProduct;
-  const initialFavorite = currentItem.favorite === null ? true : false;
-  const [isFavorite, setIsFavorite] = useState(initialFavorite);
-  // TODO: Finish Add to Cart functionality
-  // function handleSubmit(event){
-  // 	event.preventDefault();
-  // 	console.log(event);
-  // }
+  const { showToast } = useToast();
 
-  function handleAddToCart(itemid) {
+  const currentItem = getCurrentItem(inventory, currentProduct.itemid) || currentProduct;
+  const isInCart = Boolean(getCurrentItem(cart, currentProduct.itemid));
+  const cartItem = getCurrentItem(cart, currentProduct.itemid);
+  const cartQuantity = cartItem?.quantity || 0;
+
+  const disabledButton = currentItem.available === 0;
+  const {
+    description,
+    itemid,
+    manufacturer,
+    price,
+    productName,
+    rating,
+    badges = [],
+    variants = [],
+    specifications = {},
+    reviews = [],
+    shipping = {},
+    faqs = [],
+    originalPrice,
+    images = [],
+  } = currentProduct;
+
+  const initialFavorite = Boolean(currentItem?.favorite);
+  const [isFavorite, setIsFavorite] = useState(initialFavorite);
+
+  const normalizedVariants = useMemo(() => {
+    return (variants || []).map((v, idx) => {
+      if (typeof v === 'string') {
+        return { id: `var-${idx}-${v}`, name: v, priceModifier: 0 };
+      }
+      return {
+        id: v?.id || `var-${idx}-${v?.name || idx}`,
+        name: v?.name || String(v),
+        priceModifier: v?.priceModifier || 0,
+        ...v,
+      };
+    });
+  }, [variants]);
+
+  const [selectedVariant, setSelectedVariant] = useState(
+    normalizedVariants[0] || null
+  );
+  const [quantity, setQuantity] = useState(1);
+
+  // Dynamic price calculation based on selected variant modifier
+  const modifier = selectedVariant?.priceModifier || 0;
+  const effectivePrice = price + modifier;
+  const effectiveOriginalPrice = originalPrice ? originalPrice + modifier : null;
+
+  const isOnSale = badges.includes('sale') && effectiveOriginalPrice;
+  const discountPercentage = isOnSale
+    ? Math.round((1 - effectivePrice / effectiveOriginalPrice) * 100)
+    : 0;
+
+  function handleAddToCart(productId, qty = 1, variant = selectedVariant) {
     dispatch({
       type: 'ADD_ITEM',
       payload: {
-        productId: itemid,
+        productId,
+        quantity: qty,
+        variant: variant?.name || variant || null,
+        selectedVariant: variant,
       },
     });
+    showToast(
+      `Added ${qty} × ${productName}${variant ? ` (${variant.name || variant})` : ''} to cart`,
+      'success'
+    );
   }
 
-  function handleRemoveFromCart(itemid) {
+  function handleRemoveFromCart(productId) {
     dispatch({
       type: 'REMOVE_ITEM',
       payload: {
-        productId: itemid,
+        productId,
       },
     });
+    showToast(`Removed ${productName} from cart`, 'info');
   }
 
-  function handleFavorite(itemid) {
+  function handleFavorite(productId) {
     dispatch({
       type: 'ADD_FAVORITE',
       payload: {
-        productId: itemid,
+        productId,
       },
     });
     setIsFavorite(true);
+    showToast(`Saved ${productName} to your favorites`, 'success');
   }
 
-  function handleRemoveFavorite(itemid) {
+  function handleRemoveFavorite(productId) {
     dispatch({
       type: 'REMOVE_FAVORITE',
       payload: {
-        productId: itemid,
+        productId,
       },
     });
     setIsFavorite(false);
+    showToast(`Removed from favorites`, 'info');
+  }
+
+  function handleShare() {
+    if (typeof window === 'undefined') return;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${productName} | Shopping Cart`,
+          text: `Check out ${productName} by ${manufacturer}!`,
+          url: window.location.href,
+        })
+        .catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      showToast('Product link copied to clipboard!', 'success');
+    }
   }
 
   return (
     <>
       <Head>
-        <title>{productName} | Product Page</title>
+        <title>{`${productName} | Premium Collection`}</title>
+        <meta name="description" content={description} />
       </Head>
-      <div className="product-page">
-        <div className="product-container">
-          <Link className="product-return" href="/products">
-            <i className="fas fa-chevron-left"></i>
-            All Products
-          </Link>
-          {
-            <div className="product" key={itemid}>
-              <div className="page-header">
-                <div className="name-favorite">
-                  <h1 className="product-name">
-                    {manufacturer} {productName}
-                  </h1>
-                  {isFavorite ? (
-                    <button
-                      className="favorite-button remove-favorite"
-                      onClick={() => handleRemoveFavorite(itemid)}
-                    >
-                      <i className="fas fa-heart"></i>
-                    </button>
-                  ) : (
-                    <button
-                      className="favorite-button add-favorite"
-                      onClick={() => handleFavorite(itemid)}
-                    >
-                      <i className="far fa-heart"></i>
-                    </button>
-                  )}
-                </div>
+
+      <div className={styles.productsPage}>
+        <div className={styles.productPage}>
+          {/* Breadcrumbs */}
+          <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <ChevronRight size={12} className={styles.breadcrumbSeparator} />
+            <Link href="/products">Products</Link>
+            <ChevronRight size={12} className={styles.breadcrumbSeparator} />
+            <span className={styles.breadcrumbCurrent} aria-current="page">
+              {productName}
+            </span>
+          </nav>
+
+          <div className={styles.productContainer}>
+            {/* Image Gallery with 3D Studio switch */}
+            <div className={styles.productImages}>
+              <ImageGallery
+                images={images}
+                productName={`${manufacturer} ${productName}`}
+                product={currentProduct}
+                selectedVariant={selectedVariant}
+                onSelectVariant={setSelectedVariant}
+              />
+            </div>
+
+            {/* Product Details Section */}
+            <div className={styles.productDetails}>
+              {/* Live Social Proof Badge */}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  color: '#b8860b',
+                  background: 'rgba(184, 134, 11, 0.08)',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '50px',
+                  width: 'fit-content',
+                }}
+              >
+                <SparklesIcon size={14} />
+                <span>High demand — 14 shoppers viewing right now</span>
               </div>
-              <img src={image} alt={`${productName} by ${manufacturer}`} />
-              <p className="product-description">{description}</p>
-              <p className="product-price bold-text">{formatCurrency(price)}</p>
-              <p className="product-quantity">
-                Currently Available: {currentItem.available}
-              </p>
-              <div className="product-actions">
-                {isInCart && (
-                  <button
-                    className="button delete-item"
-                    onClick={() => handleRemoveFromCart(itemid)}
-                  >
-                    Remove Item
-                  </button>
+
+              {/* Badges */}
+              {badges.length > 0 && (
+                <div className={styles.productBadges}>
+                  {badges.map((badge) => (
+                    <Badge key={badge} variant={badge} />
+                  ))}
+                </div>
+              )}
+
+              {/* Brand & Name */}
+              <div className={styles.productBrand}>
+                <span className={styles.brandName}>{manufacturer}</span>
+                <h1 className={styles.productName}>{productName}</h1>
+              </div>
+
+              {/* Reviews */}
+              <div className={styles.productReviews}>
+                <RatingStars rating={rating.average} size="md" showValue />
+                <span className={styles.reviewCount}>
+                  ({rating.count} {rating.count === 1 ? 'review' : 'reviews'})
+                </span>
+              </div>
+
+              {/* Description */}
+              <p className={styles.productDescription}>{description}</p>
+
+              {/* Price Row */}
+              <div className={styles.productPricing}>
+                <span className={styles.productPrice}>
+                  {formatCurrency(effectivePrice)}
+                </span>
+                {isOnSale && (
+                  <>
+                    <span className={styles.originalPrice}>
+                      {formatCurrency(effectiveOriginalPrice)}
+                    </span>
+                    <span className={styles.discountBadge}>-{discountPercentage}%</span>
+                  </>
                 )}
+              </div>
+
+              {/* Stock Status & Progress Bar */}
+              <div className={styles.stockStatus}>
+                {currentItem.available > 0 ? (
+                  currentItem.available <= 5 ? (
+                    <div>
+                      <span className={styles.lowStock}>
+                        <AlertTriangleIcon size={16} /> Only {currentItem.available} left in stock — order soon
+                      </span>
+                      <div
+                        style={{
+                          marginTop: '0.5rem',
+                          height: '6px',
+                          background: '#fef3c7',
+                          borderRadius: '3px',
+                          overflow: 'hidden',
+                          maxWidth: '280px',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${(currentItem.available / 5) * 100}%`,
+                            height: '100%',
+                            background: '#d97706',
+                            borderRadius: '3px',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <span className={styles.inStock}>
+                      <CheckCircleIcon size={16} /> In Stock ({currentItem.available} units available)
+                    </span>
+                  )
+                ) : (
+                  <span className={styles.outOfStock}>
+                    <TimesCircleIcon size={16} /> Currently Out of Stock
+                  </span>
+                )}
+              </div>
+
+              {/* Interactive Variants Selector */}
+              {normalizedVariants.length > 0 && (
+                <div className={styles.productVariants}>
+                  <h3 className={styles.variantsTitle}>Options & Colorways</h3>
+                  <div className={styles.variantOptions}>
+                    {normalizedVariants.map((variant) => (
+                      <button
+                        key={variant.id}
+                        className={`${styles.variantButton} ${selectedVariant?.id === variant.id ? styles.variantButtonSelected : ''}`}
+                        onClick={() => setSelectedVariant(variant)}
+                      >
+                        {variant.name}
+                        {variant.priceModifier > 0 && (
+                          <span className={styles.variantPrice}>
+                            +{formatCurrency(variant.priceModifier)}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Quantity Selector */}
+              <div className={styles.quantitySelector}>
+                <h3 className={styles.quantityTitle}>Quantity</h3>
+                <div className={styles.quantityControls}>
+                  <button
+                    className={styles.qtyBtn}
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                    aria-label="Decrease quantity"
+                  >
+                    <MinusIcon size={14} />
+                  </button>
+                  <input
+                    className={styles.qtyInput}
+                    type="number"
+                    min="1"
+                    max={currentItem.available}
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(
+                        Math.max(
+                          1,
+                          Math.min(
+                            currentItem.available,
+                            parseInt(e.target.value, 10) || 1
+                          )
+                        )
+                      )
+                    }
+                    aria-label="Quantity"
+                  />
+                  <button
+                    className={styles.qtyBtn}
+                    onClick={() =>
+                      setQuantity(Math.min(currentItem.available, quantity + 1))
+                    }
+                    disabled={quantity >= currentItem.available}
+                    aria-label="Increase quantity"
+                  >
+                    <PlusIcon size={14} />
+                  </button>
+                </div>
+                {cartQuantity > 0 && (
+                  <span style={{ fontSize: '0.82rem', color: '#16a34a', fontWeight: 600 }}>
+                    {cartQuantity} currently in cart
+                  </span>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className={styles.productActions}>
                 <button
-                  className={`button add-cart-button ${disabledButton ? 'disabled' : ''}`}
-                  onClick={() => handleAddToCart(itemid)}
+                  className={`${styles.addToCartBtn} ${isInCart ? styles.inCartBtn : ''}`}
+                  onClick={() => handleAddToCart(itemid, quantity, selectedVariant)}
+                  disabled={disabledButton}
                 >
-                  Add To Cart
+                  <CartIcon size={18} />
+                  {isInCart ? 'Add More to Cart' : 'Add to Cart'}
+                </button>
+
+                <button
+                  className={`${styles.secondaryActionBtn} ${isFavorite ? styles.favoriteActiveBtn : ''}`}
+                  onClick={() =>
+                    isFavorite
+                      ? handleRemoveFavorite(itemid)
+                      : handleFavorite(itemid)
+                  }
+                  aria-label={
+                    isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                  }
+                  title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  <HeartIcon filled={isFavorite} size={20} />
+                </button>
+
+                <button
+                  className={styles.secondaryActionBtn}
+                  onClick={handleShare}
+                  aria-label="Share product"
+                  title="Share this product"
+                >
+                  <ShareIcon size={18} />
                 </button>
               </div>
-              {/* <form
-							className="add-to-cart-form"
-							onSubmit={ (event) => handleSubmit(event) }
-						>
-							<label htmlFor="quantity">Quantity:</label>
-							<input
-								id="quantity"
-								className="quantity-input"
-								type="number"
-								name="quantity"
-								value="1"
-								min="0"
-								max={ currentProduct.available }
-								onChange={ (event) => updateQuantity(event) }
-							/>
-							<button 
-								className="button add-cart-button"
-								type="submit"
-							>Add To Cart</button>
-						</form> */}
+
+              {isInCart && (
+                <button
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    color: '#dc2626',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    padding: '0.4rem 0',
+                    width: 'fit-content',
+                  }}
+                  onClick={() => handleRemoveFromCart(itemid)}
+                >
+                  <TrashIcon size={16} /> Remove from Cart
+                </button>
+              )}
+
+              {/* Value Proposition Trust Badges */}
+              <TrustBadges />
             </div>
-          }
+          </div>
+
+        {/* 5-Panel Product Tabs */}
+        <ProductTabs
+          product={currentProduct}
+          specifications={specifications}
+          shipping={shipping}
+          reviews={reviews}
+          faqs={faqs}
+        />
+
+        {/* Related & Recommended Products */}
+        <RelatedProducts products={relatedProducts} />
+
+        {/* Recently Viewed Session History */}
+        <RecentlyViewed currentProductId={itemid} />
+
+        {/* Floating Sticky Buy Bar */}
+        <StickyBuyBar
+          product={currentProduct}
+          selectedVariant={selectedVariant}
+          totalPrice={effectivePrice}
+          onAddToCart={() => handleAddToCart(itemid, quantity, selectedVariant)}
+          disabled={disabledButton}
+        />
         </div>
       </div>
     </>
@@ -175,14 +491,6 @@ export default function ProductID({ currentProduct }) {
 }
 
 ProductID.propTypes = {
-  currentProduct: PropTypes.shape({
-    description: PropTypes.string,
-    image: PropTypes.string,
-    favorite: PropTypes.bool,
-    isInCart: PropTypes.bool,
-    itemid: PropTypes.string,
-    manufacturer: PropTypes.string,
-    price: PropTypes.number,
-    productName: PropTypes.string,
-  }),
+  currentProduct: PropTypes.object.isRequired,
+  relatedProducts: PropTypes.arrayOf(PropTypes.object),
 };

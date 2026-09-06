@@ -2,6 +2,9 @@ import { useContext, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ModalContext } from '../context/ModalProvider';
 import PropTypes from 'prop-types';
+import { CloseIcon } from './Icons';
+
+import styles from './Modal.module.css';
 
 export function Modal({ children }){
 	const { setShowModal, setModalType } = useContext(ModalContext);
@@ -31,14 +34,15 @@ export function Modal({ children }){
 	}
 
 	return createPortal(
-		<div className="modal-container">
-			<div className="modal-header">
-				<div className="modal-actions">
+		<div className={styles.modalContainer}>
+			<div className={styles.modalHeader}>
+				<div className={styles.modalActions}>
 					<button
-						className="close-modal"
+						className={styles.closeModal}
 						onClick={ () => closeModal() }
+						aria-label="Close modal"
 					>
-						<i className="fas fa-times"></i>
+						<CloseIcon size={16} />
 					</button>
 				</div>
 			</div>

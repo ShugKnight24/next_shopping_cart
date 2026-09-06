@@ -1,0 +1,402 @@
+.studioContainer {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, #f1f4f9 60%, #e2e8f0 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 12px 32px rgba(30, 58, 95, 0.08);
+  border: 1px solid rgba(30, 58, 95, 0.1);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  cursor: grab;
+}
+
+.studioContainer:active {
+  cursor: grabbing;
+}
+
+.studioHeader {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.badge3D {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: rgba(30, 58, 95, 0.9);
+  color: #fff;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+  pointer-events: auto;
+}
+
+.liveIndicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.topControls {
+  display: flex;
+  gap: 0.5rem;
+  pointer-events: auto;
+}
+
+.iconBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(30, 58, 95, 0.15);
+  color: #1e3a5f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.iconBtn:hover {
+  background: #1e3a5f;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+}
+
+.iconBtn.active {
+  background: #1e3a5f;
+  color: #fff;
+  border-color: #1e3a5f;
+}
+
+/* 3D Viewport Area */
+.viewport {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Spatial CSS 3D fallback scene */
+.spatialScene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.pedestal {
+  position: absolute;
+  bottom: 80px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30, 58, 95, 0.15) 0%, rgba(30, 58, 95, 0.04) 50%, transparent 70%);
+  transform: rotateX(75deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.modelWrapper {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.1s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modelImage {
+  max-width: 340px;
+  max-height: 280px;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 28px rgba(0, 0, 0, 0.22));
+  transform-style: preserve-3d;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Exploded Anatomy Layers */
+.explodedContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  transform-style: preserve-3d;
+}
+
+.explodedLayer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(30, 58, 95, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.1);
+  animation: floatLayer 0.6s ease-out forwards;
+}
+
+@keyframes floatLayer {
+  from { opacity: 0; transform: translateY(20px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.layerTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.layerDesc {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Hotspots */
+.hotspot {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1e3a5f;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.3), 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hotspot:hover {
+  transform: translate(-50%, -50%) scale(1.25);
+  background: #b8860b;
+  box-shadow: 0 0 0 5px rgba(184, 134, 11, 0.4), 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.hotspotPulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(30, 58, 95, 0.5);
+  animation: hotspotPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes hotspotPing {
+  75%, 100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Hotspot Callout Modal / Card */
+.hotspotCard {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 360px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(30, 58, 95, 0.15);
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 16px 36px rgba(30, 58, 95, 0.16);
+  z-index: 30;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.hotspotCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.hotspotCardTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0;
+}
+
+.hotspotClose {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.hotspotClose:hover {
+  color: #0f172a;
+}
+
+.hotspotCardBody {
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Bottom Controls Toolbar */
+.bottomBar {
+  position: relative;
+  z-index: 10;
+  padding: 0.85rem 1.25rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(30, 58, 95, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.viewsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.presetButtons {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.presetBtn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(30, 58, 95, 0.12);
+  background: #fff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.presetBtn:hover {
+  border-color: #1e3a5f;
+  color: #1e3a5f;
+  background: rgba(30, 58, 95, 0.04);
+}
+
+.presetBtn.activePreset {
+  background: #1e3a5f;
+  color: #fff;
+  border-color: #1e3a5f;
+  box-shadow: 0 2px 6px rgba(30, 58, 95, 0.2);
+}
+
+.interactionHint {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Colorway swatches inside 3D Studio */
+.swatchesRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.swatchLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.swatchesList {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.swatchBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.swatchBtn:hover {
+  transform: scale(1.2);
+}
+
+.swatchBtn.activeSwatch {
+  box-shadow: 0 0 0 2px #1e3a5f, 0 2px 6px rgba(30, 58, 95, 0.3);
+  transform: scale(1.15);
+}
+
+@media screen and (max-width: 600px) {
+  .studioContainer {
+    height: 420px;
+  }
+  .interactionHint {
+    display: none;
+  }
+}

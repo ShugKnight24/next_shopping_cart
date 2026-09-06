@@ -1,0 +1,345 @@
+/* Mixins */
+.promoBanner {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  padding: 0;
+  z-index: 1;
+  overflow: visible;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.backgroundEffects {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%);
+  animation: shimmerMove 4s ease-in-out infinite;
+}
+
+@keyframes shimmerMove {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #b8860b;
+  border-radius: 50%;
+  animation: sparkleFloat 3s ease-in-out infinite;
+  opacity: 0;
+}
+.sparkle:nth-child(2) {
+  top: 20%;
+  left: 15%;
+}
+.sparkle:nth-child(3) {
+  top: 60%;
+  left: 45%;
+}
+.sparkle:nth-child(4) {
+  top: 30%;
+  left: 80%;
+}
+
+@keyframes sparkleFloat {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) translateY(-10px);
+  }
+}
+.content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.875rem 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 900px) {
+  .content {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.875rem 3rem;
+  }
+}
+@media screen and (max-width: 600px) {
+  .content {
+    padding: 0.75rem 2.5rem;
+  }
+}
+
+.leftIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0.5rem;
+  background: rgba(218, 165, 32, 0.15);
+  border-radius: 10px;
+}
+@media screen and (max-width: 600px) {
+  .leftIcon {
+    display: none;
+  }
+}
+
+.giftIcon {
+  width: 24px;
+  height: 24px;
+  color: #b8860b;
+  animation: giftBounce 2s ease-in-out infinite;
+}
+
+@keyframes giftBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-3deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(3deg);
+  }
+}
+.messageContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+@media screen and (max-width: 600px) {
+  .messageContainer {
+    gap: 0.75rem;
+  }
+}
+
+.message {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+@media screen and (max-width: 600px) {
+  .message {
+    font-size: 0.9rem;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+.codeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.25) 0%, rgba(218, 165, 32, 0.15) 100%);
+  border: 1.5px dashed #b8860b;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.2);
+}
+.codeButton:hover {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.35) 0%, rgba(218, 165, 32, 0.25) 100%);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+}
+.codeButton.copied {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.2) 100%);
+  border-color: #22c55e;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+.codeButton.copied .copyIcon svg {
+  color: #22c55e;
+}
+
+.codeLabel {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+@media screen and (max-width: 480px) {
+  .codeLabel {
+    display: none;
+  }
+}
+
+.codeValue {
+  font-family: "SF Mono", "Roboto Mono", monospace;
+  font-weight: 700;
+  color: #b8860b;
+  letter-spacing: 0.1em;
+  font-size: 0.95rem;
+}
+
+.copyIcon {
+  display: flex;
+  align-items: center;
+  padding-left: 0.25rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  margin-left: 0.25rem;
+}
+.copyIcon svg {
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
+}
+
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+@media screen and (max-width: 768px) {
+  .countdown {
+    padding-left: 0;
+    border-left: none;
+  }
+}
+@media screen and (max-width: 480px) {
+  .countdown {
+    width: 100%;
+    justify-content: center;
+    padding-top: 0.5rem;
+  }
+}
+
+.countdownLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+@media screen and (max-width: 600px) {
+  .countdownLabel {
+    display: none;
+  }
+}
+
+.timerBlocks {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.timerBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 32px;
+}
+
+.timerValue {
+  font-family: "SF Mono", "Roboto Mono", monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+}
+
+.timerUnit {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.timerSeparator {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #b8860b;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.closeButton {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  padding: 0;
+}
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%) scale(1.1);
+}
+.closeButton:hover .closeX {
+  color: #fff;
+}
+@media screen and (max-width: 600px) {
+  .closeButton {
+    position: absolute;
+    right: 0.5rem;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.closeX {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.3s ease;
+  margin-top: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer,
+  .sparkle,
+  .giftIcon,
+  .timerSeparator {
+    animation: none;
+  }
+}

@@ -1,0 +1,189 @@
+/* Home Page CSS Module */
+
+.homeContainer {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.homeContainer.premium {
+  overflow-x: hidden;
+}
+
+.carouselLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+  gap: 1rem;
+}
+
+.carouselLoading span {
+  font-size: 0.875rem;
+  color: var(--color-dark-grey);
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-med-grey);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.productsSection {
+  padding: 5rem 2rem;
+  background: #fff;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .productsSection {
+    padding: 3rem 1rem;
+  }
+}
+
+.sectionHeaderWrapper {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+}
+
+.sectionEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+.sectionEyebrow::before,
+.sectionEyebrow::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold));
+}
+
+.sectionEyebrow::after {
+  background: linear-gradient(90deg, var(--color-gold), transparent);
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: var(--color-dark-grey);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.productsCtaWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.allProductsLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #fff;
+  background: var(--color-primary);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.allProductsLink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.allProductsLink:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(30, 58, 95, 0.4);
+}
+
+.allProductsLink:hover::before {
+  opacity: 1;
+}
+
+.allProductsLink:hover svg {
+  transform: translateX(4px);
+}
+
+.allProductsLink span,
+.allProductsLink svg {
+  position: relative;
+  z-index: 1;
+}
+
+.allProductsLink svg {
+  transition: transform 0.3s ease;
+}
+
+.pageHeader {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.pageHeader h1 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 600px) {
+  .pageHeader h1 {
+    font-size: 1.75rem;
+  }
+}
+
+.pageHeader h2 {
+  font-size: 1.125rem;
+  color: var(--color-dark-grey);
+  margin: 0;
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  .pageHeader h2 {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" fill="none">
+  <rect width="400" height="400" rx="16" fill="#F3F4F6"/>
+  <circle cx="200" cy="180" r="48" fill="#E5E7EB"/>
+  <path d="M140 260c0-33.14 26.86-60 60-60s60 26.86 60 60" fill="#E5E7EB"/>
+  <text x="200" y="300" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#9CA3AF">Premium Vault Item</text>
+</svg>

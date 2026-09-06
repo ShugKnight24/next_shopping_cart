@@ -1,0 +1,127 @@
+.productsWrapper {
+  width: 100%;
+}
+
+.productsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 24px 5rem 24px;
+  background: linear-gradient(180deg, #f8f9fa 0%, #f0f2f5 50%, #f8f9fa 100%);
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.productsContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(30, 58, 95, 0.035) 1px, transparent 0);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: stretch;
+  position: relative;
+  z-index: 1;
+}
+
+@media screen and (max-width: 1200px) {
+  .productsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .productsContainer {
+    padding: 1.5rem 16px 3rem 16px;
+  }
+  .productsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.productsGrid.listView {
+  grid-template-columns: 1fr;
+  max-width: 1000px;
+  gap: 1.25rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px dashed rgba(30, 58, 95, 0.2);
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  gap: 1rem;
+}
+
+.emptyIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(30, 58, 95, 0.05);
+  color: #1e3a5f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0;
+}
+
+.emptyText {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.resetBtn {
+  margin-top: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetBtn:hover {
+  background: #0f2744;
+  transform: translateY(-2px);
+}
+

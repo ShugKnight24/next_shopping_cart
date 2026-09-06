@@ -1,0 +1,139 @@
+/* ============================================================================
+   BACK TO TOP BUTTON WITH CIRCULAR PROGRESS
+   ============================================================================ */
+.backToTop {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #1e3a5f 0%, #152943 100%);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.8);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25), 0 8px 24px rgba(30, 58, 95, 0.15);
+}
+.backToTop.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+.backToTop:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3), 0 16px 40px rgba(30, 58, 95, 0.2);
+}
+.backToTop:hover .arrowIcon {
+  transform: translateY(-2px);
+}
+.backToTop:hover .progressBar {
+  stroke: #daa520;
+}
+.backToTop:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.backToTop:active {
+  transform: translateY(-2px) scale(1);
+}
+@media (max-width: 600px) {
+  .backToTop {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 46px;
+    height: 46px;
+  }
+}
+
+/* Circular Progress Ring */
+.progressRing {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.progressTrack {
+  stroke: rgba(255, 255, 255, 0.15);
+}
+
+.progressBar {
+  stroke: #b8860b;
+  transition: stroke-dashoffset 0.15s linear, stroke 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(218, 165, 32, 0.4));
+}
+
+/* Arrow Icon */
+.arrowIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+.arrowIcon svg {
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 600px) {
+  .arrowIcon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: linear-gradient(135deg, #1e3a5f 0%, #152943 100%);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(30, 58, 95, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #193150;
+}
+@media (max-width: 600px) {
+  .tooltip {
+    display: none;
+  }
+}
+
+.percentage {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  font-weight: 500;
+}

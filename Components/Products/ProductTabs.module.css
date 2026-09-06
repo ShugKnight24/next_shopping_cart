@@ -1,0 +1,428 @@
+.tabContainer {
+  position: relative;
+  z-index: 1;
+  margin: 2rem 2rem 3rem;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.04), 0 16px 32px rgba(0, 0, 0, 0.04);
+}
+
+.tabHeaders {
+  display: flex;
+  background: #fafbfc;
+  border-bottom: 1px solid rgba(30, 58, 95, 0.08);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabHeaders::-webkit-scrollbar {
+  display: none;
+}
+
+.tabHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 2rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tabHeader:hover {
+  color: #1e3a5f;
+  background: rgba(30, 58, 95, 0.02);
+}
+
+.tabHeader.active {
+  color: #1e3a5f;
+  font-weight: 700;
+  border-bottom-color: #1e3a5f;
+  background: #fff;
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  background: rgba(30, 58, 95, 0.08);
+  color: #1e3a5f;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.tabContent {
+  padding: 2.5rem;
+}
+
+/* Panel 1: Overview & Highlights */
+.overviewPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sectionHeading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 1rem;
+}
+
+.descriptionText {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #475569;
+  margin: 0;
+}
+
+.highlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.checkIcon {
+  color: #16a34a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.highlightText {
+  font-size: 0.92rem;
+  color: #334155;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.boxSection {
+  background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(30, 58, 95, 0.01) 100%);
+  border: 1px solid rgba(30, 58, 95, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.boxHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #1e3a5f;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+}
+
+.boxList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.boxItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: #475569;
+}
+
+/* Panel 2: Technical Specifications */
+.specsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.specsTable tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.specsTable tr:last-child {
+  border-bottom: none;
+}
+
+.specLabel {
+  width: 35%;
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.specValue {
+  padding: 1rem 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+/* Panel 3: Shipping & Returns */
+.shippingCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.shippingCard {
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid rgba(30, 58, 95, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.shippingCardIcon {
+  color: #1e3a5f;
+  margin-bottom: 0.25rem;
+}
+
+.shippingCardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.shippingCardDesc {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Panel 4: Reviews & Rating Breakdown */
+.reviewsOverview {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2.5rem;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 18px;
+  border: 1px solid rgba(30, 58, 95, 0.06);
+  margin-bottom: 2.5rem;
+  align-items: center;
+}
+
+.ratingSummary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  padding-right: 2rem;
+}
+
+.bigRating {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #1e3a5f;
+  line-height: 1;
+}
+
+.ratingBars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.barTrack {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: #b8860b;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.reviewToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.writeReviewBtn {
+  padding: 0.7rem 1.4rem;
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.writeReviewBtn:hover {
+  background: #0f2744;
+  transform: translateY(-2px);
+}
+
+.reviewForm {
+  background: #f8fafc;
+  padding: 1.75rem;
+  border-radius: 16px;
+  border: 1px solid rgba(30, 58, 95, 0.12);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.inputField, .textareaField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: #fff;
+  color: #1e3a5f;
+}
+
+.inputField:focus, .textareaField:focus {
+  outline: none;
+  border-color: #1e3a5f;
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+/* Panel 5: FAQs Accordion */
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.faqItem {
+  border: 1px solid rgba(30, 58, 95, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.faqItem.faqOpen {
+  border-color: #1e3a5f;
+  box-shadow: 0 4px 16px rgba(30, 58, 95, 0.06);
+}
+
+.faqQuestion {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  cursor: pointer;
+  text-align: left;
+}
+
+.faqQuestion:hover {
+  background: #f8fafc;
+}
+
+.faqChevron {
+  transition: transform 0.3s ease;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.faqChevron.open {
+  transform: rotate(90deg);
+  color: #1e3a5f;
+}
+
+.faqAnswer {
+  padding: 0 1.5rem 1.25rem;
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+  background: #fff;
+}
+
+@media screen and (max-width: 900px) {
+  .tabContainer {
+    margin: 1rem;
+  }
+  .tabContent {
+    padding: 1.5rem;
+  }
+  .highlightsGrid {
+    grid-template-columns: 1fr;
+  }
+  .boxList {
+    grid-template-columns: 1fr;
+  }
+  .shippingCards {
+    grid-template-columns: 1fr;
+  }
+  .reviewsOverview {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .ratingSummary {
+    border-right: none;
+    padding-right: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding-bottom: 1.5rem;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
