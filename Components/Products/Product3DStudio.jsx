@@ -9,6 +9,7 @@ import {
   EyeIcon,
   TimesCircleIcon,
 } from '../Icons';
+import { trackStudioInteraction } from '../../analytics/google';
 import styles from './Product3DStudio.module.css';
 
 const PRESET_ANGLES = {
@@ -192,6 +193,7 @@ export function Product3DStudio({
   const setPresetView = (key) => {
     const preset = PRESET_ANGLES[key];
     if (!preset) return;
+    trackStudioInteraction('preset_angle', key, { productId: product?.itemid });
     setIsAutoRotating(false);
     setActivePreset(key);
     setRotation({ x: preset.x, y: preset.y });
@@ -199,6 +201,7 @@ export function Product3DStudio({
   };
 
   const resetView = () => {
+    trackStudioInteraction('reset_view', 'isometric', { productId: product?.itemid });
     setPresetView('isometric');
     setIsExploded(false);
     setIsAutoRotating(true);
@@ -207,7 +210,11 @@ export function Product3DStudio({
 
   const handleHotspotClick = (spot, e) => {
     e.stopPropagation();
-    setActiveHotspot(activeHotspot?.id === spot.id ? null : spot);
+    const willOpen = activeHotspot?.id !== spot.id;
+    if (willOpen) {
+      trackStudioInteraction('hotspot_click', spot.title, { productId: product?.itemid });
+    }
+    setActiveHotspot(willOpen ? spot : null);
     setIsAutoRotating(false);
   };
 

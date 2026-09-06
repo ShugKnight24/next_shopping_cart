@@ -9,6 +9,12 @@ import {
   totalPrice,
   totalQuantity,
 } from '../../utils/cartUtils';
+import {
+  trackApplyPromotion,
+  trackBeginCheckout,
+  trackRemoveFromCart,
+  trackViewCart,
+} from '../../analytics/google';
 import { CloseIcon, CartIcon, TrashIcon, CheckCircleIcon } from '../Icons';
 import styles from './CartDrawer.module.css';
 
@@ -56,6 +62,14 @@ export function CartDrawer() {
   );
   const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - rawSubtotal;
 
+  useEffect(() => {
+    if (isCartOpen && cart.length > 0) {
+      trackViewCart(cart, subtotal);
+    }
+    // Track view_cart event only when drawer opens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCartOpen]);
+
   const handleQuantityChange = (productId, newQty) => {
     dispatch({
       type: 'UPDATE_QUANTITY',
@@ -67,6 +81,10 @@ export function CartDrawer() {
   };
 
   const handleRemoveItem = (productId, productName) => {
+    const itemToRemove = cart.find((i) => i.itemid === productId);
+    if (itemToRemove) {
+      trackRemoveFromCart(itemToRemove, itemToRemove.quantity);
+    }
     dispatch({
       type: 'REMOVE_ITEM',
       payload: { productId },
@@ -80,6 +98,7 @@ export function CartDrawer() {
     if (!cleanCode) return;
 
     if (cleanCode === 'WELCOME10') {
+      trackApplyPromotion(cleanCode, 10);
       dispatch({
         type: 'APPLY_PROMO',
         payload: { code: cleanCode, discountPercent: 10 },
@@ -88,6 +107,7 @@ export function CartDrawer() {
       setPromoError('');
       showToast('10% discount applied!', 'success');
     } else if (cleanCode === 'SAVE20') {
+      trackApplyPromotion(cleanCode, 20);
       dispatch({
         type: 'APPLY_PROMO',
         payload: { code: cleanCode, discountPercent: 20 },
@@ -106,6 +126,7 @@ export function CartDrawer() {
   };
 
   const handleCheckoutClick = () => {
+    trackBeginCheckout(cart, subtotal, promo?.code);
     setIsCartOpen(false);
     router.push('/checkout');
   };

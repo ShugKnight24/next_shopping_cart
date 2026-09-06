@@ -1,10 +1,15 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
+import {
+  trackAddToCart,
+  trackRemoveFromCart,
+  trackViewItem,
+} from '../../analytics/google';
 import {
   getAllProducts,
   getProductById,
@@ -128,7 +133,12 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
     ? Math.round((1 - effectivePrice / effectiveOriginalPrice) * 100)
     : 0;
 
+  useEffect(() => {
+    trackViewItem(currentProduct, selectedVariant);
+  }, [currentProduct, selectedVariant]);
+
   function handleAddToCart(productId, qty = 1, variant = selectedVariant) {
+    trackAddToCart(currentProduct, qty, variant);
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -145,6 +155,7 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   }
 
   function handleRemoveFromCart(productId) {
+    trackRemoveFromCart(currentProduct, cartQuantity);
     dispatch({
       type: 'REMOVE_ITEM',
       payload: {

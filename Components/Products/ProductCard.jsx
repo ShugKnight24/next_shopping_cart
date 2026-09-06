@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
+import { trackAddToCart, trackRemoveFromCart, trackSelectItem } from '../../analytics/google';
 import { QuickView } from './QuickView';
 import { RatingStars } from '../UI/RatingStars';
 import styles from './ProductCard.module.css';
@@ -60,6 +61,7 @@ export function ProductCard({
   };
 
   function handleAddToCart(productId, qty = 1) {
+    trackAddToCart(productData, qty);
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -70,6 +72,7 @@ export function ProductCard({
   }
 
   function handleRemoveFromCart(productId) {
+    trackRemoveFromCart(productData, 1);
     dispatch({
       type: 'REMOVE_ITEM',
       payload: {
@@ -301,6 +304,7 @@ export function ProductCard({
             <Link
               href={`/products/${itemid.toString()}`}
               className={`${styles.actionBtn} ${styles.detailsBtn} action-btn more-info-button`}
+              onClick={() => trackSelectItem(productData)}
             >
               <InfoIcon size={16} strokeWidth={2} />
               <span>View Details</span>
