@@ -6,6 +6,7 @@ import { useMascot } from '../../context/MascotProvider';
 import { StorybookStudio } from '../../Components/Studio/StorybookStudio';
 import { PosterStudio } from '../../Components/Studio/PosterStudio';
 import { ApparelStudio } from '../../Components/Studio/ApparelStudio';
+import { KidsStudioVideoTour } from '../../Components/Video/KidsStudioVideoTour';
 import { SparklesIcon, TruckIcon, ShieldCheckIcon, BoxIcon } from '../../Components/Icons';
 import styles from '../../styles/pages/Studio.module.css';
 
@@ -142,6 +143,9 @@ export default function StudioPage() {
           {activeMode === 'poster' && <PosterStudio />}
           {activeMode === 'apparel' && <ApparelStudio />}
         </section>
+
+        {/* Behind The Scenes Print Atelier Video Tour */}
+        <KidsStudioVideoTour />
 
         {/* Social Media Creation Studio Callout */}
         <Link href="/studio/social" className={styles.socialStudioBanner}>

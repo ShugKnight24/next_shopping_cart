@@ -1,0 +1,265 @@
+.playerContainer {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Ambient Backlight Glow */
+.backlightGlow {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(circle at 50% 50%, var(--accent, #2563eb) 0%, transparent 70%);
+  opacity: 0.15;
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.glowPulse {
+  opacity: 0.28;
+  animation: pulseGlow 4s infinite alternate ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.04);
+    opacity: 0.35;
+  }
+}
+
+.videoStage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.videoElement,
+.motionCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Big Center Play Button */
+.centerPlayBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 4;
+}
+
+.centerPlayBtn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: var(--accent, #2563eb);
+  border-color: #ffffff;
+  box-shadow: 0 0 30px var(--accent, #2563eb);
+}
+
+/* Experience Overlay Container */
+.experienceOverlayContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.experienceOverlayContainer > * {
+  pointer-events: auto;
+}
+
+/* Glassmorphic Control Deck */
+.controlDeck {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 65%, transparent 100%);
+  backdrop-filter: blur(8px);
+  padding: 12px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 5;
+}
+
+/* Scrubber Container */
+.scrubberContainer {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.scrubberTrack {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  transition: height 0.15s ease;
+}
+
+.scrubberContainer:hover .scrubberTrack {
+  height: 7px;
+}
+
+.scrubberProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--accent, #2563eb);
+  border-radius: 9999px;
+  box-shadow: 0 0 10px var(--accent, #2563eb);
+}
+
+/* Chapter Timeline Markers */
+.chapterMarker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #000000;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, background 0.15s ease;
+  z-index: 2;
+}
+
+.chapterMarker:hover {
+  transform: translate(-50%, -50%) scale(1.4);
+  background: #f59e0b;
+}
+
+.chapterMarkerReached {
+  background: var(--accent, #2563eb);
+  border-color: #ffffff;
+}
+
+/* Controls Row */
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controlsLeft,
+.controlsRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.iconBtn:hover {
+  color: var(--accent, #38bdf8);
+  transform: scale(1.1);
+}
+
+.timeDisplay {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.currentTimeText {
+  color: #ffffff;
+}
+
+.timeDivider {
+  opacity: 0.5;
+}
+
+.activeChapterBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.badgePulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.speedBtn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.speedBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #ffffff;
+}

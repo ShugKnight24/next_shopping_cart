@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import products from '../../data/products.json';
@@ -99,8 +99,10 @@ export function SocialStudio() {
   const [selectedProductId, setSelectedProductId] = useState(products[0]?.itemid || 'SM57');
 
   // Editable Post Elements
-  const activeProduct =
-    products.find((p) => p.itemid === selectedProductId) || products[0] || {};
+  const activeProduct = useMemo(
+    () => products.find((p) => p.itemid === selectedProductId) || products[0] || {},
+    [selectedProductId]
+  );
   const [headline, setHeadline] = useState(
     activeProduct.productName ? `${activeProduct.productName.toUpperCase()} IS BACK` : 'EXCLUSIVE DROP'
   );

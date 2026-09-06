@@ -9,6 +9,7 @@ import { Hero } from '../Components/Hero/Hero';
 import { HowItWorks } from '../Components/HowItWorks';
 import { Products } from '../Components/Products/Products';
 import { Reasons } from '../Components/Reasons/Reasons';
+import { EcommerceSizzleReel } from '../Components/Video/EcommerceSizzleReel';
 import styles from '../styles/pages/Home.module.css';
 
 const CarouselLoading = () => (
@@ -100,6 +101,8 @@ export default function Home() {
         <FullscreenCarousel />
         {/* Editorial Brand Story & Trust Standards */}
         <BrandStory />
+        {/* Cinematic Collection Sizzle Reel with Interactive Hotspots */}
+        <EcommerceSizzleReel />
         {/* Value Propositions */}
         <Reasons />
         {/* Products Section */}
