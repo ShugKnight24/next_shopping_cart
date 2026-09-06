@@ -1,12 +1,21 @@
 import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Cube3DIcon } from '../Icons';
+import { Product3DStudio } from './Product3DStudio';
 import styles from './ImageGallery.module.css';
 
-export function ImageGallery({ images = [], productName = '' }) {
+export function ImageGallery({
+  images = [],
+  productName = '',
+  product = null,
+  selectedVariant = null,
+  onSelectVariant = null,
+}) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [viewMode, setViewMode] = useState('photos'); // 'photos' | '3d'
 
   const handlePrevious = useCallback(() => {
     setSelectedIndex((prev) => (prev - 1 + images.length) % images.length);
@@ -46,7 +55,7 @@ export function ImageGallery({ images = [], productName = '' }) {
   );
 
   // Add keyboard listener when lightbox is open
-  useState(() => {
+  useEffect(() => {
     if (isLightboxOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
@@ -77,12 +86,36 @@ export function ImageGallery({ images = [], productName = '' }) {
   }
 
   return (
-    <>
-      <div className={styles.gallery}>
-        {/* Thumbnails */}
-        {images.length > 1 && (
-          <div className={styles.thumbnails}>
-            {images.map((image, index) => (
+    <div className={styles.galleryWrapper} data-testid="image-gallery">
+      {/* Mode switcher tabs */}
+      <div className={styles.modeToggleBar}>
+        <button
+          className={`${styles.modeBtn} ${viewMode === 'photos' ? styles.activeMode : ''}`}
+          onClick={() => setViewMode('photos')}
+        >
+          Photos ({images.length})
+        </button>
+        <button
+          className={`${styles.modeBtn} ${viewMode === '3d' ? styles.activeMode : ''}`}
+          onClick={() => setViewMode('3d')}
+        >
+          <Cube3DIcon size={14} />
+          <span>3D Interactive Studio</span>
+        </button>
+      </div>
+
+      {viewMode === '3d' && product ? (
+        <Product3DStudio
+          product={product}
+          selectedVariant={selectedVariant}
+          onSelectVariant={onSelectVariant}
+        />
+      ) : (
+        <div className={styles.gallery}>
+          {/* Thumbnails */}
+          {images.length > 1 && (
+            <div className={styles.thumbnails}>
+              {images.map((image, index) => (
               <button
                 key={index}
                 className={`${styles.thumbnail} ${index === selectedIndex ? styles.active : ''}`}
@@ -183,6 +216,7 @@ export function ImageGallery({ images = [], productName = '' }) {
           )}
         </div>
       </div>
+      )}
 
       {/* Lightbox */}
       {isLightboxOpen && (
@@ -275,11 +309,15 @@ export function ImageGallery({ images = [], productName = '' }) {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(PropTypes.string),
   productName: PropTypes.string,
+  product: PropTypes.object,
+  selectedVariant: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  onSelectVariant: PropTypes.func,
 };
+
