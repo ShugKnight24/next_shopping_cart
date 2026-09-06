@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] - 2026-09-06
+
+### Added
+- **Studios Navigation Submenu & Exposed Storefront Links**:
+  - Accessible dropdown menu under "Studios" in `Components/Nav.js` with click, hover, keyboard navigation, and click-outside dismissal.
+  - Quick access to both **Custom W2P Studio** (`/studio`) and **Social Media Studio** (`/studio/social` with a "NEW" badge).
+  - Directly exposed **Cart Bag** link (`/cart`) in the primary desktop navigation bar.
+  - Audited `Components/Footer.js` to replace all placeholder `#` links with active routes (`/products`, `/cart`, `/checkout`, `/favorites`, `/sitemap.xml`) and added a dedicated **Creation Studios** navigation column.
+- **Finley The Starlight Fox (*The Little Prince* Homage)**:
+  - Celestial desert fox companion registered under `config/mascots.js` (`realm: 'kids'`) inspired by Antoine de Saint-Exupéry's *The Little Prince*.
+  - Full vector artwork in `Components/Mascot/MascotArtwork.jsx` (`FoxSvg` and `MascotThumbnail`): sunset-amber fur, bushy white-tipped tail, pointed fennec ears, cream ruff, and flowing celestial sky-blue scarf with golden stars.
+  - Heartfelt philosophical quotes (*"It is only with the heart that one can see rightly..."*) and interactive reaction chips (*Secret of Heart*, *Tame Finley*, *Starry Rose*).
+  - Integrated into the mascot switcher drawer, companion widget with celestial stardust burst particles (`✦` / `★`), Storybook Studio co-star selector, and Canvas Engine page spread illustration.
+- **Figma / Photoshop-Lite Social Studio Canvas Editor**:
+  - Upgraded `Components/Studio/SocialStudio.jsx` and `SocialStudio.module.css` into a multi-layer vector canvas editor.
+  - **Interactive Drag-and-Drop**: Direct canvas manipulation with bounding box hit-testing and dragging.
+  - **Figma Selection Bounding Box**: Dashed outline, 4 corner anchor handles, rotation stem, and live dimension badge tooltip.
+  - **Photoshop-Style Layer Stack**: Visual layer hierarchy with visibility toggles, reordering (Bring Forward / Send Backward), duplication, and deletion.
+  - **Figma Property Inspector**: Precise controls for transform (X, Y, W, H), typography (font family, font size, weight, text alignment, uppercase, letter spacing), and appearance (fill color, stroke color, border radius, opacity).
+  - **Alignment Shortcuts**: 1-click alignment tools (Align Left, Center Horizontally, Align Right, Center Vertically).
+  - **Add Element Toolbar**: Quick buttons to add text headings, promotional discount badges, and card containers.
+  - **Promotional Flier Preset**: Added standard 3:4 promotional flier format (1200×1600 export) alongside Instagram Square, Story/TikTok, Twitter/X, and Pinterest Pin.
+
+---
+
 ## [0.7.0] - 2026-09-06
 
 ### Added
