@@ -5,6 +5,7 @@ import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
+import { BoltIcon } from '../Icons';
 import styles from './PremiumProductCard.module.css';
 
 export function PremiumProductCard({
@@ -194,7 +195,10 @@ export function PremiumProductCard({
 
         {/* Stock indicator */}
         {isLowStock && !isOutOfStock && (
-          <p className={styles.stockWarning}>Only {available} left in stock</p>
+          <p className={styles.stockWarning}>
+            <BoltIcon size={14} />
+            <span>Only {available} left in stock</span>
+          </p>
         )}
 
         {/* Add to cart button */}

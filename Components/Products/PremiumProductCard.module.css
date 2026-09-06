@@ -228,14 +228,16 @@
 }
 
 .stockWarning {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
   font-weight: 500;
   color: #e65100;
   margin: 0 0 12px;
 }
-.stockWarning::before {
-  content: "⚡";
-  margin-right: 4px;
+.stockWarning svg {
+  flex-shrink: 0;
 }
 
 .addToCart {
