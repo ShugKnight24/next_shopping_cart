@@ -39,6 +39,8 @@ beforeEach(() => {
     arc: vi.fn(),
     ellipse: vi.fn(),
     roundRect: vi.fn(),
+    rect: vi.fn(),
+    clip: vi.fn(),
     fill: vi.fn(),
     stroke: vi.fn(),
     save: vi.fn(),

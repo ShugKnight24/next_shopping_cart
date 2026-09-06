@@ -5,6 +5,7 @@ import { useToast } from '../UI/Toast';
 import { trackAddToCart } from '../../analytics/google';
 import { CanvasEngine } from './CanvasEngine';
 import { StickerBar } from './StickerBar';
+import { MascotThumbnail } from '../Mascot/MascotArtwork';
 import { ChevronLeft, ChevronRight, CheckCircleIcon, SparklesIcon } from '../Icons';
 import styles from './StorybookStudio.module.css';
 
@@ -591,6 +592,7 @@ export function StorybookStudio() {
                     <label>Story Co-Star Companion:</label>
                     <div className={styles.mascotCoStarGrid}>
                       {[
+                        { id: 'luna', name: 'Luna The Shepherd', tag: 'Cosmic & Loyal' },
                         { id: 'leo', name: 'Leo The Lion', tag: 'Courage & Roar' },
                         { id: 'penny', name: 'Princess Penny', tag: 'Magic & Grace' },
                         { id: 'dexter', name: 'Dexter Dino', tag: 'Explorer & Dino' },
@@ -607,8 +609,13 @@ export function StorybookStudio() {
                             speak(`Excited to co-star with ${childName} in the adventure!`, 'happy');
                           }}
                         >
-                          <strong>{m.name}</strong>
-                          <span>{m.tag}</span>
+                          <div className={styles.coStarAvatar}>
+                            <MascotThumbnail mascotId={m.id} size={34} />
+                          </div>
+                          <div className={styles.coStarMeta}>
+                            <strong>{m.name}</strong>
+                            <span>{m.tag}</span>
+                          </div>
                         </button>
                       ))}
                     </div>

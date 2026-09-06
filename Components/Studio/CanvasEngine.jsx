@@ -3,6 +3,122 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './CanvasEngine.module.css';
 
 /**
+ * Anti-Theft Dual-Side Security Watermarks
+ * Prevents AI upscaling and unauthorized taking of custom artwork.
+ * Draws subtle angled security ribbons and official preview seals on both left and right spreads/quadrants.
+ */
+function drawDualWatermarks(ctx, width, height, mode, activePage) {
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const watermarkText = 'CART COMMERCE • PROOF / PREVIEW ONLY • DO NOT REPRODUCE';
+
+  if (mode === 'storybook' && activePage >= 1) {
+    // 2-Page Book Spread: Dual Watermarks on Left Page AND Right Page
+    const leftCenterX = width / 4;
+    const rightCenterX = (3 * width) / 4;
+    const centerY = height / 2;
+
+    // --- Left Page Watermark ---
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.rect) ctx.rect(24, 24, width / 2 - 28, height - 48);
+    if (ctx.clip) ctx.clip();
+
+    ctx.translate(leftCenterX, centerY);
+    ctx.rotate(-0.45); // ~26 degree angle
+
+    ctx.fillStyle = 'rgba(100, 116, 139, 0.16)';
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+
+    // Repeating diagonal lines
+    for (let offset = -150; offset <= 150; offset += 50) {
+      ctx.fillText(watermarkText, 0, offset);
+    }
+
+    // Centered Left Protected Proof Stamp
+    ctx.strokeStyle = 'rgba(100, 116, 139, 0.22)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0, 0, 36, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.font = 'bold 9px system-ui, sans-serif';
+    ctx.fillText('PROTECTED PROOF', 0, 0);
+    ctx.restore();
+
+    // --- Right Page Watermark ---
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.rect) ctx.rect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+    if (ctx.clip) ctx.clip();
+
+    ctx.translate(rightCenterX, centerY);
+    ctx.rotate(-0.45);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+
+    for (let offset = -150; offset <= 150; offset += 50) {
+      ctx.fillText(watermarkText, 0, offset);
+    }
+
+    // Centered Right Protected Proof Stamp
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0, 0, 36, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.font = 'bold 9px system-ui, sans-serif';
+    ctx.fillText('PROTECTED PROOF', 0, 0);
+    ctx.restore();
+  } else {
+    // Single page (Cover, Poster, Apparel): Watermarks on Left & Right Quadrants
+    const leftCenterX = width * 0.28;
+    const rightCenterX = width * 0.72;
+    const centerY = height / 2;
+
+    // Left Quadrant
+    ctx.save();
+    ctx.translate(leftCenterX, centerY);
+    ctx.rotate(-0.4);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    for (let offset = -130; offset <= 130; offset += 55) {
+      ctx.fillText(watermarkText, 0, offset);
+    }
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0, 0, 32, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.font = 'bold 8px system-ui, sans-serif';
+    ctx.fillText('SAMPLE ONLY', 0, 0);
+    ctx.restore();
+
+    // Right Quadrant
+    ctx.save();
+    ctx.translate(rightCenterX, centerY);
+    ctx.rotate(-0.4);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    for (let offset = -130; offset <= 130; offset += 55) {
+      ctx.fillText(watermarkText, 0, offset);
+    }
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0, 0, 32, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.font = 'bold 8px system-ui, sans-serif';
+    ctx.fillText('SAMPLE ONLY', 0, 0);
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+/**
  * High-performance HTML5 Canvas 2D + SVG composite engine.
  * Renders print-ready proof previews for Storybooks, Framed Posters, and Kids' Apparel.
  * Zero external binary dependencies (no node-canvas, 100% SSR safe).
@@ -243,12 +359,14 @@ export function CanvasEngine({
 
       // Mascot co-star name lookup
       const coStarNames = {
+        luna: 'Luna The Cosmic Shepherd',
         leo: 'Leo The Story Lion',
         penny: 'Princess Penny',
         dexter: 'Dexter The Dino Explorer',
         carty: 'Carty The Courier',
+        sparky: 'Sparky The Sneaker Hound',
       };
-      const coStarLabel = coStarNames[mascotCoStar] || 'Leo The Story Lion';
+      const coStarLabel = coStarNames[mascotCoStar] || 'Luna The Cosmic Shepherd';
 
       // Book Outer Hardcover Spread
       const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -585,7 +703,103 @@ export function CanvasEngine({
         const coStarX = stageX + stageW * 0.68;
         const coStarY = stageY + stageH * 0.65;
 
-        if (mascotCoStar === 'penny') {
+        if (mascotCoStar === 'luna') {
+          // Luna The Cosmic Anatolian Shepherd in Spacesuit
+          // Curled Tail in Spacesuit
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(coStarX - 16, coStarY + 12, 10, 0.2 * Math.PI, 1.4 * Math.PI);
+          ctx.stroke();
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(coStarX - 22, coStarY + 4, 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // White Spacesuit Body
+          ctx.fillStyle = '#f8fafc';
+          ctx.beginPath();
+          ctx.roundRect(coStarX - 14, coStarY - 8, 28, 30, 8);
+          ctx.fill();
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Navy Spacesuit Collar
+          ctx.fillStyle = '#1e293b';
+          ctx.beginPath();
+          ctx.roundRect(coStarX - 12, coStarY - 12, 24, 6, 2);
+          ctx.fill();
+
+          // Gold Name Patch: "LUNA"
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(coStarX - 10, coStarY + 6, 20, 8);
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(coStarX - 10, coStarY + 6, 20, 8);
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 6px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('LUNA', coStarX, coStarY + 12.5);
+
+          // Anatolian Folded Drop Ears
+          ctx.fillStyle = '#713f12';
+          ctx.beginPath();
+          ctx.moveTo(coStarX - 12, coStarY - 26);
+          ctx.lineTo(coStarX - 18, coStarY - 14);
+          ctx.lineTo(coStarX - 8, coStarY - 18);
+          ctx.closePath();
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 12, coStarY - 26);
+          ctx.lineTo(coStarX + 18, coStarY - 14);
+          ctx.lineTo(coStarX + 8, coStarY - 18);
+          ctx.closePath();
+          ctx.fill();
+
+          // Golden Fawn Head
+          ctx.fillStyle = '#e5a95d';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 22, 14, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Anatolian Black Mask
+          ctx.fillStyle = '#1c1917';
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY - 18, 9, 8, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Soulful Eyes
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 23, 1.8, 0, Math.PI * 2);
+          ctx.arc(coStarX + 4, coStarY - 23, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 23, 1, 0, Math.PI * 2);
+          ctx.arc(coStarX + 4, coStarY - 23, 1, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Nose Leather
+          ctx.fillStyle = '#09090b';
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY - 17, 3, 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Signature Pink Nose Blaze
+          ctx.fillStyle = '#fca5a5';
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY - 18.5, 2, 0.8, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Spacesuit Visor Ring
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 22, 17, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (mascotCoStar === 'penny') {
           // Princess Penny
           ctx.fillStyle = '#ec4899';
           ctx.beginPath();
@@ -610,26 +824,96 @@ export function CanvasEngine({
           ctx.lineTo(coStarX + 20, coStarY - 22);
           ctx.stroke();
         } else if (mascotCoStar === 'dexter') {
-          // Dexter Dino
+          // Dexter The Dino Explorer - High Quality Illustration
+          // Curved Dino Tail with Back Spikes
+          ctx.fillStyle = '#059669';
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 8, coStarY + 16);
+          ctx.quadraticCurveTo(coStarX + 28, coStarY + 14, coStarX + 32, coStarY - 4);
+          ctx.lineTo(coStarX + 16, coStarY + 22);
+          ctx.closePath();
+          ctx.fill();
+
+          // Amber Back Spikes
+          ctx.fillStyle = '#f59e0b';
+          [
+            [coStarX + 6, coStarY - 4],
+            [coStarX + 12, coStarY + 4],
+            [coStarX + 20, coStarY + 8],
+            [coStarX + 27, coStarY + 4],
+          ].forEach(([sx, sy]) => {
+            ctx.beginPath();
+            ctx.moveTo(sx - 3, sy);
+            ctx.lineTo(sx, sy - 6);
+            ctx.lineTo(sx + 3, sy);
+            ctx.closePath();
+            ctx.fill();
+          });
+
+          // Emerald Dino Body
           ctx.fillStyle = '#10b981';
           ctx.beginPath();
-          ctx.ellipse(coStarX, coStarY + 5, 14, 18, 0, 0, Math.PI * 2);
+          ctx.roundRect(coStarX - 16, coStarY - 8, 30, 32, 10);
           ctx.fill();
-          // Tail
+
+          // Mint Belly Patch
+          ctx.fillStyle = '#6ee7b7';
           ctx.beginPath();
-          ctx.moveTo(coStarX + 10, coStarY + 12);
-          ctx.quadraticCurveTo(coStarX + 25, coStarY + 14, coStarX + 28, coStarY + 2);
-          ctx.lineTo(coStarX + 12, coStarY + 18);
+          ctx.ellipse(coStarX - 4, coStarY + 10, 8, 12, 0, 0, Math.PI * 2);
           ctx.fill();
-          // Head
+
+          // Dino Head & Snout
+          ctx.fillStyle = '#10b981';
           ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 16, 12, 0, Math.PI * 2);
+          ctx.ellipse(coStarX - 4, coStarY - 20, 15, 12, -0.1, 0, Math.PI * 2);
           ctx.fill();
-          // Safari Hat
+
+          // Snout
+          ctx.fillStyle = '#34d399';
+          ctx.beginPath();
+          ctx.ellipse(coStarX - 12, coStarY - 17, 8, 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Friendly Smile with Teeth
+          ctx.strokeStyle = '#064e3b';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(coStarX - 10, coStarY - 16, 5, 0.1 * Math.PI, 0.8 * Math.PI);
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.moveTo(coStarX - 12, coStarY - 14);
+          ctx.lineTo(coStarX - 10, coStarY - 11);
+          ctx.lineTo(coStarX - 8, coStarY - 14);
+          ctx.closePath();
+          ctx.fill();
+
+          // Curious Eye
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(coStarX - 2, coStarY - 23, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#064e3b';
+          ctx.beginPath();
+          ctx.arc(coStarX - 2, coStarY - 23, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(coStarX - 3, coStarY - 24, 1, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Safari Explorer Hat
           ctx.fillStyle = '#d97706';
-          ctx.fillRect(coStarX - 14, coStarY - 26, 20, 4);
           ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 26, 8, Math.PI, 0, false);
+          ctx.ellipse(coStarX - 4, coStarY - 30, 18, 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 30, 10, Math.PI, 0, false);
+          ctx.fill();
+          // Compass Badge on Hat
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 33, 2.5, 0, Math.PI * 2);
           ctx.fill();
         } else if (mascotCoStar === 'carty') {
           // Carty Courier
@@ -932,6 +1216,9 @@ export function CanvasEngine({
     stickers.forEach((s) => {
       drawSticker(ctx, s, s.id === activeStickerId);
     });
+
+    // Anti-Theft Dual-Side Security Watermarks (prevents upscaling & unauthorized copying)
+    drawDualWatermarks(ctx, width, height, mode, config?.activePage ?? 0);
   }, [width, height, mode, config, stickers, activeStickerId, drawSticker]);
 
   useEffect(() => {

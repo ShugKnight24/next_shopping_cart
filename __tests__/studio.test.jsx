@@ -44,6 +44,8 @@ beforeEach(() => {
     ellipse: vi.fn(),
     quadraticCurveTo: vi.fn(),
     roundRect: vi.fn(),
+    rect: vi.fn(),
+    clip: vi.fn(),
     fill: vi.fn(),
     stroke: vi.fn(),
     save: vi.fn(),
