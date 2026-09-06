@@ -164,16 +164,24 @@ function Toast({ message, type, action, onClose }) {
 
 export function useToast() {
   const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
 
   // Simple showToast helper for common use cases
   const showToast = (message, type = 'info', options = {}) => {
-    return context.addToast({ message, type, ...options });
+    if (context?.addToast) {
+      return context.addToast({ message, type, ...options });
+    }
+    return null;
   };
 
-  return { ...context, showToast };
+  return {
+    ...(context || {
+      toasts: [],
+      addToast: () => {},
+      removeToast: () => {},
+      clearToasts: () => {},
+    }),
+    showToast,
+  };
 }
 
 ToastProvider.propTypes = {

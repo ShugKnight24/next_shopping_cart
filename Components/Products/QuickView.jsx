@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
+import { trackAddToCart } from '../../analytics/google';
+import { useToast } from '../UI/Toast';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
 import styles from './QuickView.module.css';
 
 export function QuickView({ product, isOpen, onClose }) {
   const { dispatch } = useContext(CartContext);
+  const { showToast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
@@ -41,13 +44,22 @@ export function QuickView({ product, isOpen, onClose }) {
 
     setIsAdding(true);
 
+    trackAddToCart(product, quantity, selectedVariant);
+
     dispatch({
       type: 'ADD_ITEM',
       payload: {
         productId: itemid,
         quantity: quantity,
+        variant: selectedVariant?.name || selectedVariant || null,
+        selectedVariant,
       },
     });
+
+    showToast(
+      `Added ${quantity} × ${productName}${selectedVariant ? ` (${selectedVariant.name || selectedVariant})` : ''} to bag`,
+      'success'
+    );
 
     const timer = setTimeout(() => {
       setIsAdding(false);
