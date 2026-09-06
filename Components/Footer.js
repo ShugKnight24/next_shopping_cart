@@ -296,20 +296,39 @@ export default function Footer() {
               <h3>Online Shopping</h3>
               <ul>
                 <li>
-                  <Link href="#">New Products</Link>
-                </li>
-                {/* TODO: Consolidate under an FAQ? */}
-                <li>
-                  <Link href="#">Order Status</Link>
+                  <Link href="/products">All Products & Drops</Link>
                 </li>
                 <li>
-                  <Link href="#">Shipping and Delivery</Link>
+                  <Link href="/favorites">Saved Wishlist</Link>
                 </li>
                 <li>
-                  <Link href="#">Returns</Link>
+                  <Link href="/cart">Cart Bag</Link>
                 </li>
                 <li>
-                  <Link href="#">Payment Options</Link>
+                  <Link href="/checkout">Express Checkout</Link>
+                </li>
+                <li>
+                  <Link href="/sitemap.xml">XML Sitemap</Link>
+                </li>
+              </ul>
+            </div>
+            <div className={styles.shopping}>
+              <h3>Creation Studios</h3>
+              <ul>
+                <li>
+                  <Link href="/studio">Custom W2P Studio</Link>
+                </li>
+                <li>
+                  <Link href="/studio/social">Social Media Studio</Link>
+                </li>
+                <li>
+                  <Link href="/studio">Personalized Storybooks</Link>
+                </li>
+                <li>
+                  <Link href="/studio">Framed Art Posters</Link>
+                </li>
+                <li>
+                  <Link href="/studio">Custom Apparel & Kicks</Link>
                 </li>
               </ul>
             </div>
@@ -317,25 +336,22 @@ export default function Footer() {
               <h3>Shop Info</h3>
               <ul>
                 <li>
-                  <Link href="#">About Us</Link>
+                  <Link href="/">About Our Store</Link>
                 </li>
                 <li>
-                  <Link href="#">Blog</Link>
+                  <Link href="/products">Featured Categories</Link>
                 </li>
                 <li>
-                  <Link href="#">Location</Link>
+                  <Link href="/checkout">Shipping & Delivery</Link>
                 </li>
                 <li>
-                  <Link href="#">Feedback</Link>
+                  <Link href="/checkout">Payment Options</Link>
                 </li>
               </ul>
             </div>
             <div className={styles.contact}>
               <h3>Contact</h3>
               <ul>
-                <li>
-                  <Link href="#">Contact Us</Link>
-                </li>
                 <li>
                   <Link href="mailto:customersupport@storename.com">
                     customersupport@storename.com

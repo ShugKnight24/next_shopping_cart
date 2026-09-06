@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CartContext } from '../context/CartProvider';
 import { totalQuantity } from '../utils/cartUtils';
 import { Logo } from './Logo';
@@ -53,6 +53,22 @@ export default function Nav() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [isStudioDropdownOpen, setIsStudioDropdownOpen] = useState(false);
+  const studioDropdownRef = useRef(null);
+
+  // Close studio dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        studioDropdownRef.current &&
+        !studioDropdownRef.current.contains(event.target)
+      ) {
+        setIsStudioDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Load recent searches from localStorage
   useEffect(() => {
@@ -100,15 +116,85 @@ export default function Nav() {
             <Link href="/" aria-label="Home / Shop">
               Shop
             </Link>
-            <Link href="/favorites" aria-label="Favorites">
-              Favorites
-            </Link>
             <Link href="/products" aria-label="Products">
               Products
             </Link>
-            <Link href="/studio" aria-label="Custom Studio">
-              Studio <span className={styles.studioBadge}>W2P</span>
+            <Link href="/favorites" aria-label="Favorites">
+              Favorites
             </Link>
+            <Link href="/cart" className={styles.cartDirectLink} aria-label="Cart Bag">
+              Cart
+            </Link>
+
+            {/* Studios Dropdown Submenu */}
+            <div
+              className={styles.studioDropdown}
+              ref={studioDropdownRef}
+              onMouseEnter={() => setIsStudioDropdownOpen(true)}
+              onMouseLeave={() => setIsStudioDropdownOpen(false)}
+            >
+              <button
+                type="button"
+                className={styles.studioDropdownTrigger}
+                onClick={() => setIsStudioDropdownOpen((prev) => !prev)}
+                aria-expanded={isStudioDropdownOpen}
+                aria-haspopup="true"
+                aria-label="Studios creation suites menu"
+              >
+                <span>Studios</span>
+                <span className={styles.studioBadge}>SUITE</span>
+                <svg
+                  className={`${styles.dropdownChevron} ${
+                    isStudioDropdownOpen ? styles.dropdownChevronOpen : ''
+                  }`}
+                  width="11"
+                  height="11"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {isStudioDropdownOpen && (
+                <div className={styles.dropdownMenu} role="menu">
+                  <Link
+                    href="/studio"
+                    className={styles.dropdownItem}
+                    onClick={() => setIsStudioDropdownOpen(false)}
+                    role="menuitem"
+                  >
+                    <div className={styles.dropdownItemHeader}>
+                      <span className={styles.dropdownTitle}>Custom W2P Studio</span>
+                      <span className={styles.dropdownItemBadgeW2p}>W2P</span>
+                    </div>
+                    <span className={styles.dropdownDesc}>
+                      Personalized Books, Framed Posters & Kids' Kicks
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/studio/social"
+                    className={styles.dropdownItem}
+                    onClick={() => setIsStudioDropdownOpen(false)}
+                    role="menuitem"
+                  >
+                    <div className={styles.dropdownItemHeader}>
+                      <span className={styles.dropdownTitle}>Social Media Studio</span>
+                      <span className={styles.dropdownItemBadgeHot}>NEW</span>
+                    </div>
+                    <span className={styles.dropdownDesc}>
+                      Figma-Style Flier, Banner & Post Creator
+                    </span>
+                  </Link>
+                </div>
+              )}
+            </div>
           </nav>
           <div className={styles.navActions}>
             <button
