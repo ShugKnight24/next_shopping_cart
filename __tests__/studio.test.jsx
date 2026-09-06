@@ -50,6 +50,9 @@ beforeEach(() => {
     restore: vi.fn(),
     translate: vi.fn(),
     scale: vi.fn(),
+    rotate: vi.fn(),
+    setLineDash: vi.fn(),
+    toDataURL: vi.fn(),
     measureText: vi.fn(() => ({ width: 50 })),
     createLinearGradient: vi.fn(() => ({
       addColorStop: vi.fn(),
@@ -212,5 +215,54 @@ describe('Web-to-Print Studio Platform', () => {
       localStorage.getItem('shopping_cart.cart') || '{}'
     );
     expect(savedCartData.cart.some((i) => i.customMode === 'apparel')).toBe(true);
+  });
+
+  it('supports deep studio customization with prose editing, co-star mascots, and print bleed guides', () => {
+    renderStudio();
+
+    // Navigate to Step 4
+    const step4Tab = screen.getByRole('button', { name: /Proof & Stamp/i });
+    fireEvent.click(step4Tab);
+
+    expect(screen.getByText('Deep Customization Workshop')).toBeInTheDocument();
+
+    // Verify sub-tabs exist
+    expect(screen.getByRole('tab', { name: /Prose Editor/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Avatar & Co-Star/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Typography & Bleed/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Stamps & Badges/i })).toBeInTheDocument();
+
+    // Edit Chapter 1 Title in Prose Editor
+    const titleInput = screen.getByLabelText(/Chapter 1 Title:/i);
+    fireEvent.change(titleInput, { target: { value: 'The Starlight Expedition' } });
+    expect(titleInput).toHaveValue('The Starlight Expedition');
+
+    // Switch to Avatar & Co-Star subtab
+    const avatarTab = screen.getByRole('tab', { name: /Avatar & Co-Star/i });
+    fireEvent.click(avatarTab);
+    expect(screen.getByText('Princess Penny')).toBeInTheDocument();
+    expect(screen.getByText('Dexter Dino')).toBeInTheDocument();
+
+    // Click Princess Penny co-star
+    const pennyCard = screen.getByRole('button', { name: /Princess Penny/i });
+    fireEvent.click(pennyCard);
+
+    // Switch to Typography & Bleed subtab
+    const typoTab = screen.getByRole('tab', { name: /Typography & Bleed/i });
+    fireEvent.click(typoTab);
+    expect(screen.getByRole('button', { name: /Storybook Cursive/i })).toBeInTheDocument();
+
+    // Toggle Print Bleed checkbox
+    const bleedCheckbox = screen.getByLabelText(
+      /Show 3mm Print Bleed Guides & Safe Art Zones/i
+    );
+    expect(bleedCheckbox).not.toBeChecked();
+    fireEvent.click(bleedCheckbox);
+    expect(bleedCheckbox).toBeChecked();
+
+    // Check high-res proof export button exists
+    expect(
+      screen.getByRole('button', { name: /Download print-ready proof/i })
+    ).toBeInTheDocument();
   });
 });

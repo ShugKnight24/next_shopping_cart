@@ -511,3 +511,193 @@
   background: #1e293b;
   transform: translateY(-1px);
 }
+
+/* Deep Customization Workshop Subtabs */
+.subTabsRow {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+}
+
+.subTabBtn {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.subTabBtn:hover {
+  color: #0f172a;
+}
+
+.subTabBtnActive {
+  background: #ffffff;
+  color: #2563eb;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.customSubPane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeIn 0.15s ease;
+}
+
+.chapterSelectorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.subPaneLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.chapSelectBtn {
+  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chapSelectBtn:hover {
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.chapSelectBtnActive {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Mascot Co-Star Grid */
+.mascotCoStarGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.coStarCard {
+  text-align: left;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.coStarCard strong {
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+.coStarCard span {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.coStarCard:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.coStarCardActive {
+  background: #eff6ff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.coStarCardActive strong {
+  color: #2563eb;
+}
+
+/* Avatar Swatches */
+.avatarPaletteGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.avatarPaletteGroup label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.colorSwatches {
+  display: flex;
+  gap: 10px;
+}
+
+.swatchBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #cbd5e1;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.swatchBtn:hover {
+  transform: scale(1.15);
+}
+
+.swatchBtnActive {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2.5px #2563eb;
+}
+
+/* Bleed Toggle */
+.toggleRow {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 4px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.checkboxLabel input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+

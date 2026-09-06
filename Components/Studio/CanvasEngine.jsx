@@ -23,10 +23,16 @@ export function CanvasEngine({
   const dragTargetRef = useRef(null);
   const [hoveredStickerId, setHoveredStickerId] = useState(null);
 
+  // Selected sticker layer state
+  const [activeStickerId, setActiveStickerId] = useState(null);
+
   // Draw sticker vector primitives on Canvas 2D
-  const drawSticker = useCallback((ctx, sticker) => {
+  const drawSticker = useCallback((ctx, sticker, isSelected = false) => {
     ctx.save();
     ctx.translate(sticker.x, sticker.y);
+    if (sticker.rotation) {
+      ctx.rotate((sticker.rotation * Math.PI) / 180);
+    }
     ctx.scale(sticker.scale || 1, sticker.scale || 1);
 
     switch (sticker.type) {
@@ -156,6 +162,40 @@ export function CanvasEngine({
         break;
       }
     }
+
+    // Draw selection bounding box if active
+    if (isSelected) {
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 1.5;
+      if (ctx.setLineDash) ctx.setLineDash([4, 3]);
+      ctx.strokeRect(-24, -24, 48, 48);
+      if (ctx.setLineDash) ctx.setLineDash([]);
+
+      // Corner anchor grips
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 1.5;
+      [
+        [-24, -24],
+        [24, -24],
+        [24, 24],
+        [-24, 24],
+      ].forEach(([cx, cy]) => {
+        ctx.fillRect(cx - 3, cy - 3, 6, 6);
+        ctx.strokeRect(cx - 3, cy - 3, 6, 6);
+      });
+
+      // Rotation stem & anchor
+      ctx.beginPath();
+      ctx.moveTo(0, -24);
+      ctx.lineTo(0, -34);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, -34, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+
     ctx.restore();
   }, []);
 
@@ -179,7 +219,36 @@ export function CanvasEngine({
         theme = 'space',
         activePage = 0,
         dedication = 'Stay curious, brave, and kind.',
+        fontFamily = 'serif',
+        textColor = '#334155',
+        chapterProse = {},
+        avatar = {
+          skin: '#fbd38d',
+          hair: '#4a2c11',
+          outfit: '#2563eb',
+          accessory: 'cape',
+        },
+        mascotCoStar = 'leo',
+        showBleed = false,
       } = config;
+
+      // Font Family mapping
+      const fontFamilies = {
+        serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+        sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        display: "'Impact', 'Trebuchet MS', sans-serif",
+        cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+      };
+      const activeFont = fontFamilies[fontFamily] || fontFamilies.serif;
+
+      // Mascot co-star name lookup
+      const coStarNames = {
+        leo: 'Leo The Story Lion',
+        penny: 'Princess Penny',
+        dexter: 'Dexter The Dino Explorer',
+        carty: 'Carty The Courier',
+      };
+      const coStarLabel = coStarNames[mascotCoStar] || 'Leo The Story Lion';
 
       // Book Outer Hardcover Spread
       const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -221,7 +290,6 @@ export function CanvasEngine({
 
       if (activePage === 0) {
         // Front Cover View
-        // Decorative Golden Arc
         ctx.strokeStyle = '#f59e0b';
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -246,7 +314,7 @@ export function CanvasEngine({
 
         // Hero Name Typography
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 26px serif';
+        ctx.font = `bold 26px ${activeFont}`;
         ctx.textAlign = 'center';
         ctx.fillText(`${childName.toUpperCase()}'S`, width / 2, 250);
 
@@ -268,7 +336,11 @@ export function CanvasEngine({
         ctx.font = '12px sans-serif';
         ctx.fillText('A Personalized Heirloom Keepsake Book', width / 2, 310);
         ctx.fillStyle = '#cbd5e1';
-        ctx.fillText('STARRING ' + childName.toUpperCase(), width / 2, 335);
+        ctx.fillText(
+          `STARRING ${childName.toUpperCase()} & ${coStarLabel.toUpperCase()}`,
+          width / 2,
+          335
+        );
 
         // Cover Emblem Icon
         ctx.fillStyle = '#f59e0b';
@@ -280,16 +352,13 @@ export function CanvasEngine({
         ctx.fillText('★', width / 2, 146);
       } else if (activePage === 1) {
         // Page 1: Official Dedication Page
-        // Left Page: Paper White
         ctx.fillStyle = '#fffdfa';
         ctx.fillRect(24, 24, width / 2 - 28, height - 48);
-
-        // Right Page: Paper White
         ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
 
         // Left Page Decorative Crest
         ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold 14px serif';
+        ctx.font = `bold 14px ${activeFont}`;
         ctx.textAlign = 'center';
         ctx.fillText('OFFICIAL CERTIFICATE', width / 4 + 10, 90);
         ctx.font = '11px sans-serif';
@@ -304,20 +373,20 @@ export function CanvasEngine({
         ctx.stroke();
 
         ctx.fillStyle = '#0f172a';
-        ctx.font = 'italic 13px serif';
+        ctx.font = `italic 13px ${activeFont}`;
         ctx.fillText(`Presented with honor to`, width / 4 + 10, 165);
-        ctx.font = 'bold 18px serif';
+        ctx.font = `bold 18px ${activeFont}`;
         ctx.fillStyle = '#2563eb';
         ctx.fillText(childName, width / 4 + 10, 200);
 
         // Right Page: Dedication Note
         ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 13px sans-serif';
+        ctx.font = `bold 13px ${activeFont}`;
         ctx.textAlign = 'center';
         ctx.fillText('SPECIAL DEDICATION', (3 * width) / 4 - 10, 90);
 
-        ctx.fillStyle = '#334155';
-        ctx.font = 'italic 13px serif';
+        ctx.fillStyle = textColor;
+        ctx.font = `italic 13px ${activeFont}`;
         const words = dedication.split(' ');
         let line = '';
         let y = 140;
@@ -339,7 +408,6 @@ export function CanvasEngine({
         ctx.fillText('Printed on FSC Archival Paper • Page 1', (3 * width) / 4 - 10, height - 42);
       } else {
         // Chapter Pages (2, 3, 4)
-        // Two-page open book
         ctx.fillStyle = '#fffdfa';
         ctx.fillRect(24, 24, width / 2 - 28, height - 48);
         ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
@@ -351,42 +419,46 @@ export function CanvasEngine({
         ctx.textAlign = 'left';
         ctx.fillText(`CHAPTER ${chapterNum}`, 44, 64);
 
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 16px serif';
-        const chapterTitle =
+        const customChapter = chapterProse && chapterProse[chapterNum];
+        const defaultTitle =
           chapterNum === 1
             ? `${childName}'s Journey Begins`
             : chapterNum === 2
             ? `The Secret of the Starlight Compass`
             : `The Grand Victory Celebration`;
+        const chapterTitle = customChapter?.title || defaultTitle;
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = `bold 16px ${activeFont}`;
         ctx.fillText(chapterTitle, 44, 90);
 
-        ctx.fillStyle = '#334155';
-        ctx.font = '12px serif';
-        const chapterLines =
+        ctx.fillStyle = textColor;
+        ctx.font = `12px ${activeFont}`;
+        const defaultLines =
           chapterNum === 1
             ? [
                 `The morning sun peered into ${childName}'s window.`,
                 `Today wasn't an ordinary morning in the neighborhood.`,
-                `A tiny brass courier bot rolled up with a golden parcel.`,
-                `"Wake up, ${childName}!" chimed Leo The Story Lion.`,
-                `"The galaxy needs someone bold enough to lead the expedition!"`,
+                `A golden letter arrived with an urgent royal seal.`,
+                `"Wake up, ${childName}!" chimed ${coStarLabel}.`,
+                `"The adventure needs someone bold enough to lead!"`,
               ]
             : chapterNum === 2
             ? [
                 `Higher and higher they climbed above the velvet clouds.`,
                 `${childName} reached out a steady hand to hold the compass.`,
                 `The glowing constellation aligned directly with their path.`,
-                `"I knew you had it in you!" cheered Leo with a joyful roar.`,
+                `"I knew you had it in you!" cheered ${coStarLabel} with joy.`,
                 `Together, there was no mystery they could not conquer.`,
               ]
             : [
                 `The entire kingdom gathered to celebrate ${childName}'s triumph.`,
                 `A crown of starlight was placed gently upon their head.`,
-                `"Never forget this moment," whispered Carty and Leo warmly.`,
+                `"Never forget this moment," whispered ${coStarLabel} warmly.`,
                 `Because in every heart that dares to dream,`,
                 `a magnificent adventure is always waiting to be written.`,
               ];
+        const chapterLines = customChapter?.lines || defaultLines;
 
         let lineY = 125;
         chapterLines.forEach((l) => {
@@ -395,27 +467,274 @@ export function CanvasEngine({
         });
 
         // Right Page Illustration Stage
-        const illGrad = ctx.createLinearGradient(width / 2 + 16, 44, width - 44, height - 60);
-        illGrad.addColorStop(0, '#eff6ff');
-        illGrad.addColorStop(1, '#fef3c7');
+        const stageX = width / 2 + 16;
+        const stageY = 44;
+        const stageW = width / 2 - 48;
+        const stageH = height - 88;
+
+        const illGrad = ctx.createLinearGradient(stageX, stageY, stageX + stageW, stageY + stageH);
+        if (theme === 'space') {
+          illGrad.addColorStop(0, '#0f172a');
+          illGrad.addColorStop(1, '#1e1b4b');
+        } else if (theme === 'magic') {
+          illGrad.addColorStop(0, '#4c1d95');
+          illGrad.addColorStop(1, '#831843');
+        } else if (theme === 'sneaker') {
+          illGrad.addColorStop(0, '#1e1b4b');
+          illGrad.addColorStop(1, '#b91c1c');
+        } else {
+          illGrad.addColorStop(0, '#064e3b');
+          illGrad.addColorStop(1, '#065f46');
+        }
         ctx.fillStyle = illGrad;
-        ctx.fillRect(width / 2 + 16, 44, width / 2 - 48, height - 88);
+        ctx.beginPath();
+        ctx.roundRect(stageX, stageY, stageW, stageH, 8);
+        ctx.fill();
 
-        ctx.fillStyle = '#2563eb';
-        ctx.font = 'bold 14px sans-serif';
+        // Twinkling background stars
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        [
+          [stageX + 25, stageY + 20, 1.5],
+          [stageX + stageW - 30, stageY + 35, 2],
+          [stageX + 50, stageY + 70, 1],
+          [stageX + stageW - 60, stageY + 80, 1.8],
+          [stageX + 40, stageY + stageH - 50, 1.5],
+        ].forEach(([sx, sy, sr]) => {
+          ctx.beginPath();
+          ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // DRAW HERO AVATAR (Left character on illustration stage)
+        const heroX = stageX + stageW * 0.35;
+        const heroY = stageY + stageH * 0.65;
+
+        // Optional Cape behind
+        if (avatar.accessory === 'cape') {
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath();
+          ctx.moveTo(heroX - 8, heroY - 10);
+          ctx.lineTo(heroX - 24, heroY + 28);
+          ctx.lineTo(heroX, heroY + 22);
+          ctx.lineTo(heroX + 10, heroY - 10);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Body / Outfit
+        ctx.fillStyle = avatar.outfit || '#2563eb';
+        ctx.beginPath();
+        ctx.roundRect(heroX - 12, heroY - 10, 24, 30, 6);
+        ctx.fill();
+
+        // Head
+        ctx.fillStyle = avatar.skin || '#fbd38d';
+        ctx.beginPath();
+        ctx.arc(heroX, heroY - 22, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hair
+        ctx.fillStyle = avatar.hair || '#4a2c11';
+        ctx.beginPath();
+        ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+        ctx.fill();
+
+        // Eyes & Smile
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.arc(heroX - 4, heroY - 22, 1.8, 0, Math.PI * 2);
+        ctx.arc(heroX + 4, heroY - 22, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(heroX, heroY - 18, 4, 0.1 * Math.PI, 0.9 * Math.PI, false);
+        ctx.stroke();
+
+        // Accessory: Helmet or Crown or Glasses
+        if (avatar.accessory === 'astronaut_helmet') {
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 22, 17, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (avatar.accessory === 'crown') {
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.moveTo(heroX - 10, heroY - 36);
+          ctx.lineTo(heroX - 6, -30 + heroY);
+          ctx.lineTo(heroX, heroY - 38);
+          ctx.lineTo(heroX + 6, -30 + heroY);
+          ctx.lineTo(heroX + 10, heroY - 36);
+          ctx.lineTo(heroX + 8, heroY - 28);
+          ctx.lineTo(heroX - 8, heroY - 28);
+          ctx.closePath();
+          ctx.fill();
+        } else if (avatar.accessory === 'glasses') {
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(heroX - 8, heroY - 25, 6, 5);
+          ctx.strokeRect(heroX + 2, heroY - 25, 6, 5);
+          ctx.beginPath();
+          ctx.moveTo(heroX - 2, heroY - 23);
+          ctx.lineTo(heroX + 2, heroY - 23);
+          ctx.stroke();
+        }
+
+        // DRAW MASCOT CO-STAR (Right character on illustration stage)
+        const coStarX = stageX + stageW * 0.68;
+        const coStarY = stageY + stageH * 0.65;
+
+        if (mascotCoStar === 'penny') {
+          // Princess Penny
+          ctx.fillStyle = '#ec4899';
+          ctx.beginPath();
+          ctx.moveTo(coStarX, coStarY - 10);
+          ctx.lineTo(coStarX - 16, coStarY + 22);
+          ctx.lineTo(coStarX + 16, coStarY + 22);
+          ctx.closePath();
+          ctx.fill();
+          // Head
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 22, 12, 0, Math.PI * 2);
+          ctx.fill();
+          // Tiara
+          ctx.fillStyle = '#fbbf24';
+          ctx.fillRect(coStarX - 8, coStarY - 32, 16, 4);
+          // Wand
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 10, coStarY - 5);
+          ctx.lineTo(coStarX + 20, coStarY - 22);
+          ctx.stroke();
+        } else if (mascotCoStar === 'dexter') {
+          // Dexter Dino
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY + 5, 14, 18, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // Tail
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 10, coStarY + 12);
+          ctx.quadraticCurveTo(coStarX + 25, coStarY + 14, coStarX + 28, coStarY + 2);
+          ctx.lineTo(coStarX + 12, coStarY + 18);
+          ctx.fill();
+          // Head
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 16, 12, 0, Math.PI * 2);
+          ctx.fill();
+          // Safari Hat
+          ctx.fillStyle = '#d97706';
+          ctx.fillRect(coStarX - 14, coStarY - 26, 20, 4);
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 26, 8, Math.PI, 0, false);
+          ctx.fill();
+        } else if (mascotCoStar === 'carty') {
+          // Carty Courier
+          ctx.fillStyle = '#94a3b8';
+          ctx.beginPath();
+          ctx.roundRect(coStarX - 14, coStarY - 12, 28, 28, 6);
+          ctx.fill();
+          // Cyan visor
+          ctx.fillStyle = '#06b6d4';
+          ctx.fillRect(coStarX - 10, coStarY - 6, 20, 6);
+          // Antenna
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(coStarX, coStarY - 12);
+          ctx.lineTo(coStarX, coStarY - 24);
+          ctx.stroke();
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 24, 3, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Leo Lion Cub
+          ctx.fillStyle = '#f59e0b';
+          // Mane
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 14, 18, 0, Math.PI * 2);
+          ctx.fill();
+          // Head
+          ctx.fillStyle = '#fcd34d';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 14, 12, 0, Math.PI * 2);
+          ctx.fill();
+          // Ears
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(coStarX - 10, coStarY - 24, 5, 0, Math.PI * 2);
+          ctx.arc(coStarX + 10, coStarY - 24, 5, 0, Math.PI * 2);
+          ctx.fill();
+          // Smile
+          ctx.fillStyle = '#1e293b';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 12, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Stage Title Banner
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('★ ILLUSTRATION STAGE ★', (3 * width) / 4 - 8, 80);
+        ctx.fillText(
+          `${childName} & ${coStarLabel.split(' ')[0]}`,
+          stageX + stageW / 2,
+          stageY + stageH - 14
+        );
 
-        ctx.fillStyle = '#64748b';
-        ctx.font = '11px sans-serif';
-        ctx.fillText(`Scene ${chapterNum}: ${childName} & Friends`, (3 * width) / 4 - 8, 105);
-        ctx.fillText('Tap to stamp custom sticker badges below!', (3 * width) / 4 - 8, 125);
-
-        // Page Number
+        // Page Numbers
         ctx.fillStyle = '#94a3b8';
         ctx.font = '10px sans-serif';
         ctx.fillText(`Page ${activePage * 2 - 1}`, width / 4, height - 40);
         ctx.fillText(`Page ${activePage * 2}`, (3 * width) / 4, height - 40);
+      }
+
+      // PRINT BLEED GUIDES OVERLAY (If enabled)
+      if (showBleed) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+        ctx.lineWidth = 1;
+        if (ctx.setLineDash) ctx.setLineDash([4, 4]);
+        ctx.strokeRect(10, 10, width - 20, height - 20);
+
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.85)';
+        ctx.strokeRect(22, 22, width - 44, height - 44);
+        if (ctx.setLineDash) ctx.setLineDash([]);
+
+        // Technical registration marks
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        const rLen = 12;
+        // Top-left
+        ctx.beginPath();
+        ctx.moveTo(10, 10 - rLen);
+        ctx.lineTo(10, 10);
+        ctx.lineTo(10 - rLen, 10);
+        // Top-right
+        ctx.moveTo(width - 10, 10 - rLen);
+        ctx.lineTo(width - 10, 10);
+        ctx.lineTo(width - 10 + rLen, 10);
+        // Bottom-left
+        ctx.moveTo(10, height - 10 + rLen);
+        ctx.lineTo(10, height - 10);
+        ctx.lineTo(10 - rLen, height - 10);
+        // Bottom-right
+        ctx.moveTo(width - 10, height - 10 + rLen);
+        ctx.lineTo(width - 10, height - 10);
+        ctx.lineTo(width - 10 + rLen, height - 10);
+        ctx.stroke();
+
+        ctx.fillStyle = '#ef4444';
+        ctx.font = 'bold 8px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('✂ 3MM BLEED CUT LINE', 14, 8);
+        ctx.fillStyle = '#10b981';
+        ctx.fillText('SAFE ARTWORK ZONE', 26, 20);
+        ctx.restore();
       }
     } else if (mode === 'poster') {
       // Custom Framed Poster Engine
@@ -424,7 +743,18 @@ export function CanvasEngine({
         subquote = 'Dream bigger, explore further, and shine bright.',
         artStyle = 'cosmic',
         frame = 'oak',
+        fontFamily = 'sans',
+        textColor = '#ffffff',
+        showBleed = false,
       } = config;
+
+      const fontFamilies = {
+        serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+        sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        display: "'Impact', 'Trebuchet MS', sans-serif",
+        cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+      };
+      const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
 
       // Outer Frame
       const frameColor =
@@ -468,7 +798,6 @@ export function CanvasEngine({
         artGrad.addColorStop(0.5, '#db2777');
         artGrad.addColorStop(1, '#fbbf24');
       } else {
-        // Minimal
         artGrad.addColorStop(0, '#f1f5f9');
         artGrad.addColorStop(1, '#e2e8f0');
       }
@@ -483,27 +812,47 @@ export function CanvasEngine({
       ctx.fill();
 
       // Poster Typography
-      ctx.fillStyle = artStyle === 'minimal' ? '#0f172a' : '#ffffff';
-      ctx.font = 'bold 24px sans-serif';
+      ctx.fillStyle = artStyle === 'minimal' ? '#0f172a' : textColor || '#ffffff';
+      ctx.font = `bold 24px ${activeFont}`;
       ctx.textAlign = 'center';
       ctx.fillText(headline.toUpperCase(), width / 2, artInset + artH - 70);
 
       ctx.fillStyle = artStyle === 'minimal' ? '#475569' : 'rgba(255, 255, 255, 0.85)';
-      ctx.font = '12px sans-serif';
+      ctx.font = `12px ${activeFont}`;
       ctx.fillText(subquote, width / 2, artInset + artH - 42);
 
       ctx.font = '10px sans-serif';
       ctx.fillStyle = artStyle === 'minimal' ? '#94a3b8' : 'rgba(255, 255, 255, 0.6)';
       ctx.fillText('CUSTOM GALLERY PRINT • ARCHIVAL EDITION', width / 2, artInset + artH - 22);
+
+      if (showBleed) {
+        ctx.save();
+        ctx.strokeStyle = '#ef4444';
+        if (ctx.setLineDash) ctx.setLineDash([4, 4]);
+        ctx.strokeRect(6, 6, width - 12, height - 12);
+        ctx.fillStyle = '#ef4444';
+        ctx.font = 'bold 8px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('✂ BLEED MARGIN', 10, 16);
+        ctx.restore();
+      }
     } else if (mode === 'apparel') {
       // Kids' Apparel & Shoes Engine
       const {
         garment = 'hoodie',
         color = '#1e293b',
         monogram = 'NOAH',
+        fontFamily = 'sans',
       } = config;
 
-      // Clean Background Studio Stage
+      const fontFamilies = {
+        serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+        sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        display: "'Impact', 'Trebuchet MS', sans-serif",
+        cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+      };
+      const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
+
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, width, height);
 
@@ -514,45 +863,34 @@ export function CanvasEngine({
       ctx.fill();
 
       if (garment === 'hoodie' || garment === 'tee') {
-        // Garment Silhouette
         ctx.fillStyle = color;
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
         ctx.lineWidth = 2;
 
         ctx.beginPath();
-        // Neckline
         ctx.moveTo(width / 2 - 34, 70);
         ctx.quadraticCurveTo(width / 2, 85, width / 2 + 34, 70);
-        // Right shoulder
         ctx.lineTo(width / 2 + 100, 110);
-        // Right sleeve
         ctx.lineTo(width / 2 + 135, 175);
         ctx.lineTo(width / 2 + 95, 195);
         ctx.lineTo(width / 2 + 75, 150);
-        // Right torso
         ctx.lineTo(width / 2 + 70, height - 70);
-        // Hem
         ctx.lineTo(width / 2 - 70, height - 70);
-        // Left torso
         ctx.lineTo(width / 2 - 75, 150);
-        // Left sleeve
         ctx.lineTo(width / 2 - 95, 195);
         ctx.lineTo(width / 2 - 135, 175);
-        // Left shoulder
         ctx.lineTo(width / 2 - 100, 110);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
 
-        // Collar Ribbing
         ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         ctx.beginPath();
         ctx.ellipse(width / 2, 70, 34, 12, 0, 0, Math.PI);
         ctx.fill();
 
-        // Monogram Embroidery Text on Chest
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 18px sans-serif';
+        ctx.font = `bold 18px ${activeFont}`;
         ctx.textAlign = 'center';
         ctx.fillText(monogram.toUpperCase(), width / 2, 170);
 
@@ -583,9 +921,8 @@ export function CanvasEngine({
         ctx.strokeStyle = '#cbd5e1';
         ctx.strokeRect(width / 2 - 115, height / 2 + 35, 235, 22);
 
-        // Monogram on Heel Collar
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px sans-serif';
+        ctx.font = `bold 14px ${activeFont}`;
         ctx.textAlign = 'center';
         ctx.fillText(monogram.toUpperCase(), width / 2 - 65, height / 2 - 15);
       }
@@ -593,9 +930,9 @@ export function CanvasEngine({
 
     // Render Draggable Stickers Layer
     stickers.forEach((s) => {
-      drawSticker(ctx, s);
+      drawSticker(ctx, s, s.id === activeStickerId);
     });
-  }, [width, height, mode, config, stickers, drawSticker]);
+  }, [width, height, mode, config, stickers, activeStickerId, drawSticker]);
 
   useEffect(() => {
     renderCanvas();
@@ -609,15 +946,16 @@ export function CanvasEngine({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Check if clicked an existing sticker to drag
+    // Check if clicked an existing sticker to select and drag
     const clickedSticker = [...stickers].reverse().find((s) => {
       const dist = Math.hypot(s.x - x, s.y - y);
-      return dist <= 24 * (s.scale || 1);
+      return dist <= 28 * (s.scale || 1);
     });
 
     if (clickedSticker) {
       isDraggingRef.current = true;
       dragTargetRef.current = clickedSticker.id;
+      setActiveStickerId(clickedSticker.id);
     } else if (selectedSticker) {
       // Stamp new sticker
       const newSticker = {
@@ -626,10 +964,15 @@ export function CanvasEngine({
         x,
         y,
         scale: 1.2,
+        rotation: 0,
       };
       onUpdateStickers([...stickers, newSticker]);
-    } else if (onCanvasClick) {
-      onCanvasClick(x, y);
+      setActiveStickerId(newSticker.id);
+    } else {
+      setActiveStickerId(null);
+      if (onCanvasClick) {
+        onCanvasClick(x, y);
+      }
     }
   };
 
@@ -656,6 +999,52 @@ export function CanvasEngine({
     dragTargetRef.current = null;
   };
 
+  // Sticker manipulation helpers
+  const handleRotateActive = (deltaDegrees) => {
+    if (!activeStickerId) return;
+    onUpdateStickers(
+      stickers.map((s) =>
+        s.id === activeStickerId
+          ? { ...s, rotation: ((s.rotation || 0) + deltaDegrees) % 360 }
+          : s
+      )
+    );
+  };
+
+  const handleScaleActive = (deltaScale) => {
+    if (!activeStickerId) return;
+    onUpdateStickers(
+      stickers.map((s) =>
+        s.id === activeStickerId
+          ? {
+              ...s,
+              scale: Math.max(0.5, Math.min(2.5, (s.scale || 1) + deltaScale)),
+            }
+          : s
+      )
+    );
+  };
+
+  const handleDeleteActive = () => {
+    if (!activeStickerId) return;
+    onUpdateStickers(stickers.filter((s) => s.id !== activeStickerId));
+    setActiveStickerId(null);
+  };
+
+  // High-Res Proof Download
+  const handleDownloadProof = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    try {
+      const link = document.createElement('a');
+      link.download = `${mode}-300dpi-proof-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch {
+      // In SSR or sandboxed environments
+    }
+  };
+
   return (
     <div className={`${styles.canvasWrapper} ${className}`}>
       <canvas
@@ -669,6 +1058,76 @@ export function CanvasEngine({
           hoveredStickerId ? styles.cursorMove : selectedSticker ? styles.cursorStamp : ''
         }`}
       />
+
+      {/* Layer Transformation Bar if an item is selected */}
+      {activeStickerId && (
+        <div className={styles.layerToolbar} role="toolbar" aria-label="Stamp layer controls">
+          <span className={styles.toolbarLabel}>Selected Layer:</span>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={() => handleRotateActive(-15)}
+            title="Rotate Left 15°"
+            aria-label="Rotate stamp left"
+          >
+            ↺ -15°
+          </button>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={() => handleRotateActive(15)}
+            title="Rotate Right 15°"
+            aria-label="Rotate stamp right"
+          >
+            ↻ +15°
+          </button>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={() => handleScaleActive(-0.2)}
+            title="Smaller"
+            aria-label="Make stamp smaller"
+          >
+            A-
+          </button>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={() => handleScaleActive(0.2)}
+            title="Larger"
+            aria-label="Make stamp larger"
+          >
+            A+
+          </button>
+          <button
+            type="button"
+            className={`${styles.toolBtn} ${styles.deleteBtn}`}
+            onClick={handleDeleteActive}
+            title="Delete Selected Stamp"
+            aria-label="Delete selected stamp"
+          >
+            ✕ Remove
+          </button>
+        </div>
+      )}
+
+      {/* Proof Action Overlay */}
+      <div className={styles.proofActionsRow}>
+        <button
+          type="button"
+          className={styles.proofExportBtn}
+          onClick={handleDownloadProof}
+          title="Export 300-DPI Print Proof"
+          aria-label="Download print-ready proof"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>300-DPI Proof Export</span>
+        </button>
+      </div>
     </div>
   );
 }
