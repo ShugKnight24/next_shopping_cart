@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useMascot } from '../../context/MascotProvider';
@@ -141,6 +142,18 @@ export default function StudioPage() {
           {activeMode === 'poster' && <PosterStudio />}
           {activeMode === 'apparel' && <ApparelStudio />}
         </section>
+
+        {/* Social Media Creation Studio Callout */}
+        <Link href="/studio/social" className={styles.socialStudioBanner}>
+          <div className={styles.socialBannerLeft}>
+            <span className={styles.socialBannerBadge}>Creator & Store Owner Suite</span>
+            <h3>Social Media Marketing Studio</h3>
+            <p>
+              Instantly transform catalog items into viral marketing posts for Instagram, TikTok, and Twitter/X with 1-click product import.
+            </p>
+          </div>
+          <span className={styles.socialBannerCta}>Launch Social Studio →</span>
+        </Link>
       </main>
     </>
   );
