@@ -3,8 +3,8 @@
    ============================================================================ */
 .backToTop {
   position: fixed;
-  bottom: 110px;
-  right: 28px;
+  bottom: 28px;
+  left: 28px;
   width: 52px;
   height: 52px;
   background: linear-gradient(135deg, #1e3a5f 0%, #152943 100%);
@@ -39,15 +39,15 @@
 .backToTop:hover .tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 .backToTop:active {
   transform: translateY(-2px) scale(1);
 }
 @media (max-width: 600px) {
   .backToTop {
-    bottom: 95px;
-    right: 1.25rem;
+    bottom: 20px;
+    left: 16px;
     width: 46px;
     height: 46px;
   }
@@ -99,8 +99,8 @@
 .tooltip {
   position: absolute;
   bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
+  left: 0;
+  transform: translateY(8px);
   background: linear-gradient(135deg, #1e3a5f 0%, #152943 100%);
   color: #fff;
   font-size: 0.75rem;
@@ -121,7 +121,7 @@
   content: "";
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 26px;
   transform: translateX(-50%);
   border: 6px solid transparent;
   border-top-color: #193150;
