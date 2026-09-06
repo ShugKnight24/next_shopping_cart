@@ -23,14 +23,18 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 ### What's Working Well
 
 - **Modern Platform Foundation**: React 19 (`19.2.8`) + Next.js 15 (`15.5.25`) + Node 24 runtime with Vercel deployment parity.
-- **Rigorously Tested**: Vitest test suite with 100 unit and integration tests across 13 suites (100% pass rate).
+- **Rigorously Tested**: Vitest test suite with 120 unit and integration tests across 15 suites (100% pass rate).
 - **Native CSS Architecture**: Complete migration from Sass to native CSS Modules and centralized design tokens (`styles/tokens.css`).
 - **Interactive 3D Product Studio**: 360° orbital turntable with inertial touch & mouse physics, camera angle presets, feature hotspots, and exploded view mode.
-- **Anthropomorphic Mascot Companion Engine**: Decoupled, white-label animated companion system (`Carty The Courier` and `Leo The Story Lion`) with context-aware dialogue, speech bubbles, and persistent toggle.
-- **Custom Web-to-Print Studio (`/studio`)**: Canvas 2D + SVG composite engine for personalized children's storybooks, framed wall art posters, and custom kids' apparel with 1-click cart integration.
+- **Anthropomorphic Mascot Companion Engine**: Decoupled, white-label animated companion system (`Carty The Courier`, `Leo The Story Lion`, `Luna The Shepherd`, `Finley The Starlight Fox`, `Princess Penny`, `Dexter Dino`, `Sparky Hound`) with context-aware dialogue, speech bubbles, and persistent toggle.
+- **Custom Creation Studio Suite (`/studio`)**: Agency-grade Web-to-Print platform with fullscreen workstations:
+  - *Personalized Children's Storybooks*: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
+  - *Framed Wall Art Poster Studio*: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
+  - *Kids' Custom Apparel & Kicks*: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
+- **Figma / Photoshop-Lite Social Studio (`/studio/social`)**: Multi-layer vector canvas editor with drag-and-drop, Figma-style selection bounding box, layer stack, property inspector, and 1-click catalog import.
 - **Modern Product Detail & Catalog Experience**: 2-column sticky desktop layout, 5-panel interactive tabs, Sticky Buy Bar, Trust Badges, and responsive Catalog Toolbar.
 - **Smart Catalog Hydration Reconciler**: Reconciles fresh product metadata without stale `localStorage` catalog overwrite while preserving active user cart quantities and favorites.
-- **100% Vector SVG Icon System**: Completely eliminated Unicode emojis in favor of accessible, responsive vector SVGs.
+- **100% Vector SVG Icon & Studio System**: Completely eliminated Unicode emojis in favor of accessible, responsive vector SVGs (`Components/Icons/` and `Components/Studio/StudioSVGs.jsx`).
 - **Custom Anti-Bot Telemetry**: Passive automation detection (`navigator.webdriver`), behavioral human heuristics (mouse curvature, scroll cadence, typing intervals), and invisible `<HoneypotField />` trap.
 - **GA4 Enhanced Ecommerce & Core Web Vitals**: Full ecommerce funnel tracking (`view_item_list`, `select_item`, `view_item`, `add_to_cart`, `remove_from_cart`, `view_cart`, `begin_checkout`, `apply_promotion`, `search`) and native Next.js `reportWebVitals` telemetry (INP, LCP, CLS, TTFB).
 

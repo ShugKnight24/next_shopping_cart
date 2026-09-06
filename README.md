@@ -14,7 +14,12 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
   - *Musical Instruments* (Gibson, Fender Custom Shop, Martin, Nord, Yamaha)
   - *Strength & Fitness* (Rogue, Eleiko, Bowflex)
   - *Audio & Tech* (Sony, Sennheiser, Apple Vision Pro, Teenage Engineering)
-- **Zero-Emoji Compliance**: Fully replaced Unicode emojis with a dedicated, accessible SVG icon library (`Components/Icons/`).
+- **Interactive Custom Creation Studio Suite (`/studio`)**:
+  - *Personalized Children's Storybooks*: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
+  - *Framed Wall Art Poster Studio*: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
+  - *Kids' Custom Apparel & Kicks*: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
+- **Social Media Creation Studio (`/studio/social`)**: Multi-layer vector canvas editor with drag-and-drop, Figma-style selection bounding box, layer stack, property inspector, and 1-click catalog import.
+- **Zero-Emoji Compliance**: Fully replaced Unicode emojis across the entire application and studio platform with a dedicated, accessible SVG icon library (`Components/Icons/` and `Components/Studio/StudioSVGs.jsx`).
 - **Smart Catalog Hydration Reconciler**: Eliminates stale browser cache overwrites by reconciling fresh product metadata on client load while safely preserving the shopper's active cart quantities, available stock deductions, and saved favorites.
 - **Client-Side Anti-Bot Telemetry**: Passive browser environment checks (`navigator.webdriver`, headless globals, viewport anomalies), human behavioral heuristics (mouse curvature, scroll pauses, typing cadence), and invisible honeypot trap detection to classify traffic (`human` vs `suspected_bot`).
 - **GA4 Enhanced Ecommerce & Core Web Vitals**: End-to-end ecommerce instrumentation (`view_item_list`, `select_item`, `view_item`, `add_to_cart`, `remove_from_cart`, `view_cart`, `begin_checkout`, `apply_promotion`, `search`) and native Next.js `reportWebVitals` telemetry (INP, LCP, CLS, FCP, TTFB).
@@ -31,9 +36,9 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
 | **Runtime** | Node.js 24 (`24.x`) |
 | **State Management** | React Context API (`CartContext`) + Reducer pattern (`CartReducer.js`) |
 | **Styling** | Native CSS Modules + Design Tokens (`tokens.css`) |
-| **Icons** | Custom Scalable Vector SVGs with zero emoji dependencies |
+| **Icons** | Custom Scalable Vector SVGs with zero emoji dependencies (`Components/Icons/`, `StudioSVGs.jsx`) |
 | **Analytics & Telemetry** | GA4 Enhanced Ecommerce (`gtag.js`), Next.js Web Vitals, Custom Bot Scorer |
-| **Testing** | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (82 tests) |
+| **Testing** | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (120 tests across 15 suites) |
 | **Code Quality** | ESLint 9 (Flat Config) + Prettier |
 
 ---
@@ -91,7 +96,7 @@ npm run dev        # Launch development server on localhost:3000
 npm run build      # Create optimized production build (pre-renders 47 SSG routes)
 npm run start      # Start Next.js production server
 npm run lint       # Run ESLint across all codebase files (0 errors, 0 warnings)
-npm test           # Run Vitest test suite once across all 9 test files (82 tests)
+npm test           # Run Vitest test suite once across all 15 test files (120 tests)
 npm run test:watch # Run Vitest in interactive watch mode
 ```
 

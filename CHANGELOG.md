@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - 2026-09-06
+
+### Added
+- **Character & Trusty Companion Creator (`Components/Studio/CharacterCreator.jsx`)**:
+  - Interactive, dual-tab creator allowing parents and children to customize both the starring hero avatar and their trusty pet companion.
+  - **Hero Customizer**: 6 skin tones, 7 procedural hairstyles (`crop`, `curls`, `waves`, `braids`, `ponytail`, `spiky`, `beanie`), 6 hair colors, accessories (`glasses`, `star_shades`, `superhero_mask`, `freckles`, `cape`), and 6 outfit colors.
+  - **Companion Customizer**: 7 mascot archetypes (Leo The Story Lion, Princess Penny, Finley Fox, Luna Shepherd, Dexter Dino, Carty Courier, Sparky Hound), custom companion name input, 6 coat colors, collars/bandanas (`star_bandana`, `golden_bell`, `explorer_scarf`, `capelet`, `bowtie`), and 5 superpower badges.
+  - **Live Character Proof Card**: Real-time vector SVG card reflecting avatar and pet attributes simultaneously.
+  - Embedded seamlessly into Step 4 ("Avatar & Co-Star") and the Fullscreen Studio "Avatar" drawer of `StorybookStudio.jsx`.
+  - Integrated into `CanvasEngine.jsx` to procedurally render all 7 hairstyles, accessories, and mascot companions across double-page story spreads.
+- **Framed Wall Art Poster Studio — Full Editor Experience (`Components/Studio/PosterStudio.jsx`)**:
+  - **Multi-Size Formats**: 12" × 18" ($29.99 Compact), 18" × 24" ($44.99 Classic Exhibition), and 24" × 36" ($59.99 Statement Archival Grand).
+  - **Orientation Toggle**: Dynamic switching between Vertical Portrait (3:4) and Horizontal Landscape (4:3) with auto-adapting canvas dimensions and typography.
+  - **Museum Framing**: Solid Natural Oak (+$25), Matte Gallery Black (+$20), Gallery Crisp White (+$20), Vintage Florentine Gold (+$30, metallic border and highlights), and Unframed Archival Print.
+  - **Fine Art Papers**: 250gsm Archival Cotton Rag, Textured Stretched Canvas (+ $15), and Ultra Semi-Gloss Luster (+ $10).
+  - **Color Palettes & Fonts**: Added Sage Botanical and Pacific Sunset palettes alongside Cosmic, Sunburst, Retro, and Minimal; added Modern Sans, Editorial Serif, Impact Display, and Artisan Script typography.
+  - **Undo / Redo Layering Stack**: Complete history stack with `Cmd+Z` / `Ctrl+Z` and `Cmd+Shift+Z` / `Ctrl+Y` shortcuts, stamp centering, and sticker manipulation.
+  - **Archival Gallery Proof Verification Modal**: Pre-purchase inspection dialog displaying print dimensions, orientation, paper stock, and frame before adding to cart.
+- **Kids' Apparel & Kicks Studio — Full Editor Experience (`Components/Studio/ApparelStudio.jsx`)**:
+  - **Garment Silhouettes**: Organic Kids' Hoodie ($48.00), Kids' Heavyweight Graphic Tee ($32.00), Kids' Varsity Bomber Jacket ($68.00 with contrast raglan sleeves & snap placket), and Custom Kids' Canvas High-Tops ($65.00 with vulcanized sole & memory foam).
+  - **Youth Sizes**: Youth XS (4-5 Yrs), Youth S (6-7 Yrs), Youth M (8-9 Yrs), Youth L (10-12 Yrs), Youth XL (14-16 Yrs).
+  - **Interactive Sizing Guide Modal**: Detailed fit chart with age brackets, chest & length measurements, and care instructions.
+  - **7 Base Colorways**: Midnight Navy, Heather Slate, Vintage Cream, Forest Pine, Crimson Red, Goldenrod Ochre, Soft Lavender.
+  - **Placement Zones**: Center Chest (crest embroidery), Left Pocket (signature insignia), and Hero Backprint (oversized graphic).
+  - **Embroidery Typography**: Athletic Block, Heritage Serif, Varsity Bold, Script Signature.
+  - **Undo / Redo Layering Stack**: Patch layering with undo/redo history and keyboard shortcuts.
+- **Bespoke Scalable Vector SVG Library (`Components/Studio/StudioSVGs.jsx`)**:
+  - 100% Zero Unicode Emojis across the entire studio platform.
+  - 7 Cute Companions (Luna, Finley, Leo, Penny, Dexter, Carty, Sparky), 5 Story Badges, 6 Props & Wonders, 6 Classic Stamps, and 16 Studio Tool Icons.
+- **UI Polish & Button Refinement**:
+  - Added `white-space: nowrap` and `flex-shrink: 0` across all stepper buttons, sub-tabs, fullscreen controls, quick action buttons, size pills, color swatches, and orientation selectors in `StorybookStudio.module.css`, `PosterStudio.module.css`, and `ApparelStudio.module.css`.
+  - Refined responsive grid layouts preventing overlapping or text truncation on mobile and tablet viewports.
+- **Automated Test Suite Expansion**:
+  - Added 3 new comprehensive test suites in `__tests__/studio.test.jsx`, expanding automated test coverage to 120 passing tests across 15 test suites (100% pass rate).
+
+---
+
 ## [0.8.0] - 2026-09-06
 
 ### Added
