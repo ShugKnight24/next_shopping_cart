@@ -1,14 +1,7 @@
-import productList from '../data/items.json';
-import techProductsList from '../data/techItems.json';
+import { getAllProducts } from '../utils/productCatalog';
 import { getCurrentItem } from '../utils/getItem';
 
-const allProducts = [...productList, ...techProductsList];
-
-const buildInitialInventory = () =>
-  allProducts.map((item) => ({
-    ...item,
-    favorite: Boolean(item.favorite),
-  }));
+const buildInitialInventory = () => getAllProducts();
 
 export const initialState = {
   inventory: buildInitialInventory(),
@@ -22,19 +15,42 @@ export const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_CART': {
       if (!action.payload) return state;
-      const loadedInventory = action.payload.inventory || inventory;
       const loadedCart = action.payload.cart || [];
       const loadedPromo = action.payload.promo || null;
+
+      const savedFavorites = new Set([
+        ...(action.payload.favorites || []),
+        ...(action.payload.inventory?.filter((si) => si.favorite).map((si) => si.itemid) || []),
+      ]);
+
+      const freshCatalog = buildInitialInventory();
+      const baseInventory = freshCatalog.length > 0 ? freshCatalog : (action.payload.inventory || inventory);
+
+      const inventoryToUse = baseInventory.map((freshItem) => {
+        const cartItem = loadedCart.find((ci) => ci.itemid === freshItem.itemid);
+        const inCartQty = cartItem ? cartItem.quantity : 0;
+        const isFav = savedFavorites.has(freshItem.itemid)
+          ? true
+          : (action.payload.inventory?.find((si) => si.itemid === freshItem.itemid)?.favorite ?? Boolean(freshItem.favorite));
+
+        return {
+          ...freshItem,
+          favorite: Boolean(isFav),
+          quantity: inCartQty || freshItem.quantity,
+          available: Math.max(0, freshItem.available - inCartQty),
+        };
+      });
+
       return {
         ...state,
-        inventory: loadedInventory,
+        inventory: inventoryToUse,
         cart: loadedCart,
         promo: loadedPromo,
       };
     }
 
     case 'ADD_ITEM': {
-      const { productId, quantity = 1 } = action.payload;
+      const { productId, quantity = 1, variant, selectedVariant } = action.payload;
       const addQty = parseInt(quantity, 10) || 1;
       const currentItem = getCurrentItem(inventory, productId);
 
@@ -43,15 +59,27 @@ export const reducer = (state, action) => {
       const clampedQty = Math.min(addQty, currentItem.available);
       if (clampedQty <= 0) return state;
 
+      const activeVariant = variant || selectedVariant;
       const existingCartItem = cart.find((item) => item.itemid === productId);
 
       const updatedCart = existingCartItem
         ? cart.map((item) =>
             item.itemid === productId
-              ? { ...item, quantity: item.quantity + clampedQty }
+              ? {
+                  ...item,
+                  quantity: item.quantity + clampedQty,
+                  ...(activeVariant ? { selectedVariant: activeVariant } : {}),
+                }
               : item
           )
-        : [...cart, { ...currentItem, quantity: clampedQty }];
+        : [
+            ...cart,
+            {
+              ...currentItem,
+              quantity: clampedQty,
+              ...(activeVariant ? { selectedVariant: activeVariant } : {}),
+            },
+          ];
 
       const updatedInventory = inventory.map((item) =>
         item.itemid === productId

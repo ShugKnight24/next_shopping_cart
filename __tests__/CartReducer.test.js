@@ -149,6 +149,30 @@ describe('CartReducer', () => {
     expect(stateUnfav.inventory[0].favorite).toBe(false);
   });
 
+  it('reconciles catalog inventory on SET_CART while preserving cart and favorites', () => {
+    const action = {
+      type: 'SET_CART',
+      payload: {
+        cart: [{ itemid: 'JORDAN-4-BRED-REIM', quantity: 2 }],
+        favorites: ['JORDAN-4-BRED-REIM'],
+        promo: { code: 'VIP20', discountPercent: 20 },
+      },
+    };
+    const newState = reducer(sampleState, action);
+
+    expect(newState.cart).toHaveLength(1);
+    expect(newState.cart[0].itemid).toBe('JORDAN-4-BRED-REIM');
+    expect(newState.cart[0].quantity).toBe(2);
+    expect(newState.promo).toEqual({ code: 'VIP20', discountPercent: 20 });
+
+    const jordan = newState.inventory.find((i) => i.itemid === 'JORDAN-4-BRED-REIM');
+    expect(jordan).toBeDefined();
+    expect(jordan.favorite).toBe(true);
+    expect(jordan.image).toBe('/images/products/jordan-4-bred-reimagined.jpg');
+    // Available was 8 in catalog, minus 2 in cart => 6
+    expect(jordan.available).toBe(6);
+  });
+
   it('throws an error for unrecognized actions', () => {
     expect(() => {
       reducer(sampleState, { type: 'UNKNOWN_ACTION' });

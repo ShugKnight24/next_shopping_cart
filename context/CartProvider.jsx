@@ -12,7 +12,16 @@ export function CartProvider({ children }) {
 
   const save = useCallback(() => {
     try {
-      localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(state));
+      localStorage.setItem(
+        LOCAL_STORAGE_CART_KEY,
+        JSON.stringify({
+          cart: state.cart,
+          promo: state.promo,
+          favorites: (state.inventory || [])
+            .filter((item) => item.favorite)
+            .map((item) => item.itemid),
+        })
+      );
     } catch {
       // ignore storage errors in restricted environments
     }
