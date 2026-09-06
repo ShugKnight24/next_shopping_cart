@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-09-06
+
+### Added
+- **Anthropomorphic Mascot Companion Engine ("Carty & Friends")**:
+  - Decoupled, white-label mascot architecture (`config/mascots.js`) allowing future developers and brands to plug in new characters, themes, and dialogue scripts.
+  - Preloaded with two character presets: **Carty The Courier** (e-commerce helper bot with animated antenna and blinking eyes) and **Leo The Story Lion** (children's imagination guide with painter's beret and waving paw).
+  - Global `MascotProvider` (`context/MascotProvider.jsx`) managing character state, speech bubbles, and persistent ON/OFF toggle (`localStorage`).
+  - Context-aware dialogue responding dynamically to route transitions (`/`, `/products`, `/favorites`, `/studio`), cart events, and studio onboarding.
+  - Interactive speech bubble with character switcher popover, dismiss `✕` controls, and persistent ON/OFF toggle pill (`Components/Mascot/MascotCompanion.jsx`).
+  - Zero Unicode emojis: 100% scalable vector SVGs with CSS keyframe animations (`Components/Mascot/MascotArtwork.jsx`).
+- **Interactive Custom Web-to-Print (W2P) Platform (`/studio`)**:
+  - High-performance HTML5 Canvas 2D + SVG composite engine (`Components/Studio/CanvasEngine.jsx`) with 2x retina display scaling, dynamic typography wrapping, and zero external binary dependencies (100% Vercel & Node 24 SSR safe).
+  - **Mode 1: Personalized Children's Storybooks**: Child name personalization, reading levels, 4 adventure themes, heartfelt dedication letterpress, 5-page interactive book reader with page flip controls, and decorative sticker stamping.
+  - **Mode 2: Custom Framed Art Posters**: Headline typography, quote editor, 4 color palettes, and real-time museum framing simulation (Solid Natural Oak, Matte Black, Gallery White, Frameless).
+  - **Mode 3: Kids' Custom Apparel & Kicks**: Organic hoodies, graphic tees, and canvas kicks with real-time monogram embroidery and badge patches.
+  - Dynamic vector SVG proof thumbnail generation for instant cart rendering.
+- **Cart & Storefront Integration**:
+  - Enhanced `store/CartReducer.js` with `ADD_CUSTOM_ITEM` action supporting custom attributes, dynamic proof images, and inventory reconciliation.
+  - Enhanced `Components/Cart/CartDrawer.jsx` to render custom item attribute pills (`Hero`, `Theme`, `Binding`, `Frame`, `Embroidery`).
+  - Added "Studio W2P" navigational badge in `Components/Nav.js`.
+  - Added `/studio` to dynamic XML sitemap in `pages/sitemap.xml.js`.
+- **Automated Test Suite Expansion**:
+  - Added `__tests__/mascot.test.jsx` (5 tests) and `__tests__/studio.test.jsx` (6 tests), expanding the automated test suite to 100 passing tests across 13 test suites (100% pass rate).
+
+---
+
 ## [0.5.0] - 2026-09-06
 
 ### Added

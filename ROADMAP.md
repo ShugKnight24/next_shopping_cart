@@ -23,9 +23,11 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 ### What's Working Well
 
 - **Modern Platform Foundation**: React 19 (`19.2.8`) + Next.js 15 (`15.5.25`) + Node 24 runtime with Vercel deployment parity.
-- **Rigorously Tested**: Vitest test suite with 82 unit and integration tests across 9 suites (100% pass rate).
+- **Rigorously Tested**: Vitest test suite with 100 unit and integration tests across 13 suites (100% pass rate).
 - **Native CSS Architecture**: Complete migration from Sass to native CSS Modules and centralized design tokens (`styles/tokens.css`).
 - **Interactive 3D Product Studio**: 360° orbital turntable with inertial touch & mouse physics, camera angle presets, feature hotspots, and exploded view mode.
+- **Anthropomorphic Mascot Companion Engine**: Decoupled, white-label animated companion system (`Carty The Courier` and `Leo The Story Lion`) with context-aware dialogue, speech bubbles, and persistent toggle.
+- **Custom Web-to-Print Studio (`/studio`)**: Canvas 2D + SVG composite engine for personalized children's storybooks, framed wall art posters, and custom kids' apparel with 1-click cart integration.
 - **Modern Product Detail & Catalog Experience**: 2-column sticky desktop layout, 5-panel interactive tabs, Sticky Buy Bar, Trust Badges, and responsive Catalog Toolbar.
 - **Smart Catalog Hydration Reconciler**: Reconciles fresh product metadata without stale `localStorage` catalog overwrite while preserving active user cart quantities and favorites.
 - **100% Vector SVG Icon System**: Completely eliminated Unicode emojis in favor of accessible, responsive vector SVGs.

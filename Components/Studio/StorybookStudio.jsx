@@ -129,12 +129,23 @@ export function StorybookStudio() {
 
   const handleAddToCart = () => {
     const customItemId = `CUSTOM-BOOK-${Date.now()}`;
+    const customBookSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+      <rect width="160" height="160" fill="#0f172a" rx="12"/>
+      <rect x="12" y="12" width="136" height="136" rx="8" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2"/>
+      <rect x="78" y="12" width="4" height="136" fill="#f59e0b" opacity="0.4"/>
+      <circle cx="80" cy="65" r="28" fill="#f59e0b"/>
+      <text x="80" y="73" font-size="20" text-anchor="middle" fill="#1e1b4b">★</text>
+      <text x="80" y="112" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#ffffff">${(childName || 'HERO').slice(0, 10).toUpperCase()}'S</text>
+      <text x="80" y="128" font-family="sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#fbbf24">${activeThemeObj.name.slice(0, 16).toUpperCase()}</text>
+    </svg>`;
+    const thumbnailDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(customBookSvg)}`;
+
     const customBookItem = {
       itemid: customItemId,
       productName: `Custom Storybook: "${childName}'s ${activeThemeObj.name}"`,
       manufacturer: 'Cart Studio Press',
       price: activeEditionObj.price,
-      image: '/images/products/air-jordan-1-retro-high-og-chicago.jpg', // fallback high-res thumbnail
+      image: thumbnailDataUrl,
       isCustom: true,
       customMode: 'storybook',
       quantity: 1,

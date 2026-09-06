@@ -38,12 +38,20 @@ export function ApparelStudio() {
 
   const handleAddToCart = () => {
     const customItemId = `CUSTOM-APPAREL-${Date.now()}`;
+    const customApparelSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+      <rect width="160" height="160" fill="#f8fafc" rx="8"/>
+      <circle cx="80" cy="140" r="50" fill="rgba(0,0,0,0.06)"/>
+      <path d="M50 50 L110 50 L130 90 L115 100 L105 80 L105 130 L55 130 L55 80 L45 100 L30 90 Z" fill="${colorHex}" stroke="#334155" stroke-width="2"/>
+      <text x="80" y="96" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#ffffff">${(monogram || 'HERO').slice(0, 8).toUpperCase()}</text>
+    </svg>`;
+    const thumbnailDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(customApparelSvg)}`;
+
     const customApparelItem = {
       itemid: customItemId,
       productName: `Custom ${activeGarmentObj.name}: "${monogram}"`,
       manufacturer: 'Cart Atelier Kids',
       price: activeGarmentObj.price,
-      image: '/images/products/air-jordan-1-low-og-travis-scott.jpg', // fallback high-res thumbnail
+      image: thumbnailDataUrl,
       isCustom: true,
       customMode: 'apparel',
       quantity: 1,

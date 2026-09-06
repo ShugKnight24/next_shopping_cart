@@ -43,12 +43,23 @@ export function PosterStudio() {
 
   const handleAddToCart = () => {
     const customItemId = `CUSTOM-POSTER-${Date.now()}`;
+    const frameColor = frame === 'oak' ? '#d4a373' : frame === 'black' ? '#1e293b' : '#f8fafc';
+    const customPosterSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+      <rect width="160" height="160" fill="#f8fafc" rx="8"/>
+      <rect x="14" y="14" width="132" height="132" fill="${frameColor}" rx="4"/>
+      <rect x="22" y="22" width="116" height="116" fill="#ffffff"/>
+      <rect x="30" y="30" width="100" height="100" fill="#0f172a"/>
+      <circle cx="80" cy="70" r="22" fill="rgba(255,255,255,0.2)"/>
+      <text x="80" y="112" font-family="sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#ffffff">${(headline || 'POSTER').slice(0, 16).toUpperCase()}</text>
+    </svg>`;
+    const thumbnailDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(customPosterSvg)}`;
+
     const customPosterItem = {
       itemid: customItemId,
       productName: `Custom Poster: "${headline}"`,
       manufacturer: 'Cart Gallery Press',
       price: totalPrice,
-      image: '/images/products/air-jordan-4-retro-military-blue.jpg', // fallback high-res thumbnail
+      image: thumbnailDataUrl,
       isCustom: true,
       customMode: 'poster',
       quantity: 1,
