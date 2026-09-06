@@ -199,10 +199,13 @@ export function StorybookStudio() {
   };
 
   const coStarNames = {
+    finley: 'Finley The Starlight Fox',
+    luna: 'Luna The Shepherd',
     leo: 'Leo The Story Lion',
     penny: 'Princess Penny',
     dexter: 'Dexter The Dino',
     carty: 'Carty The Courier',
+    sparky: 'Sparky Hound',
   };
 
   const handleAddToCart = () => {
