@@ -35,7 +35,7 @@ const defaultSlides = [
       'We have the best deals. The best. Believe me. No one does it better.',
     slideSubHeading:
       "See something you like? Reach out and we'll make it happen.",
-    slideImage: '../static/img/deal.jpg',
+    slideImage: '/static/img/deal.jpg',
     slideCTA: 'Shop Deals',
     slideCTALink: '/products',
     theme: 'dark',
@@ -47,7 +47,7 @@ const defaultSlides = [
     slideMemeText:
       'The most advanced iPhone ever. Now with Apple Intelligence built in.',
     slideSubHeading: 'Pro camera. Pro display. Pro performance.',
-    slideImage: '../static/img/iphone_16.jpg',
+    slideImage: '/static/img/iphone_16.jpg',
     slideCTA: 'Learn More',
     slideCTALink: '/products/IPHONE16PRO',
     theme: 'dark',
@@ -59,7 +59,7 @@ const defaultSlides = [
     slideMemeText: 'Now in space black. The most powerful MacBook ever made.',
     slideSubHeading:
       'Up to 22 hours of battery life. Liquid Retina XDR display.',
-    slideImage: '../static/img/macbook_m4.webp',
+    slideImage: '/static/img/macbook_m4.webp',
     slideCTA: 'Explore',
     slideCTALink: '/products/MACBOOKM4',
     theme: 'dark',
@@ -71,7 +71,7 @@ const defaultSlides = [
     slideSubHeading: 'Premium workspace solutions for the modern professional.',
     slideMemeText:
       'Your private sanctuary. Designed for focus, built for productivity.',
-    slideImage: '../static/img/office_pod.avif',
+    slideImage: '/static/img/office_pod.avif',
     slideCTA: 'Discover',
     slideCTALink: '/products',
     theme: 'dark',
