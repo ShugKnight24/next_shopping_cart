@@ -7,7 +7,9 @@ import { HoneypotField, telemetry } from '../analytics/telemetry';
 import Layout from '../Components/Layout';
 import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
+import { MascotProvider } from '../context/MascotProvider';
 import { ModalProvider } from '../context/ModalProvider';
+import { MascotCompanion } from '../Components/Mascot/MascotCompanion';
 import '../static/normalize.css';
 import '../styles/globals.css';
 
@@ -56,10 +58,13 @@ function MyApp({ Component, pageProps }) {
       <ToastProvider>
         <ModalProvider>
           <CartProvider>
-            <Layout>
-              <HoneypotField />
-              <Component {...pageProps} />
-            </Layout>
+            <MascotProvider>
+              <Layout>
+                <HoneypotField />
+                <Component {...pageProps} />
+                <MascotCompanion />
+              </Layout>
+            </MascotProvider>
           </CartProvider>
         </ModalProvider>
       </ToastProvider>
