@@ -27,6 +27,28 @@ export { CalendarIcon } from './CalendarIcon';
 export { CreditCardIcon } from './CreditCardIcon';
 export { AppleIcon } from './AppleIcon';
 export { GoogleIcon } from './GoogleIcon';
+export { GridIcon } from './GridIcon';
+export { SneakerIcon } from './SneakerIcon';
+export { CardGameIcon } from './CardGameIcon';
+export { GuitarIcon } from './GuitarIcon';
+export { DumbbellIcon } from './DumbbellIcon';
+export { ChipIcon } from './ChipIcon';
+export { EyeIcon } from './EyeIcon';
+export { TagIcon } from './TagIcon';
+export { SparklesIcon } from './SparklesIcon';
+export { FlameIcon } from './FlameIcon';
+export { BoltIcon } from './BoltIcon';
+export { VaultIcon } from './VaultIcon';
+export { Cube3DIcon } from './Cube3DIcon';
+export { ShieldCheckIcon } from './ShieldCheckIcon';
+export { RotateCcwIcon } from './RotateCcwIcon';
+export { LockIcon } from './LockIcon';
+export { ShareIcon } from './ShareIcon';
+export { SlidersIcon } from './SlidersIcon';
+export { ListIcon } from './ListIcon';
+export { BoxIcon } from './BoxIcon';
+export { LayersIcon } from './LayersIcon';
 
 // Social Media Icons
 export * from './Social';
+

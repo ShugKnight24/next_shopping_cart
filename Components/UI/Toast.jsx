@@ -7,11 +7,16 @@ const ToastContext = createContext(null);
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback(
-    ({ message, type = 'info', duration = 4000, action }) => {
-      const id = Date.now() + Math.random();
+  const removeToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
 
-      setToasts((prev) => [...prev, { id, message, type, action }]);
+  const addToast = useCallback(
+    ({ message, type = 'info', duration = 3000, action }) => {
+      const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const newToast = { id, message, type, duration, action };
+
+      setToasts((prev) => [...prev, newToast]);
 
       if (duration > 0) {
         setTimeout(() => {
@@ -21,12 +26,8 @@ export function ToastProvider({ children }) {
 
       return id;
     },
-    []
+    [removeToast]
   );
-
-  const removeToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
-  }, []);
 
   const success = useCallback(
     (message, options = {}) => {

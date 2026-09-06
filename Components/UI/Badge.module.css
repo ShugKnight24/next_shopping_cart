@@ -19,7 +19,13 @@
   font-size: 13px;
 }
 .badge .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1em;
+}
+.badge .icon svg {
+  flex-shrink: 0;
 }
 .badge.new {
   background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);

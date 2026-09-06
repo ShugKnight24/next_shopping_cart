@@ -1,22 +1,35 @@
 import PropTypes from 'prop-types';
 import styles from './Badge.module.css';
+import {
+  SparklesIcon,
+  TagIcon,
+  StarFilled,
+  FlameIcon,
+  BoltIcon,
+} from '../Icons';
 
 const BADGE_CONFIG = {
-  new: { label: 'New', icon: '✨' },
-  sale: { label: 'Sale', icon: '🏷️' },
-  bestseller: { label: 'Bestseller', icon: '⭐' },
-  limited: { label: 'Limited', icon: '🔥' },
-  lowstock: { label: 'Low Stock', icon: '⚡' },
+  new: { label: 'New', Icon: SparklesIcon },
+  sale: { label: 'Sale', Icon: TagIcon },
+  bestseller: { label: 'Bestseller', Icon: StarFilled },
+  limited: { label: 'Limited', Icon: FlameIcon },
+  lowstock: { label: 'Low Stock', Icon: BoltIcon },
 };
 
 export function Badge({ type, showIcon = true, size = 'default' }) {
   const config = BADGE_CONFIG[type];
 
   if (!config) return null;
+  const IconComponent = config.Icon;
+  const iconSize = size === 'small' ? 12 : size === 'large' ? 16 : 14;
 
   return (
     <span className={`${styles.badge} ${styles[type]} ${styles[size]}`}>
-      {showIcon && <span className={styles.icon}>{config.icon}</span>}
+      {showIcon && (
+        <span className={styles.icon}>
+          <IconComponent size={iconSize} />
+        </span>
+      )}
       <span className={styles.label}>{config.label}</span>
     </span>
   );

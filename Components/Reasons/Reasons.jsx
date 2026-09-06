@@ -59,8 +59,8 @@ const reasons = [
     title: 'Award-Winning Quality',
     description:
       'Premium materials + expert craftsmanship = Products built to stand the test of time.',
-    stat: '5★',
-    statLabel: 'rated',
+    stat: '5.0',
+    statLabel: 'top rated',
     accent: 'gold',
   },
   {
