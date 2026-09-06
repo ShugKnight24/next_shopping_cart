@@ -592,11 +592,13 @@ export function StorybookStudio() {
                     <label>Story Co-Star Companion:</label>
                     <div className={styles.mascotCoStarGrid}>
                       {[
+                        { id: 'finley', name: 'Finley The Starlight Fox', tag: 'Wise & Celestial' },
                         { id: 'luna', name: 'Luna The Shepherd', tag: 'Cosmic & Loyal' },
                         { id: 'leo', name: 'Leo The Lion', tag: 'Courage & Roar' },
                         { id: 'penny', name: 'Princess Penny', tag: 'Magic & Grace' },
                         { id: 'dexter', name: 'Dexter Dino', tag: 'Explorer & Dino' },
                         { id: 'carty', name: 'Carty Courier', tag: 'Tech & Speed' },
+                        { id: 'sparky', name: 'Sparky Hound', tag: 'Sneakerhead & Fun' },
                       ].map((m) => (
                         <button
                           key={m.id}

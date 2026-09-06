@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMascot } from '../../context/MascotProvider';
-import { LunaSvg, CartySvg, LeoSvg, PennySvg, DexterSvg, SparkySvg, MascotThumbnail } from './MascotArtwork';
+import { LunaSvg, CartySvg, LeoSvg, PennySvg, DexterSvg, SparkySvg, FoxSvg, MascotThumbnail } from './MascotArtwork';
 import { SparklesIcon, CloseIcon, RotateCcwIcon } from '../Icons';
 import styles from './MascotCompanion.module.css';
 
@@ -28,7 +28,11 @@ export function MascotCompanion() {
       id: `${Date.now()}-${i}`,
       tx: (Math.random() - 0.5) * 80,
       ty: -25 - Math.random() * 50,
-      icon: activeMascotId === 'luna' ? (i % 2 === 0 ? '★' : '🐾') : (i % 2 === 0 ? '★' : '✨'),
+      icon: activeMascotId === 'finley'
+        ? (i % 2 === 0 ? '✦' : '★')
+        : activeMascotId === 'luna'
+        ? (i % 2 === 0 ? '★' : '🐾')
+        : (i % 2 === 0 ? '★' : '✨'),
       color: activeMascot.theme.accent || '#fbbf24',
     }));
     setParticles(newParticles);
@@ -77,6 +81,8 @@ export function MascotCompanion() {
 
   const renderMascotArtwork = () => {
     switch (activeMascotId) {
+      case 'finley':
+        return <FoxSvg size={124} />;
       case 'luna':
         return <LunaSvg size={124} />;
       case 'sparky':

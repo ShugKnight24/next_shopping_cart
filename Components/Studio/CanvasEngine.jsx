@@ -359,6 +359,7 @@ export function CanvasEngine({
 
       // Mascot co-star name lookup
       const coStarNames = {
+        finley: 'Finley The Starlight Fox',
         luna: 'Luna The Cosmic Shepherd',
         leo: 'Leo The Story Lion',
         penny: 'Princess Penny',
@@ -366,7 +367,7 @@ export function CanvasEngine({
         carty: 'Carty The Courier',
         sparky: 'Sparky The Sneaker Hound',
       };
-      const coStarLabel = coStarNames[mascotCoStar] || 'Luna The Cosmic Shepherd';
+      const coStarLabel = coStarNames[mascotCoStar] || 'Finley The Starlight Fox';
 
       // Book Outer Hardcover Spread
       const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -703,7 +704,117 @@ export function CanvasEngine({
         const coStarX = stageX + stageW * 0.68;
         const coStarY = stageY + stageH * 0.65;
 
-        if (mascotCoStar === 'luna') {
+        if (mascotCoStar === 'finley') {
+          // Finley The Starlight Fox (The Little Prince homage)
+          // Bushy fox tail curving up with snowy white tip
+          ctx.fillStyle = '#ea580c';
+          ctx.beginPath();
+          ctx.moveTo(coStarX - 10, coStarY + 14);
+          ctx.quadraticCurveTo(coStarX - 32, coStarY + 12, coStarX - 28, coStarY - 8);
+          ctx.quadraticCurveTo(coStarX - 20, coStarY + 2, coStarX - 8, coStarY + 8);
+          ctx.closePath();
+          ctx.fill();
+          // Snowy white tail tip
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.moveTo(coStarX - 28, coStarY - 8);
+          ctx.quadraticCurveTo(coStarX - 32, coStarY + 2, coStarX - 24, coStarY - 2);
+          ctx.closePath();
+          ctx.fill();
+
+          // Amber body
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(coStarX - 12, coStarY - 8, 24, 30, 8);
+          else ctx.rect(coStarX - 12, coStarY - 8, 24, 30);
+          ctx.fill();
+
+          // Cream chest ruff
+          ctx.fillStyle = '#fff7ed';
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY + 6, 7, 10, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Pointed Desert Fox Ears
+          ctx.fillStyle = '#c2410c';
+          ctx.beginPath();
+          ctx.moveTo(coStarX - 14, coStarY - 20);
+          ctx.lineTo(coStarX - 18, coStarY - 36);
+          ctx.lineTo(coStarX - 4, coStarY - 24);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#ffedd5';
+          ctx.beginPath();
+          ctx.moveTo(coStarX - 13, coStarY - 22);
+          ctx.lineTo(coStarX - 16, coStarY - 33);
+          ctx.lineTo(coStarX - 6, coStarY - 24);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#c2410c';
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 14, coStarY - 20);
+          ctx.lineTo(coStarX + 18, coStarY - 36);
+          ctx.lineTo(coStarX + 4, coStarY - 24);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#ffedd5';
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 13, coStarY - 22);
+          ctx.lineTo(coStarX + 16, coStarY - 33);
+          ctx.lineTo(coStarX + 6, coStarY - 24);
+          ctx.closePath();
+          ctx.fill();
+
+          // Fox Head
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 20, 13, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Cream Cheeks
+          ctx.fillStyle = '#fff7ed';
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY - 17, 9, 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Inquisitive Soulful Amber Eyes
+          ctx.fillStyle = '#431407';
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 21, 1.8, 0, Math.PI * 2);
+          ctx.arc(coStarX + 4, coStarY - 21, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(coStarX - 4, coStarY - 21, 0.8, 0, Math.PI * 2);
+          ctx.arc(coStarX + 4, coStarY - 21, 0.8, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Button nose
+          ctx.fillStyle = '#1c1917';
+          ctx.beginPath();
+          ctx.arc(coStarX, coStarY - 16, 1.6, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Flowing Celestial Scarf (The Little Prince homage)
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(coStarX - 10, coStarY - 10, 20, 6, 3);
+          else ctx.rect(coStarX - 10, coStarY - 10, 20, 6);
+          ctx.fill();
+          // Scarf fluttering tails
+          ctx.beginPath();
+          ctx.moveTo(coStarX + 8, coStarY - 8);
+          ctx.quadraticCurveTo(coStarX + 22, coStarY - 4, coStarX + 26, coStarY + 12);
+          ctx.lineTo(coStarX + 18, coStarY + 8);
+          ctx.closePath();
+          ctx.fill();
+          // Gold star on scarf
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(coStarX + 18, coStarY + 4, 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (mascotCoStar === 'luna') {
           // Luna The Cosmic Anatolian Shepherd in Spacesuit
           // Curled Tail in Spacesuit
           ctx.strokeStyle = '#ffffff';

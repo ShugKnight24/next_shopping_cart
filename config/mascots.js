@@ -184,6 +184,38 @@ export const MASCOTS = {
       { id: 'fact', label: 'Dino Fact', reply: "Did you know? Some dinosaurs had feathers as bright as modern parakeets!" },
     ],
   },
+  finley: {
+    id: 'finley',
+    realm: 'kids',
+    name: 'Finley The Starlight Fox',
+    title: 'The Little Prince Celestial Fox',
+    theme: {
+      primary: '#ea580c',
+      secondary: '#f97316',
+      accent: '#38bdf8',
+      background: 'rgba(234, 88, 12, 0.08)',
+      glow: 'rgba(56, 189, 248, 0.45)',
+    },
+    defaultMessage: "Greetings, traveler! I'm Finley The Starlight Fox. It is only with the heart that one can see rightly!",
+    quotes: {
+      home: "Welcome under the stars! You are unique in all the universe, and your stories matter deeply.",
+      products: "Look beyond the obvious—what makes a gift truly precious is the thought and love you invest in it.",
+      favorites: "The things you hold dear in your heart are gathered safely here beneath the constellation.",
+      studio: "The Studio is our quiet oasis. Here, we can tame words and colors into a story that lasts forever.",
+      studioStep1: "Step 1: Tell me the name of your little prince or princess so we may tame them as our story's heart.",
+      studioStep2: "Step 2: Choose our voyage! Floating across asteroid B-612, a desert sunset, or a field of roses?",
+      studioStep3: "Step 3: Write your heartfelt dedication. Remember: what is essential is invisible to the eye.",
+      studioStep4: "Step 4: Behold the constellations on every page! Stamp starlight, roses, and little foxes.",
+      studioStep5: "Step 5: You have tamed this book with your time and care. It is now ready to take flight!",
+      addedToCart: "A true friendship is formed! Your personalized keepsake has been placed in your bag.",
+      freeShipping: "Listen! The stars are laughing like five hundred million little bells—Free Express Shipping is unlocked!",
+    },
+    interactiveActions: [
+      { id: 'secret', label: 'Starlight Secret', reply: "Finley whispers: 'Here is my secret, very simple: It is only with the heart that one can see rightly.'" },
+      { id: 'rose', label: 'Celestial Rose', reply: "Finley gazes at the stars: 'It is the time you have devoted to your story that makes it so important.'" },
+      { id: 'tame', label: 'Tame Finley', reply: "Finley curls his bushy white-tipped tail warmly against your boots. 'Now we shall need each other in all the cosmos!'" },
+    ],
+  },
 };
 
 export const DEFAULT_SHOP_MASCOT_ID = 'luna';

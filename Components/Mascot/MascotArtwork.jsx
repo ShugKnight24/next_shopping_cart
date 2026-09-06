@@ -733,7 +733,170 @@ export function SparkySvg({ className = '', size = 120 }) {
   );
 }
 
-SparkySvg.propTypes = {
+/**
+ * Finley The Starlight Fox - The Little Prince Celestial Fox
+ * 100% Vector SVG with warm amber coat, bushy white-tipped tail,
+ * flowing starry celestial sky-blue scarf, delicate pointed ears, and soulful eyes.
+ */
+export function FoxSvg({ className = '', size = 124 }) {
+  return (
+    <svg
+      className={`${styles.mascotSvg} ${className}`}
+      width={size}
+      height={size}
+      viewBox="0 0 160 160"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Finley The Starlight Fox Mascot"
+    >
+      <defs>
+        <radialGradient id="foxGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="foxFur" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fb923c" />
+          <stop offset="100%" stopColor="#ea580c" />
+        </linearGradient>
+        <linearGradient id="foxFurDark" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#c2410c" />
+          <stop offset="100%" stopColor="#9a3412" />
+        </linearGradient>
+        <linearGradient id="foxScarf" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#38bdf8" />
+          <stop offset="100%" stopColor="#0284c7" />
+        </linearGradient>
+        <linearGradient id="foxChest" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="100%" stopColor="#ffedd5" />
+        </linearGradient>
+      </defs>
+
+      {/* Celestial Stardust Aura */}
+      <circle cx="80" cy="80" r="70" fill="url(#foxGlow)" className={styles.cosmicGlow} />
+
+      {/* Ground Shadow with Stardust */}
+      <ellipse cx="80" cy="150" rx="42" ry="7" fill="rgba(234, 88, 12, 0.16)" />
+
+      <g className={styles.floatBody}>
+        {/* Bushy Curving Fox Tail (Wagging) with Snowy White Tip */}
+        <g className={styles.waggingTail}>
+          {/* Main Orange Bushy Tail */}
+          <path
+            d="M52 120 C28 116 16 90 28 68 C36 56 50 62 46 80 C42 96 40 108 54 116 Z"
+            fill="url(#foxFur)"
+            stroke="#c2410c"
+            strokeWidth="2"
+          />
+          {/* Snowy White Tail Tip */}
+          <path
+            d="M28 68 C32 60 44 60 46 76 C41 74 38 78 34 74 C31 78 28 75 28 68 Z"
+            fill="#ffffff"
+          />
+          {/* Little floating stars around tail tip */}
+          <path d="M22 58 L24 62 L28 62 L25 65 L26 69 L22 66 L18 69 L19 65 L16 62 L20 62 Z" fill="#fbbf24" opacity="0.85" />
+          <circle cx="36" cy="54" r="1.5" fill="#38bdf8" />
+        </g>
+
+        {/* Slender Body */}
+        <path
+          d="M58 92 C54 104 54 130 58 140 C66 144 94 144 102 140 C106 130 106 104 102 92 Z"
+          fill="url(#foxFur)"
+          stroke="#c2410c"
+          strokeWidth="2"
+        />
+
+        {/* Soft Cream Chest Ruff */}
+        <path
+          d="M66 94 C64 112 68 128 80 134 C92 128 96 112 94 94 C88 98 84 96 80 100 C76 96 72 98 66 94 Z"
+          fill="url(#foxChest)"
+        />
+
+        {/* Large Pointed Desert Fox Ears */}
+        {/* Left Ear */}
+        <polygon points="56,60 42,20 70,42" fill="url(#foxFurDark)" stroke="#9a3412" strokeWidth="1.5" />
+        <polygon points="54,54 46,26 66,42" fill="#fed7aa" />
+        <path d="M50 48 Q54 40 58 46" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* Right Ear */}
+        <polygon points="104,60 118,20 90,42" fill="url(#foxFurDark)" stroke="#9a3412" strokeWidth="1.5" />
+        <polygon points="106,54 114,26 94,42" fill="#fed7aa" />
+        <path d="M110 48 Q106 40 102 46" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* Fox Head & Muzzle */}
+        <path
+          d="M54 58 C50 72 62 86 80 88 C98 86 110 72 106 58 C102 46 58 46 54 58 Z"
+          fill="url(#foxFur)"
+          stroke="#c2410c"
+          strokeWidth="2"
+        />
+
+        {/* Cream Cheeks & White Muzzle Mask */}
+        <path
+          d="M58 66 C56 78 68 84 80 86 C92 84 104 78 102 66 C94 72 88 68 80 72 C72 68 66 72 58 66 Z"
+          fill="url(#foxChest)"
+        />
+
+        {/* Soulful Inquisitive Amber Eyes */}
+        <g className={styles.blinkingEyes}>
+          <ellipse cx="68" cy="62" rx="4.5" ry="6" fill="#431407" />
+          <circle cx="69.5" cy="60" r="2" fill="#fbbf24" />
+          <circle cx="67" cy="63.5" r="0.8" fill="#ffffff" />
+
+          <ellipse cx="92" cy="62" rx="4.5" ry="6" fill="#431407" />
+          <circle cx="93.5" cy="60" r="2" fill="#fbbf24" />
+          <circle cx="91" cy="63.5" r="0.8" fill="#ffffff" />
+        </g>
+
+        {/* Cute Black Button Nose & Smile */}
+        <ellipse cx="80" cy="74" rx="3.5" ry="2.5" fill="#1c1917" />
+        <path d="M80 76.5 L80 79 M76 79 Q80 82 84 79" stroke="#431407" strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* The Little Prince Iconic Flowing Celestial Scarf */}
+        <path
+          d="M60 88 C70 94 90 94 100 88 C104 94 98 100 80 102 C62 100 56 94 60 88 Z"
+          fill="url(#foxScarf)"
+          stroke="#0284c7"
+          strokeWidth="1.5"
+        />
+        {/* Flowing Billowing Scarf Tails in the Stellar Wind */}
+        <g className={styles.wavingArm}>
+          <path
+            d="M96 92 C114 96 128 88 136 74 C132 82 122 96 102 100 Z"
+            fill="url(#foxScarf)"
+            stroke="#0284c7"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M94 96 C110 102 120 108 126 116 C118 110 108 106 96 102 Z"
+            fill="#0284c7"
+          />
+          {/* Golden Star Emblems on the Scarf */}
+          <polygon points="120,86 122,89 125,89 123,91 124,94 120,92 116,94 117,91 115,89 118,89" fill="#fbbf24" />
+          <circle cx="110" cy="98" r="1.5" fill="#fbbf24" />
+        </g>
+
+        {/* Left Arm / Paw */}
+        <path d="M58 98 Q48 108 52 120" stroke="url(#foxFur)" strokeWidth="6" strokeLinecap="round" fill="none" />
+        <circle cx="52" cy="120" r="4" fill="#ffffff" />
+
+        {/* Right Arm / Paw (Friendly Gentle Waving Paw) */}
+        <g className={styles.wavingPaw}>
+          <path d="M102 98 Q114 92 118 80" stroke="url(#foxFur)" strokeWidth="6" strokeLinecap="round" fill="none" />
+          <circle cx="118" cy="80" r="4.5" fill="#ffffff" />
+          <ellipse cx="117.5" cy="80" rx="2" ry="1.5" fill="#fed7aa" />
+        </g>
+
+        {/* Little Paws at Base */}
+        <ellipse cx="70" cy="142" rx="7" ry="4" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1" />
+        <ellipse cx="90" cy="142" rx="7" ry="4" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1" />
+      </g>
+    </svg>
+  );
+}
+
+FoxSvg.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number,
 };
@@ -744,6 +907,28 @@ SparkySvg.propTypes = {
  */
 export function MascotThumbnail({ mascotId, size = 36, className = '' }) {
   switch (mascotId) {
+    case 'finley':
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#2a1205" stroke="#f97316" strokeWidth="1.5" />
+          {/* Pointed Fox Ears */}
+          <polygon points="12,18 10,7 17,14" fill="#ea580c" />
+          <polygon points="12,16 11,9 15,14" fill="#fed7aa" />
+          <polygon points="28,18 30,7 23,14" fill="#ea580c" />
+          <polygon points="28,16 29,9 25,14" fill="#fed7aa" />
+          {/* Fox Head */}
+          <circle cx="20" cy="21" r="9" fill="#f97316" />
+          {/* White Cheeks / Muzzle */}
+          <path d="M14 22 C14 26 20 28 20 28 C20 28 26 26 26 22 Z" fill="#fff7ed" />
+          <circle cx="20" cy="26" r="1" fill="#1c1917" />
+          {/* Eyes */}
+          <circle cx="17" cy="20" r="1.3" fill="#431407" />
+          <circle cx="23" cy="20" r="1.3" fill="#431407" />
+          {/* Celestial Scarf */}
+          <path d="M15 28 Q20 31 25 28 Q28 33 24 35 Q20 33 16 35 Z" fill="#38bdf8" />
+          <circle cx="20" cy="30" r="0.8" fill="#fbbf24" />
+        </svg>
+      );
     case 'luna':
       return (
         <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">

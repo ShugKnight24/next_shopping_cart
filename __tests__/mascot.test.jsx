@@ -127,4 +127,12 @@ describe('Mascot Companion System', () => {
       }
     });
   });
+
+  it('registers Finley The Starlight Fox under kids realm with celestial quotes and actions', () => {
+    expect(MASCOTS.finley).toBeDefined();
+    expect(MASCOTS.finley.realm).toBe('kids');
+    expect(MASCOTS.finley.name).toBe('Finley The Starlight Fox');
+    expect(MASCOTS.finley.quotes.home).toContain('stars');
+    expect(MASCOTS.finley.interactiveActions.some((a) => a.id === 'secret')).toBe(true);
+  });
 });
