@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import styles from './Hero.module.css';
+import { CartIcon, VaultIcon, Cube3DIcon, SparklesIcon } from '../Icons';
 
 /**
  * HeroAnimationSwitcher
@@ -12,25 +13,25 @@ export function HeroAnimationSwitcher({ activeMode, onSelectMode }) {
     {
       id: 'track',
       label: 'Cart Track',
-      icon: '🛒',
+      Icon: CartIcon,
       badge: 'Classic',
     },
     {
       id: 'vault',
       label: 'Luxury Vault',
-      icon: '🏛️',
+      Icon: VaultIcon,
       badge: 'Vector',
     },
     {
       id: '3d',
       label: '3D Stage',
-      icon: '🧊',
+      Icon: Cube3DIcon,
       badge: 'Spatial',
     },
     {
       id: 'webgl',
       label: 'WebGL Vortex',
-      icon: '✨',
+      Icon: SparklesIcon,
       badge: 'GPU',
     },
   ];
@@ -44,6 +45,7 @@ export function HeroAnimationSwitcher({ activeMode, onSelectMode }) {
       <div className={styles.switcherTrack}>
         {modes.map((mode) => {
           const isActive = activeMode === mode.id;
+          const ModeIcon = mode.Icon;
           return (
             <button
               key={mode.id}
@@ -54,7 +56,9 @@ export function HeroAnimationSwitcher({ activeMode, onSelectMode }) {
               className={`${styles.switcherButton} ${isActive ? styles.switcherActive : ''}`}
               onClick={() => onSelectMode(mode.id)}
             >
-              <span className={styles.switcherIcon}>{mode.icon}</span>
+              <span className={styles.switcherIcon}>
+                <ModeIcon size={16} strokeWidth={2} />
+              </span>
               <span className={styles.switcherLabel}>{mode.label}</span>
               <span className={styles.switcherBadge}>{mode.badge}</span>
             </button>

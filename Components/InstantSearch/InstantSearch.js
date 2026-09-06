@@ -61,9 +61,9 @@ export function InstantSearch({
         onFocus={() => setShowHits(true)}
         onChange={handleInput}
       />
-      <ul className={styles.instantList}>
-        {showHits ? (
-          hitList.length !== 0 ? (
+      {showHits && (
+        <ul className={styles.instantList}>
+          {hitList.length !== 0 ? (
             hitList.map((product) => (
               <Hit
                 key={product.itemid}
@@ -85,18 +85,9 @@ export function InstantSearch({
                 <a>Filter by name and manufacturer</a>
               </li>
             </>
-          )
-        ) : (
-          <>
-            <li>
-              <a>Find the products you want</a>
-            </li>
-            <li>
-              <a>Filter by name and manufacturer</a>
-            </li>
-          </>
-        )}
-      </ul>
+          )}
+        </ul>
+      )}
     </div>
   );
 }

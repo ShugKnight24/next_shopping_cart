@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
 import styles from './Hero.module.css';
+import {
+  SneakerIcon,
+  CardGameIcon,
+  GuitarIcon,
+  DumbbellIcon,
+} from '../Icons';
 
 /**
  * Isometric3DHero
@@ -44,7 +50,7 @@ export function Isometric3DHero({ className }) {
       price: '$425.00',
       badge: 'Iconic',
       color: '#ef4444',
-      icon: '👟',
+      Icon: SneakerIcon,
       transform: 'translate3d(-140px, -40px, 60px) rotateY(-10deg)',
     },
     {
@@ -54,7 +60,7 @@ export function Isometric3DHero({ className }) {
       price: '$495,000',
       badge: 'Grail',
       color: '#b8860b',
-      icon: '🎴',
+      Icon: CardGameIcon,
       transform: 'translate3d(140px, -60px, 80px) rotateY(12deg)',
     },
     {
@@ -64,7 +70,7 @@ export function Isometric3DHero({ className }) {
       price: '$4,850',
       badge: 'Masterbuilt',
       color: '#38bdf8',
-      icon: '🎸',
+      Icon: GuitarIcon,
       transform: 'translate3d(-120px, 90px, 100px) rotateY(-8deg)',
     },
     {
@@ -74,7 +80,7 @@ export function Isometric3DHero({ className }) {
       price: '$350.00',
       badge: 'Made in USA',
       color: '#10b981',
-      icon: '🏋️',
+      Icon: DumbbellIcon,
       transform: 'translate3d(120px, 80px, 50px) rotateY(8deg)',
     },
   ];
@@ -134,7 +140,9 @@ export function Isometric3DHero({ className }) {
 
               {/* Card Content */}
               <div className={styles.cardHeader}>
-                <span className={styles.cardEmoji}>{card.icon}</span>
+                <span className={styles.cardEmoji}>
+                  <card.Icon size={24} strokeWidth={2} />
+                </span>
                 <span
                   className={styles.cardBadge}
                   style={{

@@ -14,7 +14,7 @@ import styles from './Hero.module.css';
 export function WebGLCosmicHero({ className }) {
   const canvasRef = useRef(null);
   const [webglSupported, setWebglSupported] = useState(true);
-  const [interactionStats, setInteractionStats] = useState({
+  const [_interactionStats, _setInteractionStats] = useState({
     particles: 1200,
     fps: 60,
   });

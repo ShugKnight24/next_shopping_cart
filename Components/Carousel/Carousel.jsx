@@ -138,15 +138,22 @@ export function Carousel({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const [_isHovered, setIsHovered] = useState(false);
   const maxSlides = slides.length;
   const containerRef = useRef(null);
-  const progressRef = useRef(null);
 
   // Touch/swipe state
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const minSwipeDistance = 50;
+
+  const handleNextClick = useCallback(() => {
+    setCurrentSlide((prevState) => (prevState + 1) % maxSlides);
+  }, [maxSlides]);
+
+  const handlePreviousClick = useCallback(() => {
+    setCurrentSlide((prevState) => (prevState - 1 + maxSlides) % maxSlides);
+  }, [maxSlides]);
 
   // Auto-play functionality
   useEffect(() => {
@@ -202,15 +209,8 @@ export function Carousel({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleNextClick, handlePreviousClick]);
 
-  const handleNextClick = useCallback(() => {
-    setCurrentSlide((prevState) => (prevState + 1) % maxSlides);
-  }, [maxSlides]);
-
-  const handlePreviousClick = useCallback(() => {
-    setCurrentSlide((prevState) => (prevState - 1 + maxSlides) % maxSlides);
-  }, [maxSlides]);
 
   const handleDotClick = (dotIndex) => {
     setCurrentSlide(dotIndex);

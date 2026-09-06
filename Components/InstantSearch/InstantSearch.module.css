@@ -13,22 +13,8 @@
   }
 }
 
-.instantSearchContainer.populated {
-  margin-bottom: 140px;
-}
-
-.instantSearchContainer.populated .instantList {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 500px;
-  z-index: 1001;
-  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 @media (max-width: 600px) {
-  .instantSearchContainer.populated .instantList {
+  .instantList {
     width: 100%;
     max-width: none;
   }
@@ -74,6 +60,13 @@
 }
 
 .instantList {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
+  z-index: 1001;
   margin: 0;
   margin-top: 0.5rem;
   padding: 0.5rem;
@@ -86,6 +79,7 @@
     0 12px 40px rgba(30, 58, 95, 0.15),
     0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .instantList li {

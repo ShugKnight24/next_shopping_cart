@@ -5,6 +5,7 @@ import {
   LaptopIcon,
   SmartphoneIcon,
   WatchIcon,
+  StarFilled,
 } from '../Icons';
 import { AnimatedCart } from './AnimatedCart';
 import { HeroAnimationSwitcher } from './HeroAnimationSwitcher';
@@ -289,7 +290,7 @@ function CartPatternBackground({ className }) {
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const [animationMode, setAnimationMode] = useState('track');
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [_mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setIsVisible(true);
@@ -503,7 +504,9 @@ export function Hero() {
           <span className={styles.statLabel}>Fast Delivery</span>
         </div>
         <div className={`${styles.statCard} ${styles.stat3}`}>
-          <span className={styles.statNumber}>4.9★</span>
+          <span className={styles.statNumber}>
+            4.9 <StarFilled size={15} />
+          </span>
           <span className={styles.statLabel}>Customer Rating</span>
         </div>
         <div className={`${styles.statCard} ${styles.stat4}`}>

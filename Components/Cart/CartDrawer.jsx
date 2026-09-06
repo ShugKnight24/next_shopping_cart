@@ -9,7 +9,7 @@ import {
   totalPrice,
   totalQuantity,
 } from '../../utils/cartUtils';
-import { CloseIcon, CartIcon, TrashIcon } from '../Icons';
+import { CloseIcon, CartIcon, TrashIcon, CheckCircleIcon } from '../Icons';
 import styles from './CartDrawer.module.css';
 
 const FREE_SHIPPING_THRESHOLD = 150;
@@ -148,7 +148,8 @@ export function CartDrawer() {
           <div className={styles.shippingMessage}>
             {amountToFreeShipping <= 0 ? (
               <span className={styles.freeSuccess}>
-                ✓ You unlocked <strong>Free Express Shipping!</strong>
+                <CheckCircleIcon size={16} />
+                <span>You unlocked <strong>Free Express Shipping!</strong></span>
               </span>
             ) : (
               <span>

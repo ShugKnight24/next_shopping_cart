@@ -86,8 +86,14 @@
   color: #1e3a5f;
 }
 .shippingMeter .shippingMessage .freeSuccess {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   color: #2e7d32;
   font-weight: 600;
+}
+.shippingMeter .shippingMessage .freeSuccess svg {
+  flex-shrink: 0;
 }
 .shippingMeter .progressBarTrack {
   height: 6px;
