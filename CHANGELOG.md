@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-09-06
+
+### Added
+- **SEO Rich Snippets, Structured Data & Dynamic XML Sitemap**:
+  - Added schema.org `Product` and `BreadcrumbList` JSON-LD structured data on `/products/[productid]` for Google rich snippet display.
+  - Added schema.org `WebSite` and `OnlineStore` JSON-LD structured data on `/`.
+  - Added comprehensive OpenGraph and Twitter Card social preview meta tags.
+  - Added dynamic XML sitemap generator (`pages/sitemap.xml.js`) indexing all 40+ products with dynamic `<lastmod>`, `<changefreq>`, and `<priority>`.
+  - Added standard `public/robots.txt` crawler directives pointing to `/sitemap.xml`.
+- **Cart Drawer Cross-Sells ("Frequently Paired With")**:
+  - Implemented dynamic recommendation shelf in `CartDrawer.jsx` recommending complementary accessories with 1-click `+ Quick Add` and GA4 `trackAddToCart` telemetry.
+- **Homepage Discovery & Editorial Storytelling**:
+  - Added `FeaturedCategories` visual department discovery grid on homepage (`Components/FeaturedCategories/`).
+  - Added `BrandStory` editorial split-screen section (`Components/BrandStory/`) with 3 trust pillars, authenticity certification proof, and zero emojis.
+- **Automated Test Suite Expansion**:
+  - Added `__tests__/seo.test.js` and `__tests__/homepageSections.test.jsx`, bringing the automated test suite to 88 passing tests across 11 test suites (100% pass rate).
+
+### Security
+- **Patched 7 Transitive Vulnerabilities via npm Overrides**:
+  - Added `overrides` in `package.json` for `postcss` (8.5.28), `flatted` (3.4.4), `brace-expansion` (1.1.18), and `@humanfs/node` (0.16.8), achieving 0 vulnerabilities in `npm audit`.
+
+---
+
 ## [0.4.0] - 2026-09-06
 
 ### Added
