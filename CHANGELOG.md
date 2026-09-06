@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - 2026-09-06
+
+### Added
+- **Luna The Cosmic Shepherd (Default Shop Mascot)**:
+  - Modeled after the user's late dog Luna (Anatolian Shepherd) with authentic breed features:
+    - Warm golden-fawn coat with cream neck and chest.
+    - Signature Anatolian Shepherd black muzzle mask with darker eye contours and folded drop ears.
+    - Signature distinctive pinkish/white marking arched across the top ridge of her black nose.
+    - White astronaut spacesuit with aerospace gold accents, deep navy collar, and an embroidered **"LUNA"** mission patch.
+  - Set as the official default companion for the shop realm (`DEFAULT_SHOP_MASCOT_ID = 'luna'`).
+- **Dual-Side Anti-Theft Security Watermarks**:
+  - High-security canvas watermark engine in `Components/Studio/CanvasEngine.jsx` protecting both the left and right pages of storybook spreads and canvas quadrants.
+  - Repeating angled ribbon banners (`CART COMMERCE • PROOF / PREVIEW ONLY • DO NOT REPRODUCE`) and circular `PROTECTED PROOF` stamps prevent AI upscaling and unauthorized taking of artwork.
+- **Illustrated Character Avatars & Sharper Selectors**:
+  - Crisp vector illustration avatars rendered in the Mascot Switcher popover and the Storybook Co-Star selector for Luna, Leo, Penny, Dexter Dino, Carty, and Sparky.
+  - Full-fidelity storybook canvas illustrations for Dexter Dino and Luna in spacesuit.
+- **Interactive Mascot Animations & Reaction Chips**:
+  - Click/tap jump reactions with floating particle bursts (stars, paws, sparkles).
+  - Dynamic interactive action chips in speech bubbles (*Give Space Treat*, *Cosmic Fact*, *High Paw*).
+- **Back-to-Top Button Collision Fix**:
+  - Repositioned `.backToTop` above the mascot companion (`bottom: 110px; right: 28px; z-index: 950;`), eliminating all overlap.
+- **Cinematic Video Suites & Social Media Creation Studio**:
+  - Homepage Brand Sizzle Reel (`EcommerceSizzleReel.jsx`) with 4K motion, timeline scrubbing, dynamic glow, and "Shop The Scene" product hotspots.
+  - Behind-The-Scenes Artisan Bookmaking Tour (`KidsStudioVideoTour.jsx`) with companion narration and craft quality pillars.
+  - Social Media Creation Studio (`/studio/social`) with multi-platform presets (Instagram, TikTok, X, Pinterest), 1-click catalog import, and OLED smartphone mockup preview.
+
+---
+
 ## [0.6.0] - 2026-09-06
 
 ### Added
