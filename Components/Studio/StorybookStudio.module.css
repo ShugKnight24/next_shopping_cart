@@ -75,6 +75,18 @@
   grid-template-columns: 1.15fr 1fr;
   gap: 28px;
   align-items: start;
+  transition: all 0.3s ease;
+}
+
+.theaterGrid {
+  grid-template-columns: 1.45fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 1100px) {
+  .theaterGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 960px) {
@@ -87,6 +99,10 @@
 .canvasStage {
   display: flex;
   flex-direction: column;
+}
+
+.theaterCanvasStage {
+  width: 100%;
 }
 
 .canvasHeader {
@@ -107,6 +123,42 @@
   padding: 4px 10px;
   border-radius: 9999px;
   border: 1px solid #bfdbfe;
+}
+
+.headerRightControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theaterToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.theaterToggleBtn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.theaterToggleActive {
+  background: #1e293b;
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
 }
 
 .pageIndicator {
@@ -474,6 +526,9 @@
 }
 
 .navBackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: none;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -482,6 +537,8 @@
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
@@ -496,6 +553,9 @@
 }
 
 .navNextBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #0f172a;
   color: #ffffff;
   border: none;
@@ -504,6 +564,8 @@
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
@@ -713,4 +775,926 @@
   accent-color: #2563eb;
   cursor: pointer;
 }
+
+/* Step 4 Bubble Dialogue Input Group */
+.bubbleInputGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.addBubbleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.addBubbleBtn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Placed Stamps Layer Section */
+.placedStampsSection {
+  margin-top: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.placedStampsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.clearAllSmallBtn {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.clearAllSmallBtn:hover {
+  background: #fee2e2;
+}
+
+.placedStampsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.placedStampItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+}
+
+.stampItemInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.stampItemIndex {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.stampItemName {
+  font-weight: 600;
+  color: #1e293b;
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stampItemActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.miniActionBtn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.miniActionBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.miniDeleteBtn {
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.miniDeleteBtn:hover {
+  background: #fee2e2;
+}
+
+/* Fullscreen Studio Launcher & Reader Buttons */
+.fullscreenStudioBtn,
+.flipbookPreviewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.fullscreenStudioBtn:hover,
+.flipbookPreviewBtn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* Bottom Story Reel Strip */
+.storyReelStrip {
+  margin-top: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.reelTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reelHeading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+}
+
+.addSpreadQuickBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.addSpreadQuickBtn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.reelThumbnails {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.reelThumb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  min-width: 90px;
+  transition: all 0.15s ease;
+}
+
+.reelThumb:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.reelThumbActive {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.thumbMiniBook {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+}
+
+.thumbNum {
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.thumbLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+/* Inline Template List */
+.templateListInline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.inlineTemplateCard {
+  text-align: left;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inlineTemplateCard:hover {
+  border-color: #f59e0b;
+  background: #fffdfa;
+}
+
+.inlineTemplateTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.inlineThemePill {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #e0f2fe;
+  color: #0284c7;
+  padding: 2px 6px;
+  border-radius: 9999px;
+}
+
+.inlineTemplateCard p {
+  margin: 0 0 6px 0;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.applyBtnText {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* ==========================================
+   FULLSCREEN WORKSTATION OVERLAY
+   ========================================== */
+.fullscreenOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #080c14;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fsHeader {
+  height: 56px;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.fsHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fsBrandPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.fsHeroTitleInput {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  width: 100px;
+}
+
+.fsHeroTitleInput:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+
+.fsTitleTheme {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.fsHeaderCenter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fsHistoryControls,
+.fsZoomControls {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fsBarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.12s ease;
+}
+
+.fsBarBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.fsBarBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.fsZoomBtn,
+.fsZoomReset {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fsZoomBtn:hover,
+.fsZoomReset:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.fsZoomIndicator {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 0 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fsGuideBtn,
+.fsReaderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.fsGuideBtn:hover,
+.fsReaderBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.fsGuideBtnActive {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+.fsHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fsExitButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.76rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.fsExitButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.fsOrderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f59e0b;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.fsOrderBtn:hover {
+  background: #fbbf24;
+}
+
+/* Fullscreen Body */
+.fsBody {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.fsToolRail {
+  width: 320px;
+  background: #0d1322;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.fsRailIcons {
+  width: 56px;
+  background: #090d18;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 12px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.fsRailBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #94a3b8;
+  padding: 8px 4px;
+  width: 48px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fsRailBtn span {
+  font-size: 0.58rem;
+  font-weight: 600;
+}
+
+.fsRailBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.fsRailBtnActive {
+  background: rgba(37, 99, 235, 0.25);
+  color: #60a5fa;
+}
+
+.fsDrawerContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.fsDrawerSection h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  color: #f8fafc;
+}
+
+.fsDrawerMuted {
+  margin: 0 0 12px 0;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.fsTemplateCards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fsTemplateCard {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fsTemplateCard:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: #f59e0b;
+}
+
+.fsTemplateCardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.fsTemplateCardHead strong {
+  font-size: 0.78rem;
+  color: #f8fafc;
+}
+
+.fsThemeTag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  padding: 1px 6px;
+  border-radius: 9999px;
+}
+
+.fsTemplateCard p {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.fsCoStarGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.fsCoStarBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.fsCoStarBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.fsCoStarBtnActive {
+  background: rgba(37, 99, 235, 0.25);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.fsLayerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.fsClearLayers {
+  background: transparent;
+  border: none;
+  font-size: 0.68rem;
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.fsLayerList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fsLayerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.fsLayerDeleteBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.fsLayerDeleteBtn:hover {
+  color: #ef4444;
+}
+
+/* Center Stage */
+.fsStageCenter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 20px;
+  background: radial-gradient(circle at center, #111827 0%, #080c14 100%);
+}
+
+.fsCanvasTransform {
+  transition: transform 0.15s ease;
+  transform-origin: center center;
+}
+
+/* Bottom Fullscreen Filmstrip */
+.fsFilmstrip {
+  height: 90px;
+  background: #0f172a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 6px 16px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.fsFilmstripHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.fsAddSpreadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 4px;
+  color: #60a5fa;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.fsFilmstripCards {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.fsFilmCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px 10px;
+  min-width: 80px;
+  cursor: pointer;
+  color: #cbd5e1;
+}
+
+.fsFilmCard:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.fsFilmCardActive {
+  border-color: #3b82f6;
+  background: rgba(37, 99, 235, 0.25);
+  color: #ffffff;
+}
+
+.fsFilmNum {
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.fsFilmTitle {
+  font-size: 0.65rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+/* ==========================================
+   FLIPBOOK READER MODAL OVERLAY
+   ========================================== */
+.flipbookOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.flipbookModal {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  width: 900px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.flipbookHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.flipbookTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fbbf24;
+}
+
+.flipbookTitleWrap h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #f8fafc;
+}
+
+.flipbookClose {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.flipbookClose:hover {
+  color: #ffffff;
+}
+
+.flipbookStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #080c14;
+}
+
+.flipbookFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: #0f172a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.flipbookNavButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.flipbookNavButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.flipbookNavButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.flipbookCounter {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
 

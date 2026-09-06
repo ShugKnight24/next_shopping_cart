@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { FlipHorizontalIcon, DuplicateIcon, TrashIcon } from './StudioSVGs';
 import styles from './CanvasEngine.module.css';
 
 /**
@@ -149,9 +150,916 @@ export function CanvasEngine({
     if (sticker.rotation) {
       ctx.rotate((sticker.rotation * Math.PI) / 180);
     }
-    ctx.scale(sticker.scale || 1, sticker.scale || 1);
+    const sx = (sticker.scale || 1) * (sticker.flipX ? -1 : 1);
+    const sy = sticker.scale || 1;
+    ctx.scale(sx, sy);
 
     switch (sticker.type) {
+      case 'mascot_luna': {
+        // Luna The Cosmic Shepherd Astronaut Mascot Sticker
+        // Astronaut spacesuit
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(-16, 4, 32, 22, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        // Navy suit shoulder pads & chest trim
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-16, 6, 5, 12);
+        ctx.fillRect(11, 6, 5, 12);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(-6, 8, 12, 3);
+
+        // Gold collar star badge
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(0, 15, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Anatolian curled astronaut tail
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(14, 18, 7, 0, Math.PI * 1.5, true);
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+
+        // Shepherd Head & Muzzle
+        ctx.fillStyle = '#e5a95d'; // Warm Anatolian fawn fur
+        ctx.beginPath();
+        ctx.arc(0, -5, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Dark charcoal muzzle mask
+        ctx.fillStyle = '#292524';
+        ctx.beginPath();
+        ctx.ellipse(0, -2, 7, 5.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Distinctive pink nose leather blaze
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.ellipse(0, -4, 2, 1.2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nose tip & mouth
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.arc(0, -3, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Loving amber eyes
+        ctx.fillStyle = '#78350f';
+        ctx.beginPath();
+        ctx.arc(-4.5, -8, 1.8, 0, Math.PI * 2);
+        ctx.arc(4.5, -8, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-4, -8.5, 0.7, 0, Math.PI * 2);
+        ctx.arc(5, -8.5, 0.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Anatolian folded drop ears
+        ctx.fillStyle = '#b47834';
+        ctx.beginPath();
+        ctx.ellipse(-13, -8, 4, 7, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(13, -8, 4, 7, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cosmic glass bubble helmet
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, -5, 18, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Helmet shine reflection
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(0, -5, 16, -2.4, -1.4);
+        ctx.stroke();
+        break;
+      }
+      case 'mascot_finley': {
+        // Finley The Starlight Fox Mascot Sticker
+        // Celestial bushy tail with snowy white tip
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.ellipse(14, 10, 8, 15, 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(17, 2, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Amber body
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.roundRect(-10, 4, 20, 18, 6);
+        ctx.fill();
+
+        // Cream chest ruff
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.ellipse(0, 10, 6, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Flowing celestial sky-blue scarf with gold stars
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.roundRect(-12, 1, 24, 7, 3.5);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(6, 6);
+        ctx.lineTo(13, 17);
+        ctx.lineTo(7, 18);
+        ctx.lineTo(2, 7);
+        ctx.closePath();
+        ctx.fill();
+
+        // Scarf golden star pins
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(-5, 4.5, 1.2, 0, Math.PI * 2);
+        ctx.arc(2, 4.5, 1.2, 0, Math.PI * 2);
+        ctx.arc(9, 12, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Large pointed fennec ears
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.moveTo(-12, -8);
+        ctx.lineTo(-18, -26);
+        ctx.lineTo(-4, -12);
+        ctx.closePath();
+        ctx.moveTo(12, -8);
+        ctx.lineTo(18, -26);
+        ctx.lineTo(4, -12);
+        ctx.closePath();
+        ctx.fill();
+
+        // Ear interior cream fluff
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.moveTo(-11, -9);
+        ctx.lineTo(-16, -22);
+        ctx.lineTo(-5, -12);
+        ctx.closePath();
+        ctx.moveTo(11, -9);
+        ctx.lineTo(16, -22);
+        ctx.lineTo(5, -12);
+        ctx.closePath();
+        ctx.fill();
+
+        // Fox Head
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.ellipse(0, -7, 13, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cheeks white fluff
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.ellipse(-8, -4, 5, 4, -0.2, 0, Math.PI * 2);
+        ctx.ellipse(8, -4, 5, 4, 0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Muzzle & tiny dark nose
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.arc(0, -4, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Soulful celestial eyes
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.ellipse(-4.5, -9, 1.6, 2.2, 0, 0, Math.PI * 2);
+        ctx.ellipse(4.5, -9, 1.6, 2.2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(-4, -9.5, 0.8, 0, Math.PI * 2);
+        ctx.arc(5, -9.5, 0.8, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'mascot_leo': {
+        // Leo The Story Lion Mascot Sticker
+        // Fluffy sunburst mane
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath();
+        for (let i = 0; i < 12; i++) {
+          const angle = (i * Math.PI) / 6;
+          const r = 21;
+          ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+          const rInner = 16;
+          const nextAngle = angle + Math.PI / 12;
+          ctx.lineTo(Math.cos(nextAngle) * rInner, Math.sin(nextAngle) * rInner);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // Golden Lion Face
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(0, 1, 13, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Round lion ears
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath();
+        ctx.arc(-11, -9, 4, 0, Math.PI * 2);
+        ctx.arc(11, -9, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(-11, -9, 2, 0, Math.PI * 2);
+        ctx.arc(11, -9, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tilted red artist beret
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.ellipse(-4, -13, 10, 4.5, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(-6, -18, 1.5, 3); // Beret stem
+
+        // Lion muzzle & nose
+        ctx.fillStyle = '#fffbeb';
+        ctx.beginPath();
+        ctx.ellipse(0, 5, 6, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#b45309';
+        ctx.beginPath();
+        ctx.ellipse(0, 3, 2.2, 1.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cute smiling mouth
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(-2, 6, 2, 0.2, Math.PI * 0.9);
+        ctx.arc(2, 6, 2, 0.1, Math.PI * 0.8);
+        ctx.stroke();
+
+        // Eyes
+        ctx.fillStyle = '#451a03';
+        ctx.beginPath();
+        ctx.arc(-4.5, 0, 1.8, 0, Math.PI * 2);
+        ctx.arc(4.5, 0, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'mascot_penny': {
+        // Princess Penny Fairytale Mascot Sticker
+        // Blonde curls
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(-10, -3, 7, 0, Math.PI * 2);
+        ctx.arc(10, -3, 7, 0, Math.PI * 2);
+        ctx.arc(0, -6, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Face
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Rosy blush cheeks
+        ctx.fillStyle = 'rgba(244, 114, 182, 0.6)';
+        ctx.beginPath();
+        ctx.arc(-5.5, 3, 2.2, 0, Math.PI * 2);
+        ctx.arc(5.5, 3, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Royal Tiara
+        ctx.fillStyle = '#fbbf24';
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-9, -7);
+        ctx.lineTo(-5, -14);
+        ctx.lineTo(0, -9);
+        ctx.lineTo(5, -14);
+        ctx.lineTo(9, -7);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Tiara Ruby
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(0, -10, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Purple eyes & sweet smile
+        ctx.fillStyle = '#4c1d95';
+        ctx.beginPath();
+        ctx.arc(-3.5, 0, 1.4, 0, Math.PI * 2);
+        ctx.arc(3.5, 0, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#db2777';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(0, 3.5, 2.5, 0.1, Math.PI - 0.1);
+        ctx.stroke();
+
+        // Magic starlight sparkles around tiara
+        ctx.fillStyle = '#fbcfe8';
+        ctx.beginPath();
+        ctx.arc(-14, -12, 1.5, 0, Math.PI * 2);
+        ctx.arc(14, -12, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'mascot_dexter': {
+        // Dexter The Dino Explorer Mascot Sticker
+        // Green dino body & tail
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        ctx.roundRect(-12, 2, 24, 18, 6);
+        ctx.fill();
+
+        // Spikes on back
+        ctx.fillStyle = '#059669';
+        ctx.beginPath();
+        ctx.moveTo(10, 4);
+        ctx.lineTo(16, 7);
+        ctx.lineTo(10, 10);
+        ctx.moveTo(10, 12);
+        ctx.lineTo(17, 15);
+        ctx.lineTo(10, 18);
+        ctx.fill();
+
+        // Dino head
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        ctx.ellipse(0, -6, 12, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Lighter snout
+        ctx.fillStyle = '#34d399';
+        ctx.beginPath();
+        ctx.ellipse(0, -3, 8, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nostrils & eyes
+        ctx.fillStyle = '#064e3b';
+        ctx.beginPath();
+        ctx.arc(-2, -4, 1, 0, Math.PI * 2);
+        ctx.arc(2, -4, 1, 0, Math.PI * 2);
+        ctx.arc(-4.5, -9, 1.8, 0, Math.PI * 2);
+        ctx.arc(4.5, -9, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-4, -9.5, 0.7, 0, Math.PI * 2);
+        ctx.arc(5, -9.5, 0.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Safari Explorer Hat
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath();
+        ctx.ellipse(0, -13, 14, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.roundRect(-7, -19, 14, 8, [5, 5, 0, 0]);
+        ctx.fill();
+
+        // Hat band
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(-7, -15, 14, 2);
+        break;
+      }
+      case 'mascot_carty': {
+        // Carty The Courier Bot Mascot Sticker
+        // Head Chassis
+        ctx.fillStyle = '#cbd5e1';
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(-14, -10, 28, 22, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        // Antenna with glowing beacon
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, -10);
+        ctx.lineTo(0, -18);
+        ctx.stroke();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(0, -19, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Dark Visor
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(-10, -6, 20, 12, 3);
+        ctx.fill();
+
+        // Glowing Cyan Eyes
+        ctx.fillStyle = '#06b6d4';
+        ctx.beginPath();
+        ctx.arc(-4.5, 0, 2.2, 0, Math.PI * 2);
+        ctx.arc(4.5, 0, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ear bolts
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(-17, -4, 3, 8);
+        ctx.fillRect(14, -4, 3, 8);
+        break;
+      }
+      case 'mascot_sparky': {
+        // Sparky The Sneaker Hound Mascot Sticker
+        // Hound Head
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 13, 11, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Floppy ears
+        ctx.fillStyle = '#c2410c';
+        ctx.beginPath();
+        ctx.ellipse(-12, 1, 4, 7, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(12, 1, 4, 7, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Backwards Red Cap
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(0, -4, 12, Math.PI, 0, false);
+        ctx.fill();
+        ctx.fillRect(-8, -13, 16, 3);
+
+        // Dark Sunglasses
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(-10, -3, 9, 6, 2);
+        ctx.roundRect(1, -3, 9, 6, 2);
+        ctx.fill();
+
+        // Sunglass shine
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-8, -1);
+        ctx.lineTo(-3, -1);
+        ctx.moveTo(3, -1);
+        ctx.lineTo(8, -1);
+        ctx.stroke();
+
+        // Muzzle & nose
+        ctx.fillStyle = '#ffedd5';
+        ctx.beginPath();
+        ctx.ellipse(0, 5, 5, 3.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.arc(0, 3.5, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'badge_hero': {
+        // Story Hero Star Shield Badge
+        ctx.fillStyle = '#1e40af';
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(-18, -18);
+        ctx.lineTo(18, -18);
+        ctx.lineTo(18, 4);
+        ctx.quadraticCurveTo(18, 20, 0, 26);
+        ctx.quadraticCurveTo(-18, 20, -18, 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Center 5-Point Star
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          ctx.lineTo(
+            Math.cos(((18 + i * 72) * Math.PI) / 180) * 9,
+            -3 - Math.sin(((18 + i * 72) * Math.PI) / 180) * 9
+          );
+          ctx.lineTo(
+            Math.cos(((54 + i * 72) * Math.PI) / 180) * 4,
+            -3 - Math.sin(((54 + i * 72) * Math.PI) / 180) * 4
+          );
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // "HERO" Banner
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-14, 8, 28, 9);
+        ctx.fillStyle = '#1e40af';
+        ctx.font = 'bold 7px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('HERO', 0, 15);
+        break;
+      }
+      case 'badge_brave': {
+        // Brave Heart Crest Badge
+        // Golden laurels
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(-14, 0, 12, 0.4, 2.7);
+        ctx.arc(14, 0, 12, 0.4, 2.7, true);
+        ctx.stroke();
+
+        // Heart
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(-6, -2, 6, Math.PI, 0, false);
+        ctx.arc(6, -2, 6, Math.PI, 0, false);
+        ctx.lineTo(0, 14);
+        ctx.closePath();
+        ctx.fill();
+
+        // Mini gold crown on heart
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(-7, -5);
+        ctx.lineTo(-8, -12);
+        ctx.lineTo(-3, -8);
+        ctx.lineTo(0, -14);
+        ctx.lineTo(3, -8);
+        ctx.lineTo(8, -12);
+        ctx.lineTo(7, -5);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      }
+      case 'badge_starlight': {
+        // Starlight Constellation Medallion
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner glowing starlight ring
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 8-Point Compass Star
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const r = i % 2 === 0 ? 12 : 4;
+          const a = (i * Math.PI) / 4;
+          ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // Central cyan gem
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'badge_certified': {
+        // Official Archival Seal Badge with ribbons
+        // Ribbon tails
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.moveTo(-8, 12);
+        ctx.lineTo(-12, 26);
+        ctx.lineTo(-6, 22);
+        ctx.lineTo(0, 26);
+        ctx.lineTo(-3, 14);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(8, 12);
+        ctx.lineTo(12, 26);
+        ctx.lineTo(6, 22);
+        ctx.lineTo(0, 26);
+        ctx.lineTo(3, 14);
+        ctx.fill();
+
+        // Serrated Gold Medallion
+        ctx.fillStyle = '#f59e0b';
+        ctx.strokeStyle = '#b45309';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 16; i++) {
+          const angle = (i * Math.PI) / 8;
+          const r = i % 2 === 0 ? 19 : 16;
+          ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner seal circle
+        ctx.fillStyle = '#b45309';
+        ctx.beginPath();
+        ctx.arc(0, 0, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fef3c7';
+        ctx.font = 'bold 7px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('PROOF', 0, 2);
+        break;
+      }
+      case 'badge_dino_scout': {
+        // Dino Scout Explorer Badge
+        ctx.fillStyle = '#064e3b';
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (i * Math.PI) / 3;
+          ctx.lineTo(Math.cos(angle) * 19, Math.sin(angle) * 19);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // 3-Toed Dino Footprint
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.ellipse(0, 2, 4.5, 6, 0, 0, Math.PI * 2);
+        ctx.ellipse(-5, -6, 2.5, 4.5, -0.4, 0, Math.PI * 2);
+        ctx.ellipse(0, -8, 2.5, 5, 0, 0, Math.PI * 2);
+        ctx.ellipse(5, -6, 2.5, 4.5, 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'bubble': {
+        // Interactive Storybook Speech Bubble
+        const text = sticker.text || 'Adventure time!';
+        ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+        const textWidth = ctx.measureText ? ctx.measureText(text).width : 60;
+        const bWidth = Math.max(70, textWidth + 24);
+        const bHeight = 32;
+
+        // Draw bubble body
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(-bWidth / 2, -bHeight / 2 - 4, bWidth, bHeight, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        // Speech pointer tail
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(-10, bHeight / 2 - 4);
+        ctx.lineTo(-18, bHeight / 2 + 10);
+        ctx.lineTo(-2, bHeight / 2 - 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Patch inner tail seam
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-10, bHeight / 2 - 6, 9, 3);
+
+        // Draw Speech Bubble Text
+        ctx.fillStyle = '#0f172a';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        if (sticker.flipX) {
+          ctx.save();
+          ctx.scale(-1, 1);
+          ctx.fillText(text, 0, -4);
+          ctx.restore();
+        } else {
+          ctx.fillText(text, 0, -4);
+        }
+        break;
+      }
+      case 'rose': {
+        // Antoine de Saint-Exupéry's Celestial Rose Under Glass
+        // Mahogany base
+        ctx.fillStyle = '#78350f';
+        ctx.beginPath();
+        ctx.ellipse(0, 16, 16, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glass cloche dome
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(0, -2, 13, Math.PI, 0, false);
+        ctx.lineTo(13, 16);
+        ctx.lineTo(-13, 16);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Rose stem & leaves
+        ctx.strokeStyle = '#15803d';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 14);
+        ctx.quadraticCurveTo(2, 6, 0, 0);
+        ctx.stroke();
+        ctx.fillStyle = '#16a34a';
+        ctx.beginPath();
+        ctx.ellipse(-4, 6, 3, 1.5, -0.4, 0, Math.PI * 2);
+        ctx.ellipse(4, 8, 3, 1.5, 0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Crimson Rose Blossom
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(0, -2, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(-2, -3, 3.5, 0, Math.PI * 2);
+        ctx.arc(2, -3, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Fallen petal
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.ellipse(6, 15, 2.5, 1.2, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'compass': {
+        // Antique Explorer Brass Compass
+        ctx.fillStyle = '#fef3c7';
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Top ring loop
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, -21, 4, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Compass Rose Cardinal Lines
+        ctx.strokeStyle = '#b45309';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, -14);
+        ctx.lineTo(0, 14);
+        ctx.moveTo(-14, 0);
+        ctx.lineTo(14, 0);
+        ctx.stroke();
+
+        // North needle (Red) & South needle (Silver)
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-3, 0);
+        ctx.lineTo(0, -14);
+        ctx.lineTo(3, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-3, 0);
+        ctx.lineTo(0, 14);
+        ctx.lineTo(3, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // Center Brass Rivet
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'magic_wand': {
+        // Fairytale Magic Wand
+        ctx.strokeStyle = '#8b5cf6';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-14, 14);
+        ctx.lineTo(8, -8);
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+
+        // Starlight Tip
+        ctx.fillStyle = '#fbbf24';
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          ctx.lineTo(
+            8 + Math.cos(((18 + i * 72) * Math.PI) / 180) * 10,
+            -8 - Math.sin(((18 + i * 72) * Math.PI) / 180) * 10
+          );
+          ctx.lineTo(
+            8 + Math.cos(((54 + i * 72) * Math.PI) / 180) * 4.5,
+            -8 - Math.sin(((54 + i * 72) * Math.PI) / 180) * 4.5
+          );
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Magic burst sparkles
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(19, -15, 1.8, 0, Math.PI * 2);
+        ctx.arc(17, -2, 1.4, 0, Math.PI * 2);
+        ctx.arc(2, -18, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'treasure_chest': {
+        // Heirloom Treasure Chest
+        ctx.fillStyle = '#78350f';
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(-16, -2, 32, 18, 4);
+        ctx.fill();
+        ctx.stroke();
+
+        // Chest Lid Curved
+        ctx.beginPath();
+        ctx.arc(0, -2, 16, Math.PI, 0, false);
+        ctx.fill();
+        ctx.stroke();
+
+        // Glowing treasure inside lid
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.ellipse(0, -2, 13, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sparkling Jewels
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(-5, -2, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#3b82f6';
+        ctx.beginPath();
+        ctx.arc(4, -2, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Golden clasp & keyhole
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(-3, 3, 6, 7);
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.arc(0, 6, 1, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 'planet': {
+        // Cosmic Ringed Planet (Saturn)
+        // Planet Sphere
+        const pGrad = ctx.createLinearGradient(-12, -12, 12, 12);
+        pGrad.addColorStop(0, '#7c3aed');
+        pGrad.addColorStop(0.5, '#ec4899');
+        pGrad.addColorStop(1, '#f59e0b');
+        ctx.fillStyle = pGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, 13, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Planetary Rings
+        ctx.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 24, 6, -0.4, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Little Orbiting Moon
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(17, -11, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
       case 'star': {
         // Gold foil star
         ctx.fillStyle = '#f59e0b';
@@ -467,8 +1375,17 @@ export function CanvasEngine({
         ctx.arc(width / 2, 140, 22, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#1e1b4b';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('★', width / 2, 146);
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const a = (i * Math.PI * 2) / 5 - Math.PI / 2;
+          const rOut = 12;
+          ctx.lineTo(width / 2 + Math.cos(a) * rOut, 140 + Math.sin(a) * rOut);
+          const aIn = a + Math.PI / 5;
+          const rIn = 5.5;
+          ctx.lineTo(width / 2 + Math.cos(aIn) * rIn, 140 + Math.sin(aIn) * rIn);
+        }
+        ctx.closePath();
+        ctx.fill();
       } else if (activePage === 1) {
         // Page 1: Official Dedication Page
         ctx.fillStyle = '#fffdfa';
@@ -652,11 +1569,72 @@ export function CanvasEngine({
         ctx.arc(heroX, heroY - 22, 14, 0, Math.PI * 2);
         ctx.fill();
 
-        // Hair
+        // Hair Styles
         ctx.fillStyle = avatar.hair || '#4a2c11';
-        ctx.beginPath();
-        ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-        ctx.fill();
+        const hairStyle = avatar.hairStyle || 'curls';
+        if (hairStyle === 'crop') {
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 25, 14, Math.PI, 0, false);
+          ctx.fill();
+        } else if (hairStyle === 'curls') {
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+          ctx.fill();
+          for (let i = -12; i <= 12; i += 6) {
+            ctx.beginPath();
+            ctx.arc(heroX + i, heroY - 28, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (hairStyle === 'waves') {
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.rect(heroX - 14, heroY - 25, 5, 20);
+          ctx.rect(heroX + 9, heroY - 25, 5, 20);
+          ctx.fill();
+        } else if (hairStyle === 'braids') {
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+          ctx.fill();
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(heroX - 14, heroY - 24, 4.5, 22, 2);
+            ctx.roundRect(heroX + 9.5, heroY - 24, 4.5, 22, 2);
+          } else {
+            ctx.rect(heroX - 14, heroY - 24, 4.5, 22);
+            ctx.rect(heroX + 9.5, heroY - 24, 4.5, 22);
+          }
+          ctx.fill();
+        } else if (hairStyle === 'ponytail') {
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(heroX + 15, heroY - 30, 8, 4, 0.6, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (hairStyle === 'spiky') {
+          ctx.beginPath();
+          ctx.moveTo(heroX - 14, heroY - 24);
+          ctx.lineTo(heroX - 10, heroY - 36);
+          ctx.lineTo(heroX - 4, heroY - 28);
+          ctx.lineTo(heroX, heroY - 38);
+          ctx.lineTo(heroX + 5, heroY - 28);
+          ctx.lineTo(heroX + 10, heroY - 35);
+          ctx.lineTo(heroX + 14, heroY - 24);
+          ctx.closePath();
+          ctx.fill();
+        } else if (hairStyle === 'beanie') {
+          ctx.fillStyle = '#0284c7';
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 24, 15, Math.PI, 0, false);
+          ctx.fill();
+          ctx.fillRect(heroX - 15, heroY - 25, 30, 4);
+        } else {
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+          ctx.fill();
+        }
 
         // Eyes & Smile
         ctx.fillStyle = '#1e293b';
@@ -670,7 +1648,7 @@ export function CanvasEngine({
         ctx.arc(heroX, heroY - 18, 4, 0.1 * Math.PI, 0.9 * Math.PI, false);
         ctx.stroke();
 
-        // Accessory: Helmet or Crown or Glasses
+        // Accessories & Face Details
         if (avatar.accessory === 'astronaut_helmet') {
           ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
           ctx.lineWidth = 2.5;
@@ -692,12 +1670,42 @@ export function CanvasEngine({
         } else if (avatar.accessory === 'glasses') {
           ctx.strokeStyle = '#0f172a';
           ctx.lineWidth = 1.5;
-          ctx.strokeRect(heroX - 8, heroY - 25, 6, 5);
-          ctx.strokeRect(heroX + 2, heroY - 25, 6, 5);
           ctx.beginPath();
-          ctx.moveTo(heroX - 2, heroY - 23);
-          ctx.lineTo(heroX + 2, heroY - 23);
+          ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+          ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
           ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(heroX - 1, heroY - 22);
+          ctx.lineTo(heroX + 1, heroY - 22);
+          ctx.stroke();
+        } else if (avatar.accessory === 'star_shades') {
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+          ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#d97706';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(heroX - 1, heroY - 22);
+          ctx.lineTo(heroX + 1, heroY - 22);
+          ctx.stroke();
+        } else if (avatar.accessory === 'superhero_mask') {
+          ctx.fillStyle = '#dc2626';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(heroX - 10, heroY - 25, 20, 6.5, 3);
+          else ctx.rect(heroX - 10, heroY - 25, 20, 6.5);
+          ctx.fill();
+        } else if (avatar.accessory === 'freckles') {
+          ctx.fillStyle = '#92400e';
+          [
+            [heroX - 7, heroY - 19],
+            [heroX - 5, heroY - 18],
+            [heroX + 5, heroY - 18],
+            [heroX + 7, heroY - 19],
+          ].forEach(([fx, fy]) => {
+            ctx.fillRect(fx, fy, 1.2, 1.2);
+          });
         }
 
         // DRAW MASCOT CO-STAR (Right character on illustration stage)
@@ -1126,7 +2134,7 @@ export function CanvasEngine({
         ctx.fillStyle = '#ef4444';
         ctx.font = 'bold 8px monospace';
         ctx.textAlign = 'left';
-        ctx.fillText('✂ 3MM BLEED CUT LINE', 14, 8);
+        ctx.fillText('[---] 3MM BLEED CUT LINE', 14, 8);
         ctx.fillStyle = '#10b981';
         ctx.fillText('SAFE ARTWORK ZONE', 26, 20);
         ctx.restore();
@@ -1159,14 +2167,22 @@ export function CanvasEngine({
           ? '#1e293b'
           : frame === 'white'
           ? '#f8fafc'
+          : frame === 'gold'
+          ? '#d97706'
           : 'transparent';
 
       if (frame !== 'none') {
         ctx.fillStyle = frameColor;
         ctx.fillRect(8, 8, width - 16, height - 16);
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = frame === 'gold' ? '#f59e0b' : 'rgba(0, 0, 0, 0.15)';
+        ctx.lineWidth = frame === 'gold' ? 3 : 2;
         ctx.strokeRect(8, 8, width - 16, height - 16);
+
+        if (frame === 'gold') {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(12, 12, width - 24, height - 24);
+        }
       }
 
       // Poster Mat Board
@@ -1192,6 +2208,14 @@ export function CanvasEngine({
         artGrad.addColorStop(0, '#4c1d95');
         artGrad.addColorStop(0.5, '#db2777');
         artGrad.addColorStop(1, '#fbbf24');
+      } else if (artStyle === 'botanical') {
+        artGrad.addColorStop(0, '#064e3b');
+        artGrad.addColorStop(0.5, '#047857');
+        artGrad.addColorStop(1, '#6ee7b7');
+      } else if (artStyle === 'sunset') {
+        artGrad.addColorStop(0, '#831843');
+        artGrad.addColorStop(0.5, '#ea580c');
+        artGrad.addColorStop(1, '#fde047');
       } else {
         artGrad.addColorStop(0, '#f1f5f9');
         artGrad.addColorStop(1, '#e2e8f0');
@@ -1201,24 +2225,32 @@ export function CanvasEngine({
       ctx.fillRect(artInset, artInset, artW, artH);
 
       // Sun / Orb Graphic
+      const isLandscape = width > height;
+      const orbY = isLandscape ? artInset + artH * 0.38 : artInset + 80;
+      const orbRadius = isLandscape ? 40 : 50;
       ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
       ctx.beginPath();
-      ctx.arc(width / 2, artInset + 80, 50, 0, Math.PI * 2);
+      ctx.arc(width / 2, orbY, orbRadius, 0, Math.PI * 2);
       ctx.fill();
 
       // Poster Typography
-      ctx.fillStyle = artStyle === 'minimal' ? '#0f172a' : textColor || '#ffffff';
-      ctx.font = `bold 24px ${activeFont}`;
+      const isMinimal = artStyle === 'minimal';
+      ctx.fillStyle = isMinimal ? '#0f172a' : textColor || '#ffffff';
+      const headlineSize = isLandscape ? 20 : 24;
+      ctx.font = `bold ${headlineSize}px ${activeFont}`;
       ctx.textAlign = 'center';
-      ctx.fillText(headline.toUpperCase(), width / 2, artInset + artH - 70);
+      const headlineY = isLandscape ? artInset + artH - 56 : artInset + artH - 70;
+      ctx.fillText(headline.toUpperCase(), width / 2, headlineY);
 
-      ctx.fillStyle = artStyle === 'minimal' ? '#475569' : 'rgba(255, 255, 255, 0.85)';
+      ctx.fillStyle = isMinimal ? '#475569' : 'rgba(255, 255, 255, 0.85)';
       ctx.font = `12px ${activeFont}`;
-      ctx.fillText(subquote, width / 2, artInset + artH - 42);
+      const subquoteY = isLandscape ? artInset + artH - 34 : artInset + artH - 42;
+      ctx.fillText(subquote, width / 2, subquoteY);
 
       ctx.font = '10px sans-serif';
-      ctx.fillStyle = artStyle === 'minimal' ? '#94a3b8' : 'rgba(255, 255, 255, 0.6)';
-      ctx.fillText('CUSTOM GALLERY PRINT • ARCHIVAL EDITION', width / 2, artInset + artH - 22);
+      ctx.fillStyle = isMinimal ? '#94a3b8' : 'rgba(255, 255, 255, 0.6)';
+      const footerY = isLandscape ? artInset + artH - 16 : artInset + artH - 22;
+      ctx.fillText('CUSTOM GALLERY PRINT • ARCHIVAL EDITION', width / 2, footerY);
 
       if (showBleed) {
         ctx.save();
@@ -1228,7 +2260,7 @@ export function CanvasEngine({
         ctx.fillStyle = '#ef4444';
         ctx.font = 'bold 8px monospace';
         ctx.textAlign = 'left';
-        ctx.fillText('✂ BLEED MARGIN', 10, 16);
+        ctx.fillText('[---] BLEED MARGIN', 10, 16);
         ctx.restore();
       }
     } else if (mode === 'apparel') {
@@ -1237,6 +2269,7 @@ export function CanvasEngine({
         garment = 'hoodie',
         color = '#1e293b',
         monogram = 'NOAH',
+        placement = 'chest',
         fontFamily = 'sans',
       } = config;
 
@@ -1284,14 +2317,96 @@ export function CanvasEngine({
         ctx.ellipse(width / 2, 70, 34, 12, 0, 0, Math.PI);
         ctx.fill();
 
+        // Embroidery Position according to placement zone
+        let embroiderX = width / 2;
+        let embroiderY = 170;
+        let fontSize = 18;
+        if (placement === 'pocket') {
+          embroiderX = width / 2 - 36;
+          embroiderY = 145;
+          fontSize = 13;
+        } else if (placement === 'back') {
+          embroiderY = 180;
+          fontSize = 22;
+        }
+
         ctx.fillStyle = '#ffffff';
-        ctx.font = `bold 18px ${activeFont}`;
+        ctx.font = `bold ${fontSize}px ${activeFont}`;
         ctx.textAlign = 'center';
-        ctx.fillText(monogram.toUpperCase(), width / 2, 170);
+        ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
 
         ctx.font = '9px sans-serif';
         ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-        ctx.fillText('AUTHENTIC EMBROIDERY', width / 2, 186);
+        ctx.fillText('AUTHENTIC EMBROIDERY', embroiderX, embroiderY + 16);
+      } else if (garment === 'jacket') {
+        // Varsity Bomber Jacket
+        // Contrast sleeves
+        ctx.fillStyle = '#e2e8f0';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        ctx.moveTo(width / 2 - 34, 70);
+        ctx.lineTo(width / 2 + 34, 70);
+        ctx.lineTo(width / 2 + 100, 110);
+        ctx.lineTo(width / 2 + 135, 185);
+        ctx.lineTo(width / 2 + 95, 200);
+        ctx.lineTo(width / 2 + 75, 150);
+        ctx.lineTo(width / 2 - 75, 150);
+        ctx.lineTo(width / 2 - 95, 200);
+        ctx.lineTo(width / 2 - 135, 185);
+        ctx.lineTo(width / 2 - 100, 110);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Jacket Body
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(width / 2 - 36, 75);
+        ctx.lineTo(width / 2 + 36, 75);
+        ctx.lineTo(width / 2 + 70, 140);
+        ctx.lineTo(width / 2 + 66, height - 70);
+        ctx.lineTo(width / 2 - 66, height - 70);
+        ctx.lineTo(width / 2 - 70, 140);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Striped Ribbed Collar
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.ellipse(width / 2, 75, 36, 12, 0, 0, Math.PI);
+        ctx.fill();
+
+        // Snap Placket Center Line
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(width / 2, 85);
+        ctx.lineTo(width / 2, height - 72);
+        ctx.stroke();
+
+        // Snaps
+        for (let snapY = 100; snapY <= height - 85; snapY += 28) {
+          ctx.fillStyle = '#f8fafc';
+          ctx.beginPath();
+          ctx.arc(width / 2, snapY, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Varsity Monogram
+        let embroiderX = width / 2 - 34;
+        let embroiderY = 135;
+        let fontSize = 14;
+        if (placement === 'chest') {
+          embroiderX = width / 2 - 32;
+        }
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${fontSize}px ${activeFont}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
       } else {
         // Kicks Silhouette
         ctx.fillStyle = color;
@@ -1357,7 +2472,7 @@ export function CanvasEngine({
     } else if (selectedSticker) {
       // Stamp new sticker
       const newSticker = {
-        id: `stamp-${Date.now()}`,
+        id: `stamp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         type: selectedSticker,
         x,
         y,
@@ -1416,18 +2531,78 @@ export function CanvasEngine({
         s.id === activeStickerId
           ? {
               ...s,
-              scale: Math.max(0.5, Math.min(2.5, (s.scale || 1) + deltaScale)),
+              scale: Math.max(0.4, Math.min(3, ((s.scale || 1) + deltaScale).toFixed(2) * 1)),
             }
           : s
       )
     );
   };
 
-  const handleDeleteActive = () => {
+  const handleFlipActive = () => {
+    if (!activeStickerId) return;
+    onUpdateStickers(
+      stickers.map((s) =>
+        s.id === activeStickerId ? { ...s, flipX: !s.flipX } : s
+      )
+    );
+  };
+
+  const handleDuplicateActive = () => {
+    if (!activeStickerId) return;
+    const target = stickers.find((s) => s.id === activeStickerId);
+    if (!target) return;
+    const duplicated = {
+      ...target,
+      id: `stamp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      x: Math.min(width - 40, target.x + 24),
+      y: Math.min(height - 40, target.y + 24),
+    };
+    onUpdateStickers([...stickers, duplicated]);
+    setActiveStickerId(duplicated.id);
+  };
+
+  const handleLayerActive = useCallback((direction) => {
+    if (!activeStickerId) return;
+    const idx = stickers.findIndex((s) => s.id === activeStickerId);
+    if (idx === -1) return;
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= stickers.length) return;
+    const updated = [...stickers];
+    const [moved] = updated.splice(idx, 1);
+    updated.splice(targetIdx, 0, moved);
+    onUpdateStickers(updated);
+  }, [activeStickerId, stickers, onUpdateStickers]);
+
+  const handleDeleteActive = useCallback(() => {
     if (!activeStickerId) return;
     onUpdateStickers(stickers.filter((s) => s.id !== activeStickerId));
     setActiveStickerId(null);
-  };
+  }, [activeStickerId, stickers, onUpdateStickers]);
+
+  // Keyboard accessibility & hotkeys for selected stamp
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!activeStickerId) return;
+      // Do not intercept typing inside form inputs
+      if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
+
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        handleDeleteActive();
+      } else if (e.key === 'Escape') {
+        setActiveStickerId(null);
+      } else if (e.key === '[') {
+        e.preventDefault();
+        handleLayerActive(-1);
+      } else if (e.key === ']') {
+        e.preventDefault();
+        handleLayerActive(1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeStickerId, handleDeleteActive, handleLayerActive]);
 
   // High-Res Proof Download
   const handleDownloadProof = () => {
@@ -1460,7 +2635,17 @@ export function CanvasEngine({
       {/* Layer Transformation Bar if an item is selected */}
       {activeStickerId && (
         <div className={styles.layerToolbar} role="toolbar" aria-label="Stamp layer controls">
-          <span className={styles.toolbarLabel}>Selected Layer:</span>
+          <span className={styles.toolbarLabel}>Layer:</span>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={handleFlipActive}
+            title="Mirror / Flip Horizontal"
+            aria-label="Flip stamp horizontally"
+          >
+            <FlipHorizontalIcon size={12} />
+            <span>Flip</span>
+          </button>
           <button
             type="button"
             className={styles.toolBtn}
@@ -1468,7 +2653,7 @@ export function CanvasEngine({
             title="Rotate Left 15°"
             aria-label="Rotate stamp left"
           >
-            ↺ -15°
+            <span>-15°</span>
           </button>
           <button
             type="button"
@@ -1477,25 +2662,53 @@ export function CanvasEngine({
             title="Rotate Right 15°"
             aria-label="Rotate stamp right"
           >
-            ↻ +15°
+            <span>+15°</span>
           </button>
           <button
             type="button"
             className={styles.toolBtn}
-            onClick={() => handleScaleActive(-0.2)}
+            onClick={() => handleScaleActive(-0.15)}
             title="Smaller"
             aria-label="Make stamp smaller"
           >
-            A-
+            <span>-</span>
           </button>
           <button
             type="button"
             className={styles.toolBtn}
-            onClick={() => handleScaleActive(0.2)}
+            onClick={() => handleScaleActive(0.15)}
             title="Larger"
             aria-label="Make stamp larger"
           >
-            A+
+            <span>+</span>
+          </button>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={() => handleLayerActive(1)}
+            title="Bring Forward"
+            aria-label="Bring layer forward"
+          >
+            <span>Up</span>
+          </button>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={() => handleLayerActive(-1)}
+            title="Send Backward"
+            aria-label="Send layer backward"
+          >
+            <span>Down</span>
+          </button>
+          <button
+            type="button"
+            className={styles.toolBtn}
+            onClick={handleDuplicateActive}
+            title="Duplicate Stamp"
+            aria-label="Duplicate stamp"
+          >
+            <DuplicateIcon size={12} />
+            <span>Clone</span>
           </button>
           <button
             type="button"
@@ -1504,7 +2717,8 @@ export function CanvasEngine({
             title="Delete Selected Stamp"
             aria-label="Delete selected stamp"
           >
-            ✕ Remove
+            <TrashIcon size={12} />
+            <span>Remove</span>
           </button>
         </div>
       )}

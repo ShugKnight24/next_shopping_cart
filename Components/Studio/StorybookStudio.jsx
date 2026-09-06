@@ -1,12 +1,34 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { useMascot } from '../../context/MascotProvider';
 import { useToast } from '../UI/Toast';
 import { trackAddToCart } from '../../analytics/google';
 import { CanvasEngine } from './CanvasEngine';
 import { StickerBar } from './StickerBar';
-import { MascotThumbnail } from '../Mascot/MascotArtwork';
-import { ChevronLeft, ChevronRight, CheckCircleIcon, SparklesIcon } from '../Icons';
+import { CharacterCreator } from './CharacterCreator';
+import {
+  ChevronLeft,
+  ChevronRight,
+  CheckCircleIcon,
+  SparklesIcon,
+  CloseIcon,
+  TrashIcon,
+} from '../Icons';
+import {
+  FullscreenIcon,
+  ExitFullscreenIcon,
+  UndoIcon,
+  RedoIcon,
+  FlipHorizontalIcon,
+  BookOpenIcon,
+  TemplateToolIcon,
+  TextToolIcon,
+  EyePreviewIcon,
+  AddPageIcon,
+  LayerFrontIcon,
+  MascotLeoSvg,
+  StarStampSvg,
+} from './StudioSVGs';
 import styles from './StorybookStudio.module.css';
 
 const THEMES = [
@@ -57,6 +79,79 @@ const EDITIONS = [
   },
 ];
 
+// Pre-Designed Story Spread Templates & Blank Canvas Engine
+const SPREAD_TEMPLATES = [
+  {
+    id: 'space_quest',
+    name: 'Cosmic Starlight Quest',
+    desc: 'Nebula backdrop, Luna companion, cosmic speech bubble & ringed planet',
+    theme: 'space',
+    stickers: [
+      { id: 'tmpl-luna', type: 'mascot_luna', x: 280, y: 220, scale: 1.3, rotation: 0, flipX: false },
+      { id: 'tmpl-bubble', type: 'bubble', x: 380, y: 120, scale: 1.1, rotation: 0, flipX: false, text: 'Into the cosmos!' },
+      { id: 'tmpl-planet', type: 'planet', x: 440, y: 280, scale: 1.2, rotation: -10, flipX: false },
+      { id: 'tmpl-star', type: 'star', x: 180, y: 80, scale: 1, rotation: 15, flipX: false },
+    ],
+  },
+  {
+    id: 'magic_forest',
+    name: 'Enchanted Whispering Woods',
+    desc: 'Deep fantasy forest, Princess Penny & Finley, enchanted rose & starlight wand',
+    theme: 'magic',
+    stickers: [
+      { id: 'tmpl-penny', type: 'mascot_penny', x: 290, y: 230, scale: 1.3, rotation: 0, flipX: false },
+      { id: 'tmpl-finley', type: 'mascot_finley', x: 420, y: 240, scale: 1.1, rotation: 0, flipX: true },
+      { id: 'tmpl-bubble', type: 'bubble', x: 360, y: 110, scale: 1.1, rotation: 0, flipX: false, text: 'A secret awaits us...' },
+      { id: 'tmpl-rose', type: 'rose', x: 200, y: 300, scale: 1.1, rotation: 0, flipX: false },
+      { id: 'tmpl-wand', type: 'magic_wand', x: 450, y: 100, scale: 1.2, rotation: 25, flipX: false },
+    ],
+  },
+  {
+    id: 'dino_safari',
+    name: 'Prehistoric Dino Expedition',
+    desc: 'Tropical jungle valley, Professor Dexter Dino, explorer compass & scout patch',
+    theme: 'dino',
+    stickers: [
+      { id: 'tmpl-dexter', type: 'mascot_dexter', x: 310, y: 220, scale: 1.3, rotation: 0, flipX: false },
+      { id: 'tmpl-bubble', type: 'bubble', x: 400, y: 120, scale: 1.1, rotation: 0, flipX: false, text: 'Fossils and giant footprints!' },
+      { id: 'tmpl-compass', type: 'compass', x: 210, y: 280, scale: 1.2, rotation: 0, flipX: false },
+      { id: 'tmpl-badge', type: 'badge_dino_scout', x: 440, y: 270, scale: 1.2, rotation: 5, flipX: false },
+    ],
+  },
+  {
+    id: 'bedtime_voyage',
+    name: 'Bedtime Dreamland',
+    desc: 'Starlight bedroom, Leo Story Lion, courage heart medal & twinkling star',
+    theme: 'space',
+    stickers: [
+      { id: 'tmpl-leo', type: 'mascot_leo', x: 300, y: 220, scale: 1.3, rotation: 0, flipX: false },
+      { id: 'tmpl-bubble', type: 'bubble', x: 380, y: 120, scale: 1.1, rotation: 0, flipX: false, text: 'Sweet dreams Noah!' },
+      { id: 'tmpl-badge', type: 'badge_brave', x: 430, y: 260, scale: 1.2, rotation: 0, flipX: false },
+      { id: 'tmpl-star', type: 'star', x: 190, y: 90, scale: 1.2, rotation: 0, flipX: false },
+    ],
+  },
+  {
+    id: 'sneaker_metropolis',
+    name: 'Sneakerhead Skyline',
+    desc: 'Futuristic sneaker city, Carty & Sparky, sneaker crest & hero badge',
+    theme: 'sneaker',
+    stickers: [
+      { id: 'tmpl-carty', type: 'mascot_carty', x: 280, y: 240, scale: 1.2, rotation: 0, flipX: false },
+      { id: 'tmpl-sparky', type: 'mascot_sparky', x: 410, y: 230, scale: 1.2, rotation: 0, flipX: true },
+      { id: 'tmpl-bubble', type: 'bubble', x: 340, y: 120, scale: 1.1, rotation: 0, flipX: false, text: 'Fresh kicks, legendary style!' },
+      { id: 'tmpl-sneaker', type: 'sneaker', x: 190, y: 290, scale: 1.2, rotation: 0, flipX: false },
+      { id: 'tmpl-hero', type: 'badge_hero', x: 440, y: 100, scale: 1.1, rotation: 0, flipX: false },
+    ],
+  },
+  {
+    id: 'blank_canvas',
+    name: 'Blank Canvas (Clean Slate)',
+    desc: 'Pure clean page with zero presets, ready for you to create your own scene from scratch',
+    theme: null,
+    stickers: [],
+  },
+];
+
 export function StorybookStudio() {
   const { dispatch, setIsCartOpen } = useContext(CartContext);
   const { speak, setMascot } = useMascot();
@@ -73,6 +168,94 @@ export function StorybookStudio() {
   const [selectedEdition, setSelectedEdition] = useState('hardcover');
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickers, setStickers] = useState([]);
+  const [isWidescreen, setIsWidescreen] = useState(false);
+  const [bubbleText, setBubbleText] = useState('Adventure time!');
+
+  // Fullscreen Studio & Interactive Flipbook state
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFlipbookOpen, setIsFlipbookOpen] = useState(false);
+  const [activeToolTab, setActiveToolTab] = useState('templates'); // 'templates' | 'stamps' | 'avatar' | 'typography' | 'layers'
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  // Multi-Page Story Reel
+  const [bookSpreads, setBookSpreads] = useState([
+    { id: 'cover-front', title: 'Cover Spread', type: 'cover', pageNumber: 0 },
+    { id: 'spread-1', title: 'Dedication Spread', type: 'dedication', pageNumber: 1 },
+    { id: 'spread-2', title: 'Noah’s Journey Begins', type: 'chapter', chapterNum: 1, pageNumber: 2 },
+    { id: 'spread-3', title: 'Starlight Compass', type: 'chapter', chapterNum: 2, pageNumber: 3 },
+    { id: 'spread-4', title: 'Grand Victory Celebration', type: 'chapter', chapterNum: 3, pageNumber: 4 },
+  ]);
+
+  // History stack for Undo / Redo
+  const [history, setHistory] = useState([[]]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  const handleUpdateStickers = (newStickersOrFn) => {
+    setStickers((prev) => {
+      const next =
+        typeof newStickersOrFn === 'function'
+          ? newStickersOrFn(prev)
+          : newStickersOrFn;
+      setHistory((hPrev) => {
+        const sliced = hPrev.slice(0, historyIndex + 1);
+        return [...sliced, next];
+      });
+      setHistoryIndex((idx) => idx + 1);
+      return next;
+    });
+  };
+
+  const handleUndo = useCallback(() => {
+    if (historyIndex > 0) {
+      const prev = history[historyIndex - 1];
+      setHistoryIndex((idx) => idx - 1);
+      setStickers(prev);
+    }
+  }, [historyIndex, history]);
+
+  const handleRedo = useCallback(() => {
+    if (historyIndex < history.length - 1) {
+      const next = history[historyIndex + 1];
+      setHistoryIndex((idx) => idx + 1);
+      setStickers(next);
+    }
+  }, [historyIndex, history]);
+
+  // Keyboard shortcut listener for Undo / Redo
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo]);
+
+  // Drop sticker directly onto page center
+  const handleDropStickerToCenter = (type) => {
+    const width = isWidescreen || isFullscreen ? 760 : 540;
+    const height = isWidescreen || isFullscreen ? 520 : 400;
+    const dropX = activePage >= 1 ? (3 * width) / 4 : width / 2;
+    const dropY = height / 2;
+    const newSticker = {
+      id: `stamp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      type,
+      x: dropX,
+      y: dropY,
+      scale: 1.2,
+      rotation: 0,
+      flipX: false,
+      text: type === 'bubble' ? bubbleText : undefined,
+    };
+    handleUpdateStickers([...stickers, newSticker]);
+  };
 
   // Deep Customization States
   const [step4Tab, setStep4Tab] = useState('prose'); // 'prose' | 'avatar' | 'typography' | 'stamps'
@@ -113,11 +296,32 @@ export function StorybookStudio() {
   const [avatar, setAvatar] = useState({
     skin: '#fbd38d',
     hair: '#4a2c11',
+    hairColor: '#4a2c11',
+    hairstyle: 'curls',
+    hairStyle: 'curls',
     outfit: '#2563eb',
+    outfitColor: '#2563eb',
     accessory: 'cape',
+    eyeColor: '#2563eb',
+  });
+
+  const [companion, setCompanion] = useState({
+    species: 'leo',
+    name: 'Leo',
+    furColor: '#ea580c',
+    collar: 'star_bandana',
+    badge: 'badge_hero',
   });
 
   const [mascotCoStar, setMascotCoStar] = useState('leo');
+
+  const handleCompanionChange = (newComp) => {
+    setCompanion(newComp);
+    if (newComp.species) {
+      setMascotCoStar(newComp.species);
+      setMascot(newComp.species);
+    }
+  };
   const [fontFamily, setFontFamily] = useState('serif');
   const [textColor, setTextColor] = useState('#0f172a');
   const [showBleed, setShowBleed] = useState(false);
@@ -147,6 +351,28 @@ export function StorybookStudio() {
         lines: splitLines,
       },
     }));
+  };
+
+  // Template / Blank Canvas Applier
+  const handleApplyTemplate = (tmpl) => {
+    if (tmpl.theme) setTheme(tmpl.theme);
+    handleUpdateStickers(tmpl.stickers || []);
+    showToast(`Applied "${tmpl.name}" template!`, 'success');
+  };
+
+  // Spread Manager Handlers
+  const handleAddSpread = () => {
+    const newSpreadNum = bookSpreads.length;
+    const newSpread = {
+      id: `spread-${Date.now()}`,
+      title: `Page ${newSpreadNum}: New Adventure`,
+      type: 'chapter',
+      chapterNum: newSpreadNum - 1,
+      pageNumber: newSpreadNum,
+    };
+    setBookSpreads((prev) => [...prev, newSpread]);
+    setActivePage(newSpreadNum);
+    showToast('New story spread added to book!', 'success');
   };
 
   // Mascot step guidance
@@ -215,7 +441,7 @@ export function StorybookStudio() {
       <rect x="12" y="12" width="136" height="136" rx="8" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2"/>
       <rect x="78" y="12" width="4" height="136" fill="#f59e0b" opacity="0.4"/>
       <circle cx="80" cy="65" r="28" fill="#f59e0b"/>
-      <text x="80" y="73" font-size="20" text-anchor="middle" fill="#1e1b4b">★</text>
+      <polygon points="80,52 83.5,61 93,62 85.5,68.5 88,78 80,73 72,78 74.5,68.5 67,62 76.5,61" fill="#1e1b4b"/>
       <text x="80" y="112" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#ffffff">${(childName || 'HERO').slice(0, 10).toUpperCase()}'S</text>
       <text x="80" y="128" font-family="sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#fbbf24">${activeThemeObj.name.slice(0, 16).toUpperCase()}</text>
     </svg>`;
@@ -281,7 +507,7 @@ export function StorybookStudio() {
             onClick={() => setCurrentStep(s.num)}
           >
             <span className={styles.stepNum}>
-              {currentStep > s.num ? '✓' : s.num}
+              {currentStep > s.num ? <CheckCircleIcon size={12} /> : s.num}
             </span>
             <span className={styles.stepLabel}>{s.label}</span>
           </button>
@@ -289,26 +515,80 @@ export function StorybookStudio() {
       </nav>
 
       {/* Main Two-Column Stage */}
-      <div className={styles.stageGrid}>
+      <div className={`${styles.stageGrid} ${isWidescreen ? styles.theaterGrid : ''}`}>
         {/* Left Column: Interactive Canvas Stage */}
-        <div className={styles.canvasStage}>
+        <div className={`${styles.canvasStage} ${isWidescreen ? styles.theaterCanvasStage : ''}`}>
           <div className={styles.canvasHeader}>
             <div className={styles.proofBadge}>
               <SparklesIcon size={14} />
               <span>Live Print-Ready Proof Preview</span>
             </div>
-            <div className={styles.pageIndicator}>
-              {activePage === 0
-                ? 'Hardcover Front'
-                : activePage === 1
-                ? 'Page 1 & Dedication'
-                : `Pages ${activePage * 2 - 1} & ${activePage * 2}`}
+
+            <div className={styles.headerRightControls}>
+              <div className={styles.pageIndicator}>
+                {activePage === 0
+                  ? 'Hardcover Front'
+                  : activePage === 1
+                  ? 'Page 1 & Dedication'
+                  : `Pages ${activePage * 2 - 1} & ${activePage * 2}`}
+              </div>
+
+              {/* Fullscreen Studio Launcher */}
+              <button
+                type="button"
+                className={styles.fullscreenStudioBtn}
+                onClick={() => setIsFullscreen(true)}
+                title="Open Immersive Fullscreen Custom Builder"
+                aria-label="Expand to fullscreen studio"
+              >
+                <FullscreenIcon size={13} />
+                <span>Fullscreen</span>
+              </button>
+
+              {/* Flipbook Preview Launcher */}
+              <button
+                type="button"
+                className={styles.flipbookPreviewBtn}
+                onClick={() => setIsFlipbookOpen(true)}
+                title="Preview physical flipbook reader"
+                aria-label="Preview physical book reader"
+              >
+                <EyePreviewIcon size={13} />
+                <span>Reader</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.theaterToggleBtn} ${
+                  isWidescreen ? styles.theaterToggleActive : ''
+                }`}
+                onClick={() => setIsWidescreen((prev) => !prev)}
+                title={
+                  isWidescreen
+                    ? 'Switch to Standard Split View'
+                    : 'Expand to Spacious Widescreen Studio Mode'
+                }
+                aria-label={
+                  isWidescreen
+                    ? 'Switch to standard studio view'
+                    : 'Expand to widescreen studio view'
+                }
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  {isWidescreen ? (
+                    <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M4 10h6m0 0V4m0 6L3 3m17 7h-6m0 0V4m0 6l7-7" />
+                  ) : (
+                    <path d="M15 3h6v6m0-6l-7 7M9 21H3v-6m0 6l7-7M21 9v6m0 0l-7-7M3 15v-6m0 0l7 7" />
+                  )}
+                </svg>
+                <span>{isWidescreen ? 'Compact' : 'Widescreen'}</span>
+              </button>
             </div>
           </div>
 
           <CanvasEngine
-            width={520}
-            height={400}
+            width={isWidescreen ? 760 : 540}
+            height={isWidescreen ? 520 : 400}
             mode="storybook"
             config={{
               childName: childName || 'Adventurer',
@@ -317,6 +597,7 @@ export function StorybookStudio() {
               dedication,
               chapterProse,
               avatar,
+              companion,
               mascotCoStar,
               fontFamily,
               textColor,
@@ -324,7 +605,7 @@ export function StorybookStudio() {
             }}
             selectedSticker={selectedSticker}
             stickers={stickers}
-            onUpdateStickers={setStickers}
+            onUpdateStickers={handleUpdateStickers}
           />
 
           {/* Book Page Flip Bar */}
@@ -340,23 +621,25 @@ export function StorybookStudio() {
               <span>Previous Page</span>
             </button>
             <div className={styles.pageDots}>
-              {[0, 1, 2, 3, 4].map((p) => (
+              {bookSpreads.map((spread, p) => (
                 <button
-                  key={p}
+                  key={spread.id}
                   type="button"
                   className={`${styles.pageDot} ${
                     activePage === p ? styles.pageDotActive : ''
                   }`}
                   onClick={() => setActivePage(p)}
-                  aria-label={`Go to book page ${p + 1}`}
-                />
+                  aria-label={`Jump to page spread ${p + 1}`}
+                >
+                  {p === 0 ? 'Cover' : p}
+                </button>
               ))}
             </div>
             <button
               type="button"
               className={styles.flipBtn}
-              disabled={activePage === 4}
-              onClick={() => setActivePage((prev) => Math.min(4, prev + 1))}
+              disabled={activePage === bookSpreads.length - 1}
+              onClick={() => setActivePage((prev) => Math.min(bookSpreads.length - 1, prev + 1))}
               aria-label="Next book spread"
             >
               <span>Next Page</span>
@@ -364,54 +647,92 @@ export function StorybookStudio() {
             </button>
           </div>
 
-          {/* Sticker Bar */}
+          {/* Bottom Storyboard Reel Strip */}
+          <div className={styles.storyReelStrip} aria-label="Storybook page spreads reel">
+            <div className={styles.reelTopRow}>
+              <span className={styles.reelHeading}>Book Page Spreads ({bookSpreads.length})</span>
+              <button
+                type="button"
+                className={styles.addSpreadQuickBtn}
+                onClick={handleAddSpread}
+                title="Add new story spread"
+                aria-label="Add new story spread"
+              >
+                <AddPageIcon size={12} />
+                <span>+ Add Page</span>
+              </button>
+            </div>
+            <div className={styles.reelThumbnails}>
+              {bookSpreads.map((spread, idx) => (
+                <button
+                  key={spread.id}
+                  type="button"
+                  className={`${styles.reelThumb} ${activePage === idx ? styles.reelThumbActive : ''}`}
+                  onClick={() => setActivePage(idx)}
+                  title={`Open ${spread.title}`}
+                >
+                  <div className={styles.thumbMiniBook}>
+                    <span className={styles.thumbNum}>#{idx + 1}</span>
+                    <BookOpenIcon size={12} />
+                  </div>
+                  <span className={styles.thumbLabel}>{spread.title}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Categorized Story Assets & Stamps Drawer */}
           <StickerBar
             selectedSticker={selectedSticker}
             onSelectSticker={setSelectedSticker}
-            onClearStickers={() => setStickers([])}
+            onClearStickers={() => handleUpdateStickers([])}
             stickersCount={stickers.length}
+            onAddStickerToCenter={handleDropStickerToCenter}
+            bubbleText={bubbleText}
+            onChangeBubbleText={setBubbleText}
+            onUndo={handleUndo}
+            onRedo={handleRedo}
+            canUndo={historyIndex > 0}
+            canRedo={historyIndex < history.length - 1}
           />
         </div>
 
-        {/* Right Column: Step Controls Form */}
-        <div className={styles.controlsStage}>
+        {/* Right Column: Interactive Configuration Workshop */}
+        <div className={styles.configWorkshop}>
           {currentStep === 1 && (
             <div className={styles.stepPane}>
               <div className={styles.paneHeader}>
                 <span className={styles.paneTag}>Step 1 of 5</span>
-                <h3>Who is the Hero of our Story?</h3>
-                <p>Personalize the main character name and reading level.</p>
+                <h3>Who is Starring in this Story?</h3>
+                <p>We weave your child’s name directly into every chapter illustration and title.</p>
               </div>
 
-              <div className={styles.fieldGroup}>
+              <div className={styles.formGroup}>
                 <label htmlFor="childNameInput">Child’s First Name:</label>
                 <input
                   id="childNameInput"
                   type="text"
-                  value={childName}
-                  maxLength={24}
-                  onChange={(e) => setChildName(e.target.value)}
-                  placeholder="e.g. Noah, Sophia, Liam..."
                   className={styles.textInput}
+                  value={childName}
+                  maxLength={18}
+                  onChange={(e) => setChildName(e.target.value)}
+                  placeholder="e.g. Noah, Maya, Liam..."
                 />
               </div>
 
-              <div className={styles.fieldGroup}>
-                <label>Reading Level & Age:</label>
-                <div className={styles.pillOptions}>
-                  {['3-5 Years', '6-8 Years', '9-12 Years'].map((age) => (
-                    <button
-                      key={age}
-                      type="button"
-                      className={`${styles.pillBtn} ${
-                        ageGroup === age ? styles.pillBtnActive : ''
-                      }`}
-                      onClick={() => setAgeGroup(age)}
-                    >
-                      {age}
-                    </button>
-                  ))}
-                </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="ageGroupSelect">Target Age Range:</label>
+                <select
+                  id="ageGroupSelect"
+                  className={styles.selectInput}
+                  value={ageGroup}
+                  onChange={(e) => setAgeGroup(e.target.value)}
+                >
+                  <option value="2-4 Years">Toddler (Ages 2-4)</option>
+                  <option value="4-6 Years">Early Reader (Ages 4-6)</option>
+                  <option value="6-8 Years">Young Explorer (Ages 6-8)</option>
+                  <option value="8-10 Years">Chapter Book (Ages 8-10)</option>
+                </select>
               </div>
             </div>
           )}
@@ -421,10 +742,10 @@ export function StorybookStudio() {
               <div className={styles.paneHeader}>
                 <span className={styles.paneTag}>Step 2 of 5</span>
                 <h3>Choose an Adventure Theme</h3>
-                <p>Pick a storyline tailored to your child’s passions.</p>
+                <p>Select the overarching imaginative world your child will explore.</p>
               </div>
 
-              <div className={styles.themeList}>
+              <div className={styles.themeGrid}>
                 {THEMES.map((t) => (
                   <button
                     key={t.id}
@@ -436,8 +757,13 @@ export function StorybookStudio() {
                   >
                     <div className={styles.themeCardTop}>
                       <span className={styles.themeBadge}>{t.badge}</span>
-                      <span className={styles.themeName}>{t.name}</span>
+                      {theme === t.id && (
+                        <span className={styles.themeActiveCheck}>
+                          <CheckCircleIcon size={16} />
+                        </span>
+                      )}
                     </div>
+                    <h4 className={styles.themeName}>{t.name}</h4>
                     <p className={styles.themeDesc}>{t.desc}</p>
                   </button>
                 ))}
@@ -450,48 +776,48 @@ export function StorybookStudio() {
               <div className={styles.paneHeader}>
                 <span className={styles.paneTag}>Step 3 of 5</span>
                 <h3>Special Front Page Dedication</h3>
-                <p>A message from your heart, printed in letterpress on Page 1.</p>
+                <p>A personal message permanently printed on the official opening certificate spread.</p>
               </div>
 
-              <div className={styles.fieldGroup}>
+              <div className={styles.formGroup}>
                 <label htmlFor="dedicationInput">Dedication Note:</label>
                 <textarea
                   id="dedicationInput"
                   rows={4}
+                  className={styles.textAreaInput}
                   value={dedication}
                   maxLength={180}
                   onChange={(e) => setDedication(e.target.value)}
-                  className={styles.textArea}
+                  placeholder="Write from the heart..."
                 />
-                <span className={styles.charCount}>
-                  {dedication.length}/180 characters
-                </span>
+                <span className={styles.charCounter}>{dedication.length}/180 characters</span>
               </div>
 
-              <div className={styles.presetSuggestions}>
-                <span className={styles.presetLabel}>Quick Presets:</span>
-                <button
-                  type="button"
-                  className={styles.presetBtn}
-                  onClick={() =>
-                    setDedication(
-                      `For our adventurous ${childName || 'hero'} — May your imagination always soar higher than the stars. With all our love, Mom & Dad.`
-                    )
-                  }
-                >
-                  "Stay curious and conquer the stars..."
-                </button>
-                <button
-                  type="button"
-                  className={styles.presetBtn}
-                  onClick={() =>
-                    setDedication(
-                      `To ${childName || 'our star'}: Never stop exploring, questioning, and shining brightly. Dream big!`
-                    )
-                  }
-                >
-                  "Never stop exploring, dream big..."
-                </button>
+              <div className={styles.dedicationPresets}>
+                <span className={styles.presetsLabel}>Quick Inspiration Presets:</span>
+                {[
+                  {
+                    label: '"Stay curious and conquer the stars..."',
+                    text: `For our adventurous ${childName} — Stay curious and conquer the stars. Love always, Mom & Dad.`,
+                  },
+                  {
+                    label: '"To our brave hero — adventure awaits!"',
+                    text: `To our brave hero ${childName} — Every great dream begins in your heart.`,
+                  },
+                  {
+                    label: '"Never stop exploring and dreaming big."',
+                    text: `For ${childName}, our greatest treasure. Never stop exploring!`,
+                  },
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={styles.presetBtn}
+                    onClick={() => setDedication(preset.text)}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -501,222 +827,139 @@ export function StorybookStudio() {
               <div className={styles.paneHeader}>
                 <span className={styles.paneTag}>Step 4 of 5</span>
                 <h3>Deep Customization Workshop</h3>
-                <p>
-                  Craft your custom story prose, customize the avatar, choose co-star mascots, and adjust print bleed.
-                </p>
+                <p>Personalize story prose, character appearance, and fine-tune placement.</p>
               </div>
 
-              {/* Sub-Navigation Tabs */}
-              <div className={styles.subTabsRow} role="tablist">
+              {/* Step 4 Sub-Tabs */}
+              <div className={styles.subTabs} role="tablist" aria-label="Deep Customization Tabs">
                 {[
+                  { id: 'templates', label: 'Templates' },
                   { id: 'prose', label: 'Prose Editor' },
                   { id: 'avatar', label: 'Avatar & Co-Star' },
                   { id: 'typography', label: 'Typography & Bleed' },
                   { id: 'stamps', label: 'Stamps & Badges' },
-                ].map((tab) => (
+                ].map((t) => (
                   <button
-                    key={tab.id}
+                    key={t.id}
                     type="button"
                     role="tab"
-                    aria-selected={step4Tab === tab.id}
+                    aria-selected={step4Tab === t.id}
                     className={`${styles.subTabBtn} ${
-                      step4Tab === tab.id ? styles.subTabBtnActive : ''
+                      step4Tab === t.id ? styles.subTabBtnActive : ''
                     }`}
-                    onClick={() => setStep4Tab(tab.id)}
+                    onClick={() => setStep4Tab(t.id)}
                   >
-                    {tab.label}
+                    {t.label}
                   </button>
                 ))}
               </div>
 
-              {/* Tab 1: Prose Editor */}
-              {step4Tab === 'prose' && (
-                <div className={styles.customSubPane}>
-                  <div className={styles.chapterSelectorRow}>
-                    <span className={styles.subPaneLabel}>Select Chapter:</span>
-                    {[1, 2, 3].map((ch) => (
+              {/* Sub-Pane 0: Templates & Blank Canvas */}
+              {step4Tab === 'templates' && (
+                <div className={styles.subPane}>
+                  <span className={styles.subPaneLabel}>Story Spread Templates:</span>
+                  <div className={styles.templateListInline}>
+                    {SPREAD_TEMPLATES.map((tmpl) => (
                       <button
-                        key={ch}
+                        key={tmpl.id}
                         type="button"
-                        className={`${styles.chapSelectBtn} ${
-                          selectedChapterEdit === ch ? styles.chapSelectBtnActive : ''
-                        }`}
-                        onClick={() => {
-                          setSelectedChapterEdit(ch);
-                          setActivePage(ch + 1); // automatically jump to that page spread!
-                        }}
+                        className={styles.inlineTemplateCard}
+                        onClick={() => handleApplyTemplate(tmpl)}
                       >
-                        Chapter {ch}
+                        <div className={styles.inlineTemplateTop}>
+                          <strong>{tmpl.name}</strong>
+                          {tmpl.theme && <span className={styles.inlineThemePill}>{tmpl.theme}</span>}
+                        </div>
+                        <p>{tmpl.desc}</p>
+                        <span className={styles.applyBtnText}>Apply Template</span>
                       </button>
                     ))}
                   </div>
+                </div>
+              )}
 
-                  <div className={styles.fieldGroup}>
-                    <label htmlFor={`chapterTitle-${selectedChapterEdit}`}>
-                      Chapter {selectedChapterEdit} Title:
-                    </label>
+              {/* Sub-Pane 1: Prose Editor */}
+              {step4Tab === 'prose' && (
+                <div className={styles.subPane}>
+                  <div className={styles.chapterSelectorRow}>
+                    <span className={styles.subPaneLabel}>Select Chapter:</span>
+                    <div className={styles.chapterPills}>
+                      {[1, 2, 3].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          className={`${styles.chapterPill} ${
+                            selectedChapterEdit === num ? styles.chapterPillActive : ''
+                          }`}
+                          onClick={() => {
+                            setSelectedChapterEdit(num);
+                            setActivePage(num + 1);
+                          }}
+                        >
+                          Chapter {num}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="chapterTitleInput">{`Chapter ${selectedChapterEdit} Title:`}</label>
                     <input
-                      id={`chapterTitle-${selectedChapterEdit}`}
+                      id="chapterTitleInput"
                       type="text"
                       className={styles.textInput}
                       value={chapterProse[selectedChapterEdit]?.title || ''}
                       onChange={(e) =>
                         handleUpdateChapterTitle(selectedChapterEdit, e.target.value)
                       }
-                      placeholder="e.g. The Secret Constellation"
                     />
                   </div>
 
-                  <div className={styles.fieldGroup}>
-                    <label htmlFor={`chapterLines-${selectedChapterEdit}`}>
-                      Story Narrative Sentences (one per paragraph):
-                    </label>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="chapterProseInput">Story Lines (one per paragraph):</label>
                     <textarea
-                      id={`chapterLines-${selectedChapterEdit}`}
+                      id="chapterProseInput"
                       rows={5}
-                      className={styles.textArea}
-                      value={(chapterProse[selectedChapterEdit]?.lines || []).join('\n')}
+                      className={styles.textAreaInput}
+                      value={chapterProse[selectedChapterEdit]?.lines.join('\n') || ''}
                       onChange={(e) =>
                         handleUpdateChapterLines(selectedChapterEdit, e.target.value)
                       }
-                      placeholder="Type your custom story sentences here..."
                     />
-                    <span className={styles.charCount}>
-                      Prose lines are rendered live on the open page spread!
-                    </span>
                   </div>
                 </div>
               )}
 
-              {/* Tab 2: Hero Avatar & Co-Star Mascot */}
+              {/* Sub-Pane 2: Avatar & Co-Star Character Studio */}
               {step4Tab === 'avatar' && (
-                <div className={styles.customSubPane}>
-                  <div className={styles.fieldGroup}>
-                    <label>Story Co-Star Companion:</label>
-                    <div className={styles.mascotCoStarGrid}>
-                      {[
-                        { id: 'finley', name: 'Finley The Starlight Fox', tag: 'Wise & Celestial' },
-                        { id: 'luna', name: 'Luna The Shepherd', tag: 'Cosmic & Loyal' },
-                        { id: 'leo', name: 'Leo The Lion', tag: 'Courage & Roar' },
-                        { id: 'penny', name: 'Princess Penny', tag: 'Magic & Grace' },
-                        { id: 'dexter', name: 'Dexter Dino', tag: 'Explorer & Dino' },
-                        { id: 'carty', name: 'Carty Courier', tag: 'Tech & Speed' },
-                        { id: 'sparky', name: 'Sparky Hound', tag: 'Sneakerhead & Fun' },
-                      ].map((m) => (
-                        <button
-                          key={m.id}
-                          type="button"
-                          className={`${styles.coStarCard} ${
-                            mascotCoStar === m.id ? styles.coStarCardActive : ''
-                          }`}
-                          onClick={() => {
-                            setMascotCoStar(m.id);
-                            speak(`Excited to co-star with ${childName} in the adventure!`, 'happy');
-                          }}
-                        >
-                          <div className={styles.coStarAvatar}>
-                            <MascotThumbnail mascotId={m.id} size={34} />
-                          </div>
-                          <div className={styles.coStarMeta}>
-                            <strong>{m.name}</strong>
-                            <span>{m.tag}</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={styles.avatarPaletteGroup}>
-                    <label>Hero Hair Tone:</label>
-                    <div className={styles.colorSwatches}>
-                      {[
-                        { hex: '#1e293b', label: 'Obsidian Black' },
-                        { hex: '#4a2c11', label: 'Chestnut Brown' },
-                        { hex: '#fde047', label: 'Sunlit Blonde' },
-                        { hex: '#b91c1c', label: 'Crimson Red' },
-                      ].map((c) => (
-                        <button
-                          key={c.hex}
-                          type="button"
-                          className={`${styles.swatchBtn} ${
-                            avatar.hair === c.hex ? styles.swatchBtnActive : ''
-                          }`}
-                          style={{ backgroundColor: c.hex }}
-                          onClick={() => setAvatar((prev) => ({ ...prev, hair: c.hex }))}
-                          title={c.label}
-                          aria-label={`Select ${c.label} hair`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={styles.avatarPaletteGroup}>
-                    <label>Hero Outfit Tone:</label>
-                    <div className={styles.colorSwatches}>
-                      {[
-                        { hex: '#2563eb', label: 'Royal Blue' },
-                        { hex: '#059669', label: 'Emerald Green' },
-                        { hex: '#dc2626', label: 'Coral Red' },
-                        { hex: '#7c3aed', label: 'Amethyst Violet' },
-                      ].map((c) => (
-                        <button
-                          key={c.hex}
-                          type="button"
-                          className={`${styles.swatchBtn} ${
-                            avatar.outfit === c.hex ? styles.swatchBtnActive : ''
-                          }`}
-                          style={{ backgroundColor: c.hex }}
-                          onClick={() => setAvatar((prev) => ({ ...prev, outfit: c.hex }))}
-                          title={c.label}
-                          aria-label={`Select ${c.label} outfit`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={styles.fieldGroup}>
-                    <label>Hero Accessory:</label>
-                    <div className={styles.pillOptions}>
-                      {[
-                        { id: 'cape', label: 'Star Cape' },
-                        { id: 'glasses', label: 'Explorer Specs' },
-                        { id: 'astronaut_helmet', label: 'Cosmo Helmet' },
-                        { id: 'crown', label: 'Royal Tiara' },
-                        { id: 'none', label: 'Classic' },
-                      ].map((acc) => (
-                        <button
-                          key={acc.id}
-                          type="button"
-                          className={`${styles.pillBtn} ${
-                            avatar.accessory === acc.id ? styles.pillBtnActive : ''
-                          }`}
-                          onClick={() => setAvatar((prev) => ({ ...prev, accessory: acc.id }))}
-                        >
-                          {acc.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                <div className={styles.subPane}>
+                  <CharacterCreator
+                    heroName={childName}
+                    avatar={avatar}
+                    onChangeAvatar={setAvatar}
+                    companion={companion}
+                    onChangeCompanion={handleCompanionChange}
+                    initialTab="companion"
+                  />
                 </div>
               )}
 
-              {/* Tab 3: Typography & Print Bleed Margins */}
+              {/* Sub-Pane 3: Typography & Bleed */}
               {step4Tab === 'typography' && (
-                <div className={styles.customSubPane}>
-                  <div className={styles.fieldGroup}>
-                    <label>Interior Book Typography:</label>
-                    <div className={styles.pillOptions}>
+                <div className={styles.subPane}>
+                  <div className={styles.formGroup}>
+                    <span className={styles.subPaneLabel}>Storybook Font Style:</span>
+                    <div className={styles.fontOptions}>
                       {[
-                        { id: 'serif', label: 'Classic Serif' },
-                        { id: 'sans', label: 'Modern Sans' },
-                        { id: 'display', label: 'Bold Display' },
+                        { id: 'serif', label: 'Classic Keepsake Serif' },
+                        { id: 'sans', label: 'Clean Modern Sans' },
                         { id: 'cursive', label: 'Storybook Cursive' },
                       ].map((f) => (
                         <button
                           key={f.id}
                           type="button"
-                          className={`${styles.pillBtn} ${
-                            fontFamily === f.id ? styles.pillBtnActive : ''
+                          className={`${styles.fontBtn} ${
+                            fontFamily === f.id ? styles.fontBtnActive : ''
                           }`}
                           onClick={() => setFontFamily(f.id)}
                         >
@@ -726,31 +969,21 @@ export function StorybookStudio() {
                     </div>
                   </div>
 
-                  <div className={styles.fieldGroup}>
-                    <label>Storybook Ink Tone:</label>
-                    <div className={styles.colorSwatches}>
-                      {[
-                        { hex: '#0f172a', label: 'Archival Charcoal' },
-                        { hex: '#1e1b4b', label: 'Deep Starlight Navy' },
-                        { hex: '#450a0a', label: 'Imperial Crimson' },
-                        { hex: '#022c22', label: 'Forest Evergreen' },
-                      ].map((ink) => (
-                        <button
-                          key={ink.hex}
-                          type="button"
-                          className={`${styles.swatchBtn} ${
-                            textColor === ink.hex ? styles.swatchBtnActive : ''
-                          }`}
-                          style={{ backgroundColor: ink.hex }}
-                          onClick={() => setTextColor(ink.hex)}
-                          title={ink.label}
-                          aria-label={`Select ${ink.label}`}
-                        />
-                      ))}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="textColorInput">Story Text Color:</label>
+                    <div className={styles.colorPickRow}>
+                      <input
+                        id="textColorInput"
+                        type="color"
+                        className={styles.colorPicker}
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                      />
+                      <span className={styles.colorHexCode}>{textColor}</span>
                     </div>
                   </div>
 
-                  <div className={styles.toggleRow}>
+                  <div className={styles.bleedToggleSection}>
                     <label className={styles.checkboxLabel}>
                       <input
                         type="checkbox"
@@ -763,30 +996,97 @@ export function StorybookStudio() {
                 </div>
               )}
 
-              {/* Tab 4: Stamps & Summary */}
+              {/* Sub-Pane 4: Stamps & Badges Layer Manager */}
               {step4Tab === 'stamps' && (
-                <div className={styles.customSubPane}>
-                  <div className={styles.proofSummaryBox}>
-                    <div className={styles.summaryItem}>
-                      <span>Hero Star:</span>
-                      <strong>{childName}</strong>
-                    </div>
-                    <div className={styles.summaryItem}>
-                      <span>Adventure Theme:</span>
-                      <strong>{activeThemeObj.name}</strong>
-                    </div>
-                    <div className={styles.summaryItem}>
-                      <span>Story Co-Star:</span>
-                      <strong>{coStarNames[mascotCoStar]}</strong>
-                    </div>
-                    <div className={styles.summaryItem}>
-                      <span>Placed Stamps:</span>
-                      <strong>{stickers.length} Custom Badges</strong>
+                <div className={styles.subPane}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="step4BubbleText">Speech Bubble Dialogue:</label>
+                    <div className={styles.bubbleInputGroup}>
+                      <input
+                        id="step4BubbleText"
+                        type="text"
+                        className={styles.textInput}
+                        value={bubbleText}
+                        maxLength={32}
+                        onChange={(e) => setBubbleText(e.target.value)}
+                        placeholder="e.g. Look at that star!"
+                      />
+                      <button
+                        type="button"
+                        className={styles.addBubbleBtn}
+                        onClick={() => handleDropStickerToCenter('bubble')}
+                        title="Add speech bubble to page"
+                        aria-label="Add speech bubble"
+                      >
+                        + Add Bubble
+                      </button>
                     </div>
                   </div>
 
+                  {/* Active Placed Stamps Layer List */}
+                  {stickers.length > 0 && (
+                    <div className={styles.placedStampsSection}>
+                      <div className={styles.placedStampsHeader}>
+                        <span className={styles.subPaneLabel}>Placed Stamps on Page ({stickers.length}):</span>
+                        <button
+                          type="button"
+                          className={styles.clearAllSmallBtn}
+                          onClick={() => handleUpdateStickers([])}
+                          aria-label="Clear all page stamps"
+                        >
+                          Clear All
+                        </button>
+                      </div>
+
+                      <div className={styles.placedStampsList}>
+                        {stickers.map((stk, idx) => (
+                          <div key={stk.id} className={styles.placedStampItem}>
+                            <div className={styles.stampItemInfo}>
+                              <span className={styles.stampItemIndex}>#{idx + 1}</span>
+                              <span className={styles.stampItemName}>
+                                {stk.type === 'bubble'
+                                  ? `Bubble: "${stk.text || bubbleText}"`
+                                  : stk.type.replace(/^(mascot_|badge_)/, '').replace(/_/g, ' ')}
+                              </span>
+                            </div>
+                            <div className={styles.stampItemActions}>
+                              <button
+                                type="button"
+                                className={styles.miniActionBtn}
+                                onClick={() =>
+                                  handleUpdateStickers(
+                                    stickers.map((s) =>
+                                      s.id === stk.id ? { ...s, flipX: !s.flipX } : s
+                                    )
+                                  )
+                                }
+                                title="Flip Horizontally"
+                                aria-label={`Flip stamp ${idx + 1}`}
+                              >
+                                <FlipHorizontalIcon size={12} />
+                              </button>
+                              <button
+                                type="button"
+                                className={`${styles.miniActionBtn} ${styles.miniDeleteBtn}`}
+                                onClick={() =>
+                                  handleUpdateStickers(
+                                    stickers.filter((s) => s.id !== stk.id)
+                                  )
+                                }
+                                title="Delete stamp"
+                                aria-label={`Delete stamp ${idx + 1}`}
+                              >
+                                <TrashIcon size={12} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <p className={styles.paneTip}>
-                    Tip: Click any stamp directly on the canvas to rotate (↺/↻), resize (A-/A+), or reposition it!
+                    Tip: Click any stamp on the canvas to rotate, resize, flip, or reposition it! Use Cmd+Z to undo.
                   </p>
                 </div>
               )}
@@ -859,6 +1159,418 @@ export function StorybookStudio() {
           </div>
         </div>
       </div>
+
+      {/* FULLSCREEN DEDICATED STUDIO MODAL WORKSTATION */}
+      {isFullscreen && (
+        <div
+          className={styles.fullscreenOverlay}
+          role="dialog"
+          aria-label="Immersive Storybook Builder Studio"
+        >
+          {/* Top Control Bar */}
+          <header className={styles.fsHeader}>
+            <div className={styles.fsHeaderLeft}>
+              <div className={styles.fsBrandPill}>
+                <BookOpenIcon size={16} />
+                <span>Studio Pro</span>
+              </div>
+              <input
+                type="text"
+                className={styles.fsHeroTitleInput}
+                value={childName}
+                onChange={(e) => setChildName(e.target.value)}
+                aria-label="Book child hero name in fullscreen"
+                placeholder="Hero Name"
+              />
+              <span className={styles.fsTitleTheme}>'s {activeThemeObj.name}</span>
+            </div>
+
+            <div className={styles.fsHeaderCenter}>
+              <div className={styles.fsHistoryControls}>
+                <button
+                  type="button"
+                  className={styles.fsBarBtn}
+                  onClick={handleUndo}
+                  disabled={historyIndex <= 0}
+                  title="Undo (Cmd+Z)"
+                  aria-label="Undo canvas change in fullscreen"
+                >
+                  <UndoIcon size={14} />
+                  <span>Undo</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.fsBarBtn}
+                  onClick={handleRedo}
+                  disabled={historyIndex >= history.length - 1}
+                  title="Redo (Cmd+Shift+Z)"
+                  aria-label="Redo canvas change in fullscreen"
+                >
+                  <RedoIcon size={14} />
+                  <span>Redo</span>
+                </button>
+              </div>
+
+              <div className={styles.fsZoomControls}>
+                <button
+                  type="button"
+                  className={styles.fsZoomBtn}
+                  onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.15))}
+                  title="Zoom Out"
+                >
+                  -
+                </button>
+                <span className={styles.fsZoomIndicator}>{Math.round(zoomLevel * 100)}%</span>
+                <button
+                  type="button"
+                  className={styles.fsZoomBtn}
+                  onClick={() => setZoomLevel((z) => Math.min(1.4, z + 0.15))}
+                  title="Zoom In"
+                >
+                  +
+                </button>
+                <button
+                  type="button"
+                  className={styles.fsZoomReset}
+                  onClick={() => setZoomLevel(1)}
+                  title="Reset Zoom"
+                >
+                  Fit
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className={`${styles.fsGuideBtn} ${showBleed ? styles.fsGuideBtnActive : ''}`}
+                onClick={() => setShowBleed((b) => !b)}
+                title="Toggle Print Bleed & Margin Guides"
+              >
+                <span>Bleed Margin</span>
+              </button>
+
+              <button
+                type="button"
+                className={styles.fsReaderBtn}
+                onClick={() => setIsFlipbookOpen(true)}
+                title="Preview physical book reader"
+                aria-label="Preview physical book in fullscreen"
+              >
+                <EyePreviewIcon size={14} />
+                <span>Reader Proof</span>
+              </button>
+            </div>
+
+            <div className={styles.fsHeaderRight}>
+              <button
+                type="button"
+                className={styles.fsExitButton}
+                onClick={() => setIsFullscreen(false)}
+                title="Exit Fullscreen Mode (Esc)"
+                aria-label="Exit fullscreen studio"
+              >
+                <ExitFullscreenIcon size={16} />
+                <span>Exit</span>
+              </button>
+
+              <button
+                type="button"
+                className={styles.fsOrderBtn}
+                onClick={handleAddToCart}
+                aria-label="Add Personalized Storybook to Bag in Fullscreen"
+              >
+                <SparklesIcon size={14} />
+                <span>Add to Bag • ${activeEditionObj.price.toFixed(2)}</span>
+              </button>
+            </div>
+          </header>
+
+          {/* Fullscreen 3-Column Studio Body */}
+          <div className={styles.fsBody}>
+            {/* Left Tool Rail & Flyout */}
+            <aside className={styles.fsToolRail}>
+              <div className={styles.fsRailIcons}>
+                {[
+                  { id: 'templates', label: 'Templates', Icon: TemplateToolIcon },
+                  { id: 'stamps', label: 'Stamps', Icon: StarStampSvg },
+                  { id: 'avatar', label: 'Avatar', Icon: MascotLeoSvg },
+                  { id: 'typography', label: 'Typography', Icon: TextToolIcon },
+                  { id: 'layers', label: 'Layers', Icon: LayerFrontIcon },
+                ].map((tool) => (
+                  <button
+                    key={tool.id}
+                    type="button"
+                    className={`${styles.fsRailBtn} ${
+                      activeToolTab === tool.id ? styles.fsRailBtnActive : ''
+                    }`}
+                    onClick={() => setActiveToolTab(tool.id)}
+                    title={tool.label}
+                  >
+                    <tool.Icon size={18} />
+                    <span>{tool.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className={styles.fsDrawerContent}>
+                {activeToolTab === 'templates' && (
+                  <div className={styles.fsDrawerSection}>
+                    <h4>Story Spread Templates</h4>
+                    <p className={styles.fsDrawerMuted}>Apply complete scenes or build blank.</p>
+                    <div className={styles.fsTemplateCards}>
+                      {SPREAD_TEMPLATES.map((tmpl) => (
+                        <button
+                          key={tmpl.id}
+                          type="button"
+                          className={styles.fsTemplateCard}
+                          onClick={() => handleApplyTemplate(tmpl)}
+                        >
+                          <div className={styles.fsTemplateCardHead}>
+                            <strong>{tmpl.name}</strong>
+                            {tmpl.theme && <span className={styles.fsThemeTag}>{tmpl.theme}</span>}
+                          </div>
+                          <p>{tmpl.desc}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeToolTab === 'stamps' && (
+                  <div className={styles.fsDrawerSection}>
+                    <h4>Story Assets & Stamps</h4>
+                    <StickerBar
+                      selectedSticker={selectedSticker}
+                      onSelectSticker={setSelectedSticker}
+                      onClearStickers={() => handleUpdateStickers([])}
+                      stickersCount={stickers.length}
+                      onAddStickerToCenter={handleDropStickerToCenter}
+                      bubbleText={bubbleText}
+                      onChangeBubbleText={setBubbleText}
+                      onUndo={handleUndo}
+                      onRedo={handleRedo}
+                      canUndo={historyIndex > 0}
+                      canRedo={historyIndex < history.length - 1}
+                    />
+                  </div>
+                )}
+
+                {activeToolTab === 'avatar' && (
+                  <div className={styles.fsDrawerSection}>
+                    <h4>Hero & Co-Star Character Studio</h4>
+                    <p className={styles.fsDrawerMuted}>Customize hero appearance and trusty companion pet.</p>
+                    <CharacterCreator
+                      heroName={childName}
+                      avatar={avatar}
+                      onChangeAvatar={setAvatar}
+                      companion={companion}
+                      onChangeCompanion={handleCompanionChange}
+                      initialTab="hero"
+                    />
+                  </div>
+                )}
+
+                {activeToolTab === 'typography' && (
+                  <div className={styles.fsDrawerSection}>
+                    <h4>Story Prose & Fonts</h4>
+                    <div className={styles.formGroup}>
+                      <label htmlFor="fsChapterTitleInput">Chapter Title:</label>
+                      <input
+                        id="fsChapterTitleInput"
+                        type="text"
+                        className={styles.textInput}
+                        value={chapterProse[selectedChapterEdit]?.title || ''}
+                        onChange={(e) =>
+                          handleUpdateChapterTitle(selectedChapterEdit, e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label htmlFor="fsChapterProseInput">Story Lines:</label>
+                      <textarea
+                        id="fsChapterProseInput"
+                        rows={4}
+                        className={styles.textAreaInput}
+                        value={chapterProse[selectedChapterEdit]?.lines.join('\n') || ''}
+                        onChange={(e) =>
+                          handleUpdateChapterLines(selectedChapterEdit, e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeToolTab === 'layers' && (
+                  <div className={styles.fsDrawerSection}>
+                    <div className={styles.fsLayerTop}>
+                      <h4>Page Layers ({stickers.length})</h4>
+                      {stickers.length > 0 && (
+                        <button
+                          type="button"
+                          className={styles.fsClearLayers}
+                          onClick={() => handleUpdateStickers([])}
+                        >
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+                    <div className={styles.fsLayerList}>
+                      {stickers.map((stk, idx) => (
+                        <div key={stk.id} className={styles.fsLayerRow}>
+                          <span>#{idx + 1} {stk.type.replace(/^(mascot_|badge_)/, '')}</span>
+                          <button
+                            type="button"
+                            className={styles.fsLayerDeleteBtn}
+                            onClick={() =>
+                              handleUpdateStickers(stickers.filter((s) => s.id !== stk.id))
+                            }
+                            aria-label={`Delete layer ${idx + 1}`}
+                          >
+                            <TrashIcon size={12} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </aside>
+
+            {/* Center Canvas Stage in Fullscreen */}
+            <main className={styles.fsStageCenter}>
+              <div
+                className={styles.fsCanvasTransform}
+                style={{ transform: `scale(${zoomLevel})` }}
+              >
+                <CanvasEngine
+                  width={760}
+                  height={520}
+                  mode="storybook"
+                  config={{
+                    childName: childName || 'Adventurer',
+                    theme,
+                    activePage,
+                    dedication,
+                    chapterProse,
+                    avatar,
+                    companion,
+                    mascotCoStar,
+                    fontFamily,
+                    textColor,
+                    showBleed,
+                  }}
+                  selectedSticker={selectedSticker}
+                  stickers={stickers}
+                  onUpdateStickers={handleUpdateStickers}
+                />
+              </div>
+            </main>
+          </div>
+
+          {/* Bottom Storyboard Filmstrip in Fullscreen */}
+          <footer className={styles.fsFilmstrip}>
+            <div className={styles.fsFilmstripHead}>
+              <span>Story Reel Spreads ({bookSpreads.length})</span>
+              <button
+                type="button"
+                className={styles.fsAddSpreadBtn}
+                onClick={handleAddSpread}
+                aria-label="Add new story spread in fullscreen"
+              >
+                <AddPageIcon size={13} />
+                <span>+ Add Spread</span>
+              </button>
+            </div>
+            <div className={styles.fsFilmstripCards}>
+              {bookSpreads.map((spread, idx) => (
+                <button
+                  key={spread.id}
+                  type="button"
+                  className={`${styles.fsFilmCard} ${activePage === idx ? styles.fsFilmCardActive : ''}`}
+                  onClick={() => setActivePage(idx)}
+                >
+                  <span className={styles.fsFilmNum}>#{idx + 1}</span>
+                  <span className={styles.fsFilmTitle}>{spread.title}</span>
+                </button>
+              ))}
+            </div>
+          </footer>
+        </div>
+      )}
+
+      {/* INTERACTIVE FLIPBOOK PREVIEW READER MODAL */}
+      {isFlipbookOpen && (
+        <div
+          className={styles.flipbookOverlay}
+          role="dialog"
+          aria-label="Physical Flipbook Preview Reader"
+        >
+          <div className={styles.flipbookModal}>
+            <div className={styles.flipbookHeader}>
+              <div className={styles.flipbookTitleWrap}>
+                <BookOpenIcon size={20} />
+                <h3>{childName}'s {activeThemeObj.name} — Keepsake Flipbook Reader</h3>
+              </div>
+              <button
+                type="button"
+                className={styles.flipbookClose}
+                onClick={() => setIsFlipbookOpen(false)}
+                aria-label="Close flipbook reader"
+              >
+                <CloseIcon size={18} />
+              </button>
+            </div>
+
+            <div className={styles.flipbookStage}>
+              <CanvasEngine
+                width={760}
+                height={520}
+                mode="storybook"
+                config={{
+                  childName: childName || 'Adventurer',
+                  theme,
+                  activePage,
+                  dedication,
+                  chapterProse,
+                  avatar,
+                  mascotCoStar,
+                  fontFamily,
+                  textColor,
+                  showBleed: false,
+                }}
+                selectedSticker={null}
+                stickers={stickers}
+                onUpdateStickers={() => {}}
+              />
+            </div>
+
+            <div className={styles.flipbookFooter}>
+              <button
+                type="button"
+                className={styles.flipbookNavButton}
+                disabled={activePage === 0}
+                onClick={() => setActivePage((p) => Math.max(0, p - 1))}
+                aria-label="Flip to previous page"
+              >
+                <ChevronLeft size={16} />
+                <span>Previous Page</span>
+              </button>
+              <span className={styles.flipbookCounter}>
+                Spread {activePage + 1} of {bookSpreads.length}
+              </span>
+              <button
+                type="button"
+                className={styles.flipbookNavButton}
+                disabled={activePage === bookSpreads.length - 1}
+                onClick={() => setActivePage((p) => Math.min(bookSpreads.length - 1, p + 1))}
+                aria-label="Flip to next page"
+              >
+                <span>Next Page</span>
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
