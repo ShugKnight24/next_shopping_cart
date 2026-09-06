@@ -204,11 +204,101 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
     }
   }
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: productName,
+    image: images && images.length > 0 ? images : [image],
+    description: description,
+    sku: itemid,
+    brand: {
+      '@type': 'Brand',
+      name: manufacturer,
+    },
+    category: category || undefined,
+    offers: {
+      '@type': 'Offer',
+      url: `https://cart-commerce.vercel.app/products/${itemid}`,
+      priceCurrency: 'USD',
+      price: effectivePrice,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      availability:
+        available > 0
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Cart Commerce',
+      },
+    },
+    ...(rating && rating.average && rating.count
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: rating.average,
+            reviewCount: rating.count,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://cart-commerce.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: 'https://cart-commerce.vercel.app/products',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: productName,
+        item: `https://cart-commerce.vercel.app/products/${itemid}`,
+      },
+    ],
+  };
+
   return (
     <>
       <Head>
-        <title>{`${productName} | Premium Collection`}</title>
+        <title>{`${productName} by ${manufacturer} | Cart Commerce`}</title>
         <meta name="description" content={description} />
+
+        {/* OpenGraph Social Meta Tags */}
+        <meta property="og:title" content={`${productName} | Cart Commerce`} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="product" />
+        <meta property="og:image" content={image} />
+        <meta property="product:price:amount" content={String(effectivePrice)} />
+        <meta property="product:price:currency" content="USD" />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${productName} | Cart Commerce`} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+
+        {/* Schema.org Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
       </Head>
 
       <div className={styles.productsPage}>

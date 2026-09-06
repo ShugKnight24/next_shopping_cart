@@ -33,13 +33,53 @@ export default function Home() {
     setHasMounted(true);
   }, []);
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Cart Commerce',
+    url: 'https://cart-commerce.vercel.app',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target:
+        'https://cart-commerce.vercel.app/products?search={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  const storeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'OnlineStore',
+    name: 'Cart Commerce',
+    url: 'https://cart-commerce.vercel.app',
+    description:
+      'Curated destination for authentic sneakers, high-fidelity audio, collectible cards, and premium fitness gear.',
+    priceRange: '$$$',
+    paymentAccepted: 'Credit Card, Stripe, Apple Pay, Google Pay',
+    currenciesAccepted: 'USD',
+  };
+
   return (
     <>
       <Head>
-        <title>Cart Commerce | Home</title>
+        <title>Cart Commerce | Curated Luxury Storefront</title>
         <meta
           name="description"
-          content="Discover our curated collection of premium products. Award-winning quality, free shipping, and exceptional customer service."
+          content="Discover our curated collection of premium products. Award-winning quality, free express shipping, and 100% verified authenticity."
+        />
+        <meta property="og:title" content="Cart Commerce | Curated Luxury Storefront" />
+        <meta
+          property="og:description"
+          content="Discover our curated collection of premium products. Award-winning quality, free express shipping, and 100% verified authenticity."
+        />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
         />
       </Head>
 
