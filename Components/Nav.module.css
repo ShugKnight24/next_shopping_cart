@@ -337,6 +337,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  padding: 6px 0;
 }
 
 .studioDropdownTrigger {
@@ -372,21 +373,33 @@
 
 .dropdownMenu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 2px);
   right: -20px;
   width: 290px;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 12px;
-  box-shadow: 0 12px 36px -4px rgba(15, 23, 42, 0.14), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 16px 40px -4px rgba(15, 23, 42, 0.16), 0 6px 16px -2px rgba(15, 23, 42, 0.08);
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   z-index: 1000;
-  animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Invisible hover bridge to eliminate all gaps between trigger button and menu */
+.dropdownMenu::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: -12px;
+  right: -12px;
+  height: 20px;
+  background: transparent;
+  pointer-events: auto;
 }
 
 @keyframes dropdownFadeIn {
@@ -404,9 +417,11 @@
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  padding: 10px 12px !important;
+  padding: 11px 14px !important;
   border-radius: 8px;
   text-decoration: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
   transition: background 0.15s ease, transform 0.15s ease !important;
 }
 

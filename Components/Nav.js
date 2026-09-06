@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CartContext } from '../context/CartProvider';
 import { totalQuantity } from '../utils/cartUtils';
@@ -44,6 +45,7 @@ const popularProducts = allProducts
   .slice(0, 4);
 
 export default function Nav() {
+  const router = useRouter();
   const { state, setIsCartOpen } = useContext(CartContext);
   const { cart } = state || { cart: [] };
   const cartCount = totalQuantity(cart) > 99 ? '99+' : totalQuantity(cart);
@@ -55,6 +57,42 @@ export default function Nav() {
   const [recentSearches, setRecentSearches] = useState([]);
   const [isStudioDropdownOpen, setIsStudioDropdownOpen] = useState(false);
   const studioDropdownRef = useRef(null);
+  const dropdownTimerRef = useRef(null);
+
+  const handleDropdownMouseEnter = () => {
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+      dropdownTimerRef.current = null;
+    }
+    setIsStudioDropdownOpen(true);
+  };
+
+  const handleDropdownMouseLeave = () => {
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+    }
+    // 350ms buffer so moving cursor diagonally or crossing any gap never drops the menu
+    dropdownTimerRef.current = setTimeout(() => {
+      setIsStudioDropdownOpen(false);
+    }, 350);
+  };
+
+  const handleDropdownTriggerClick = (e) => {
+    e.stopPropagation();
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+      dropdownTimerRef.current = null;
+    }
+    setIsStudioDropdownOpen((prev) => !prev);
+  };
+
+  const handleDropdownItemClick = () => {
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+      dropdownTimerRef.current = null;
+    }
+    setIsStudioDropdownOpen(false);
+  };
 
   // Close studio dropdown on outside click
   useEffect(() => {
@@ -63,12 +101,50 @@ export default function Nav() {
         studioDropdownRef.current &&
         !studioDropdownRef.current.contains(event.target)
       ) {
+        if (dropdownTimerRef.current) {
+          clearTimeout(dropdownTimerRef.current);
+          dropdownTimerRef.current = null;
+        }
         setIsStudioDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Close studio dropdown on Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        if (dropdownTimerRef.current) {
+          clearTimeout(dropdownTimerRef.current);
+          dropdownTimerRef.current = null;
+        }
+        setIsStudioDropdownOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, []);
+
+  // Cleanup timer on unmount and route changes
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (dropdownTimerRef.current) {
+        clearTimeout(dropdownTimerRef.current);
+        dropdownTimerRef.current = null;
+      }
+      setIsStudioDropdownOpen(false);
+    };
+
+    router.events?.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events?.off('routeChangeStart', handleRouteChange);
+      if (dropdownTimerRef.current) {
+        clearTimeout(dropdownTimerRef.current);
+      }
+    };
+  }, [router.events]);
 
   // Load recent searches from localStorage
   useEffect(() => {
@@ -130,13 +206,13 @@ export default function Nav() {
             <div
               className={styles.studioDropdown}
               ref={studioDropdownRef}
-              onMouseEnter={() => setIsStudioDropdownOpen(true)}
-              onMouseLeave={() => setIsStudioDropdownOpen(false)}
+              onMouseEnter={handleDropdownMouseEnter}
+              onMouseLeave={handleDropdownMouseLeave}
             >
               <button
                 type="button"
                 className={styles.studioDropdownTrigger}
-                onClick={() => setIsStudioDropdownOpen((prev) => !prev)}
+                onClick={handleDropdownTriggerClick}
                 aria-expanded={isStudioDropdownOpen}
                 aria-haspopup="true"
                 aria-label="Studios creation suites menu"
@@ -162,11 +238,16 @@ export default function Nav() {
               </button>
 
               {isStudioDropdownOpen && (
-                <div className={styles.dropdownMenu} role="menu">
+                <div
+                  className={styles.dropdownMenu}
+                  role="menu"
+                  onMouseEnter={handleDropdownMouseEnter}
+                  onMouseLeave={handleDropdownMouseLeave}
+                >
                   <Link
                     href="/studio"
                     className={styles.dropdownItem}
-                    onClick={() => setIsStudioDropdownOpen(false)}
+                    onClick={handleDropdownItemClick}
                     role="menuitem"
                   >
                     <div className={styles.dropdownItemHeader}>
@@ -181,7 +262,7 @@ export default function Nav() {
                   <Link
                     href="/studio/social"
                     className={styles.dropdownItem}
-                    onClick={() => setIsStudioDropdownOpen(false)}
+                    onClick={handleDropdownItemClick}
                     role="menuitem"
                   >
                     <div className={styles.dropdownItemHeader}>
