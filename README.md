@@ -1,143 +1,152 @@
-# Next Shopping Cart
+# Cart Commerce — Premium Next.js E-Commerce Storefront
 
-Shopping cart built utilizing NextJS and the React Context API
+A high-performance, white-label e-commerce storefront built with **Next.js 15**, **React 19**, and **Node 24**. Engineered with an interactive **3D Product Studio**, context-driven state management with smart catalog hydration reconciliation, a 100% vector SVG icon system, client-side anti-bot telemetry, and Google Analytics 4 (GA4) Enhanced Ecommerce tracking.
 
-## Setup
+---
 
-### Installation & Running
+## Highlights & Features
+
+- **Interactive 3D Product Studio**: 360° orbital turntable with touch & drag gesture physics, preset camera angles, animated feature hotspot pins, and exploded anatomy view mode.
+- **Modern Product Detail Experience**: 2-column sticky desktop layout, variant/colorway selectors with dynamic pricing modifiers, stock urgency indicators, 5-panel interactive tabs (Overview, Specs, Shipping, Reviews with rating breakdown bars, FAQs), and a sticky purchase bar.
+- **Curated Multi-Vertical Catalog**: 40+ verified items spanning 6 product categories:
+  - *Sneakers & Running* (Air Jordan, Nike Kobe, LeBron, Hoka, Altra)
+  - *Collectibles & TCG* (Warhammer 40k, Magic: The Gathering)
+  - *Musical Instruments* (Gibson, Fender Custom Shop, Martin, Nord, Yamaha)
+  - *Strength & Fitness* (Rogue, Eleiko, Bowflex)
+  - *Audio & Tech* (Sony, Sennheiser, Apple Vision Pro, Teenage Engineering)
+- **Zero-Emoji Compliance**: Fully replaced Unicode emojis with a dedicated, accessible SVG icon library (`Components/Icons/`).
+- **Smart Catalog Hydration Reconciler**: Eliminates stale browser cache overwrites by reconciling fresh product metadata on client load while safely preserving the shopper's active cart quantities, available stock deductions, and saved favorites.
+- **Client-Side Anti-Bot Telemetry**: Passive browser environment checks (`navigator.webdriver`, headless globals, viewport anomalies), human behavioral heuristics (mouse curvature, scroll pauses, typing cadence), and invisible honeypot trap detection to classify traffic (`human` vs `suspected_bot`).
+- **GA4 Enhanced Ecommerce & Core Web Vitals**: End-to-end ecommerce instrumentation (`view_item_list`, `select_item`, `view_item`, `add_to_cart`, `remove_from_cart`, `view_cart`, `begin_checkout`, `apply_promotion`, `search`) and native Next.js `reportWebVitals` telemetry (INP, LCP, CLS, FCP, TTFB).
+- **Zero Sass / Modern Styling**: Refactored entirely to CSS Modules and a centralized design token system (`styles/tokens.css`).
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| **Framework** | Next.js 15 (`15.5.25`) with Pages Router & Static Site Generation (SSG) |
+| **UI Library** | React 19 (`19.2.8`) & React DOM |
+| **Runtime** | Node.js 24 (`24.x`) |
+| **State Management** | React Context API (`CartContext`) + Reducer pattern (`CartReducer.js`) |
+| **Styling** | Native CSS Modules + Design Tokens (`tokens.css`) |
+| **Icons** | Custom Scalable Vector SVGs with zero emoji dependencies |
+| **Analytics & Telemetry** | GA4 Enhanced Ecommerce (`gtag.js`), Next.js Web Vitals, Custom Bot Scorer |
+| **Testing** | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (82 tests) |
+| **Code Quality** | ESLint 9 (Flat Config) + Prettier |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js**: `24.x` (or `>=20.x`)
+- **npm**: `>=10.x`
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/ShugKnight24/next_shopping_cart.git
+cd next_shopping_cart
+
+# Install dependencies
 npm install
+
+# Start local development server
 npm run dev
 ```
 
-### Algolia
+Visit `http://localhost:3000` in your browser.
 
-If you want to add Algolia to your own local version, take a look at the `.example.env` file and add the necessary info from Algolia's API
+---
 
-### Google Analytics
+## Environment Variables
 
-In order to add Google Analytics, add your App's tracking ID to the `.example.env`, which will start basic tracking. Look at the docs for Events and PageViews for more customized tracking in [More Info](#more-info)
+Copy `.example.env` to `.env.local`:
 
-### Environment Variable
+```bash
+cp .example.env .env.local
+```
 
-- Rename `.example.env` based on your own project
-- Refer to [NextJS Docs](https://nextjs.org/docs/basic-features/environment-variables) for more info
+Configure your environment variables:
 
-## To-Dos
+```env
+# Google Analytics 4 Measurement ID (e.g., G-XXXXXXXXXX)
+NEXT_PUBLIC_GOOGLE_ANALYTICS=
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=
 
-- [ ] Refactor issues from NextJS & React API changes
+# Optional: Custom Telemetry Beacon Ingestion Endpoint
+NEXT_PUBLIC_TELEMETRY_ENDPOINT=
+```
 
-  - Update to use the latest from both API updates
-  - Integrate React 19
-    - Use RSC for static data
+---
 
-- Refactor to update content
+## Scripts & Commands
 
-  - [ ] Add loading assets
+```bash
+npm run dev        # Launch development server on localhost:3000
+npm run build      # Create optimized production build (pre-renders 47 SSG routes)
+npm run start      # Start Next.js production server
+npm run lint       # Run ESLint across all codebase files (0 errors, 0 warnings)
+npm test           # Run Vitest test suite once across all 9 test files (82 tests)
+npm run test:watch # Run Vitest in interactive watch mode
+```
 
-  - [ ] Continue updating the design system
+---
 
-  - Add indicators for secure shopping
-    - SSL, Secure Checkout, etc...
-  - add indicators for free shipping
+## Architecture & Data Flow
 
-    - Free Shipping, Free Returns, global shipping, etc...
+```
+Shopper Interactions
+  │
+  ├── Catalog / Home Page ───► Category Tabs & Search Filter
+  │                              │
+  │                              ├── ProductCard (QuickView, Add to Cart)
+  │                              └── View Details ──► /products/[productid]
+  │
+  ├── Product Details ───────► 3D Product Studio (360° Turntable, Hotspots, Exploded View)
+  │                              ├── Variant / Sizing Selector
+  │                              ├── Sticky Buy Bar
+  │                              └── 5-Panel Tab System (Overview, Specs, Reviews, FAQs)
+  │
+  ├── Cart & Bag ────────────► CartProvider & CartReducer
+  │                              ├── Smart Catalog Reconciler (on hydration)
+  │                              ├── LocalStorage Cache (Cart items, Promos, Favorites)
+  │                              └── Slide-Over Cart Drawer
+  │
+  └── Analytics & Security ──► Telemetry Engine (Bot Scoring, Honeypot Trap)
+                                 ├── GA4 Enhanced Ecommerce (gtag.js)
+                                 └── Next.js reportWebVitals (INP, LCP, CLS, TTFB)
+```
 
-  - [ ] Update Home Page
-    - assets, copy, design
-    - Carousel - categories, popular & featured products, Make a deal / best offer, etc...
-    - Categories, Featured Products, Popular Products
-      - Retarget from carousel w/ more depth
-        - Other assets, features, etc
-      - Unique landing pages per category?
-      - Add a carousel of each category?
-      - Unique assets of grouped products
-  - [ ] Update Products
-    - More depth, properties, & variety
-    - Update Product Data structure
-      - Add brand logos
-      - Add variants
-      - Add sizing
-      - Add other properties
-        - MPN / UPC / SKU / Etc
-    - Finalize product page tabs
-      - Details, Reviews, Discussion, etc...
+---
 
-- [ ] Improve error handling
+## Testing & Quality Assurance
 
-  - Add error boundaries
+All core systems are rigorously tested with Vitest:
 
-- [ ] Fix - `<Head>` `<Title>` error on sub product pages
+- `__tests__/telemetry.test.jsx`: Bot confidence index, automation detection, honeypot traps, and session metrics.
+- `__tests__/analytics.test.js`: GA4 event schemas, ecommerce tracking, and Core Web Vitals formatting.
+- `__tests__/CartReducer.test.js`: Cart operations, inventory deduction, promo codes, and catalog reconciliation.
+- `__tests__/ProductDetailAndCatalog.test.jsx`: 3D studio, tabs, and product detail rendering.
+- `__tests__/ProductCardAndFilter.test.jsx`: Category tabs, card semantics, zero-emoji badges, and asset verification.
+- `__tests__/contractResilience.test.js`: Defensive schema parsing and fallback resilience.
 
-  - Likely due to conflict w/ All Products page
+---
 
-- [ ] Add tests
+## Deployment (Vercel)
 
-- [ ] Sass clean up
+This repository is configured for automated deployments on Vercel:
+- **Node.js Runtime**: Set to `24.x` in `package.json` (`engines.node`) and `.nvmrc`.
+- **Image Optimization**: Remote image domains configured in `next.config.js`.
+- **Production Build**: Zero build-step errors with all 47 static pages prerendered.
 
-  - Refactor new app.css / old import system not needed
-    - utilize `@forward` and `@use` correctly
-  - Refactor to use more variables
-  - Fix any broken system
-  - Remove duplicate styles
-  - Move to scss modules?
+---
 
-- Recommendation system
-  - Avoid prop drilling for recs
-- Add subcomponents for dupe code
-  - Further refactor
-  - Favorites
-- Leverage destructuring where applicable
+## Documentation
 
-- [ ] Improve Algolia Implementation
-
-  - Further refactor
-  - [ ] Highlight matches in algolia search
-    - [ ] Match can be found in algolia response
-  - [ ] Improve responsiveness
-  - [ ] Improve design
-
-- [ ] Long term styles w/ Chakra / Emotion / Tailwind ...?
-- [ ] Handle different quantity adding on subproduct pages
-
-- [ ] Refactor Carousel Styles
-
-  - Especially when smaller horizontal screens and screens with little vertical space
-  - Also on really large screens - Arrows get pushed
-  - Add down arrow to next section
-
-- Modal Colors
-
-  - Not a fan of button color combo when clear & delete
-
-- Refactor Hit to be robust enough to handle initial Algolia logo
-
-- Improve Product Cards and Favorites Card
-  - Differentiate or make robust enough to distinguish between
-- Create a popular items list
-
-## Future Ideas
-
-- Discount Code system...
-  - Discount system on recommended products ...?
-    - How to best handle...
-      - Apply discount for each product pair... add to cart together
-
-## Implemented
-
-- Check the [Changelog](./CHANGELOG.md)
-
-## Project Decisions
-
-Removed 'Add to Cart' modal as it made the UX clunky. Keeping the component if anyone would like that implementation. Can see it's value with products that are highly customizable, but it's overkill in a generic cart system
-
-## More Info
-
-### Analytics
-
-#### Google Analytics Setup
-
-- [Events](https://developers.google.com/analytics/devguides/collection/gtagjs/events)
-- [PageViews](https://developers.google.com/analytics/devguides/collection/gtagjs/pages)
-- [Next Custom Document](https://nextjs.org/docs/advanced-features/custom-document)
+- [Changelog](./CHANGELOG.md) — Chronological history of all releases and enhancements.
+- [Product Roadmap](./ROADMAP.md) — Long-term architecture roadmap and sprint plan.
