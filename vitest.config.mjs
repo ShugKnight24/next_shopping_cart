@@ -2,9 +2,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vitest/config';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
@@ -13,10 +11,13 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.js'],
     include: ['__tests__/**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    env: {
+      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'UA-147974881-10',
+    },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './'),
+      '@': path.resolve(rootDir, './'),
     },
   },
 });
