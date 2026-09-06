@@ -21,17 +21,17 @@ describe('Mascot Companion System', () => {
     vi.clearAllMocks();
   });
 
-  it('renders Carty The Courier by default with accessible SVG and dialogue', () => {
+  it('renders Luna The Cosmic Shepherd by default with accessible SVG and dialogue', () => {
     render(
       <MascotProvider>
         <MascotCompanion />
       </MascotProvider>
     );
 
-    expect(screen.getByText('Carty The Courier')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Carty The Courier Mascot/i)).toBeInTheDocument();
+    expect(screen.getByText('Luna The Cosmic Shepherd')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Welcome to our flagship shop!/i)
+      screen.getByText(/Welcome home!/i)
     ).toBeInTheDocument();
   });
 
@@ -46,18 +46,18 @@ describe('Mascot Companion System', () => {
     fireEvent.click(toggleBtn);
 
     // After turning off, the full mascot and bubble disappear, replaced by the subtle enable pill
-    expect(screen.queryByLabelText(/Carty The Courier Mascot/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Luna The Cosmic Shepherd Mascot/i)).not.toBeInTheDocument();
     const enableBtn = screen.getByRole('button', { name: /Turn on Brand Companion/i });
     expect(enableBtn).toBeInTheDocument();
     expect(localStorage.getItem('shopping_cart.mascot_enabled')).toBe('false');
 
     // Clicking enable restores the companion
     fireEvent.click(enableBtn);
-    expect(screen.getByLabelText(/Carty The Courier Mascot/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
     expect(localStorage.getItem('shopping_cart.mascot_enabled')).toBe('true');
   });
 
-  it('allows swapping companions within shop realm (Carty and Sparky)', () => {
+  it('allows swapping companions within shop realm (Luna, Carty, and Sparky)', () => {
     render(
       <MascotProvider>
         <MascotCompanion />
@@ -67,11 +67,11 @@ describe('Mascot Companion System', () => {
     const switchBtn = screen.getByRole('button', {
       name: /Switch between companions/i,
     });
-    expect(switchBtn).toHaveTextContent(/Switch to Sparky/i);
+    expect(switchBtn).toHaveTextContent(/Switch to Carty/i);
     fireEvent.click(switchBtn);
 
-    expect(screen.getByText('Sparky The Sneaker Hound')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Sparky The Sneaker Hound Mascot/i)).toBeInTheDocument();
+    expect(screen.getByText('Carty The Courier')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Carty The Courier Mascot/i)).toBeInTheDocument();
   });
 
   it('dismisses the speech bubble without unmounting the mascot', () => {
@@ -86,10 +86,26 @@ describe('Mascot Companion System', () => {
 
     // Speech text is gone
     expect(
-      screen.queryByText(/Welcome to our flagship shop!/i)
+      screen.queryByText(/Welcome home!/i)
     ).not.toBeInTheDocument();
     // But character is still present
-    expect(screen.getByLabelText(/Carty The Courier Mascot/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
+  });
+
+  it('provides interactive action chips that trigger speech and particle reactions', () => {
+    render(
+      <MascotProvider>
+        <MascotCompanion />
+      </MascotProvider>
+    );
+
+    const treatBtn = screen.getByRole('button', { name: /Give Astronaut Treat/i });
+    expect(treatBtn).toBeInTheDocument();
+    fireEvent.click(treatBtn);
+
+    expect(
+      screen.getByText(/Luna wags her tail happily and does a zero-gravity spin/i)
+    ).toBeInTheDocument();
   });
 
   it('contains zero Unicode emojis in mascot configurations', () => {
@@ -103,6 +119,12 @@ describe('Mascot Companion System', () => {
       Object.values(m.quotes).forEach((quote) => {
         expect(emojiRegex.test(quote)).toBe(false);
       });
+      if (m.interactiveActions) {
+        m.interactiveActions.forEach((action) => {
+          expect(emojiRegex.test(action.label)).toBe(false);
+          expect(emojiRegex.test(action.reply)).toBe(false);
+        });
+      }
     });
   });
 });

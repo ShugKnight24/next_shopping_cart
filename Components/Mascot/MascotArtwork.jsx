@@ -2,10 +2,229 @@ import PropTypes from 'prop-types';
 import styles from './MascotArtwork.module.css';
 
 /**
+ * Luna The Cosmic Shepherd - Anatolian Shepherd Astronaut
+ * Modeled after user's beloved Anatolian Shepherd:
+ * - Warm golden-fawn fur, cream neck/chest, dark charcoal muzzle mask
+ * - Distinctive pinkish/white marking across top of nose leather
+ * - Folded drop ears, gentle loving amber eyes, curled upward tail
+ * - Futuristic white & navy spacesuit with gold trim and "LUNA" name patch
+ */
+export function LunaSvg({ className = '', size = 124 }) {
+  return (
+    <svg
+      className={`${styles.mascotSvg} ${className}`}
+      width={size}
+      height={size}
+      viewBox="0 0 160 160"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Luna The Cosmic Shepherd Mascot"
+    >
+      <defs>
+        <radialGradient id="lunaGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="lunaFur" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#e5a95d" />
+          <stop offset="100%" stopColor="#b47834" />
+        </linearGradient>
+        <linearGradient id="lunaFurDark" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#92511d" />
+          <stop offset="100%" stopColor="#713f12" />
+        </linearGradient>
+        <linearGradient id="lunaMask" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#292524" />
+          <stop offset="100%" stopColor="#1c1917" />
+        </linearGradient>
+        <linearGradient id="lunaSuit" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="100%" stopColor="#e2e8f0" />
+        </linearGradient>
+        <linearGradient id="lunaSuitNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1e293b" />
+          <stop offset="100%" stopColor="#0f172a" />
+        </linearGradient>
+        <linearGradient id="lunaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fbbf24" />
+          <stop offset="100%" stopColor="#d97706" />
+        </linearGradient>
+      </defs>
+
+      {/* Ground Shadow */}
+      <ellipse cx="80" cy="150" rx="44" ry="7" fill="rgba(15, 23, 42, 0.16)" />
+
+      <g className={styles.floatBody}>
+        {/* Curled Anatolian Tail in Spacesuit (Wagging) */}
+        <g className={styles.waggingTail}>
+          <path
+            d="M50 118 C30 115 24 95 34 82 C42 72 52 80 48 92 C45 101 42 108 52 114"
+            fill="url(#lunaSuit)"
+            stroke="#cbd5e1"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          {/* Gold Space Suit Tail Band */}
+          <ellipse cx="36" cy="86" rx="4" ry="2" fill="url(#lunaGold)" />
+        </g>
+
+        {/* Astronaut Torso / Spacesuit */}
+        <path
+          d="M50 96 C48 108 46 132 50 140 C58 144 102 144 110 140 C114 132 112 108 110 96 Z"
+          fill="url(#lunaSuit)"
+          stroke="#94a3b8"
+          strokeWidth="2.5"
+        />
+
+        {/* Navy Spacesuit Side Accents */}
+        <path d="M50 102 C54 118 54 128 52 138" stroke="#1e293b" strokeWidth="4" strokeLinecap="round" />
+        <path d="M110 102 C106 118 106 128 108 138" stroke="#1e293b" strokeWidth="4" strokeLinecap="round" />
+
+        {/* Astronaut Collar Ring */}
+        <ellipse cx="80" cy="95" rx="28" ry="8" fill="url(#lunaSuitNavy)" stroke="url(#lunaGold)" strokeWidth="2" />
+
+        {/* Life Support Telemetry Display */}
+        <rect x="70" y="105" width="20" height="7" rx="2" fill="#0f172a" stroke="#64748b" strokeWidth="1" />
+        <circle cx="74" cy="108.5" r="1.5" fill="#38bdf8" />
+        <circle cx="80" cy="108.5" r="1.5" fill="#10b981" />
+        <circle cx="86" cy="108.5" r="1.5" fill="#fbbf24" />
+
+        {/* Mission Patch: Embroidered "LUNA" */}
+        <g id="lunaMissionPatch">
+          <rect x="65" y="116" width="30" height="13" rx="3.5" fill="#0f172a" stroke="url(#lunaGold)" strokeWidth="1.4" />
+          <text
+            x="80"
+            y="125.5"
+            fill="#fbbf24"
+            fontSize="8"
+            fontWeight="bold"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            textAnchor="middle"
+            letterSpacing="0.8"
+          >
+            LUNA
+          </text>
+        </g>
+
+        {/* Floating Suited Left Arm/Paw */}
+        <path d="M50 102 Q38 112 44 124" stroke="url(#lunaSuit)" strokeWidth="8" strokeLinecap="round" fill="none" />
+        <circle cx="44" cy="124" r="5" fill="#e2e8f0" stroke="url(#lunaGold)" strokeWidth="1.5" />
+
+        {/* Waving Suited Right Arm/Paw */}
+        <g className={styles.wavingPaw}>
+          <path d="M110 102 Q122 94 126 82" stroke="url(#lunaSuit)" strokeWidth="8" strokeLinecap="round" fill="none" />
+          <circle cx="126" cy="82" r="5.5" fill="#e2e8f0" stroke="url(#lunaGold)" strokeWidth="1.5" />
+          {/* Palm Pad Detail */}
+          <ellipse cx="125.5" cy="82" rx="2.5" ry="2" fill="#0f172a" />
+        </g>
+
+        {/* Suited Boot Paws at Base */}
+        <ellipse cx="66" cy="142" rx="9" ry="6" fill="#f1f5f9" stroke="url(#lunaGold)" strokeWidth="1.5" />
+        <ellipse cx="94" cy="142" rx="9" ry="6" fill="#f1f5f9" stroke="url(#lunaGold)" strokeWidth="1.5" />
+
+        {/* Astronaut Helmet Bubble / Visor Halo */}
+        <circle
+          cx="80"
+          cy="66"
+          r="37"
+          fill="none"
+          stroke="#38bdf8"
+          strokeWidth="2"
+          className={styles.cosmicGlow}
+        />
+        <path
+          d="M54 44 C62 36 78 34 88 36"
+          stroke="#ffffff"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          opacity="0.75"
+        />
+
+        {/* --- ANATOLIAN SHEPHERD HEAD (Modeled on user photos) --- */}
+        {/* Folded Drop Ears (Anatolian characteristic) */}
+        {/* Left Ear */}
+        <path
+          d="M52 50 C36 56 34 76 42 86 C46 84 52 74 54 62 Z"
+          fill="url(#lunaFurDark)"
+          stroke="#57300c"
+          strokeWidth="1.5"
+        />
+        {/* Right Ear */}
+        <path
+          d="M108 50 C124 56 126 76 118 86 C114 84 108 74 106 62 Z"
+          fill="url(#lunaFurDark)"
+          stroke="#57300c"
+          strokeWidth="1.5"
+        />
+
+        {/* Head Contour (Golden Fawn Coat) */}
+        <ellipse cx="80" cy="65" r="29" fill="url(#lunaFur)" stroke="#92511d" strokeWidth="1.5" />
+
+        {/* Cream Forehead & Cheek Highlights */}
+        <path
+          d="M60 76 C64 88 96 88 100 76 C94 82 66 82 60 76 Z"
+          fill="#fef3c7"
+          opacity="0.85"
+        />
+
+        {/* Anatolian Black Mask (Signature Charcoal Mask) */}
+        <path
+          d="M67 52 C74 48 86 48 93 52 C96 60 98 72 96 82 C93 88 87 91 80 91 C73 91 67 88 64 82 C62 72 64 60 67 52 Z"
+          fill="url(#lunaMask)"
+        />
+
+        {/* Soulful Amber Eyes with Dark Eyeliner */}
+        <g className={styles.blinkingEyes}>
+          {/* Left Eye */}
+          <ellipse cx="69" cy="61" rx="4.5" ry="5.5" fill="#78350f" stroke="#0c0a09" strokeWidth="1.5" />
+          <circle cx="70.5" cy="59.5" r="1.6" fill="#ffffff" />
+          <circle cx="67.5" cy="63" r="0.8" fill="#fbbf24" opacity="0.8" />
+
+          {/* Right Eye */}
+          <ellipse cx="91" cy="61" rx="4.5" ry="5.5" fill="#78350f" stroke="#0c0a09" strokeWidth="1.5" />
+          <circle cx="92.5" cy="59.5" r="1.6" fill="#ffffff" />
+          <circle cx="89.5" cy="63" r="0.8" fill="#fbbf24" opacity="0.8" />
+        </g>
+
+        {/* Anatolian Muzzle & Jaw */}
+        <ellipse cx="80" cy="78" rx="14" ry="10" fill="#1c1917" />
+        <ellipse cx="80" cy="80" rx="12" ry="8" fill="#292524" />
+
+        {/* Gentle Mouth & Chin */}
+        <path d="M80 78 L80 83 M76 83 Q80 87 84 83" stroke="#0c0a09" strokeWidth="2" strokeLinecap="round" />
+
+        {/* Black Nose Leather */}
+        <ellipse cx="80" cy="74" rx="6.5" ry="4.5" fill="#09090b" />
+
+        {/* LUNA'S SIGNATURE NOSE MARKING: Pinkish / white curved blaze across top ridge of nose */}
+        <path
+          d="M75 72.8 Q80 70.8 85 72.8 Q80 73.6 75 72.8 Z"
+          fill="#fca5a5"
+          opacity="0.95"
+        />
+        <ellipse cx="80" cy="72.6" rx="2.5" ry="0.8" fill="#fee2e2" />
+
+        {/* Delicate Whiskers */}
+        <line x1="68" y1="78" x2="60" y2="76" stroke="#a8a29e" strokeWidth="1" opacity="0.7" />
+        <line x1="68" y1="81" x2="59" y2="82" stroke="#a8a29e" strokeWidth="1" opacity="0.7" />
+        <line x1="92" y1="78" x2="100" y2="76" stroke="#a8a29e" strokeWidth="1" opacity="0.7" />
+        <line x1="92" y1="81" x2="101" y2="82" stroke="#a8a29e" strokeWidth="1" opacity="0.7" />
+      </g>
+    </svg>
+  );
+}
+
+LunaSvg.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+/**
  * Carty The Courier - Anthropomorphic Courier Robot
  * 100% Vector SVG with animated visor eyes, pulsing beacon antenna, and waving arm.
  */
-export function CartySvg({ className = '', size = 120 }) {
+export function CartySvg({ className = '', size = 124 }) {
   return (
     <svg
       className={`${styles.mascotSvg} ${className}`}
@@ -518,4 +737,124 @@ SparkySvg.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number,
 };
+
+/**
+ * MascotThumbnail - Crisp Illustrated Mini Avatar
+ * Renders miniature vector avatar for character switcher and studio co-star selector.
+ */
+export function MascotThumbnail({ mascotId, size = 36, className = '' }) {
+  switch (mascotId) {
+    case 'luna':
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#0f172a" stroke="#fbbf24" strokeWidth="1.5" />
+          {/* Folded ears */}
+          <path d="M9 13 C5 15 5 21 8 24 Z" fill="#713f12" />
+          <path d="M31 13 C35 15 35 21 32 24 Z" fill="#713f12" />
+          {/* Head */}
+          <circle cx="20" cy="20" r="10" fill="#e5a95d" />
+          {/* Black mask */}
+          <path d="M16 16 C18 15 22 15 24 16 C25 20 25 24 20 26 C15 24 15 20 16 16 Z" fill="#1c1917" />
+          {/* Eyes */}
+          <circle cx="18" cy="18" r="1.3" fill="#fbbf24" />
+          <circle cx="22" cy="18" r="1.3" fill="#fbbf24" />
+          {/* Nose */}
+          <ellipse cx="20" cy="22" rx="2" ry="1.4" fill="#000000" />
+          {/* Signature pink nose blaze */}
+          <ellipse cx="20" cy="21.2" rx="1.2" ry="0.5" fill="#fca5a5" />
+          {/* Spacesuit helmet ring */}
+          <circle cx="20" cy="20" r="13" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.8" />
+        </svg>
+      );
+    case 'dexter':
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#064e3b" stroke="#10b981" strokeWidth="1.5" />
+          {/* Dino Head */}
+          <ellipse cx="20" cy="21" rx="10" ry="9" fill="#10b981" />
+          {/* Snout */}
+          <ellipse cx="20" cy="24" rx="7" ry="4" fill="#34d399" />
+          {/* Nostrils & Eyes */}
+          <circle cx="17" cy="18" r="1.5" fill="#064e3b" />
+          <circle cx="23" cy="18" r="1.5" fill="#064e3b" />
+          <circle cx="17" cy="17.5" r="0.6" fill="#ffffff" />
+          <circle cx="23" cy="17.5" r="0.6" fill="#ffffff" />
+          {/* Safari Explorer Hat */}
+          <ellipse cx="20" cy="14" rx="11" ry="3" fill="#d97706" />
+          <path d="M14 14 C14 10 26 10 26 14 Z" fill="#b45309" />
+          <circle cx="20" cy="12" r="1" fill="#38bdf8" />
+        </svg>
+      );
+    case 'leo':
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
+          {/* Lion Mane */}
+          <circle cx="20" cy="20" r="13" fill="#d97706" />
+          {/* Face */}
+          <circle cx="20" cy="20" r="9" fill="#fbbf24" />
+          {/* Eyes & Nose */}
+          <circle cx="17.5" cy="19" r="1.3" fill="#451a03" />
+          <circle cx="22.5" cy="19" r="1.3" fill="#451a03" />
+          <ellipse cx="20" cy="22" rx="1.6" ry="1.2" fill="#b45309" />
+          {/* Painter's Beret */}
+          <ellipse cx="17" cy="13" rx="5" ry="2.5" fill="#dc2626" />
+        </svg>
+      );
+    case 'penny':
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#500724" stroke="#f472b6" strokeWidth="1.5" />
+          {/* Blonde Hair */}
+          <circle cx="20" cy="20" r="11" fill="#fde047" />
+          {/* Face */}
+          <circle cx="20" cy="21" r="8" fill="#fed7aa" />
+          {/* Crown/Tiara */}
+          <path d="M14 14 L17 11 L20 13 L23 11 L26 14 Z" fill="#fbbf24" stroke="#d97706" strokeWidth="0.8" />
+          {/* Eyes */}
+          <circle cx="18" cy="20" r="1.2" fill="#4c1d95" />
+          <circle cx="22" cy="20" r="1.2" fill="#4c1d95" />
+        </svg>
+      );
+    case 'carty':
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
+          {/* Head Chassis */}
+          <rect x="12" y="14" width="16" height="13" rx="4" fill="#cbd5e1" />
+          {/* Cyan Visor */}
+          <rect x="14" y="16" width="12" height="7" rx="2" fill="#0f172a" />
+          <circle cx="17" cy="19.5" r="1.3" fill="#38bdf8" />
+          <circle cx="23" cy="19.5" r="1.3" fill="#38bdf8" />
+          {/* Antenna */}
+          <line x1="20" y1="14" x2="20" y2="9" stroke="#64748b" strokeWidth="1.5" />
+          <circle cx="20" cy="8" r="1.8" fill="#38bdf8" />
+        </svg>
+      );
+    case 'sparky':
+    default:
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#1e1b4b" stroke="#f97316" strokeWidth="1.5" />
+          {/* Hound Head */}
+          <circle cx="20" cy="21" r="10" fill="#ea580c" />
+          {/* Cap */}
+          <path d="M13 16 C13 11 27 11 27 16 Z" fill="#dc2626" />
+          {/* Shades */}
+          <rect x="14" y="17" width="5.5" height="3.5" rx="1" fill="#0f172a" />
+          <rect x="20.5" y="17" width="5.5" height="3.5" rx="1" fill="#0f172a" />
+          {/* Muzzle */}
+          <ellipse cx="20" cy="24" rx="4" ry="2.5" fill="#ffedd5" />
+          <circle cx="20" cy="23" r="1" fill="#000000" />
+        </svg>
+      );
+  }
+}
+
+MascotThumbnail.propTypes = {
+  mascotId: PropTypes.string.isRequired,
+  size: PropTypes.number,
+  className: PropTypes.string,
+};
+
 

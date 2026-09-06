@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMascot } from '../../context/MascotProvider';
-import { CartySvg, LeoSvg, PennySvg, DexterSvg, SparkySvg } from './MascotArtwork';
+import { LunaSvg, CartySvg, LeoSvg, PennySvg, DexterSvg, SparkySvg, MascotThumbnail } from './MascotArtwork';
 import { SparklesIcon, CloseIcon, RotateCcwIcon } from '../Icons';
 import styles from './MascotCompanion.module.css';
 
@@ -19,6 +19,22 @@ export function MascotCompanion() {
   } = useMascot();
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
+  const [particles, setParticles] = useState([]);
+  const [isCelebrating, setIsCelebrating] = useState(false);
+
+  const triggerCelebration = () => {
+    setIsCelebrating(true);
+    const newParticles = Array.from({ length: 6 }, (_, i) => ({
+      id: `${Date.now()}-${i}`,
+      tx: (Math.random() - 0.5) * 80,
+      ty: -25 - Math.random() * 50,
+      icon: activeMascotId === 'luna' ? (i % 2 === 0 ? '★' : '🐾') : (i % 2 === 0 ? '★' : '✨'),
+      color: activeMascot.theme.accent || '#fbbf24',
+    }));
+    setParticles(newParticles);
+    setTimeout(() => setParticles([]), 1200);
+    setTimeout(() => setIsCelebrating(false), 700);
+  };
 
   // If disabled, render subtle re-enable pill
   if (!isMascotEnabled) {
@@ -38,29 +54,42 @@ export function MascotCompanion() {
   }
 
   const handleMascotClick = () => {
-    if (!speech.isVisible) {
+    triggerCelebration();
+    const actionReplies = activeMascot.interactiveActions || [];
+    if (actionReplies.length > 0 && Math.random() > 0.3) {
+      const randomAction = actionReplies[Math.floor(Math.random() * actionReplies.length)];
+      speak(randomAction.reply, 'happy');
+    } else {
       speak(activeMascot.defaultMessage, 'happy');
     }
+  };
+
+  const handleActionClick = (action) => {
+    triggerCelebration();
+    speak(action.reply, 'celebrating');
   };
 
   const handleSelectMascot = (id) => {
     setMascot(id);
     setIsSwitcherOpen(false);
+    triggerCelebration();
   };
 
   const renderMascotArtwork = () => {
     switch (activeMascotId) {
+      case 'luna':
+        return <LunaSvg size={124} />;
       case 'sparky':
-        return <SparkySvg size={96} />;
+        return <SparkySvg size={124} />;
       case 'leo':
-        return <LeoSvg size={96} />;
+        return <LeoSvg size={124} />;
       case 'penny':
-        return <PennySvg size={96} />;
+        return <PennySvg size={124} />;
       case 'dexter':
-        return <DexterSvg size={96} />;
+        return <DexterSvg size={124} />;
       case 'carty':
       default:
-        return <CartySvg size={96} />;
+        return <CartySvg size={124} />;
     }
   };
 
@@ -70,6 +99,25 @@ export function MascotCompanion() {
 
   return (
     <aside className={styles.companionRoot} aria-label="Interactive Brand Companion">
+      {/* Floating Interactive Particles */}
+      {particles.length > 0 && (
+        <div className={styles.particlesContainer} aria-hidden="true">
+          {particles.map((p) => (
+            <span
+              key={p.id}
+              className={styles.particle}
+              style={{
+                '--tx': `${p.tx}px`,
+                '--ty': `${p.ty}px`,
+                color: p.color,
+              }}
+            >
+              {p.icon}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Interactive Speech Bubble */}
       {speech.isVisible && speech.message && (
         <div className={styles.speechBubble} role="status" aria-live="polite">
@@ -102,7 +150,25 @@ export function MascotCompanion() {
 
           <p className={styles.speechText}>{speech.message}</p>
 
-          {/* Character Switcher Popover */}
+          {/* Interactive Action Chips */}
+          {activeMascot.interactiveActions && activeMascot.interactiveActions.length > 0 && (
+            <div className={styles.actionChips}>
+              {activeMascot.interactiveActions.map((action) => (
+                <button
+                  key={action.id}
+                  type="button"
+                  className={styles.actionChip}
+                  onClick={() => handleActionClick(action)}
+                  aria-label={action.label}
+                >
+                  <SparklesIcon size={11} className={styles.chipIcon} />
+                  <span>{action.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Character Switcher Popover with Illustrated Avatars */}
           {isSwitcherOpen && (
             <div className={styles.switcherDrawer}>
               <div className={styles.switcherTitle}>
@@ -118,8 +184,13 @@ export function MascotCompanion() {
                     }`}
                     onClick={() => handleSelectMascot(m.id)}
                   >
-                    <span className={styles.optionDot} style={{ background: m.theme.primary }} />
-                    <span className={styles.optionName}>{m.name}</span>
+                    <div className={styles.optionAvatar}>
+                      <MascotThumbnail mascotId={m.id} size={30} />
+                    </div>
+                    <div className={styles.optionMeta}>
+                      <span className={styles.optionName}>{m.name}</span>
+                      <span className={styles.optionRole}>{m.title}</span>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -134,7 +205,7 @@ export function MascotCompanion() {
       <div className={styles.characterContainer}>
         <button
           type="button"
-          className={styles.characterButton}
+          className={`${styles.characterButton} ${isCelebrating ? styles.interactiveReaction : ''}`}
           onClick={handleMascotClick}
           aria-label={`Interact with ${activeMascot.name}`}
         >

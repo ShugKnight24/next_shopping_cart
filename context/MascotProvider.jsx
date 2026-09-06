@@ -8,7 +8,12 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { DEFAULT_MASCOT_ID, MASCOTS } from '../config/mascots';
+import {
+  DEFAULT_MASCOT_ID,
+  DEFAULT_SHOP_MASCOT_ID,
+  DEFAULT_KIDS_MASCOT_ID,
+  MASCOTS,
+} from '../config/mascots';
 
 export const MascotContext = createContext();
 
@@ -59,10 +64,10 @@ export function MascotProvider({ children }) {
     const currentMascot = MASCOTS[activeMascotId];
     if (currentRealm === 'kids' && (!currentMascot || currentMascot.realm !== 'kids')) {
       const savedKids = localStorage.getItem('shopping_cart.mascot_active_kids');
-      setActiveMascotId(savedKids && MASCOTS[savedKids] ? savedKids : 'leo');
+      setActiveMascotId(savedKids && MASCOTS[savedKids] ? savedKids : DEFAULT_KIDS_MASCOT_ID);
     } else if (currentRealm === 'shop' && (!currentMascot || currentMascot.realm !== 'shop')) {
       const savedShop = localStorage.getItem('shopping_cart.mascot_active_shop');
-      setActiveMascotId(savedShop && MASCOTS[savedShop] ? savedShop : 'carty');
+      setActiveMascotId(savedShop && MASCOTS[savedShop] ? savedShop : DEFAULT_SHOP_MASCOT_ID);
     }
   }, [currentRealm, isInitialized, activeMascotId]);
 

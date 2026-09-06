@@ -76,7 +76,7 @@
   }
 }
 
-/* Waving Paw for Leo */
+/* Waving Paw for Leo, Sparky, and Luna */
 .wavingPaw {
   animation: wavePaw 2.2s ease-in-out infinite alternate;
   transform-origin: 100px 110px;
@@ -91,5 +91,59 @@
   }
   100% {
     transform: rotate(8deg);
+  }
+}
+
+/* Curled Tail Wagging for Luna */
+.waggingTail {
+  animation: tailWag 1.8s ease-in-out infinite alternate;
+  transform-origin: 52px 125px;
+}
+
+@keyframes tailWag {
+  0% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(-6deg);
+  }
+}
+
+/* Cosmic Helmet Pulse */
+.cosmicGlow {
+  animation: cosmicPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes cosmicPulse {
+  0% {
+    opacity: 0.4;
+    stroke-width: 1.5;
+  }
+  100% {
+    opacity: 0.9;
+    stroke-width: 2.5;
+  }
+}
+
+/* Interactive Click Celebration / Jump */
+.interactiveReaction {
+  animation: mascotJump 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mascotJump {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  30% {
+    transform: scale(1.18, 0.88) translateY(-14px) rotate(-4deg);
+  }
+  60% {
+    transform: scale(0.95, 1.08) translateY(2px) rotate(3deg);
+  }
+  100% {
+    transform: scale(1) translateY(0) rotate(0deg);
   }
 }

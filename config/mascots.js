@@ -6,6 +6,36 @@
 
 export const MASCOTS = {
   // --- E-Commerce Storefront Realm ---
+  luna: {
+    id: 'luna',
+    realm: 'shop',
+    name: 'Luna The Cosmic Shepherd',
+    title: 'Guardian of the Stars & Flagship Concierge',
+    theme: {
+      primary: '#1e293b',
+      secondary: '#38bdf8',
+      accent: '#fbbf24',
+      background: 'rgba(30, 41, 59, 0.08)',
+      glow: 'rgba(56, 189, 248, 0.45)',
+    },
+    defaultMessage: "Woof! I'm Luna The Cosmic Shepherd. Watching over your cosmic shopping voyage today!",
+    quotes: {
+      home: "Welcome home! I've scouted the finest curated drops and star-tier essentials across the galaxy for you.",
+      products: "My keen shepherd senses detect incredible craftsmanship here! Tap any drop for a 3D inspection.",
+      favorites: "Your constellation of saved favorites is shining bright! Ready to bring them home?",
+      studio: "The Studio is breathtaking! You can customize timeless heirlooms, books, and kicks right here.",
+      addedToCart: "Tail wag! I've secured that treasure safely in your bag. Free Express Shipping is on the horizon!",
+      freeShipping: "Cosmic celebration! You've unlocked Free Express Shipping! Our star cruiser is fueled and ready!",
+      treatReaction: "Luna wags her curled tail with immense joy and does a graceful zero-gravity spin!",
+      secretDrop: "Luna sniffs the cosmos and unlocks a secret perk for you: use code FIRST15 at checkout!",
+      highPaw: "Luna lifts her suited paw for a gentle, loving astronaut high-five. You're family here!",
+    },
+    interactiveActions: [
+      { id: 'treat', label: 'Give Astronaut Treat', reply: "Luna wags her tail happily and does a zero-gravity spin in her spacesuit!" },
+      { id: 'secretDrop', label: 'Sniff Secret Perk', reply: "Luna discovered a cosmic perk! Use code FIRST15 at checkout for 15% off!" },
+      { id: 'highPaw', label: 'Cosmic High-Paw', reply: "Luna touches her suited paw to yours with a warm, soulful gaze. Good journey, friend!" },
+    ],
+  },
   carty: {
     id: 'carty',
     realm: 'shop',
@@ -27,6 +57,11 @@ export const MASCOTS = {
       addedToCart: "Awesome pick! Added to your bag. You're closer to Free Express Shipping!",
       freeShipping: "Hooray! You've unlocked Free Express Shipping on this order!",
     },
+    interactiveActions: [
+      { id: 'scan', label: 'Scan For Deals', reply: "Beep boop! Sensors detect 15% off first orders with code FIRST15!" },
+      { id: 'joke', label: 'Tell Robot Joke', reply: "Why did the robot go to the sneaker vault? To upgrade its reboot soles!" },
+      { id: 'shipping', label: 'Check Express Status', reply: "All orders over $150 qualify for 100% Free Express Overnight Shipping!" },
+    ],
   },
   sparky: {
     id: 'sparky',
@@ -49,6 +84,10 @@ export const MASCOTS = {
       addedToCart: "Straight heat! Added to your bag. Looking clean!",
       freeShipping: "Boom! Free Express Shipping unlocked! Your grails ship fast on us!",
     },
+    interactiveActions: [
+      { id: 'hype', label: 'Hype Check', reply: "100% Certified Grail status! Clean colorways, archival build quality!" },
+      { id: 'bark', label: 'Hound Howl', reply: "Awoo! That drop is too fresh to sleep on, cop before sizes vanish!" },
+    ],
   },
 
   // --- Kids & Web-to-Print Platform Realm ---
@@ -78,6 +117,10 @@ export const MASCOTS = {
       addedToCart: "Hooray! Your personalized creation is in the bag! It's going to look wonderful in print!",
       freeShipping: "Superstar! Free Express Shipping unlocked! Your custom treasures ship free!",
     },
+    interactiveActions: [
+      { id: 'roar', label: 'Roar of Courage', reply: "ROAARRR! You have the heart of a brave adventurer! Let's write history!" },
+      { id: 'idea', label: 'Story Spark', reply: "What if our hero finds an ancient glowing compass buried under the stars?" },
+    ],
   },
   penny: {
     id: 'penny',
@@ -105,6 +148,10 @@ export const MASCOTS = {
       addedToCart: "Magical! Your custom heirloom is in your royal bag!",
       freeShipping: "Royal celebration! Free Express Carriage Shipping unlocked for you!",
     },
+    interactiveActions: [
+      { id: 'spell', label: 'Sprinkle Starlight', reply: "Tink! Golden starlight swirls around your story with a magical blessing!" },
+      { id: 'crown', label: 'Royal Decree', reply: "By royal proclamation, you are hereby crowned the Master of Imagination!" },
+    ],
   },
   dexter: {
     id: 'dexter',
@@ -132,10 +179,15 @@ export const MASCOTS = {
       addedToCart: "Dino-mite! Your personalized adventure is safely packed in your bag!",
       freeShipping: "T-Rex roar! Free Express Shipping unlocked on this order!",
     },
+    interactiveActions: [
+      { id: 'stomp', label: 'Dino Stomp', reply: "STOMP STOMP! The ground shakes as Dexter discovers a golden fossil!" },
+      { id: 'fact', label: 'Dino Fact', reply: "Did you know? Some dinosaurs had feathers as bright as modern parakeets!" },
+    ],
   },
 };
 
-export const DEFAULT_SHOP_MASCOT_ID = 'carty';
+export const DEFAULT_SHOP_MASCOT_ID = 'luna';
 export const DEFAULT_KIDS_MASCOT_ID = 'leo';
 export const DEFAULT_MASCOT_ID = DEFAULT_SHOP_MASCOT_ID;
+
 

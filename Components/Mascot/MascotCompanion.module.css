@@ -169,7 +169,7 @@
 .switcherOption {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   padding: 6px 10px;
   border-radius: 8px;
@@ -179,25 +179,109 @@
   font-weight: 600;
   color: #1e293b;
   cursor: pointer;
-  text-align: left;
   transition: all 0.15s ease;
+  text-align: left;
+}
+
+.optionAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.optionMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.optionRole {
+  font-size: 0.65rem;
+  color: #64748b;
+  font-weight: 400;
 }
 
 .switcherOption:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
+  transform: translateX(-2px);
 }
 
 .switcherActive {
-  background: #eff6ff;
-  border-color: #93c5fd;
+  background: rgba(37, 99, 235, 0.08);
+  border-color: #2563eb;
   color: #1d4ed8;
 }
 
-.optionDot {
-  width: 8px;
-  height: 8px;
+/* Interactive Action Chips inside Speech Bubble */
+.actionChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.actionChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
   border-radius: 9999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.actionChip:hover {
+  background: #ffffff;
+  border-color: #38bdf8;
+  color: #0284c7;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(56, 189, 248, 0.2);
+}
+
+.chipIcon {
+  color: #f59e0b;
+}
+
+/* Floating Particles */
+.particlesContainer {
+  position: absolute;
+  bottom: 80px;
+  right: 50px;
+  pointer-events: none;
+  z-index: 900;
+}
+
+.particle {
+  position: absolute;
+  font-size: 14px;
+  animation: floatUpParticle 1.1s ease-out forwards;
+  user-select: none;
+}
+
+@keyframes floatUpParticle {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.6);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(var(--tx, 0px), var(--ty, -35px)) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--tx, 0px) * 1.4), calc(var(--ty, -60px) * 1.4)) scale(0.7);
+  }
 }
 
 /* Character Container */
