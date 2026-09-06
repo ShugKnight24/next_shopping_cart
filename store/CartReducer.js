@@ -94,6 +94,39 @@ export const reducer = (state, action) => {
       };
     }
 
+    case 'ADD_CUSTOM_ITEM': {
+      const { customItem } = action.payload || {};
+      if (!customItem || !customItem.itemid) return state;
+
+      const itemQty = parseInt(customItem.quantity, 10) || 1;
+      const normalizedItem = {
+        available: 99,
+        quantity: itemQty,
+        favorite: false,
+        ...customItem,
+      };
+
+      const existingCartItem = cart.find((item) => item.itemid === customItem.itemid);
+      const updatedCart = existingCartItem
+        ? cart.map((item) =>
+            item.itemid === customItem.itemid
+              ? { ...item, quantity: item.quantity + itemQty }
+              : item
+          )
+        : [...cart, normalizedItem];
+
+      const existingInv = inventory.find((item) => item.itemid === customItem.itemid);
+      const updatedInventory = existingInv
+        ? inventory
+        : [...inventory, normalizedItem];
+
+      return {
+        ...state,
+        cart: updatedCart,
+        inventory: updatedInventory,
+      };
+    }
+
     case 'UPDATE_QUANTITY': {
       const { productId, quantity } = action.payload;
       const targetQty = Math.max(0, parseInt(quantity, 10) || 0);

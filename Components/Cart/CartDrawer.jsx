@@ -259,13 +259,27 @@ export function CartDrawer() {
                       </button>
                     </div>
 
-                    <Link
-                      href={`/products/${item.itemid}`}
-                      className={styles.itemName}
-                      onClick={() => setIsCartOpen(false)}
-                    >
-                      {item.productName}
-                    </Link>
+                    {item.isCustom ? (
+                      <span className={styles.itemName}>{item.productName}</span>
+                    ) : (
+                      <Link
+                        href={`/products/${item.itemid}`}
+                        className={styles.itemName}
+                        onClick={() => setIsCartOpen(false)}
+                      >
+                        {item.productName}
+                      </Link>
+                    )}
+
+                    {item.customAttributes && (
+                      <div className={styles.customAttributesGrid}>
+                        {Object.entries(item.customAttributes).map(([k, v]) => (
+                          <span key={k} className={styles.customAttributeBadge}>
+                            {k}: <strong>{v}</strong>
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
                     <div className={styles.itemPriceRow}>
                       <div className={styles.qtyControls}>

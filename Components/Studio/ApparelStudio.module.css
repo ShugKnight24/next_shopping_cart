@@ -1,0 +1,236 @@
+.studioRoot {
+  width: 100%;
+}
+
+.stageGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .stageGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.canvasStage {
+  display: flex;
+  flex-direction: column;
+}
+
+.canvasHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.proofBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #bfdbfe;
+}
+
+.garmentLabel {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.garmentLabel strong {
+  color: #0f172a;
+}
+
+.controlsStage {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+}
+
+.paneHeader {
+  margin-bottom: 20px;
+}
+
+.paneHeader h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.25rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.paneHeader p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.fieldGroup {
+  margin-bottom: 18px;
+}
+
+.fieldGroup label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.garmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.garmentCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.garmentCard:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.garmentCardActive {
+  background: #eff6ff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.garmentTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.garmentName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.garmentBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  color: #2563eb;
+}
+
+.garmentPrice {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.textInput {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.textInput:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.colorSwatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swatchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.swatchBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.swatchBtnActive {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+.swatchCircle {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.swatchName {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.guaranteeBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 16px 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.addToCartBtn {
+  width: 100%;
+  padding: 14px 20px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.addToCartBtn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.36);
+}

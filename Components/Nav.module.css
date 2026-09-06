@@ -104,6 +104,21 @@
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.studioBadge {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
 }
 
 @media (max-width: 768px) {

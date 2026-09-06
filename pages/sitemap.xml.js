@@ -6,6 +6,7 @@ export function generateSiteMap(products = []) {
   const staticPages = [
     { url: '', priority: '1.0', changefreq: 'daily' },
     { url: '/products', priority: '0.9', changefreq: 'daily' },
+    { url: '/studio', priority: '0.8', changefreq: 'weekly' },
     { url: '/favorites', priority: '0.6', changefreq: 'weekly' },
     { url: '/cart', priority: '0.5', changefreq: 'weekly' },
     { url: '/checkout', priority: '0.4', changefreq: 'monthly' },

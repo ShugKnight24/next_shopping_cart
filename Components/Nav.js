@@ -106,6 +106,9 @@ export default function Nav() {
             <Link href="/products" aria-label="Products">
               Products
             </Link>
+            <Link href="/studio" aria-label="Custom Studio">
+              Studio <span className={styles.studioBadge}>W2P</span>
+            </Link>
           </nav>
           <div className={styles.navActions}>
             <button
