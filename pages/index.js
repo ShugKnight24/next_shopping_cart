@@ -2,7 +2,9 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { BrandStory } from '../Components/BrandStory/BrandStory';
 import { FullscreenCarousel } from '../Components/Carousel/FullscreenCarousel';
+import { FeaturedCategories } from '../Components/FeaturedCategories/FeaturedCategories';
 import { Hero } from '../Components/Hero/Hero';
 import { HowItWorks } from '../Components/HowItWorks';
 import { Products } from '../Components/Products/Products';
@@ -85,6 +87,8 @@ export default function Home() {
 
       <div className={`${styles.homeContainer} ${styles.premium}`}>
         <Hero />
+        {/* Curated Featured Categories */}
+        <FeaturedCategories />
         {/* How It Works Section */}
         <HowItWorks />
         {/* Featured Products Carousel */}
@@ -94,7 +98,8 @@ export default function Home() {
           <CarouselLoading />
         )}
         <FullscreenCarousel />
-        {/* <PremiumCarousel /> */}
+        {/* Editorial Brand Story & Trust Standards */}
+        <BrandStory />
         {/* Value Propositions */}
         <Reasons />
         {/* Products Section */}
