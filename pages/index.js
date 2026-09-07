@@ -75,7 +75,9 @@ export default function Home() {
           content="Discover our curated collection of premium products. Award-winning quality, free express shipping, and 100% verified authenticity."
         />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="/static/img/og-preview.svg" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="/static/img/og-preview.svg" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
