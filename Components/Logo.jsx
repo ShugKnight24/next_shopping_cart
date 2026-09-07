@@ -3,92 +3,147 @@ import { useContext } from 'react';
 import { BrandContext, BRAND_VARIANTS } from './Brand/BrandContext';
 
 /**
- * 1. Sleek Modern Mark (Geometric Monogram)
- * Precision interlocking dual-arc monogram in champagne gold and midnight sapphire.
+ * 1. Favicon Badge Mark (Primary / Default)
+ * The exact high-contrast sapphire squircle badge, gold shopping cart,
+ * and radiant starlight jewel from public/favicon.svg that matches the browser tab.
  */
-function GeometricMark({ uniqueId, isDark }) {
-  const goldGradId = `geoGoldGrad_${uniqueId}`;
-  const jewelGradId = `geoJewelGrad_${uniqueId}`;
-  const navyGradId = `geoNavyGrad_${uniqueId}`;
+function FaviconBadgeMark({ uniqueId, isDark }) {
+  const navyGradId = `favNavy_${uniqueId}`;
+  const goldGradId = `favGold_${uniqueId}`;
+  const glowId = `favGlow_${uniqueId}`;
+
+  return (
+    <g transform="translate(6, 6)">
+      <defs>
+        <linearGradient id={navyGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1e293b" />
+          <stop offset="100%" stopColor="#0f172a" />
+        </linearGradient>
+        <linearGradient id={goldGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fef08a" />
+          <stop offset="40%" stopColor="#f59e0b" />
+          <stop offset="80%" stopColor="#d97706" />
+          <stop offset="100%" stopColor="#b45309" />
+        </linearGradient>
+        <filter id={glowId} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow
+            dx="0"
+            dy="1.5"
+            stdDeviation="1.5"
+            floodColor="#000000"
+            floodOpacity={isDark ? 0.6 : 0.35}
+          />
+        </filter>
+      </defs>
+
+      {/* Solid Sapphire Navy Squircle Badge (Direct Favicon Translation) */}
+      <rect width="64" height="64" rx="16" fill={`url(#${navyGradId})`} />
+      <rect
+        x="1.5"
+        y="1.5"
+        width="61"
+        height="61"
+        rx="14.5"
+        fill="none"
+        stroke={`url(#${goldGradId})`}
+        strokeWidth="1.5"
+        strokeOpacity="0.6"
+      />
+
+      {/* High-Precision Cart Emblem with Starlight */}
+      <g filter={`url(#${glowId})`}>
+        {/* Cart Basket & Handle */}
+        <path
+          d="M14 19 H21 L26.5 38 A2.5 2.5 0 0 0 28.9 40 H44.5 A2.5 2.5 0 0 0 46.9 38.1 L50 24 H23"
+          fill="none"
+          stroke={`url(#${goldGradId})`}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Radiant Starlight Jewel */}
+        <polygon
+          points="36,22 37.5,25.5 41,27 37.5,28.5 36,32 34.5,28.5 31,27 34.5,25.5"
+          fill="#ffffff"
+        />
+        <polygon
+          points="36,24 37,26 39,27 37,28 36,30 35,28 33,27 35,26"
+          fill="#fde047"
+        />
+
+        {/* Wheels */}
+        <circle cx="28.5" cy="48" r="3.5" fill={`url(#${goldGradId})`} />
+        <circle cx="28.5" cy="48" r="1.2" fill="#0f172a" />
+        <circle cx="44.5" cy="48" r="3.5" fill={`url(#${goldGradId})`} />
+        <circle cx="44.5" cy="48" r="1.2" fill="#0f172a" />
+      </g>
+    </g>
+  );
+}
+
+FaviconBadgeMark.propTypes = {
+  uniqueId: PropTypes.string.isRequired,
+  isDark: PropTypes.bool.isRequired,
+};
+
+/**
+ * 2. Floating Cart Mark (Clean / Borderless)
+ * The exact cart and starlight jewel from the favicon, but floating cleanly without the squircle box.
+ */
+function FloatingCartMark({ uniqueId, isDark }) {
+  const goldGradId = `floatGold_${uniqueId}`;
 
   return (
     <g transform="translate(6, 6)">
       <defs>
         <linearGradient id={goldGradId} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#fef08a" />
-          <stop offset="35%" stopColor="#f59e0b" />
-          <stop offset="70%" stopColor="#d97706" />
+          <stop offset="40%" stopColor="#f59e0b" />
+          <stop offset="80%" stopColor="#d97706" />
           <stop offset="100%" stopColor="#b45309" />
         </linearGradient>
-        <linearGradient id={jewelGradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="50%" stopColor="#fde047" />
-          <stop offset="100%" stopColor="#f59e0b" />
-        </linearGradient>
-        <linearGradient id={navyGradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={isDark ? '#38bdf8' : '#1e293b'} />
-          <stop offset="100%" stopColor={isDark ? '#0284c7' : '#0f172a'} />
-        </linearGradient>
-        <filter id={`geoGlow_${uniqueId}`} x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#f59e0b" floodOpacity={isDark ? 0.35 : 0.2} />
-        </filter>
       </defs>
 
-      {/* Badge Frame */}
-      <rect
-        x="0"
-        y="0"
-        width="64"
-        height="64"
-        rx="16"
-        fill={isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.03)'}
-        stroke={isDark ? 'rgba(245, 158, 11, 0.3)' : 'rgba(217, 119, 6, 0.25)'}
-        strokeWidth="1.2"
+      {/* Cart Basket & Handle */}
+      <path
+        d="M12 18 H20 L26 39 A3 3 0 0 0 28.8 41 H46 A3 3 0 0 0 48.8 38.8 L52 23 H22"
+        fill="none"
+        stroke={isDark ? `url(#${goldGradId})` : '#0f172a'}
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
 
-      <g filter={`url(#geoGlow_${uniqueId})`}>
-        {/* Cart Basket Rail */}
-        <path
-          d="M12 18 H20 L27 38 A3 3 0 0 0 29.8 40 H47.5 A3 3 0 0 0 50.4 37.8 L54 23 H23"
-          fill="none"
-          stroke={`url(#${goldGradId})`}
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      {/* Radiant Starlight Jewel */}
+      <g transform="translate(36, 28)">
+        <polygon
+          points="0,-11 2.5,-3 11,0 2.5,3 0,11 -2.5,3 -11,0 -2.5,-3"
+          fill={`url(#${goldGradId})`}
         />
-
-        {/* Interlocking Monogram C */}
-        <path
-          d="M44 26 C41 23.5 36.5 22.5 32 24 C27 25.7 24 30.5 25 35.5 C26 40.5 31 44 36.5 43 C41 42.2 44.5 39.5 46 37"
-          fill="none"
-          stroke={`url(#${navyGradId})`}
-          strokeWidth="2.8"
-          strokeLinecap="round"
+        <polygon
+          points="0,-5 1.5,-1.5 5,0 1.5,1.5 0,5 -1.5,1.5 -5,0 -1.5,-1.5"
+          fill="#ffffff"
         />
-
-        {/* Radiant Apex Gem */}
-        <path
-          d="M36 21 L37.5 26 L42.5 27.5 L37.5 29 L36 34 L34.5 29 L29.5 27.5 L34.5 26 Z"
-          fill={`url(#${jewelGradId})`}
-        />
-
-        {/* Dual Concentric Wheels */}
-        <circle cx="28" cy="49" r="4.2" fill={`url(#${goldGradId})`} />
-        <circle cx="28" cy="49" r="1.6" fill={isDark ? '#0f172a' : '#ffffff'} />
-        <circle cx="47" cy="49" r="4.2" fill={`url(#${goldGradId})`} />
-        <circle cx="47" cy="49" r="1.6" fill={isDark ? '#0f172a' : '#ffffff'} />
+        <circle cx="0" cy="0" r="1.5" fill="#f59e0b" />
       </g>
+
+      {/* Wheels */}
+      <circle cx="28.5" cy="49" r="4" fill={`url(#${goldGradId})`} />
+      <circle cx="28.5" cy="49" r="1.5" fill={isDark ? '#0f172a' : '#ffffff'} />
+      <circle cx="46.5" cy="49" r="4" fill={`url(#${goldGradId})`} />
+      <circle cx="46.5" cy="49" r="1.5" fill={isDark ? '#0f172a' : '#ffffff'} />
     </g>
   );
 }
 
-GeometricMark.propTypes = {
+FloatingCartMark.propTypes = {
   uniqueId: PropTypes.string.isRequired,
   isDark: PropTypes.bool.isRequired,
 };
 
 /**
- * 2. Soviet Constructivist Mark
+ * 3. Soviet Constructivist Mark
  * Bold geometric poster art: 45° diagonal dynamic, industrial gear wheels, constructivist red star.
  */
 function SovietMark({ uniqueId, isDark }) {
@@ -151,21 +206,17 @@ function SovietMark({ uniqueId, isDark }) {
       />
 
       {/* Heavy Industrial Gear Wheels */}
-      <g>
-        {/* Wheel 1 */}
-        <circle cx="27" cy="51" r="5" fill={`url(#${redGradId})`} />
-        <circle cx="27" cy="51" r="2" fill={isDark ? '#18181b' : '#ffffff'} />
-        <rect x="25.5" y="44.5" width="3" height="13" fill={isDark ? '#ffffff' : '#18181b'} />
-        <rect x="20.5" y="49.5" width="13" height="3" fill={isDark ? '#ffffff' : '#18181b'} />
-        <circle cx="27" cy="51" r="3.2" fill={`url(#${redGradId})`} />
+      <circle cx="27" cy="51" r="5" fill={`url(#${redGradId})`} />
+      <circle cx="27" cy="51" r="2" fill={isDark ? '#18181b' : '#ffffff'} />
+      <rect x="25.5" y="44.5" width="3" height="13" fill={isDark ? '#ffffff' : '#18181b'} />
+      <rect x="20.5" y="49.5" width="13" height="3" fill={isDark ? '#ffffff' : '#18181b'} />
+      <circle cx="27" cy="51" r="3.2" fill={`url(#${redGradId})`} />
 
-        {/* Wheel 2 */}
-        <circle cx="48" cy="51" r="5" fill={`url(#${redGradId})`} />
-        <circle cx="48" cy="51" r="2" fill={isDark ? '#18181b' : '#ffffff'} />
-        <rect x="46.5" y="44.5" width="3" height="13" fill={isDark ? '#ffffff' : '#18181b'} />
-        <rect x="41.5" y="49.5" width="13" height="3" fill={isDark ? '#ffffff' : '#18181b'} />
-        <circle cx="48" cy="51" r="3.2" fill={`url(#${redGradId})`} />
-      </g>
+      <circle cx="48" cy="51" r="5" fill={`url(#${redGradId})`} />
+      <circle cx="48" cy="51" r="2" fill={isDark ? '#18181b' : '#ffffff'} />
+      <rect x="46.5" y="44.5" width="3" height="13" fill={isDark ? '#ffffff' : '#18181b'} />
+      <rect x="41.5" y="49.5" width="13" height="3" fill={isDark ? '#ffffff' : '#18181b'} />
+      <circle cx="48" cy="51" r="3.2" fill={`url(#${redGradId})`} />
     </g>
   );
 }
@@ -176,7 +227,7 @@ SovietMark.propTypes = {
 };
 
 /**
- * 3. Dark & Edgy Mark
+ * 4. Dark & Edgy Mark
  * Cyber-industrial streetwear aesthetic: razor-sharp angles, matte obsidian, acid-lime laser slash.
  */
 function EdgyMark({ uniqueId, isDark }) {
@@ -245,7 +296,7 @@ EdgyMark.propTypes = {
 };
 
 /**
- * 4. Lighthearted Pop Mark
+ * 5. Lighthearted Pop Mark
  * Playful & bubbly: soft rounded curves, cheerful bounce tilt, warm sunset palette, joy burst.
  */
 function LightheartedMark({ uniqueId, isDark }) {
@@ -316,8 +367,9 @@ LightheartedMark.propTypes = {
 
 /**
  * Main Logo Component
- * Renders one of the 4 brand logo variants:
- * - 'geometric' | 'sleek' (Sleek Modern)
+ * Renders one of the brand logo variants:
+ * - 'favicon' | 'geometric' | 'badge' (Favicon Badge - Default, 100% matched to favicon)
+ * - 'floating' (Floating Minimal Cart)
  * - 'soviet' (Soviet Constructivist)
  * - 'edgy' (Dark & Edgy)
  * - 'lighthearted' (Lighthearted Pop)
@@ -332,9 +384,11 @@ export function Logo({
 }) {
   const brandContext = useContext(BrandContext);
 
-  // Normalize variant name (allow 'sleek' as an alias for 'geometric')
+  // Normalize variant name (map legacy or aliases)
   let rawVariant = propVariant || brandContext?.variant || 'geometric';
-  if (rawVariant === 'sleek') rawVariant = 'geometric';
+  if (rawVariant === 'sleek' || rawVariant === 'badge' || rawVariant === 'favicon') {
+    rawVariant = 'geometric';
+  }
 
   const activeVariant = BRAND_VARIANTS[rawVariant] ? rawVariant : 'geometric';
   const variantConfig = BRAND_VARIANTS[activeVariant];
@@ -383,7 +437,10 @@ export function Logo({
 
       {/* Visual Mark */}
       {activeVariant === 'geometric' && (
-        <GeometricMark uniqueId={uniqueId} isDark={isDark} />
+        <FaviconBadgeMark uniqueId={uniqueId} isDark={isDark} />
+      )}
+      {activeVariant === 'floating' && (
+        <FloatingCartMark uniqueId={uniqueId} isDark={isDark} />
       )}
       {activeVariant === 'soviet' && (
         <SovietMark uniqueId={uniqueId} isDark={isDark} />
@@ -396,7 +453,7 @@ export function Logo({
       )}
 
       {/* Wordmark Typography */}
-      <g transform="translate(82, 0)">
+      <g transform="translate(84, 0)">
         <text
           x="0"
           y="37"
@@ -428,7 +485,7 @@ export function Logo({
 }
 
 Logo.propTypes = {
-  variant: PropTypes.oneOf(['geometric', 'sleek', 'soviet', 'edgy', 'lighthearted']),
+  variant: PropTypes.oneOf(['geometric', 'badge', 'favicon', 'sleek', 'floating', 'soviet', 'edgy', 'lighthearted']),
   theme: PropTypes.oneOf(['light', 'dark', 'auto']),
   showSubtitle: PropTypes.bool,
   subtitle: PropTypes.string,

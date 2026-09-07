@@ -4,12 +4,21 @@ import PropTypes from 'prop-types';
 export const BRAND_VARIANTS = {
   geometric: {
     id: 'geometric',
-    name: 'Sleek Modern',
-    badge: 'Sleek & Clean',
-    tagline: 'Precision Dual-Arc Monogram',
+    name: 'Favicon Badge',
+    badge: 'Favicon Match',
+    tagline: 'Sapphire Squircle & Starlight Cart',
     subtitle: 'SHOPPING MADE SIMPLE',
     description:
-      'Clean dual-arc monogram forming a stylized cart silhouette in champagne gold and midnight navy.',
+      'The exact deep sapphire squircle emblem from the favicon, with radiant gold shopping cart and starlight jewel.',
+  },
+  floating: {
+    id: 'floating',
+    name: 'Floating Minimal Cart',
+    badge: 'Clean & Borderless',
+    tagline: 'Open Canvas Cart & Starlight',
+    subtitle: 'SHOPPING MADE SIMPLE',
+    description:
+      'The cart and radiant starlight jewel from the favicon, floating cleanly on the canvas without the badge box.',
   },
   soviet: {
     id: 'soviet',

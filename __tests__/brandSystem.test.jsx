@@ -27,16 +27,27 @@ describe('Brand System & Logo Variants', () => {
     localStorage.clear();
   });
 
-  it('renders Sleek Modern variant by default with accurate accessible label', () => {
+  it('renders Favicon Badge variant by default with accurate accessible label', () => {
     render(
       <BrandProvider>
         <Logo variant="geometric" />
       </BrandProvider>
     );
 
-    expect(screen.getByRole('img', { name: /Cart Commerce - Sleek Modern/i })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /Cart Commerce - Favicon Badge/i })).toBeInTheDocument();
     expect(screen.getByText('CART COMMERCE')).toBeInTheDocument();
     expect(screen.getByText('SHOPPING MADE SIMPLE')).toBeInTheDocument();
+  });
+
+  it('renders Floating Minimal Cart variant borderless with starlight jewel', () => {
+    render(
+      <BrandProvider>
+        <Logo variant="floating" />
+      </BrandProvider>
+    );
+
+    expect(screen.getByRole('img', { name: /Cart Commerce - Floating Minimal Cart/i })).toBeInTheDocument();
+    expect(screen.getByText('CART COMMERCE')).toBeInTheDocument();
   });
 
   it('renders Soviet Constructivist variant with dynamic constructivist styling', () => {
@@ -126,7 +137,7 @@ describe('Brand System & Logo Variants', () => {
     );
 
     expect(screen.getByTestId('current-variant').textContent).toBe('geometric');
-    expect(screen.getByTestId('current-name').textContent).toBe('Sleek Modern');
+    expect(screen.getByTestId('current-name').textContent).toBe('Favicon Badge');
 
     // Switch to Soviet
     fireEvent.click(screen.getByText('Set Soviet'));
@@ -144,7 +155,7 @@ describe('Brand System & Logo Variants', () => {
     expect(screen.getByTestId('current-name').textContent).toBe('Lighthearted Pop');
   });
 
-  it('renders BrandVariantPickerModal and allows switching across all 4 variants', () => {
+  it('renders BrandVariantPickerModal and allows switching across all variants', () => {
     const onClose = vi.fn();
 
     render(
@@ -159,8 +170,8 @@ describe('Brand System & Logo Variants', () => {
       screen.getByRole('heading', { name: /Brand Identity & Logo System/i })
     ).toBeInTheDocument();
 
-    // Verify all 4 options are displayed
-    expect(screen.getAllByText('Sleek Modern').length).toBeGreaterThan(0);
+    // Verify options are displayed
+    expect(screen.getAllByText('Favicon Badge').length).toBeGreaterThan(0);
     expect(screen.getByText('Soviet Constructivist')).toBeInTheDocument();
     expect(screen.getByText('Dark & Edgy')).toBeInTheDocument();
     expect(screen.getByText('Lighthearted Pop')).toBeInTheDocument();
