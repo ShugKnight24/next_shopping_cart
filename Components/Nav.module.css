@@ -168,6 +168,44 @@
   transition: all 0.2s ease;
 }
 
+.brandTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.brandTrigger:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+  transform: translateY(-1px);
+}
+
+.brandTriggerStar {
+  color: #f59e0b;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 550px) {
+  .brandTriggerLabel {
+    display: none;
+  }
+  .brandTrigger {
+    padding: 0.45rem 0.55rem;
+  }
+}
+
 .searchTrigger:hover {
   background: #fff;
   border-color: var(--color-primary-accent);

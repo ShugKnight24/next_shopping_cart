@@ -47,8 +47,7 @@
   margin: 0 0 1rem 0;
   width: 100%;
   max-width: 240px;
-  filter: brightness(0) invert(1);
-  opacity: 0.95;
+  opacity: 1;
 }
 
 .storeDescription p {

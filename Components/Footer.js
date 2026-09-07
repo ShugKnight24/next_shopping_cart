@@ -285,7 +285,7 @@ export default function Footer() {
         <div className={styles.storeInfo}>
           <div className={styles.storeDescription}>
             <Link href="/" aria-label="Home / Shop">
-              <Logo />
+              <Logo theme="dark" />
             </Link>
             <p>
               Our store provides quality products at their lowest retail prices
@@ -346,6 +346,9 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link href="/checkout">Payment Options</Link>
+                </li>
+                <li>
+                  <Link href="/brand">Brand Identity &amp; Logos</Link>
                 </li>
               </ul>
             </div>

@@ -7,6 +7,7 @@ import { Logo } from './Logo';
 import PromoBanner from './PromoBanner/PromoBanner';
 import { CommandPalette } from './Search/CommandPalette';
 import { CartDrawer } from './Cart/CartDrawer';
+import { BrandVariantPickerModal } from './Brand/BrandVariantPicker';
 import { SearchIcon, CartIcon } from './Icons';
 import styles from './Nav.module.css';
 
@@ -53,6 +54,7 @@ export default function Nav() {
     cartCount === '99+' ? 'huge' : cartCount >= 10 ? 'xl' : '';
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isBrandPickerOpen, setIsBrandPickerOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [recentSearches, setRecentSearches] = useState([]);
   const [isStudioDropdownOpen, setIsStudioDropdownOpen] = useState(false);
@@ -280,6 +282,16 @@ export default function Nav() {
           <div className={styles.navActions}>
             <button
               type="button"
+              className={styles.brandTrigger}
+              onClick={() => setIsBrandPickerOpen(true)}
+              aria-label="Brand Logo Variant Selector"
+              title="Switch Brand Logo Style (Geometric, Minimal, Crest)"
+            >
+              <span className={styles.brandTriggerStar}>✦</span>
+              <span className={styles.brandTriggerLabel}>Brand</span>
+            </button>
+            <button
+              type="button"
               className={styles.searchTrigger}
               onClick={() => setIsSearchOpen(true)}
               aria-label="Search products"
@@ -318,6 +330,10 @@ export default function Nav() {
       />
 
       <CartDrawer />
+      <BrandVariantPickerModal
+        isOpen={isBrandPickerOpen}
+        onClose={() => setIsBrandPickerOpen(false)}
+      />
     </div>
   );
 }

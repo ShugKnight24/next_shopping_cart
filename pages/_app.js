@@ -6,6 +6,7 @@ import { GA_TRACKING_ID, handlePageView, trackWebVitals } from '../analytics/goo
 import { HoneypotField, telemetry } from '../analytics/telemetry';
 import Layout from '../Components/Layout';
 import { ToastProvider } from '../Components/UI/Toast';
+import { BrandProvider } from '../Components/Brand/BrandContext';
 import { CartProvider } from '../context/CartProvider';
 import { MascotProvider } from '../context/MascotProvider';
 import { ModalProvider } from '../context/ModalProvider';
@@ -55,19 +56,21 @@ function MyApp({ Component, pageProps }) {
           />
         </>
       )}
-      <ToastProvider>
-        <ModalProvider>
-          <CartProvider>
-            <MascotProvider>
-              <Layout>
-                <HoneypotField />
-                <Component {...pageProps} />
-                <MascotCompanion />
-              </Layout>
-            </MascotProvider>
-          </CartProvider>
-        </ModalProvider>
-      </ToastProvider>
+      <BrandProvider>
+        <ToastProvider>
+          <ModalProvider>
+            <CartProvider>
+              <MascotProvider>
+                <Layout>
+                  <HoneypotField />
+                  <Component {...pageProps} />
+                  <MascotCompanion />
+                </Layout>
+              </MascotProvider>
+            </CartProvider>
+          </ModalProvider>
+        </ToastProvider>
+      </BrandProvider>
     </>
   );
 }
