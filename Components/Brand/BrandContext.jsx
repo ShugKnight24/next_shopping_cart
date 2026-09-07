@@ -4,30 +4,39 @@ import PropTypes from 'prop-types';
 export const BRAND_VARIANTS = {
   geometric: {
     id: 'geometric',
-    name: 'Geometric Monogram',
-    badge: 'Modern Luxury',
+    name: 'Sleek Modern',
+    badge: 'Sleek & Clean',
     tagline: 'Precision Dual-Arc Monogram',
     subtitle: 'SHOPPING MADE SIMPLE',
     description:
-      'Precision dual-arc interlocking monogram forming an architectural cart emblem in champagne gold and midnight sapphire.',
+      'Clean dual-arc monogram forming a stylized cart silhouette in champagne gold and midnight navy.',
   },
-  minimal: {
-    id: 'minimal',
-    name: 'Minimalist Line & Starlight',
-    badge: 'Clean Modernist',
-    tagline: 'Continuous Stroke & Radiant Jewel',
-    subtitle: 'CURATED GOODS & KEEPSAKES',
+  soviet: {
+    id: 'soviet',
+    name: 'Soviet Constructivist',
+    badge: 'Constructivist',
+    tagline: 'Bold Geometric Poster Art',
+    subtitle: 'COMMERCE & INDUSTRY',
     description:
-      'Aerodynamic single-line continuous cart silhouette centered around a radiant 8-point starlight jewel.',
+      '1920s Constructivist poster aesthetic with bold 45° diagonal geometry, industrial gear wheels, and a red star accent.',
   },
-  crest: {
-    id: 'crest',
-    name: 'Archival Heritage Crest',
-    badge: 'Heritage Luxury',
-    tagline: 'Hexagonal Prestige & Star Compass',
-    subtitle: 'CURATED LUXURY STOREFRONT',
+  edgy: {
+    id: 'edgy',
+    name: 'Dark & Edgy',
+    badge: 'Cyber Streetwear',
+    tagline: 'Matte Obsidian & Acid Accent',
+    subtitle: 'BLACK LABEL',
     description:
-      'Hexagonal faceted prestige crest featuring gold filigree cart lattice and an archival navigational star compass.',
+      'Aggressive razor-edge silhouette in matte obsidian black with toxic acid-lime accents and turbine hex wheels.',
+  },
+  lighthearted: {
+    id: 'lighthearted',
+    name: 'Lighthearted Pop',
+    badge: 'Playful & Bubbly',
+    tagline: 'Warm Bouncy Curves',
+    subtitle: 'EVERYDAY FINDS',
+    description:
+      'Approachable bubbly rounded cart with a cheerful bounce tilt, warm sunset palette, and friendly curved geometry.',
   },
 };
 

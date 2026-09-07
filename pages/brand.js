@@ -27,7 +27,7 @@ export default function BrandPage() {
         <title>Brand Identity &amp; Logo System | Cart Commerce</title>
         <meta
           name="description"
-          content="Explore the modern visual identity and logo variants for Cart Commerce. Select between Geometric Monogram, Minimalist Line & Starlight, and Archival Heritage Crest."
+          content="Explore the diverse visual identity and logo variants for Cart Commerce: Sleek Modern, Soviet Constructivist, Dark & Edgy, and Lighthearted Pop."
         />
         <meta property="og:title" content="Brand Identity | Cart Commerce" />
         <meta
@@ -84,9 +84,9 @@ export default function BrandPage() {
               lineHeight: 1.6,
             }}
           >
-            A cohesive, modern luxury visual language for Cart Commerce. Three bespoke vector
-            variants designed for precision legibility across light storefronts, dark editorial footers,
-            app icons, and social previews.
+            A versatile visual identity system for Cart Commerce. Four distinct aesthetic
+            variants — Sleek Modern, Soviet Constructivist, Dark &amp; Edgy, and Lighthearted Pop — designed
+            for personality, legibility, and effortless theme switching.
           </p>
 
           {/* Theme preview selector */}
@@ -141,12 +141,12 @@ export default function BrandPage() {
           </div>
         </div>
 
-        {/* 3 Variants Presentation Cards */}
+        {/* 4 Variants Presentation Cards */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '2rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+            gap: '1.75rem',
             marginBottom: '4rem',
           }}
         >

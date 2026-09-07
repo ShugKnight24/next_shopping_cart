@@ -47,7 +47,7 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
               Brand Identity &amp; Logo System
             </h2>
             <p className={styles.modalSubtitle}>
-              Explore our 3 modern brand variants and select your preferred aesthetic for the store.
+              Explore our 4 brand aesthetic variants and select your preferred style for the store.
             </p>
           </div>
           <button

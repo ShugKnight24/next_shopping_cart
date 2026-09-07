@@ -13,9 +13,10 @@ function BrandConsumer() {
     <div>
       <span data-testid="current-variant">{variant}</span>
       <span data-testid="current-name">{currentInfo.name}</span>
-      <button onClick={() => setVariant('minimal')}>Set Minimal</button>
-      <button onClick={() => setVariant('crest')}>Set Crest</button>
-      <button onClick={() => setVariant('geometric')}>Set Geometric</button>
+      <button onClick={() => setVariant('soviet')}>Set Soviet</button>
+      <button onClick={() => setVariant('edgy')}>Set Edgy</button>
+      <button onClick={() => setVariant('lighthearted')}>Set Lighthearted</button>
+      <button onClick={() => setVariant('geometric')}>Set Sleek</button>
       <Logo />
     </div>
   );
@@ -26,42 +27,55 @@ describe('Brand System & Logo Variants', () => {
     localStorage.clear();
   });
 
-  it('renders Variant A (Geometric Monogram) by default with accurate accessible label', () => {
+  it('renders Sleek Modern variant by default with accurate accessible label', () => {
     render(
       <BrandProvider>
         <Logo variant="geometric" />
       </BrandProvider>
     );
 
-    expect(screen.getByRole('img', { name: /Cart Commerce - Geometric Monogram/i })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /Cart Commerce - Sleek Modern/i })).toBeInTheDocument();
     expect(screen.getByText('CART COMMERCE')).toBeInTheDocument();
     expect(screen.getByText('SHOPPING MADE SIMPLE')).toBeInTheDocument();
   });
 
-  it('renders Variant B (Minimalist Continuous Line & Starlight)', () => {
+  it('renders Soviet Constructivist variant with dynamic constructivist styling', () => {
     render(
       <BrandProvider>
-        <Logo variant="minimal" />
+        <Logo variant="soviet" />
       </BrandProvider>
     );
 
     expect(
-      screen.getByRole('img', { name: /Cart Commerce - Minimalist Line & Starlight/i })
+      screen.getByRole('img', { name: /Cart Commerce - Soviet Constructivist/i })
     ).toBeInTheDocument();
-    expect(screen.getByText('CURATED GOODS & KEEPSAKES')).toBeInTheDocument();
+    expect(screen.getByText('COMMERCE & INDUSTRY')).toBeInTheDocument();
   });
 
-  it('renders Variant C (Archival Heritage Crest)', () => {
+  it('renders Dark & Edgy variant with cyber-streetwear styling', () => {
     render(
       <BrandProvider>
-        <Logo variant="crest" />
+        <Logo variant="edgy" />
       </BrandProvider>
     );
 
     expect(
-      screen.getByRole('img', { name: /Cart Commerce - Archival Heritage Crest/i })
+      screen.getByRole('img', { name: /Cart Commerce - Dark & Edgy/i })
     ).toBeInTheDocument();
-    expect(screen.getByText('CURATED LUXURY STOREFRONT')).toBeInTheDocument();
+    expect(screen.getByText('BLACK LABEL')).toBeInTheDocument();
+  });
+
+  it('renders Lighthearted Pop variant with cheerful rounded styling', () => {
+    render(
+      <BrandProvider>
+        <Logo variant="lighthearted" />
+      </BrandProvider>
+    );
+
+    expect(
+      screen.getByRole('img', { name: /Cart Commerce - Lighthearted Pop/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText('EVERYDAY FINDS')).toBeInTheDocument();
   });
 
   it('supports dark theme rendering without invert filter hacks', () => {
@@ -89,11 +103,11 @@ describe('Brand System & Logo Variants', () => {
   it('allows customizing the subtitle prop', () => {
     render(
       <BrandProvider>
-        <Logo variant="geometric" subtitle="BESPOKE EXCELLENCE" />
+        <Logo variant="geometric" subtitle="STORE & STUDIOS" />
       </BrandProvider>
     );
 
-    expect(screen.getByText('BESPOKE EXCELLENCE')).toBeInTheDocument();
+    expect(screen.getByText('STORE & STUDIOS')).toBeInTheDocument();
   });
 
   it('renders LegacyLogo for historical reference', () => {
@@ -112,20 +126,25 @@ describe('Brand System & Logo Variants', () => {
     );
 
     expect(screen.getByTestId('current-variant').textContent).toBe('geometric');
-    expect(screen.getByTestId('current-name').textContent).toBe('Geometric Monogram');
+    expect(screen.getByTestId('current-name').textContent).toBe('Sleek Modern');
 
-    // Switch to minimal
-    fireEvent.click(screen.getByText('Set Minimal'));
-    expect(screen.getByTestId('current-variant').textContent).toBe('minimal');
-    expect(screen.getByTestId('current-name').textContent).toBe('Minimalist Line & Starlight');
+    // Switch to Soviet
+    fireEvent.click(screen.getByText('Set Soviet'));
+    expect(screen.getByTestId('current-variant').textContent).toBe('soviet');
+    expect(screen.getByTestId('current-name').textContent).toBe('Soviet Constructivist');
 
-    // Switch to crest
-    fireEvent.click(screen.getByText('Set Crest'));
-    expect(screen.getByTestId('current-variant').textContent).toBe('crest');
-    expect(screen.getByTestId('current-name').textContent).toBe('Archival Heritage Crest');
+    // Switch to Edgy
+    fireEvent.click(screen.getByText('Set Edgy'));
+    expect(screen.getByTestId('current-variant').textContent).toBe('edgy');
+    expect(screen.getByTestId('current-name').textContent).toBe('Dark & Edgy');
+
+    // Switch to Lighthearted
+    fireEvent.click(screen.getByText('Set Lighthearted'));
+    expect(screen.getByTestId('current-variant').textContent).toBe('lighthearted');
+    expect(screen.getByTestId('current-name').textContent).toBe('Lighthearted Pop');
   });
 
-  it('renders BrandVariantPickerModal and allows switching the active brand', () => {
+  it('renders BrandVariantPickerModal and allows switching across all 4 variants', () => {
     const onClose = vi.fn();
 
     render(
@@ -140,21 +159,22 @@ describe('Brand System & Logo Variants', () => {
       screen.getByRole('heading', { name: /Brand Identity & Logo System/i })
     ).toBeInTheDocument();
 
-    // Verify all 3 options are displayed
-    expect(screen.getAllByText('Geometric Monogram').length).toBeGreaterThan(0);
-    expect(screen.getByText('Minimalist Line & Starlight')).toBeInTheDocument();
-    expect(screen.getByText('Archival Heritage Crest')).toBeInTheDocument();
+    // Verify all 4 options are displayed
+    expect(screen.getAllByText('Sleek Modern').length).toBeGreaterThan(0);
+    expect(screen.getByText('Soviet Constructivist')).toBeInTheDocument();
+    expect(screen.getByText('Dark & Edgy')).toBeInTheDocument();
+    expect(screen.getByText('Lighthearted Pop')).toBeInTheDocument();
 
     // Toggle preview canvas theme
     const darkThemeBtn = screen.getByRole('button', { name: /Dark Theme/i });
     fireEvent.click(darkThemeBtn);
 
-    // Click "Set as Active Brand" on Minimalist option
+    // Click "Set as Active Brand" on Soviet option
     const setButtons = screen.getAllByRole('button', { name: /Set as Active Brand/i });
     expect(setButtons.length).toBeGreaterThan(0);
     fireEvent.click(setButtons[0]);
 
-    // Verify toast or active state updated
-    expect(screen.getAllByText('Minimalist Line & Starlight').length).toBeGreaterThan(0);
+    // Verify active state updated
+    expect(screen.getAllByText('Soviet Constructivist').length).toBeGreaterThan(0);
   });
 });
