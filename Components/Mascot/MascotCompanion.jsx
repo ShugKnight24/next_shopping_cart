@@ -100,8 +100,10 @@ export function MascotCompanion() {
   };
 
   const mascotList = availableMascots && availableMascots.length > 0 ? availableMascots : [activeMascot];
-  const otherMascots = mascotList.filter((m) => m.id !== activeMascotId);
-  const nextMascotName = otherMascots.length > 0 ? otherMascots[0].name.split(' ')[0] : 'Next';
+  const curIndex = mascotList.findIndex((m) => m.id === activeMascotId);
+  const nextIndex = curIndex >= 0 ? (curIndex + 1) % mascotList.length : 0;
+  const nextMascot = mascotList[nextIndex] || mascotList[0];
+  const nextMascotName = nextMascot ? nextMascot.name.split(' ')[0] : 'Next';
 
   return (
     <aside className={styles.companionRoot} aria-label="Interactive Brand Companion">
@@ -236,11 +238,7 @@ export function MascotCompanion() {
           <button
             type="button"
             className={styles.swapPill}
-            onClick={() => {
-              const curIndex = mascotList.findIndex((m) => m.id === activeMascotId);
-              const nextIndex = (curIndex + 1) % mascotList.length;
-              handleSelectMascot(mascotList[nextIndex].id);
-            }}
+            onClick={() => handleSelectMascot(nextMascot.id)}
             title={`Switch to next companion (${nextMascotName})`}
             aria-label={`Switch between companions`}
           >

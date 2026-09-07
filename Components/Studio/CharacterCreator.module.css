@@ -151,6 +151,43 @@
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
+.companionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.companionNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cycleBtn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cycleBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.cycleCounter {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
 .speciesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));

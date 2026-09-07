@@ -89,6 +89,16 @@ export const PET_BADGES = [
   { id: 'badge_dino_scout', label: 'Scout Patch', Svg: BadgeDinoScoutSvg },
 ];
 
+export const DEFAULT_PET_NAMES = {
+  leo: 'Leo',
+  penny: 'Penny',
+  finley: 'Finley',
+  luna: 'Luna',
+  dexter: 'Dexter',
+  carty: 'Carty',
+  sparky: 'Sparky',
+};
+
 const SPECIES_ALIASES = {
   dog: 'luna',
   cat: 'penny',
@@ -126,6 +136,38 @@ export function CharacterCreator({
 
   const activePetObj = PET_SPECIES.find((p) => p.id === petSpecies) || PET_SPECIES[0];
   const activePetBadgeObj = PET_BADGES.find((b) => b.id === petBadge) || PET_BADGES[0];
+
+  const curPetIdx = PET_SPECIES.findIndex((p) => p.id === petSpecies);
+  const nextPetIdx = curPetIdx >= 0 ? (curPetIdx + 1) % PET_SPECIES.length : 0;
+  const prevPetIdx = curPetIdx >= 0 ? (curPetIdx - 1 + PET_SPECIES.length) % PET_SPECIES.length : 0;
+  const nextPetSpecies = PET_SPECIES[nextPetIdx];
+  const nextCompanionLabel = nextPetSpecies?.name.split(' ')[0] || 'Next';
+
+  const handleSelectSpecies = (specId) => {
+    const knownDefaultNames = Object.values(DEFAULT_PET_NAMES);
+    const shouldUpdateName =
+      !companion.name ||
+      knownDefaultNames.includes(companion.name) ||
+      companion.name === 'Leo';
+
+    const newName = shouldUpdateName
+      ? DEFAULT_PET_NAMES[specId] || specId
+      : companion.name;
+
+    onChangeCompanion({
+      ...companion,
+      species: specId,
+      name: newName,
+    });
+  };
+
+  const handleNextCompanion = () => {
+    handleSelectSpecies(PET_SPECIES[nextPetIdx].id);
+  };
+
+  const handlePrevCompanion = () => {
+    handleSelectSpecies(PET_SPECIES[prevPetIdx].id);
+  };
 
   return (
     <div className={styles.creatorRoot}>
@@ -298,7 +340,32 @@ export function CharacterCreator({
 
               {/* Companion Species */}
               <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Companion Archetype:</label>
+                <div className={styles.companionHeaderRow}>
+                  <label className={styles.groupLabel}>Companion Archetype:</label>
+                  <div className={styles.companionNav}>
+                    <button
+                      type="button"
+                      className={styles.cycleBtn}
+                      onClick={handlePrevCompanion}
+                      title="Previous companion"
+                      aria-label="Previous companion archetype"
+                    >
+                      ‹
+                    </button>
+                    <span className={styles.cycleCounter}>
+                      {curPetIdx >= 0 ? curPetIdx + 1 : 1} of {PET_SPECIES.length}
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.cycleBtn}
+                      onClick={handleNextCompanion}
+                      title={`Switch to next companion (${nextCompanionLabel})`}
+                      aria-label={`Switch to next companion (${nextCompanionLabel})`}
+                    >
+                      Next: {nextCompanionLabel} ›
+                    </button>
+                  </div>
+                </div>
                 <div className={styles.speciesGrid}>
                   {PET_SPECIES.map((spec) => (
                     <button
@@ -307,9 +374,7 @@ export function CharacterCreator({
                       className={`${styles.speciesCard} ${
                         petSpecies === spec.id ? styles.speciesCardActive : ''
                       }`}
-                      onClick={() =>
-                        onChangeCompanion({ ...companion, species: spec.id })
-                      }
+                      onClick={() => handleSelectSpecies(spec.id)}
                     >
                       <spec.Svg size={24} />
                       <span>{spec.name}</span>

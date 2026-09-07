@@ -57,7 +57,7 @@ describe('Mascot Companion System', () => {
     expect(localStorage.getItem('shopping_cart.mascot_enabled')).toBe('true');
   });
 
-  it('allows swapping companions within shop realm (Luna, Carty, and Sparky)', () => {
+  it('allows swapping companions sequentially without skipping or misidentifying after the first (Luna -> Carty -> Sparky -> Luna)', () => {
     render(
       <MascotProvider>
         <MascotCompanion />
@@ -67,11 +67,30 @@ describe('Mascot Companion System', () => {
     const switchBtn = screen.getByRole('button', {
       name: /Switch between companions/i,
     });
+
+    // 1. Initial on Luna -> identifies next as Carty
     expect(switchBtn).toHaveTextContent(/Switch to Carty/i);
+    expect(switchBtn).toHaveAttribute('title', 'Switch to next companion (Carty)');
     fireEvent.click(switchBtn);
 
     expect(screen.getByText('Carty The Courier')).toBeInTheDocument();
     expect(screen.getByLabelText(/Carty The Courier Mascot/i)).toBeInTheDocument();
+
+    // 2. Now on Carty (the companion after the first) -> must properly identify Sparky (not Luna!)
+    expect(switchBtn).toHaveTextContent(/Switch to Sparky/i);
+    expect(switchBtn).toHaveAttribute('title', 'Switch to next companion (Sparky)');
+    fireEvent.click(switchBtn);
+
+    expect(screen.getByText('Sparky The Sneaker Hound')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Sparky The Sneaker Hound Mascot/i)).toBeInTheDocument();
+
+    // 3. Now on Sparky -> cycles back and identifies Luna
+    expect(switchBtn).toHaveTextContent(/Switch to Luna/i);
+    expect(switchBtn).toHaveAttribute('title', 'Switch to next companion (Luna)');
+    fireEvent.click(switchBtn);
+
+    expect(screen.getByText('Luna The Cosmic Shepherd')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
   });
 
   it('dismisses the speech bubble without unmounting the mascot', () => {

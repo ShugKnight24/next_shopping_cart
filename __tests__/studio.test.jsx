@@ -570,12 +570,22 @@ describe('Web-to-Print Studio Platform', () => {
     const companionTab = screen.getByRole('tab', { name: /Trusty Companion \(Pet \/ Co-Star\)/i });
     fireEvent.click(companionTab);
 
-    // Select Finley Fox companion
-    const finleyBtn = screen.getByRole('button', { name: /Finley Fox/i });
-    fireEvent.click(finleyBtn);
+    // Verify next companion button identifies the next companion (Penny after Leo)
+    const nextCompanionBtn = screen.getByRole('button', { name: /Switch to next companion \(Princess\)/i });
+    expect(nextCompanionBtn).toBeInTheDocument();
+    fireEvent.click(nextCompanionBtn);
+
+    // After clicking next, Princess Penny should be active and pet name synced
+    const petNameInput = screen.getByLabelText(/Companion Pet Name:/i);
+    expect(petNameInput).toHaveValue('Penny');
+
+    // Next should now identify Finley
+    const nextFinleyBtn = screen.getByRole('button', { name: /Switch to next companion \(Finley\)/i });
+    expect(nextFinleyBtn).toBeInTheDocument();
+    fireEvent.click(nextFinleyBtn);
+    expect(petNameInput).toHaveValue('Finley');
 
     // Enter custom pet name
-    const petNameInput = screen.getByLabelText(/Companion Pet Name:/i);
     fireEvent.change(petNameInput, { target: { value: 'Barnaby' } });
     expect(petNameInput).toHaveValue('Barnaby');
   });
