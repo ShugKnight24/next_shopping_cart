@@ -11,7 +11,7 @@ import styles from './EcommerceSizzleReel.module.css';
 const SIZZLE_CHAPTERS = [
   {
     timestamp: 0,
-    title: 'NYC Flagship Atelier Tour',
+    title: 'NYC Flagship Concept Tour',
     desc: 'SoHo Concept Space • Sustainable Architecture & Heritage Gallery',
     hotspot: null,
   },
@@ -68,7 +68,7 @@ export function EcommerceSizzleReel() {
       productName: hotspot.title,
       price: hotspot.price,
       image: '/images/products/featured.png',
-      manufacturer: 'Cart Commerce Atelier',
+      manufacturer: 'Cart Commerce Flagship',
       quantity: 1,
       available: 50,
     };
@@ -93,7 +93,7 @@ export function EcommerceSizzleReel() {
         </div>
         <h2 className={styles.sizzleTitle}>Experience The Collection</h2>
         <p className={styles.sizzleSubtitle}>
-          Step inside our flagship atelier and craftsmanship vaults. Watch the reel and tap interactive
+          Step inside our flagship gallery and craftsmanship vaults. Watch the reel and tap interactive
           product hotspots to shop the scene in real time.
         </p>
       </div>

@@ -139,7 +139,7 @@ export function ApparelStudio() {
     const customApparelItem = {
       itemid: customItemId,
       productName: `Custom ${activeGarmentObj.name}: "${monogram}"`,
-      manufacturer: 'Cart Atelier Kids',
+      manufacturer: 'Cart Kids Craft Studio',
       price: activeGarmentObj.price,
       image: thumbnailDataUrl,
       isCustom: true,
@@ -179,7 +179,7 @@ export function ApparelStudio() {
           <div className={styles.canvasHeader}>
             <div className={styles.proofBadge}>
               <SparklesIcon size={14} />
-              <span>Live Garment Atelier Preview</span>
+              <span>Live Garment Design Preview</span>
             </div>
             <div className={styles.headerRightActions}>
               <button

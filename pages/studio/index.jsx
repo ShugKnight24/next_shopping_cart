@@ -26,7 +26,7 @@ const MODES = [
   {
     id: 'apparel',
     title: "Kids' Apparel & Kicks",
-    badge: 'Atelier Workshop',
+    badge: 'Craft Workshop',
     desc: 'Organic cotton hoodies, tees & embroidered canvas kicks',
   },
 ];
@@ -79,6 +79,9 @@ export default function StudioPage() {
           property="og:description"
           content="Design personalized keepsake storybooks, gallery posters, and custom kids' kicks with real-time interactive canvas proofing."
         />
+        <meta property="og:image" content="/static/img/og-preview.svg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="/static/img/og-preview.svg" />
         <link rel="canonical" href="https://next-shopping-cart-shugknight24.vercel.app/studio" />
       </Head>
 
@@ -144,7 +147,7 @@ export default function StudioPage() {
           {activeMode === 'apparel' && <ApparelStudio />}
         </section>
 
-        {/* Behind The Scenes Print Atelier Video Tour */}
+        {/* Behind The Scenes Print Studio Video Tour */}
         <KidsStudioVideoTour />
 
         {/* Social Media Creation Studio Callout */}

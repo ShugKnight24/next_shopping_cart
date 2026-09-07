@@ -103,7 +103,7 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
   const accentColor = colorTheme?.accent || '#f59e0b';
   const prodName = (product?.productName || 'ICONIC PRODUCT').toUpperCase();
   const prodPrice = `$${product?.price || 120}`;
-  const prodBrand = (product?.manufacturer || 'CART ATELIER').toUpperCase();
+  const prodBrand = (product?.manufacturer || 'CART COMMERCE').toUpperCase();
 
   switch (templateId) {
     case 'hype_drop':
@@ -346,7 +346,7 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           id: 'verified-stamp',
           name: 'Buyer Attribution',
           type: 'text',
-          text: 'Verified Atelier Collector • 2026',
+          text: 'Verified Vault Collector • 2026',
           fontFamily: 'sans',
           fontSize: 9.5,
           color: accentColor,
@@ -379,7 +379,7 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           id: 'brand-header',
           name: 'Brand Eyebrow',
           type: 'text',
-          text: `${prodBrand} • ATELIER 2026`,
+          text: `${prodBrand} • DROP 2026`,
           fontFamily: 'sans',
           fontSize: 10,
           color: accentColor,
@@ -463,7 +463,7 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           id: 'price-cta',
           name: 'Price Callout',
           type: 'text',
-          text: `${prodPrice}  |  OFFICIAL ATELIER`,
+          text: `${prodPrice}  |  OFFICIAL DROP`,
           fontFamily: 'sans',
           fontSize: 14,
           color: accentColor,
@@ -569,7 +569,7 @@ export function SocialStudio() {
               ...l,
               text: l.text.includes('COP NOW')
                 ? `COP NOW — $${prod.price}`
-                : `$${prod.price}  |  OFFICIAL ATELIER`,
+                : `$${prod.price}  |  OFFICIAL DROP`,
             };
           }
           return l;
@@ -1015,7 +1015,7 @@ export function SocialStudio() {
 
   // Copy Marketing Caption
   const handleCopyCaption = () => {
-    const captionText = `${headline}\n\n${activeProduct.shortDescription || activeProduct.description || 'Exclusive drop available now at Cart Commerce Atelier.'}\n\nShop the collection: https://cartcommerce.shop/products/${activeProduct.itemid}\n\n#streetwear #drops #grails #curated #limitededition #design`;
+    const captionText = `${headline}\n\n${activeProduct.shortDescription || activeProduct.description || 'Exclusive drop available now at Cart Commerce.'}\n\nShop the collection: https://cartcommerce.shop/products/${activeProduct.itemid}\n\n#streetwear #drops #grails #curated #limitededition #design`;
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(captionText);
       showToast('Marketing caption and hashtags copied to clipboard!', 'success');

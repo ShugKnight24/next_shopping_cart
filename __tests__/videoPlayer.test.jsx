@@ -121,7 +121,7 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
     expect(
       screen.getByRole('heading', { name: /Experience The Collection/i })
     ).toBeInTheDocument();
-    expect(screen.getAllByText('NYC Flagship Atelier Tour').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('NYC Flagship Concept Tour').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Air Pulse Sneaker Vault').length).toBeGreaterThan(0);
 
     // Jump to chapter 2 (Sneakers with hotspot)
@@ -157,7 +157,7 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
     expect(
       screen.getByRole('heading', { name: /The Making of a Keepsake Heirloom/i })
     ).toBeInTheDocument();
-    expect(screen.getByText('Behind The Print Atelier')).toBeInTheDocument();
+    expect(screen.getByText('Behind The Print Studio')).toBeInTheDocument();
     expect(screen.getByText('100% Archival Paper')).toBeInTheDocument();
     expect(screen.getByText('Reinforced Stitching')).toBeInTheDocument();
     expect(screen.getByText('Non-Toxic Inks')).toBeInTheDocument();

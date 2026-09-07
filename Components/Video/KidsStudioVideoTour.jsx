@@ -37,9 +37,9 @@ export function KidsStudioVideoTour() {
     <section className={styles.tourSection} aria-label="Behind the scenes bookmaking workshop tour">
       <div className={styles.tourHeader}>
         <div className={styles.badgeRow}>
-          <span className={styles.atelierBadge}>
+          <span className={styles.craftBadge}>
             <SparklesIcon size={14} />
-            <span>Behind The Print Atelier</span>
+            <span>Behind The Print Studio</span>
           </span>
         </div>
         <h2 className={styles.tourTitle}>The Making of a Keepsake Heirloom</h2>
@@ -51,7 +51,7 @@ export function KidsStudioVideoTour() {
 
       <div className={styles.playerWrapper}>
         <CinematicVideoPlayer
-          title="The Artisan Atelier | Storybook Craft Tour"
+          title="Artisan Craftsmanship | Storybook Craft Tour"
           subtitle="Behind The Scenes in our Oregon & Vermont Print Bindery"
           duration={90}
           chapters={STUDIO_TOUR_CHAPTERS}
