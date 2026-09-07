@@ -19,6 +19,11 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
   - *Framed Wall Art Poster Studio*: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
   - *Kids' Custom Apparel & Kicks*: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
 - **Social Media Creation Studio (`/studio/social`)**: Multi-layer vector canvas editor with drag-and-drop, Figma-style selection bounding box, layer stack, property inspector, and 1-click catalog import.
+- **Modern Brand Identity & 3-Variant Logo System (`/brand`)**:
+  - Three distinct, bespoke vector marks: *Geometric Monogram* (precision dual-arc interlock in gold & navy), *Minimalist Continuous Line & Starlight* (aerodynamic continuous stroke with radiant 8-point starlight jewel), and *Archival Heritage Crest* (hexagonal luxury heraldic shield with star compass).
+  - Dynamic `BrandContext` with real-time reactive theme switching, persistent active variant selection across all headers and footers, interactive `BrandVariantPickerModal`, and an editorial brand showcase portal at `/brand`.
+  - Upgraded high-contrast vector favicon (`/favicon.svg`), 180×180 Apple Touch Icon (`/apple-touch-icon.svg`), and 1200×630 editorial OpenGraph social banner (`/static/img/og-preview.svg`).
+  - Archived original 2020 cyan/red cloud logo to `public/static/img/legacy/` and `Components/Legacy/LegacyLogo.jsx`.
 - **Zero-Emoji Compliance**: Fully replaced Unicode emojis across the entire application and studio platform with a dedicated, accessible SVG icon library (`Components/Icons/` and `Components/Studio/StudioSVGs.jsx`).
 - **Smart Catalog Hydration Reconciler**: Eliminates stale browser cache overwrites by reconciling fresh product metadata on client load while safely preserving the shopper's active cart quantities, available stock deductions, and saved favorites.
 - **Client-Side Anti-Bot Telemetry**: Passive browser environment checks (`navigator.webdriver`, headless globals, viewport anomalies), human behavioral heuristics (mouse curvature, scroll pauses, typing cadence), and invisible honeypot trap detection to classify traffic (`human` vs `suspected_bot`).
@@ -38,7 +43,7 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
 | **Styling** | Native CSS Modules + Design Tokens (`tokens.css`) |
 | **Icons** | Custom Scalable Vector SVGs with zero emoji dependencies (`Components/Icons/`, `StudioSVGs.jsx`) |
 | **Analytics & Telemetry** | GA4 Enhanced Ecommerce (`gtag.js`), Next.js Web Vitals, Custom Bot Scorer |
-| **Testing** | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (120 tests across 15 suites) |
+| **Testing** | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (129 tests across 16 suites) |
 | **Code Quality** | ESLint 9 (Flat Config) + Prettier |
 
 ---
@@ -93,10 +98,10 @@ NEXT_PUBLIC_TELEMETRY_ENDPOINT=
 
 ```bash
 npm run dev        # Launch development server on localhost:3000
-npm run build      # Create optimized production build (pre-renders 47 SSG routes)
+npm run build      # Create optimized production build (pre-renders 50 SSG routes)
 npm run start      # Start Next.js production server
 npm run lint       # Run ESLint across all codebase files (0 errors, 0 warnings)
-npm test           # Run Vitest test suite once across all 15 test files (120 tests)
+npm test           # Run Vitest test suite once across all 16 test files (129 tests)
 npm run test:watch # Run Vitest in interactive watch mode
 ```
 

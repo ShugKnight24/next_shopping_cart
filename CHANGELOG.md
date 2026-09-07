@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.10.0] - 2026-09-06
+
+### Added
+- **Modern 3-Variant Brand Logo System (`Components/Logo.jsx`)**:
+  - Engineered 3 distinct, modern luxury vector logo marks crafted in pure vector SVG geometry:
+    - **Variant A (Geometric Luxury Monogram)**: Precision interlocking dual-arc 'C' monogram forming an architectural cart profile in champagne gold (`#f59e0b` to `#d97706`) and midnight sapphire (`#0f172a` to `#1e293b`), topped with a faceted diamond gem.
+    - **Variant B (Minimalist Continuous Line & Starlight)**: Aerodynamic continuous single-stroke cart silhouette centered around a radiant 8-point starlight jewel with micro-hollow wheel bearings.
+    - **Variant C (Archival Heritage Crest)**: Hexagonal luxury heraldic crest shield with inset double-rule, gold filigree cart lattice, and an archival navigational star compass crown.
+  - **Dynamic Theme Adaptability**: Built native `theme="light"` and `theme="dark"` styling, completely removing legacy CSS filter hacks (`filter: brightness(0) invert(1)` in `Footer.module.css`).
+  - **Customizable Wordmark**: High-tracking luxury sans typography (`font-weight: 800`, `letter-spacing: 0.14em`) and customizable subtitle (defaulting to `"SHOPPING MADE SIMPLE"`, `"CURATED GOODS & KEEPSAKES"`, or `"CURATED LUXURY STOREFRONT"`).
+- **Global Brand State Management & Persistence (`Components/Brand/BrandContext.jsx`)**:
+  - Created `BrandContext` and `BrandProvider` wrapping the root `_app.js` tree.
+  - Safely persists active brand variant choice to `localStorage` (`cart_commerce_brand_variant`), dynamically updating all headers, footers, and logo instances across the entire application in real time.
+- **Interactive Brand Identity Hub & Showcase (`pages/brand.js`)**:
+  - Dedicated brand design system portal at `/brand` featuring side-by-side high-resolution cards of all 3 variants.
+  - Live canvas background switcher (Light Storefront vs. Dark Editorial), typography hierarchy documentation, and 1-click "Select This Variant for Store" buttons with animated toast confirmation.
+  - Multi-surface consistency showcase presenting the vector favicon, Apple touch icon, and OpenGraph social card.
+- **Brand Variant Picker Modal & Nav Trigger (`Components/Brand/BrandVariantPicker.jsx`)**:
+  - Interactive modal dialog accessible from the primary desktop navigation bar via a sleek `Brand ✦` trigger button in `Components/Nav.js`.
+  - Also linked directly from `Components/Footer.js` under Shop Info ("Brand Identity & Logos").
+- **Modern Vector Brand Assets**:
+  - **High-Contrast Favicon (`public/favicon.svg`)**: Upgraded to an obsidian squircle with gold rim, precision cart path, and radiant jewel sparkle.
+  - **Apple Touch Icon (`public/apple-touch-icon.svg`)**: 180×180 high-res icon with squircle badge, gold border, and starlight jewel for mobile home screens.
+  - **Social OpenGraph Banner (`public/static/img/og-preview.svg`)**: 1200×630 editorial showcase banner with geometric grid accents, corner brackets, centered gold emblem, and creation studio feature pills.
+  - **Static SVG Logo (`public/static/img/logo.svg`)**: Updated static vector fallback to the modern Geometric Monogram.
+- **Archival Legacy Asset Preservation**:
+  - Archived original 2020 cyan/red cloud logo to `public/static/img/legacy/logo.svg`.
+  - Archived original favicon to `public/static/img/legacy/favicon.svg`.
+  - Created `Components/Legacy/LegacyLogo.jsx` component for archival comparison and backwards compatibility.
+- **Brand Nomenclature & Copy Cleanliness**:
+  - Audited and updated creation studios and video tours to strictly adhere to refined brand nomenclature (replacing all "atelier" terminology with "Craft Studio", "Custom Workshop", and "Flagship Concept").
+- **Automated Test Suite Expansion**:
+  - Created `__tests__/brandSystem.test.jsx` verifying all 3 logo variants, light/dark themes, subtitle overrides, legacy logo rendering, BrandProvider reactive updates, and modal variant selection.
+  - Expanded total test suite to **129 passed tests across 16 test suites** (100% passing).
+
+---
+
 ## [0.9.0] - 2026-09-06
 
 ### Added
