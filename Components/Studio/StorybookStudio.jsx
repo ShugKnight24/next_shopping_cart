@@ -13,6 +13,11 @@ import {
   SparklesIcon,
   CloseIcon,
   TrashIcon,
+  BoxIcon,
+  SlidersIcon,
+  LayersIcon,
+  PlayIcon,
+  PauseIcon,
 } from '../Icons';
 import {
   FullscreenIcon,
@@ -28,7 +33,20 @@ import {
   LayerFrontIcon,
   MascotLeoSvg,
   StarStampSvg,
+  StudioWaxSealSvg,
+  StudioPaletteSvg,
+  StudioQuillSvg,
+  StudioBookOpenSvg,
+  ScenePanoramaSvg,
+  SceneWindowSvg,
 } from './StudioSVGs';
+import {
+  SCENE_ENVIRONMENTS,
+  TIME_OF_DAY_OPTIONS,
+  WEATHER_EFFECT_OPTIONS,
+  getSceneById,
+  getDefaultSceneForTheme,
+} from './sceneEnvironments';
 import styles from './StorybookStudio.module.css';
 
 const THEMES = [
@@ -78,6 +96,14 @@ const EDITIONS = [
     desc: 'Durable gloss cover, lightweight for everyday bedtime reading.',
   },
 ];
+
+const DRAWER_TITLES = {
+  1: { title: 'Hero & Character Studio', subtitle: 'Set hero name, age, and pet companion.' },
+  2: { title: 'Adventure Theme & World', subtitle: 'Select setting and story atmosphere.' },
+  3: { title: 'Front Page Dedication', subtitle: 'Craft an archival keepsake certificate.' },
+  4: { title: 'Studio Customizer & Assets', subtitle: 'Edit prose, co-stars, typography, and stamps.' },
+  5: { title: 'Print Binding & Pre-Flight', subtitle: 'Inspect print readiness and select heirloom binding.' },
+};
 
 // Pre-Designed Story Spread Templates & Blank Canvas Engine
 const SPREAD_TEMPLATES = [
@@ -170,12 +196,54 @@ export function StorybookStudio() {
   const [stickers, setStickers] = useState([]);
   const [isWidescreen, setIsWidescreen] = useState(false);
   const [bubbleText, setBubbleText] = useState('Adventure time!');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isInspectorOpen, setIsInspectorOpen] = useState(true);
+  const [selectedLayerId, setSelectedLayerId] = useState(null);
+  const [inspectorTab, setInspectorTab] = useState('properties');
+
+  // Jump to dedication spread when Step 3 is activated
+  useEffect(() => {
+    if (currentStep === 3) {
+      setActivePage(1);
+    }
+  }, [currentStep]);
 
   // Fullscreen Studio & Interactive Flipbook state
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFlipbookOpen, setIsFlipbookOpen] = useState(false);
-  const [activeToolTab, setActiveToolTab] = useState('templates'); // 'templates' | 'stamps' | 'avatar' | 'typography' | 'layers'
+  const [activeToolTab, setActiveToolTab] = useState('templates'); // 'templates' | 'scenes' | 'stamps' | 'avatar' | 'typography' | 'layers'
   const [zoomLevel, setZoomLevel] = useState(1);
+
+  // Hyper-Realistic Scene Environments State
+  const [activeSceneId, setActiveSceneId] = useState('cosmic_nebula');
+  const [timeOfDay, setTimeOfDay] = useState('midnight');
+  const [weatherEffect, setWeatherEffect] = useState('stars');
+  const [spreadLayout, setSpreadLayout] = useState('panoramic'); // 'panoramic' | 'framed'
+  const [isSceneAnimated, setIsSceneAnimated] = useState(true);
+  const [sceneCategoryFilter, setSceneCategoryFilter] = useState('all');
+
+  const handleSelectScene = (scene) => {
+    setActiveSceneId(scene.id);
+    setTimeOfDay(scene.defaultTimeOfDay);
+    setWeatherEffect(scene.particles);
+    showToast(`Applied ${scene.name} scene!`, 'info');
+  };
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+    const defaultScene = getDefaultSceneForTheme(newTheme);
+    setActiveSceneId(defaultScene);
+    const sceneObj = getSceneById(defaultScene);
+    if (sceneObj) {
+      setTimeOfDay(sceneObj.defaultTimeOfDay);
+      setWeatherEffect(sceneObj.particles);
+    }
+  };
+
+  const filteredScenes =
+    sceneCategoryFilter === 'all'
+      ? SCENE_ENVIRONMENTS
+      : SCENE_ENVIRONMENTS.filter((s) => s.category === sceneCategoryFilter);
 
   // Multi-Page Story Reel
   const [bookSpreads, setBookSpreads] = useState([
@@ -190,20 +258,76 @@ export function StorybookStudio() {
   const [history, setHistory] = useState([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
-  const handleUpdateStickers = (newStickersOrFn) => {
-    setStickers((prev) => {
+  const handleUpdateStickers = useCallback(
+    (newStickersOrFn, { commit = true } = {}) => {
       const next =
         typeof newStickersOrFn === 'function'
-          ? newStickersOrFn(prev)
+          ? newStickersOrFn(stickers)
           : newStickersOrFn;
-      setHistory((hPrev) => {
-        const sliced = hPrev.slice(0, historyIndex + 1);
-        return [...sliced, next];
-      });
-      setHistoryIndex((idx) => idx + 1);
-      return next;
-    });
-  };
+      setStickers(next);
+      if (commit) {
+        setHistory((hPrev) => {
+          const sliced = hPrev.slice(0, historyIndex + 1);
+          return [...sliced, next];
+        });
+        setHistoryIndex((idx) => idx + 1);
+      }
+    },
+    [stickers, historyIndex]
+  );
+
+  const activeLayer =
+    stickers.find((s) => s.id === selectedLayerId) ||
+    (stickers.length > 0 ? stickers[stickers.length - 1] : null);
+
+  const handleUpdateActiveLayer = useCallback(
+    (updatedProps) => {
+      if (!activeLayer) return;
+      handleUpdateStickers((prev) =>
+        prev.map((s) => (s.id === activeLayer.id ? { ...s, ...updatedProps } : s))
+      );
+    },
+    [activeLayer, handleUpdateStickers]
+  );
+
+  const handleDeleteActiveLayer = useCallback(
+    (layerId = activeLayer?.id) => {
+      if (!layerId) return;
+      handleUpdateStickers((prev) => prev.filter((s) => s.id !== layerId));
+      if (selectedLayerId === layerId) {
+        setSelectedLayerId(null);
+      }
+    },
+    [activeLayer, selectedLayerId, handleUpdateStickers]
+  );
+
+  const handleDuplicateActiveLayer = useCallback(() => {
+    if (!activeLayer) return;
+    const newId = `${activeLayer.type}-${Date.now()}`;
+    const duplicate = {
+      ...activeLayer,
+      id: newId,
+      x: Math.min(500, activeLayer.x + 20),
+      y: Math.min(360, activeLayer.y + 20),
+    };
+    handleUpdateStickers((prev) => [...prev, duplicate]);
+    setSelectedLayerId(newId);
+  }, [activeLayer, handleUpdateStickers]);
+
+  const handleReorderActiveLayer = useCallback(
+    (direction) => {
+      if (!activeLayer || stickers.length < 2) return;
+      const index = stickers.findIndex((s) => s.id === activeLayer.id);
+      if (index === -1) return;
+      const targetIndex = direction === 'forward' ? index + 1 : index - 1;
+      if (targetIndex < 0 || targetIndex >= stickers.length) return;
+      const next = [...stickers];
+      const [removed] = next.splice(index, 1);
+      next.splice(targetIndex, 0, removed);
+      handleUpdateStickers(next);
+    },
+    [activeLayer, stickers, handleUpdateStickers]
+  );
 
   const handleUndo = useCallback(() => {
     if (historyIndex > 0) {
@@ -355,7 +479,9 @@ export function StorybookStudio() {
 
   // Template / Blank Canvas Applier
   const handleApplyTemplate = (tmpl) => {
-    if (tmpl.theme) setTheme(tmpl.theme);
+    if (tmpl.theme) {
+      handleThemeChange(tmpl.theme);
+    }
     handleUpdateStickers(tmpl.stickers || []);
     showToast(`Applied "${tmpl.name}" template!`, 'success');
   };
@@ -485,38 +611,70 @@ export function StorybookStudio() {
 
   return (
     <div className={styles.studioRoot}>
-      {/* Step Navigation Tabs */}
-      <nav className={styles.stepperNav} aria-label="Storybook Creation Steps">
-        {[
-          { num: 1, label: 'Hero Name' },
-          { num: 2, label: 'Story Theme' },
-          { num: 3, label: 'Dedication' },
-          { num: 4, label: 'Proof & Stamp' },
-          { num: 5, label: 'Print Binding' },
-        ].map((s) => (
-          <button
-            key={s.num}
-            type="button"
-            className={`${styles.stepTab} ${
-              currentStep === s.num
-                ? styles.stepTabActive
-                : currentStep > s.num
-                ? styles.stepTabComplete
-                : ''
-            }`}
-            onClick={() => setCurrentStep(s.num)}
-          >
-            <span className={styles.stepNum}>
-              {currentStep > s.num ? <CheckCircleIcon size={12} /> : s.num}
-            </span>
-            <span className={styles.stepLabel}>{s.label}</span>
-          </button>
-        ))}
-      </nav>
+      {/* Traditional 4-Column Creative Suite */}
+      <div
+        className={[
+          styles.editorShell,
+          !isDrawerOpen && !isInspectorOpen
+            ? styles.editorShellBothCollapsed
+            : !isDrawerOpen
+            ? styles.editorShellDrawerCollapsed
+            : !isInspectorOpen
+            ? styles.editorShellInspectorCollapsed
+            : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {/* Left Tool Rail */}
+        <aside className={styles.editorRail} aria-label="Editor Tool Rail">
+          <div className={styles.railTopPill}>
+            <StudioBookOpenSvg size={18} />
+            <span>Studio</span>
+          </div>
 
-      {/* Main Two-Column Stage */}
-      <div className={`${styles.stageGrid} ${isWidescreen ? styles.theaterGrid : ''}`}>
-        {/* Left Column: Interactive Canvas Stage */}
+          <nav className={styles.railTabsList} aria-label="Storybook Creation Steps">
+            {[
+              { num: 1, label: 'Hero Name', Icon: MascotLeoSvg },
+              { num: 2, label: 'Story Theme', Icon: StudioPaletteSvg },
+              { num: 3, label: 'Dedication', Icon: StudioWaxSealSvg },
+              { num: 4, label: 'Proof & Stamp', Icon: StarStampSvg },
+              { num: 5, label: 'Print Binding', Icon: BoxIcon },
+            ].map((s) => (
+              <button
+                key={s.num}
+                type="button"
+                className={`${styles.railTabBtn} ${
+                  currentStep === s.num ? styles.railTabBtnActive : ''
+                }`}
+                onClick={() => {
+                  setCurrentStep(s.num);
+                  setIsDrawerOpen(true);
+                  if (s.num === 3) setActivePage(1);
+                }}
+                title={s.label}
+              >
+                <div className={styles.railTabIconWrap}>
+                  <s.Icon size={18} />
+                </div>
+                <span className={styles.railTabNum}>Step {s.num}</span>
+                <span className={styles.railTabLabel}>{s.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            className={styles.railDrawerToggleBtn}
+            onClick={() => setIsDrawerOpen((prev) => !prev)}
+            title={isDrawerOpen ? 'Collapse Asset Drawer' : 'Expand Asset Drawer'}
+            aria-label={isDrawerOpen ? 'Collapse Asset Drawer' : 'Expand Asset Drawer'}
+          >
+            {isDrawerOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          </button>
+        </aside>
+
+        {/* Right Column: Interactive Canvas Stage */}
         <div className={`${styles.canvasStage} ${isWidescreen ? styles.theaterCanvasStage : ''}`}>
           <div className={styles.canvasHeader}>
             <div className={styles.proofBadge}>
@@ -532,6 +690,28 @@ export function StorybookStudio() {
                   ? 'Page 1 & Dedication'
                   : `Pages ${activePage * 2 - 1} & ${activePage * 2}`}
               </div>
+
+              {/* Properties Inspector Toggle */}
+              <button
+                type="button"
+                className={`${styles.theaterToggleBtn} ${
+                  isInspectorOpen ? styles.theaterToggleActive : ''
+                }`}
+                onClick={() => setIsInspectorOpen((prev) => !prev)}
+                title={
+                  isInspectorOpen
+                    ? 'Collapse Properties Inspector'
+                    : 'Show Properties Inspector'
+                }
+                aria-label={
+                  isInspectorOpen
+                    ? 'Collapse properties inspector'
+                    : 'Show properties inspector'
+                }
+              >
+                <SlidersIcon size={13} />
+                <span>{isInspectorOpen ? 'Hide Inspector' : 'Inspector'}</span>
+              </button>
 
               {/* Fullscreen Studio Launcher */}
               <button
@@ -555,6 +735,52 @@ export function StorybookStudio() {
               >
                 <EyePreviewIcon size={13} />
                 <span>Reader</span>
+              </button>
+
+              {/* Motion Animation Toggle */}
+              <button
+                type="button"
+                className={`${styles.motionToggleBtn} ${
+                  isSceneAnimated ? styles.motionToggleActive : ''
+                }`}
+                onClick={() => setIsSceneAnimated((prev) => !prev)}
+                title={
+                  isSceneAnimated
+                    ? 'Pause Animated Atmosphere'
+                    : 'Play Animated Atmosphere'
+                }
+                aria-label={
+                  isSceneAnimated ? 'Pause scene animation' : 'Play scene animation'
+                }
+              >
+                {isSceneAnimated ? <PauseIcon size={13} /> : <PlayIcon size={13} />}
+                <span>{isSceneAnimated ? 'Motion' : 'Static'}</span>
+              </button>
+
+              {/* Spread Layout Switcher */}
+              <button
+                type="button"
+                className={`${styles.layoutToggleBtn} ${
+                  spreadLayout === 'panoramic' ? styles.layoutToggleActive : ''
+                }`}
+                onClick={() =>
+                  setSpreadLayout((prev) =>
+                    prev === 'panoramic' ? 'framed' : 'panoramic'
+                  )
+                }
+                title={
+                  spreadLayout === 'panoramic'
+                    ? 'Panoramic Spread Active (Click for Classic Framed Vignette)'
+                    : 'Classic Framed Active (Click for Seamless Panoramic Spread)'
+                }
+                aria-label={`Switch spread layout (currently ${spreadLayout})`}
+              >
+                {spreadLayout === 'panoramic' ? (
+                  <ScenePanoramaSvg size={13} />
+                ) : (
+                  <SceneWindowSvg size={13} />
+                )}
+                <span>{spreadLayout === 'panoramic' ? 'Panoramic' : 'Framed'}</span>
               </button>
 
               <button
@@ -590,9 +816,14 @@ export function StorybookStudio() {
             width={isWidescreen ? 760 : 540}
             height={isWidescreen ? 520 : 400}
             mode="storybook"
+            isAnimated={isSceneAnimated}
             config={{
               childName: childName || 'Adventurer',
               theme,
+              sceneId: activeSceneId,
+              timeOfDay,
+              weatherEffect,
+              spreadLayout,
               activePage,
               dedication,
               chapterProse,
@@ -629,10 +860,9 @@ export function StorybookStudio() {
                     activePage === p ? styles.pageDotActive : ''
                   }`}
                   onClick={() => setActivePage(p)}
-                  aria-label={`Jump to page spread ${p + 1}`}
-                >
-                  {p === 0 ? 'Cover' : p}
-                </button>
+                  aria-label={`Jump to page spread ${p + 1}: ${spread.title}`}
+                  title={p === 0 ? 'Cover Spread' : `Spread ${p}: ${spread.title}`}
+                />
               ))}
             </div>
             <button
@@ -697,8 +927,26 @@ export function StorybookStudio() {
           />
         </div>
 
-        {/* Right Column: Interactive Configuration Workshop */}
-        <div className={styles.configWorkshop}>
+        {/* Middle Column: Collapsible Asset Drawer */}
+        {isDrawerOpen && (
+          <aside className={styles.assetDrawer} aria-label="Asset and Customization Drawer">
+            <div className={styles.drawerHeader}>
+              <div className={styles.drawerTitleWrap}>
+                <h3>{DRAWER_TITLES[currentStep]?.title || 'Customization Workshop'}</h3>
+                <p>{DRAWER_TITLES[currentStep]?.subtitle || 'Personalize assets and layout.'}</p>
+              </div>
+              <button
+                type="button"
+                className={styles.drawerCollapseBtn}
+                onClick={() => setIsDrawerOpen(false)}
+                title="Collapse Drawer"
+                aria-label="Collapse Drawer"
+              >
+                <ChevronLeft size={14} />
+              </button>
+            </div>
+
+            <div className={styles.configWorkshop}>
           {currentStep === 1 && (
             <div className={styles.stepPane}>
               <div className={styles.paneHeader}>
@@ -753,7 +1001,7 @@ export function StorybookStudio() {
                     className={`${styles.themeCard} ${
                       theme === t.id ? styles.themeCardActive : ''
                     }`}
-                    onClick={() => setTheme(t.id)}
+                    onClick={() => handleThemeChange(t.id)}
                   >
                     <div className={styles.themeCardTop}>
                       <span className={styles.themeBadge}>{t.badge}</span>
@@ -768,6 +1016,136 @@ export function StorybookStudio() {
                   </button>
                 ))}
               </div>
+
+              {/* Hyper-Realistic Scene Environments Section */}
+              <div className={styles.sceneSectionDivider} />
+
+              <div className={styles.sceneLibrarySection}>
+                <div className={styles.sceneSectionHead}>
+                  <div className={styles.sceneSectionTitleGroup}>
+                    <SparklesIcon size={16} />
+                    <h4>Adventure World & Scene Environments</h4>
+                  </div>
+                  <span className={styles.sceneSectionBadge}>
+                    8 Worlds
+                  </span>
+                </div>
+                <p className={styles.sceneSectionDesc}>
+                  Hyper-realistic procedural backdrops with volumetric lighting, organic silhouettes, and physics particles.
+                </p>
+
+                {/* Category Filter Pills */}
+                <div className={styles.sceneCategoryPills} role="tablist" aria-label="Scene Categories">
+                  {[
+                    { id: 'all', label: 'All Worlds' },
+                    { id: 'space', label: 'Cosmic' },
+                    { id: 'fantasy', label: 'Fantasy' },
+                    { id: 'adventure', label: 'Prehistoric' },
+                    { id: 'city', label: 'Skyline' },
+                    { id: 'ocean', label: 'Undersea' },
+                    { id: 'bedtime', label: 'Dreamland' },
+                    { id: 'winter', label: 'Arctic' },
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={sceneCategoryFilter === cat.id}
+                      className={`${styles.sceneCategoryBtn} ${
+                        sceneCategoryFilter === cat.id ? styles.sceneCategoryBtnActive : ''
+                      }`}
+                      onClick={() => setSceneCategoryFilter(cat.id)}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Scene Cards Grid */}
+                <div className={styles.sceneCardsGrid}>
+                  {filteredScenes.map((scene) => {
+                    const isActive = activeSceneId === scene.id;
+                    return (
+                      <button
+                        key={scene.id}
+                        type="button"
+                        className={`${styles.sceneCard} ${
+                          isActive ? styles.sceneCardActive : ''
+                        }`}
+                        onClick={() => handleSelectScene(scene)}
+                        aria-label={`Select ${scene.name} environment`}
+                      >
+                        <div className={styles.sceneCardTop}>
+                          <span className={styles.sceneCardBadge}>{scene.badge}</span>
+                          {isActive && (
+                            <span className={styles.sceneCardActiveIndicator}>
+                              <CheckCircleIcon size={14} />
+                            </span>
+                          )}
+                        </div>
+                        <h5 className={styles.sceneCardTitle}>{scene.name}</h5>
+                        <p className={styles.sceneCardSub}>{scene.subtitle}</p>
+                        <div className={styles.sceneCardFooter}>
+                          <div className={styles.paletteSwatches} aria-label="Color Palette">
+                            {scene.palette.map((color, idx) => (
+                              <span
+                                key={idx}
+                                className={styles.paletteSwatch}
+                                style={{ backgroundColor: color }}
+                                title={color}
+                              />
+                            ))}
+                          </div>
+                          <span className={styles.particlePresetTag}>
+                            {scene.particles}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Atmosphere & Lighting Controls */}
+                <div className={styles.atmosphereControls}>
+                  <div className={styles.atmosphereGroup}>
+                    <label className={styles.atmosphereLabel}>Time of Day & Solar Lighting:</label>
+                    <div className={styles.todButtonGroup}>
+                      {TIME_OF_DAY_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          className={`${styles.todBtn} ${
+                            timeOfDay === opt.id ? styles.todBtnActive : ''
+                          }`}
+                          onClick={() => setTimeOfDay(opt.id)}
+                          aria-label={`Set time of day to ${opt.label}`}
+                        >
+                          <span>{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={styles.atmosphereGroup}>
+                    <label className={styles.atmosphereLabel}>Atmosphere & Weather Particles:</label>
+                    <div className={styles.weatherButtonGroup}>
+                      {WEATHER_EFFECT_OPTIONS.map((w) => (
+                        <button
+                          key={w.id}
+                          type="button"
+                          className={`${styles.weatherBtn} ${
+                            weatherEffect === w.id ? styles.weatherBtnActive : ''
+                          }`}
+                          onClick={() => setWeatherEffect(w.id)}
+                          aria-label={`Set weather effect to ${w.label}`}
+                        >
+                          <span>{w.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -777,6 +1155,27 @@ export function StorybookStudio() {
                 <span className={styles.paneTag}>Step 3 of 5</span>
                 <h3>Special Front Page Dedication</h3>
                 <p>A personal message permanently printed on the official opening certificate spread.</p>
+              </div>
+
+              {/* Luxury Keepsake Certificate Proof Card */}
+              <div className={styles.certificatePreviewCard}>
+                <div className={styles.certificateBorderFrame}>
+                  <div className={styles.certificateSealStamp}>
+                    <StudioWaxSealSvg size={44} />
+                  </div>
+                  <div className={styles.certificateHeaderTag}>Official Keepsake • First Edition</div>
+                  <h4 className={styles.certificateHeaderTitle}>Certificate of Imagination</h4>
+                  <div className={styles.certificateRecipient}>
+                    Dedicated to our brave hero <strong>{childName || 'Adventurer'}</strong>
+                  </div>
+                  <div className={styles.certificateLiveQuote}>
+                    &ldquo;{dedication || 'Write a heartfelt dedication note below...'}&rdquo;
+                  </div>
+                  <div className={styles.certificateSignLine}>
+                    <StudioQuillSvg size={14} />
+                    <span>Permanent Archival Binding • Handcrafted in the USA</span>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.formGroup}>
@@ -834,6 +1233,7 @@ export function StorybookStudio() {
               <div className={styles.subTabs} role="tablist" aria-label="Deep Customization Tabs">
                 {[
                   { id: 'templates', label: 'Templates' },
+                  { id: 'scenes', label: 'Scene World' },
                   { id: 'prose', label: 'Prose Editor' },
                   { id: 'avatar', label: 'Avatar & Co-Star' },
                   { id: 'typography', label: 'Typography & Bleed' },
@@ -874,6 +1274,83 @@ export function StorybookStudio() {
                         <span className={styles.applyBtnText}>Apply Template</span>
                       </button>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Sub-Pane: Scene Worlds */}
+              {step4Tab === 'scenes' && (
+                <div className={styles.subPane}>
+                  <span className={styles.subPaneLabel}>Select Scene Environment:</span>
+                  <div className={styles.sceneCardsGridCompact}>
+                    {SCENE_ENVIRONMENTS.map((scene) => {
+                      const isActive = activeSceneId === scene.id;
+                      return (
+                        <button
+                          key={scene.id}
+                          type="button"
+                          className={`${styles.sceneCardCompact} ${
+                            isActive ? styles.sceneCardActive : ''
+                          }`}
+                          onClick={() => handleSelectScene(scene)}
+                          aria-label={`Select ${scene.name} environment`}
+                        >
+                          <div className={styles.sceneCardTop}>
+                            <strong>{scene.name}</strong>
+                            {isActive && <CheckCircleIcon size={14} />}
+                          </div>
+                          <p>{scene.subtitle}</p>
+                          <div className={styles.paletteSwatches}>
+                            {scene.palette.map((color, idx) => (
+                              <span
+                                key={idx}
+                                className={styles.paletteSwatch}
+                                style={{ backgroundColor: color }}
+                                title={color}
+                              />
+                            ))}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className={styles.atmosphereGroup} style={{ marginTop: '16px' }}>
+                    <label className={styles.atmosphereLabel}>Time of Day:</label>
+                    <div className={styles.todButtonGroup}>
+                      {TIME_OF_DAY_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          className={`${styles.todBtn} ${
+                            timeOfDay === opt.id ? styles.todBtnActive : ''
+                          }`}
+                          onClick={() => setTimeOfDay(opt.id)}
+                          aria-label={`Set time of day to ${opt.label}`}
+                        >
+                          <span>{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={styles.atmosphereGroup} style={{ marginTop: '12px' }}>
+                    <label className={styles.atmosphereLabel}>Atmospheric Particles:</label>
+                    <div className={styles.weatherButtonGroup}>
+                      {WEATHER_EFFECT_OPTIONS.map((w) => (
+                        <button
+                          key={w.id}
+                          type="button"
+                          className={`${styles.weatherBtn} ${
+                            weatherEffect === w.id ? styles.weatherBtnActive : ''
+                          }`}
+                          onClick={() => setWeatherEffect(w.id)}
+                          aria-label={`Set weather effect to ${w.label}`}
+                        >
+                          <span>{w.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -1101,6 +1578,37 @@ export function StorybookStudio() {
                 <p>Crafted with sustainably sourced archival FSC paper.</p>
               </div>
 
+              {/* Pre-Flight Print Inspection Banner */}
+              <div className={styles.preflightBanner}>
+                <div className={styles.preflightIcon}>
+                  <CheckCircleIcon size={20} />
+                </div>
+                <div className={styles.preflightInfo}>
+                  <strong>Pre-Flight Print Inspection Passed</strong>
+                  <span>300 DPI Vector Art • Safe Bleed Margins Verified • FSC Archival Inks</span>
+                </div>
+              </div>
+
+              {/* Live Proof Summary Box */}
+              <div className={styles.proofSummaryBox}>
+                <div className={styles.summaryItem}>
+                  <span>Hero Star</span>
+                  <strong>{childName || 'Adventurer'}</strong>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span>Story Theme</span>
+                  <strong>{activeThemeObj.name}</strong>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span>Co-Star Guide</span>
+                  <strong>{coStarNames[mascotCoStar] || 'Leo The Lion'}</strong>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span>Page Spreads</span>
+                  <strong>{bookSpreads.length} Spreads (10 Pages)</strong>
+                </div>
+              </div>
+
               <div className={styles.editionList}>
                 {EDITIONS.map((ed) => (
                   <button
@@ -1156,9 +1664,260 @@ export function StorybookStudio() {
                 Continue to Next Step
               </button>
             )}
+            </div>
           </div>
-        </div>
-      </div>
+        </aside>
+      )}
+
+      {/* Right Column: Figma / Photoshop Properties Inspector */}
+      {isInspectorOpen && (
+        <aside className={styles.propertiesInspector} aria-label="Properties Inspector">
+          <div className={styles.inspectorHeader}>
+            <div className={styles.inspectorTitleWrap}>
+              <h4>
+                <SlidersIcon size={14} />
+                <span>Inspector</span>
+              </h4>
+              <span className={styles.inspectorBadgeActive}>
+                {activeLayer ? activeLayer.type.replace(/^(mascot_|badge_)/, '') : 'Canvas'}
+              </span>
+            </div>
+            <button
+              type="button"
+              className={styles.inspectorToggleBtn}
+              onClick={() => setIsInspectorOpen(false)}
+              title="Collapse Inspector"
+              aria-label="Collapse properties inspector"
+            >
+              <CloseIcon size={14} />
+            </button>
+          </div>
+
+          <div className={styles.inspectorTabs} role="tablist" aria-label="Inspector Mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={inspectorTab === 'properties'}
+              className={`${styles.inspectorTabBtn} ${
+                inspectorTab === 'properties' ? styles.inspectorTabBtnActive : ''
+              }`}
+              onClick={() => setInspectorTab('properties')}
+            >
+              Properties
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={inspectorTab === 'layers'}
+              className={`${styles.inspectorTabBtn} ${
+                inspectorTab === 'layers' ? styles.inspectorTabBtnActive : ''
+              }`}
+              onClick={() => setInspectorTab('layers')}
+            >
+              Layers ({stickers.length})
+            </button>
+          </div>
+
+          {inspectorTab === 'properties' && (
+            <>
+              {activeLayer ? (
+                <>
+                  <div className={styles.inspectorSection}>
+                    <div className={styles.inspectorSectionTitle}>
+                      <span>Transform</span>
+                      <span style={{ fontSize: '0.6rem', color: '#94a3b8' }}>PX & DEG</span>
+                    </div>
+                    <div className={styles.inspectorGrid2}>
+                      <div className={styles.propBox}>
+                        <label className={styles.propLabel} htmlFor="layer-x-input">
+                          X (px)
+                        </label>
+                        <input
+                          id="layer-x-input"
+                          type="number"
+                          className={styles.propInput}
+                          value={Math.round(activeLayer.x ?? 0)}
+                          onChange={(e) =>
+                            handleUpdateActiveLayer({ x: Number(e.target.value) || 0 })
+                          }
+                        />
+                      </div>
+                      <div className={styles.propBox}>
+                        <label className={styles.propLabel} htmlFor="layer-y-input">
+                          Y (px)
+                        </label>
+                        <input
+                          id="layer-y-input"
+                          type="number"
+                          className={styles.propInput}
+                          value={Math.round(activeLayer.y ?? 0)}
+                          onChange={(e) =>
+                            handleUpdateActiveLayer({ y: Number(e.target.value) || 0 })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className={styles.propSliderWrap}>
+                      <div className={styles.propSliderHeader}>
+                        <span>Scale</span>
+                        <span className={styles.propSliderVal}>
+                          {Math.round((activeLayer.scale ?? 1) * 100)}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.4"
+                        max="2.5"
+                        step="0.05"
+                        className={styles.propSlider}
+                        value={activeLayer.scale ?? 1}
+                        onChange={(e) =>
+                          handleUpdateActiveLayer({ scale: parseFloat(e.target.value) })
+                        }
+                        aria-label="Layer scale"
+                      />
+                    </div>
+
+                    <div className={styles.propSliderWrap}>
+                      <div className={styles.propSliderHeader}>
+                        <span>Rotation</span>
+                        <span className={styles.propSliderVal}>
+                          {Math.round(activeLayer.rotation ?? 0)}°
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="-180"
+                        max="180"
+                        step="5"
+                        className={styles.propSlider}
+                        value={activeLayer.rotation ?? 0}
+                        onChange={(e) =>
+                          handleUpdateActiveLayer({ rotation: parseInt(e.target.value, 10) })
+                        }
+                        aria-label="Layer rotation"
+                      />
+                    </div>
+
+                    {activeLayer.type === 'bubble' && (
+                      <div className={styles.propBox}>
+                        <label className={styles.propLabel} htmlFor="layer-bubble-prose">
+                          Speech Prose
+                        </label>
+                        <input
+                          id="layer-bubble-prose"
+                          type="text"
+                          className={styles.propInput}
+                          value={activeLayer.text || ''}
+                          onChange={(e) =>
+                            handleUpdateActiveLayer({ text: e.target.value })
+                          }
+                          placeholder="Bubble prose text..."
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={styles.inspectorSection}>
+                    <div className={styles.inspectorSectionTitle}>
+                      <span>Layer Actions</span>
+                    </div>
+                    <div className={styles.propButtonGroup}>
+                      <button
+                        type="button"
+                        className={styles.propActionBtn}
+                        onClick={() =>
+                          handleUpdateActiveLayer({ flipX: !activeLayer.flipX })
+                        }
+                        title="Flip sticker horizontally"
+                        aria-label="Flip sticker horizontally"
+                      >
+                        <FlipHorizontalIcon size={13} />
+                        <span>Flip</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.propActionBtn}
+                        onClick={handleDuplicateActiveLayer}
+                        title="Duplicate layer"
+                        aria-label="Duplicate layer"
+                      >
+                        <LayersIcon size={13} />
+                        <span>Clone</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.propActionBtn}
+                        onClick={() => handleReorderActiveLayer('forward')}
+                        title="Bring layer forward"
+                        aria-label="Bring layer forward"
+                      >
+                        <LayerFrontIcon size={13} />
+                        <span>Front</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.propActionBtn} ${styles.propDangerBtn}`}
+                        onClick={() => handleDeleteActiveLayer(activeLayer.id)}
+                        title="Remove sticker from spread"
+                        aria-label="Remove sticker from spread"
+                      >
+                        <TrashIcon size={13} />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className={styles.propEmptyState}>
+                  <LayersIcon size={28} className={styles.propEmptyIcon} />
+                  <p>No active layer selected.</p>
+                  <small>
+                    Stamp assets from the bar or select a template to inspect and transform.
+                  </small>
+                </div>
+              )}
+            </>
+          )}
+
+          {inspectorTab === 'layers' && (
+            <div className={styles.inspectorLayersStack} role="list" aria-label="Canvas Layers">
+              {stickers.map((stk, idx) => (
+                <div
+                  key={stk.id}
+                  role="listitem"
+                  className={`${styles.inspectorLayerItem} ${
+                    activeLayer?.id === stk.id ? styles.inspectorLayerItemActive : ''
+                  }`}
+                  onClick={() => setSelectedLayerId(stk.id)}
+                >
+                  <span>#{idx + 1} {stk.type.replace(/^(mascot_|badge_)/, '')}</span>
+                  <button
+                    type="button"
+                    className={styles.layerDeleteBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteActiveLayer(stk.id);
+                    }}
+                    aria-label={`Remove layer ${idx + 1}`}
+                  >
+                    <TrashIcon size={12} />
+                  </button>
+                </div>
+              ))}
+              {stickers.length === 0 && (
+                <div className={styles.propEmptyState}>
+                  <LayersIcon size={24} className={styles.propEmptyIcon} />
+                  <p>No layers on this spread.</p>
+                  <small>Stamp assets to build multi-layer illustrations.</small>
+                </div>
+              )}
+            </div>
+          )}
+        </aside>
+      )}
+    </div>
 
       {/* FULLSCREEN DEDICATED STUDIO MODAL WORKSTATION */}
       {isFullscreen && (
@@ -1291,6 +2050,7 @@ export function StorybookStudio() {
               <div className={styles.fsRailIcons}>
                 {[
                   { id: 'templates', label: 'Templates', Icon: TemplateToolIcon },
+                  { id: 'scenes', label: 'Scenes', Icon: ScenePanoramaSvg },
                   { id: 'stamps', label: 'Stamps', Icon: StarStampSvg },
                   { id: 'avatar', label: 'Avatar', Icon: MascotLeoSvg },
                   { id: 'typography', label: 'Typography', Icon: TextToolIcon },
@@ -1331,6 +2091,54 @@ export function StorybookStudio() {
                           <p>{tmpl.desc}</p>
                         </button>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeToolTab === 'scenes' && (
+                  <div className={styles.fsDrawerSection}>
+                    <h4>Scene Environments</h4>
+                    <p className={styles.fsDrawerMuted}>Choose procedural world backdrops & lighting.</p>
+                    <div className={styles.fsSceneCards}>
+                      {SCENE_ENVIRONMENTS.map((scene) => (
+                        <button
+                          key={scene.id}
+                          type="button"
+                          className={`${styles.fsSceneCard} ${
+                            activeSceneId === scene.id ? styles.fsSceneCardActive : ''
+                          }`}
+                          onClick={() => handleSelectScene(scene)}
+                        >
+                          <strong>{scene.name}</strong>
+                          <div className={styles.paletteSwatches}>
+                            {scene.palette.map((c, i) => (
+                              <span
+                                key={i}
+                                className={styles.paletteSwatch}
+                                style={{ backgroundColor: c }}
+                                title={c}
+                              />
+                            ))}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ marginTop: '16px' }}>
+                      <span className={styles.subPaneLabel}>Time of Day:</span>
+                      <div className={styles.todButtonGroup}>
+                        {TIME_OF_DAY_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            className={`${styles.todBtn} ${
+                              timeOfDay === opt.id ? styles.todBtnActive : ''
+                            }`}
+                            onClick={() => setTimeOfDay(opt.id)}
+                          >
+                            <span>{opt.label}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1445,9 +2253,14 @@ export function StorybookStudio() {
                   width={760}
                   height={520}
                   mode="storybook"
+                  isAnimated={isSceneAnimated}
                   config={{
                     childName: childName || 'Adventurer',
                     theme,
+                    sceneId: activeSceneId,
+                    timeOfDay,
+                    weatherEffect,
+                    spreadLayout,
                     activePage,
                     dedication,
                     chapterProse,
@@ -1525,13 +2338,19 @@ export function StorybookStudio() {
                 width={760}
                 height={520}
                 mode="storybook"
+                isAnimated={isSceneAnimated}
                 config={{
                   childName: childName || 'Adventurer',
                   theme,
+                  sceneId: activeSceneId,
+                  timeOfDay,
+                  weatherEffect,
+                  spreadLayout,
                   activePage,
                   dedication,
                   chapterProse,
                   avatar,
+                  companion,
                   mascotCoStar,
                   fontFamily,
                   textColor,

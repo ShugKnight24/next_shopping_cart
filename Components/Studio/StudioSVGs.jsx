@@ -522,6 +522,97 @@ export function HeartStampSvg({ size = 24, className = '' }) {
   );
 }
 
+export function CastlePropSvg({ size = 24, className = '' }) {
+  return (
+    <svg {...baseSvgProps} width={size} height={size} viewBox="0 0 40 40" className={className} aria-hidden="true">
+      {/* Castle Base */}
+      <rect x="8" y="18" width="24" height="18" rx="2" fill="#64748b" stroke="#334155" strokeWidth="1.5" />
+      {/* Left Tower */}
+      <rect x="6" y="12" width="8" height="24" fill="#475569" stroke="#1e293b" strokeWidth="1.5" />
+      <polygon points="6,12 10,5 14,12" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.2" />
+      {/* Right Tower */}
+      <rect x="26" y="12" width="8" height="24" fill="#475569" stroke="#1e293b" strokeWidth="1.5" />
+      <polygon points="26,12 30,5 34,12" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.2" />
+      {/* Center Turret */}
+      <rect x="16" y="10" width="8" height="10" fill="#94a3b8" stroke="#334155" strokeWidth="1.2" />
+      <polygon points="16,10 20,4 24,10" fill="#f59e0b" stroke="#d97706" strokeWidth="1.2" />
+      {/* Arched Gate */}
+      <path d="M16 36 V26 C16 23.5 24 23.5 24 26 V36 Z" fill="#1e293b" stroke="#0f172a" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+export function SpaceshipPropSvg({ size = 24, className = '' }) {
+  return (
+    <svg {...baseSvgProps} width={size} height={size} viewBox="0 0 40 40" className={className} aria-hidden="true">
+      {/* Rocket Thruster Flame */}
+      <polygon points="17,33 20,39 23,33" fill="#f97316" />
+      <polygon points="18,33 20,37 22,33" fill="#fde047" />
+      {/* Side Fins */}
+      <polygon points="12,24 6,32 14,30" fill="#dc2626" stroke="#991b1b" strokeWidth="1.2" />
+      <polygon points="28,24 34,32 26,30" fill="#dc2626" stroke="#991b1b" strokeWidth="1.2" />
+      {/* Rocket Fuselage */}
+      <path d="M20 3 C14 12 13 24 13 32 L27 32 C27 24 26 12 20 3 Z" fill="#f8fafc" stroke="#64748b" strokeWidth="1.5" />
+      {/* Cockpit Window */}
+      <circle cx="20" cy="16" r="4.5" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+      <circle cx="18.5" cy="14.5" r="1.5" fill="#ffffff" />
+    </svg>
+  );
+}
+
+export function CrystalPropSvg({ size = 24, className = '' }) {
+  return (
+    <svg {...baseSvgProps} width={size} height={size} viewBox="0 0 40 40" className={className} aria-hidden="true">
+      {/* Crystal Cluster */}
+      <polygon points="20,4 27,15 24,36 16,36 13,15" fill="#c084fc" stroke="#7e22ce" strokeWidth="1.5" />
+      <polygon points="20,4 27,15 20,36" fill="#e9d5ff" opacity="0.6" />
+      <polygon points="13,15 7,20 10,34 16,36" fill="#a855f7" stroke="#6b21a8" strokeWidth="1.2" />
+      <polygon points="27,15 33,20 30,34 24,36" fill="#9333ea" stroke="#581c87" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+export function MushroomPropSvg({ size = 24, className = '' }) {
+  return (
+    <svg {...baseSvgProps} width={size} height={size} viewBox="0 0 40 40" className={className} aria-hidden="true">
+      {/* Mushroom Stalk */}
+      <path d="M16 22 C16 18 24 18 24 22 L26 36 C26 37.5 14 37.5 14 36 Z" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="1.5" />
+      {/* Mushroom Cap */}
+      <path d="M6 22 C6 10 34 10 34 22 Z" fill="#ef4444" stroke="#b91c1c" strokeWidth="1.5" />
+      {/* Cap Spots */}
+      <circle cx="14" cy="16" r="2.5" fill="#ffffff" />
+      <circle cx="26" cy="15" r="2" fill="#ffffff" />
+      <circle cx="20" cy="18" r="1.8" fill="#ffffff" />
+    </svg>
+  );
+}
+
+export function RainbowPropSvg({ size = 24, className = '' }) {
+  return (
+    <svg {...baseSvgProps} width={size} height={size} viewBox="0 0 40 40" className={className} aria-hidden="true">
+      <path d="M6 32 A14 14 0 0 1 34 32" fill="none" stroke="#ef4444" strokeWidth="2.5" />
+      <path d="M9 32 A11 11 0 0 1 31 32" fill="none" stroke="#f97316" strokeWidth="2.5" />
+      <path d="M12 32 A8 8 0 0 1 28 32" fill="none" stroke="#eab308" strokeWidth="2.5" />
+      <path d="M15 32 A5 5 0 0 1 25 32" fill="none" stroke="#22c55e" strokeWidth="2.5" />
+      <path d="M18 32 A2 2 0 0 1 22 32" fill="none" stroke="#3b82f6" strokeWidth="2.5" />
+    </svg>
+  );
+}
+
+export function DragonEggPropSvg({ size = 24, className = '' }) {
+  return (
+    <svg {...baseSvgProps} width={size} height={size} viewBox="0 0 40 40" className={className} aria-hidden="true">
+      {/* Egg Base */}
+      <ellipse cx="20" cy="22" rx="12" ry="15" fill="#10b981" stroke="#047857" strokeWidth="1.5" />
+      {/* Glowing Scale Pattern */}
+      <path d="M14 16 Q 20 20 26 16" fill="none" stroke="#a7f3d0" strokeWidth="1.5" />
+      <path d="M12 23 Q 20 28 28 23" fill="none" stroke="#a7f3d0" strokeWidth="1.5" />
+      <path d="M16 29 Q 20 33 24 29" fill="none" stroke="#a7f3d0" strokeWidth="1.5" />
+      <circle cx="20" cy="12" r="1.5" fill="#fde047" />
+    </svg>
+  );
+}
+
 // ==========================================
 // 5. STUDIO UI & TOOL ICONS
 // ==========================================
@@ -667,10 +758,111 @@ export function AddPageIcon({ size = 16, className = '' }) {
   );
 }
 
+export function StudioBookOpenSvg({ size = 18, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  );
+}
+
+export function StudioQuillSvg({ size = 20, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+      <line x1="16" y1="8" x2="2" y2="22" />
+      <line x1="17.5" y1="15" x2="9" y2="15" />
+    </svg>
+  );
+}
+
+export function StudioPaletteSvg({ size = 20, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+    </svg>
+  );
+}
+
+export function StudioMagicWandSvg({ size = 20, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="m15 4 4 4-11 11H4v-4l11-11Z" />
+      <path d="m14 5 1-3 1 3 3 1-3 1-1 3-1-3-3-1 3-1Z" />
+      <path d="m5 16 1-2 1 2 2 1-2 1-1 2-1-2-2-1 2-1Z" />
+    </svg>
+  );
+}
+
+export function StudioWaxSealSvg({ size = 24, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <defs>
+        <radialGradient id="waxGrad" cx="40%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#ef4444" />
+          <stop offset="60%" stopColor="#b91c1c" />
+          <stop offset="100%" stopColor="#7f1d1d" />
+        </radialGradient>
+        <radialGradient id="goldSealGrad" cx="40%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#fef08a" />
+          <stop offset="60%" stopColor="#eab308" />
+          <stop offset="100%" stopColor="#a16207" />
+        </radialGradient>
+      </defs>
+      {/* Outer scalloped wax seal edge */}
+      <path
+        d="M16 2 C18 2 20 4 22 4 C24 4 26 2 28 5 C29 7 28 9 29 11 C31 13 32 15 31 17 C30 19 31 21 29 23 C28 25 29 27 27 28 C25 29 23 28 21 29 C19 31 17 31 16 30 C14 31 12 31 10 29 C8 28 6 29 4 28 C3 26 4 24 2 23 C1 21 2 19 1 17 C1 15 2 13 3 11 C4 9 3 7 4 5 C6 3 8 4 10 4 C12 4 14 2 16 2 Z"
+        fill="url(#waxGrad)"
+        stroke="#991b1b"
+        strokeWidth="0.8"
+      />
+      {/* Inner embossed gold ring */}
+      <circle cx="16" cy="16" r="9.5" fill="none" stroke="url(#goldSealGrad)" strokeWidth="1.2" strokeDasharray="1.5 1.5" />
+      {/* Center Crown / Star Emblem */}
+      <path d="M12 18 L13.5 14 L16 16.5 L18.5 14 L20 18 Z" fill="url(#goldSealGrad)" />
+      <circle cx="16" cy="12.5" r="1" fill="#fef08a" />
+    </svg>
+  );
+}
+
+export function ScenePanoramaSvg({ size = 16, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="M12 4v16" strokeDasharray="2 2" />
+      <path d="M6 14l3-3 3 3" />
+      <path d="M14 15l2-2 4 4" />
+    </svg>
+  );
+}
+
+export function SceneWindowSvg({ size = 16, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="M12 4v16" />
+      <path d="M5 8h4M5 12h4M5 16h4" />
+      <circle cx="17" cy="10" r="2" />
+      <path d="M14 16l2-2 4 4" />
+    </svg>
+  );
+}
+
 const propTypesCommon = {
   size: PropTypes.number,
   className: PropTypes.string,
 };
+
+StudioBookOpenSvg.propTypes = propTypesCommon;
+StudioQuillSvg.propTypes = propTypesCommon;
+StudioPaletteSvg.propTypes = propTypesCommon;
+StudioMagicWandSvg.propTypes = propTypesCommon;
+StudioWaxSealSvg.propTypes = propTypesCommon;
 
 MascotLunaSvg.propTypes = propTypesCommon;
 MascotFinleySvg.propTypes = propTypesCommon;
@@ -696,6 +888,12 @@ CrownStampSvg.propTypes = propTypesCommon;
 SneakerStampSvg.propTypes = propTypesCommon;
 SparkleStampSvg.propTypes = propTypesCommon;
 HeartStampSvg.propTypes = propTypesCommon;
+CastlePropSvg.propTypes = propTypesCommon;
+SpaceshipPropSvg.propTypes = propTypesCommon;
+CrystalPropSvg.propTypes = propTypesCommon;
+MushroomPropSvg.propTypes = propTypesCommon;
+RainbowPropSvg.propTypes = propTypesCommon;
+DragonEggPropSvg.propTypes = propTypesCommon;
 FullscreenIcon.propTypes = propTypesCommon;
 ExitFullscreenIcon.propTypes = propTypesCommon;
 UndoIcon.propTypes = propTypesCommon;
@@ -707,6 +905,8 @@ DuplicateIcon.propTypes = propTypesCommon;
 BookOpenIcon.propTypes = propTypesCommon;
 TemplateToolIcon.propTypes = propTypesCommon;
 SceneBackgroundIcon.propTypes = propTypesCommon;
+ScenePanoramaSvg.propTypes = propTypesCommon;
+SceneWindowSvg.propTypes = propTypesCommon;
 TextToolIcon.propTypes = propTypesCommon;
 EyePreviewIcon.propTypes = propTypesCommon;
 AddPageIcon.propTypes = propTypesCommon;

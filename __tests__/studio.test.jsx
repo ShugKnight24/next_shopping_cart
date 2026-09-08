@@ -589,5 +589,65 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.change(petNameInput, { target: { value: 'Barnaby' } });
     expect(petNameInput).toHaveValue('Barnaby');
   });
+
+  it('supports selecting hyper-realistic scene environments, atmospheric lighting, weather particles, and layout toggling', () => {
+    renderStudio();
+
+    // Verify Motion toggle button in canvas header
+    const motionBtn = screen.getByRole('button', { name: /Pause scene animation/i });
+    expect(motionBtn).toBeInTheDocument();
+    fireEvent.click(motionBtn);
+    expect(screen.getByRole('button', { name: /Play scene animation/i })).toBeInTheDocument();
+
+    // Verify Spread Layout toggle button (Panoramic vs Framed)
+    const layoutBtn = screen.getByRole('button', { name: /Switch spread layout/i });
+    expect(layoutBtn).toBeInTheDocument();
+    fireEvent.click(layoutBtn);
+    expect(screen.getByText('Framed')).toBeInTheDocument();
+    fireEvent.click(layoutBtn);
+    expect(screen.getByText('Panoramic')).toBeInTheDocument();
+
+    // Navigate to Step 2
+    const nextBtn = screen.getByRole('button', { name: /Continue to Next Step/i });
+    fireEvent.click(nextBtn);
+
+    expect(screen.getByText('Adventure World & Scene Environments')).toBeInTheDocument();
+    expect(screen.getByText('8 Worlds')).toBeInTheDocument();
+
+    // Category filter pills
+    const fantasyFilter = screen.getByRole('tab', { name: /Fantasy/i });
+    fireEvent.click(fantasyFilter);
+
+    // Select Enchanted Whispering Woods scene
+    const enchantedScene = screen.getByRole('button', {
+      name: /Select Enchanted Whispering Woods environment/i,
+    });
+    expect(enchantedScene).toBeInTheDocument();
+    fireEvent.click(enchantedScene);
+
+    // Change Time of Day to Golden Sunset
+    const sunsetBtn = screen.getByRole('button', { name: /Set time of day to Golden Sunset/i });
+    fireEvent.click(sunsetBtn);
+
+    // Change Weather Particles to Gentle Snowfall
+    const snowBtn = screen.getByRole('button', { name: /Set weather effect to Gentle Snowfall/i });
+    fireEvent.click(snowBtn);
+
+    // Navigate to Step 4
+    const step4Tab = screen.getByRole('button', { name: /Proof & Stamp/i });
+    fireEvent.click(step4Tab);
+
+    // Verify Scene World subtab exists in Step 4
+    const scenesSubtab = screen.getByRole('tab', { name: /Scene World/i });
+    expect(scenesSubtab).toBeInTheDocument();
+    fireEvent.click(scenesSubtab);
+
+    // Can select Arctic Aurora from Step 4
+    const auroraScene = screen.getByRole('button', {
+      name: /Select Frost Peak & Northern Lights environment/i,
+    });
+    expect(auroraScene).toBeInTheDocument();
+    fireEvent.click(auroraScene);
+  });
 });
 

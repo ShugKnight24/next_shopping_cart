@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { FlipHorizontalIcon, DuplicateIcon, TrashIcon } from './StudioSVGs';
+import { useCanvasGestures } from '../../hooks/useCanvasGestures';
+import { drawEnvironmentScene } from './sceneRenderer';
+import { getDefaultSceneForTheme } from './sceneEnvironments';
 import styles from './CanvasEngine.module.css';
 
 /**
@@ -134,14 +137,24 @@ export function CanvasEngine({
   onUpdateStickers = () => {},
   onCanvasClick = null,
   className = '',
+  isAnimated = true,
 }) {
   const canvasRef = useRef(null);
-  const isDraggingRef = useRef(false);
-  const dragTargetRef = useRef(null);
-  const [hoveredStickerId, setHoveredStickerId] = useState(null);
+  const timeRef = useRef(0);
 
-  // Selected sticker layer state
-  const [activeStickerId, setActiveStickerId] = useState(null);
+  // Gesture handling for mouse and touch interactions
+  const {
+    activeStickerId,
+    setActiveStickerId,
+    hoveredStickerId,
+    handlers: gestureHandlers,
+  } = useCanvasGestures({
+    canvasRef,
+    stickers,
+    selectedSticker,
+    onUpdateStickers,
+    onCanvasClick,
+  });
 
   // Draw sticker vector primitives on Canvas 2D
   const drawSticker = useCallback((ctx, sticker, isSelected = false) => {
@@ -1174,6 +1187,81 @@ export function CanvasEngine({
         ctx.fill();
         break;
       }
+      case 'castle': {
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(-12, -4, 24, 18);
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(-15, -12, 8, 26);
+        ctx.fillRect(7, -12, 8, 26);
+        ctx.fillStyle = '#3b82f6';
+        ctx.beginPath();
+        ctx.moveTo(-15, -12); ctx.lineTo(-11, -20); ctx.lineTo(-7, -12); ctx.closePath(); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(7, -12); ctx.lineTo(11, -20); ctx.lineTo(15, -12); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(-4, 4, 8, 10);
+        break;
+      }
+      case 'spaceship': {
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.moveTo(-3, 14); ctx.lineTo(0, 22); ctx.lineTo(3, 14); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.moveTo(-8, 6); ctx.lineTo(-16, 15); ctx.lineTo(-6, 14); ctx.closePath(); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(8, 6); ctx.lineTo(16, 15); ctx.lineTo(6, 14); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#f8fafc';
+        ctx.beginPath();
+        ctx.moveTo(0, -18); ctx.quadraticCurveTo(-8, -4, -8, 14); ctx.lineTo(8, 14); ctx.quadraticCurveTo(8, -4, 0, -18); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(0, -2, 4.5, 0, Math.PI * 2); ctx.fill();
+        break;
+      }
+      case 'crystal': {
+        ctx.fillStyle = '#c084fc';
+        ctx.beginPath();
+        ctx.moveTo(0, -18); ctx.lineTo(8, -6); ctx.lineTo(5, 16); ctx.lineTo(-5, 16); ctx.lineTo(-8, -6); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#a855f7';
+        ctx.beginPath();
+        ctx.moveTo(-8, -6); ctx.lineTo(-15, 0); ctx.lineTo(-10, 14); ctx.lineTo(-5, 16); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#9333ea';
+        ctx.beginPath();
+        ctx.moveTo(8, -6); ctx.lineTo(15, 0); ctx.lineTo(10, 14); ctx.lineTo(5, 16); ctx.closePath(); ctx.fill();
+        break;
+      }
+      case 'mushroom': {
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(-5, 2, 10, 14);
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.arc(0, 2, 16, Math.PI, 0, false); ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(-6, -4, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(6, -5, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(0, -8, 2, 0, Math.PI * 2); ctx.fill();
+        break;
+      }
+      case 'rainbow': {
+        const rCols = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
+        rCols.forEach((col, idx) => {
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(0, 14, 18 - idx * 2.8, Math.PI, 0, false);
+          ctx.stroke();
+        });
+        break;
+      }
+      case 'dragon_egg': {
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath(); ctx.ellipse(0, 0, 12, 16, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#a7f3d0';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(-6, -4); ctx.quadraticCurveTo(0, 0, 6, -4); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-8, 3); ctx.quadraticCurveTo(0, 7, 8, 3); ctx.stroke();
+        break;
+      }
+      case 'heart':
       default: {
         // Heart Badge
         ctx.fillStyle = '#f43f5e';
@@ -1224,7 +1312,7 @@ export function CanvasEngine({
   }, []);
 
   // Main Render Routine
-  const renderCanvas = useCallback(() => {
+  const renderCanvas = useCallback((time = 0) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -1241,6 +1329,10 @@ export function CanvasEngine({
       const {
         childName = 'Adventurer',
         theme = 'space',
+        sceneId = '',
+        timeOfDay = 'midnight',
+        weatherEffect = 'none',
+        spreadLayout = 'framed',
         activePage = 0,
         dedication = 'Stay curious, brave, and kind.',
         fontFamily = 'serif',
@@ -1255,6 +1347,7 @@ export function CanvasEngine({
         mascotCoStar = 'leo',
         showBleed = false,
       } = config;
+      const activeSceneId = sceneId || getDefaultSceneForTheme(theme);
 
       // Font Family mapping
       const fontFamilies = {
@@ -1298,25 +1391,91 @@ export function CanvasEngine({
         gradient.addColorStop(1, '#022c22');
       }
 
-      // Hardcover Backing
+      // Hardcover Backing with Outer 3D Soft Drop Shadow
+      ctx.save();
+      ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 12;
       ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.roundRect(14, 14, width - 28, height - 28, 14);
+      if (ctx.roundRect) ctx.roundRect(14, 14, width - 28, height - 28, 14);
+      else ctx.rect(14, 14, width - 28, height - 28);
       ctx.fill();
+      ctx.restore();
 
       // Gold Foil Border Trim
       ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Book Spine Crease
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
-      ctx.fillRect(width / 2 - 3, 14, 6, height - 28);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-      ctx.fillRect(width / 2 - 1, 14, 2, height - 28);
+      // Physical Bound Page Edge Lines along bottom and right (simulates 32 archival pages)
+      ctx.strokeStyle = 'rgba(203, 213, 225, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(22, height - 15);
+      ctx.lineTo(width - 22, height - 15);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(226, 232, 240, 0.25)';
+      ctx.beginPath();
+      ctx.moveTo(24, height - 17);
+      ctx.lineTo(width - 24, height - 17);
+      ctx.stroke();
+
+      // Book Spine Center Valley Crease
+      const spineGrad = ctx.createLinearGradient(width / 2 - 10, 14, width / 2 + 10, 14);
+      spineGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      spineGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.32)');
+      spineGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = spineGrad;
+      ctx.fillRect(width / 2 - 10, 14, 20, height - 28);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.fillRect(width / 2 - 2, 14, 1.5, height - 28);
+      ctx.fillRect(width / 2 + 0.5, 14, 1.5, height - 28);
+
+      // Silk Gold Bookmark Ribbon draping from top spine
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.moveTo(width / 2 - 4, 14);
+      ctx.lineTo(width / 2 + 4, 14);
+      ctx.lineTo(width / 2 + 5, 80);
+      ctx.lineTo(width / 2, 72);
+      ctx.lineTo(width / 2 - 5, 80);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
 
       if (activePage === 0) {
-        // Front Cover View
+        // Front Cover View: Glowing environment backdrop under gold foil
+        drawEnvironmentScene(ctx, {
+          sceneId: activeSceneId,
+          stageX: 18,
+          stageY: 18,
+          stageW: width - 36,
+          stageH: height - 36,
+          time,
+          theme,
+          timeOfDay: 'midnight',
+          weatherEffect: 'stars',
+          isFullBleed: true,
+        });
+
+        // Translucent luxury dark leather vignette overlay
+        const coverVignette = ctx.createRadialGradient(
+          width / 2,
+          height / 2,
+          40,
+          width / 2,
+          height / 2,
+          width * 0.55
+        );
+        coverVignette.addColorStop(0, 'rgba(15, 23, 42, 0.65)');
+        coverVignette.addColorStop(1, 'rgba(15, 23, 42, 0.88)');
+        ctx.fillStyle = coverVignette;
+        ctx.fillRect(18, 18, width - 36, height - 36);
+
         ctx.strokeStyle = '#f59e0b';
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -1443,18 +1602,8 @@ export function CanvasEngine({
         ctx.font = '10px sans-serif';
         ctx.fillText('Printed on FSC Archival Paper • Page 1', (3 * width) / 4 - 10, height - 42);
       } else {
-        // Chapter Pages (2, 3, 4)
-        ctx.fillStyle = '#fffdfa';
-        ctx.fillRect(24, 24, width / 2 - 28, height - 48);
-        ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
-
-        // Story Prose
+        // Chapter Pages (2, 3, 4...)
         const chapterNum = activePage - 1;
-        ctx.fillStyle = '#b45309';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(`CHAPTER ${chapterNum}`, 44, 64);
-
         const customChapter = chapterProse && chapterProse[chapterNum];
         const defaultTitle =
           chapterNum === 1
@@ -1463,13 +1612,6 @@ export function CanvasEngine({
             ? `The Secret of the Starlight Compass`
             : `The Grand Victory Celebration`;
         const chapterTitle = customChapter?.title || defaultTitle;
-
-        ctx.fillStyle = '#0f172a';
-        ctx.font = `bold 16px ${activeFont}`;
-        ctx.fillText(chapterTitle, 44, 90);
-
-        ctx.fillStyle = textColor;
-        ctx.font = `12px ${activeFont}`;
         const defaultLines =
           chapterNum === 1
             ? [
@@ -1496,54 +1638,201 @@ export function CanvasEngine({
               ];
         const chapterLines = customChapter?.lines || defaultLines;
 
-        let lineY = 125;
-        chapterLines.forEach((l) => {
-          ctx.fillText(l, 44, lineY);
-          lineY += 24;
-        });
+        const isPanoramic = spreadLayout === 'panoramic';
 
-        // Right Page Illustration Stage
-        const stageX = width / 2 + 16;
-        const stageY = 44;
-        const stageW = width / 2 - 48;
-        const stageH = height - 88;
+        if (isPanoramic) {
+          // Panoramic Double-Page Spread: Full-bleed environment scene across both pages
+          drawEnvironmentScene(ctx, {
+            sceneId: activeSceneId,
+            stageX: 24,
+            stageY: 24,
+            stageW: width - 48,
+            stageH: height - 48,
+            time,
+            theme,
+            timeOfDay,
+            weatherEffect,
+            isFullBleed: true,
+          });
 
-        const illGrad = ctx.createLinearGradient(stageX, stageY, stageX + stageW, stageY + stageH);
-        if (theme === 'space') {
-          illGrad.addColorStop(0, '#0f172a');
-          illGrad.addColorStop(1, '#1e1b4b');
-        } else if (theme === 'magic') {
-          illGrad.addColorStop(0, '#4c1d95');
-          illGrad.addColorStop(1, '#831843');
-        } else if (theme === 'sneaker') {
-          illGrad.addColorStop(0, '#1e1b4b');
-          illGrad.addColorStop(1, '#b91c1c');
-        } else {
-          illGrad.addColorStop(0, '#064e3b');
-          illGrad.addColorStop(1, '#065f46');
-        }
-        ctx.fillStyle = illGrad;
-        ctx.beginPath();
-        ctx.roundRect(stageX, stageY, stageW, stageH, 8);
-        ctx.fill();
+          // Frosted Vellum Prose Card on Left Page
+          const cardX = 36;
+          const cardY = 36;
+          const cardW = width / 2 - 56;
+          const cardH = height - 72;
 
-        // Twinkling background stars
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        [
-          [stageX + 25, stageY + 20, 1.5],
-          [stageX + stageW - 30, stageY + 35, 2],
-          [stageX + 50, stageY + 70, 1],
-          [stageX + stageW - 60, stageY + 80, 1.8],
-          [stageX + 40, stageY + stageH - 50, 1.5],
-        ].forEach(([sx, sy, sr]) => {
+          ctx.save();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
           ctx.beginPath();
-          ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+          if (ctx.roundRect) ctx.roundRect(cardX, cardY, cardW, cardH, 10);
+          else ctx.rect(cardX, cardY, cardW, cardH);
           ctx.fill();
-        });
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
 
-        // DRAW HERO AVATAR (Left character on illustration stage)
-        const heroX = stageX + stageW * 0.35;
-        const heroY = stageY + stageH * 0.65;
+          // Prose typography on frosted card
+          ctx.fillStyle = '#b45309';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(`CHAPTER ${chapterNum}`, cardX + 16, cardY + 28);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `bold 16px ${activeFont}`;
+          ctx.fillText(chapterTitle, cardX + 16, cardY + 52);
+
+          // Illuminated Drop-Cap
+          const firstLine = chapterLines[0] || '';
+          const initialChar = firstLine.slice(0, 1).toUpperCase();
+          const restFirstLine = firstLine.slice(1);
+
+          ctx.fillStyle = '#1e1b4b';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(cardX + 16, cardY + 66, 26, 26, 4);
+          else ctx.rect(cardX + 16, cardY + 66, 26, 26);
+          ctx.fill();
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = `bold 18px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(initialChar, cardX + 29, cardY + 85);
+
+          ctx.fillStyle = textColor;
+          ctx.font = `12px ${activeFont}`;
+          ctx.textAlign = 'left';
+          ctx.fillText(restFirstLine, cardX + 48, cardY + 83);
+
+          let lineY = cardY + 108;
+          for (let i = 1; i < chapterLines.length; i++) {
+            ctx.fillText(chapterLines[i], cardX + 16, lineY);
+            lineY += 22;
+          }
+          ctx.restore();
+        } else {
+          // Classic Left Ivory Archival Page + Right Framed Illustration Window
+          ctx.fillStyle = '#fcfbf7';
+          ctx.fillRect(24, 24, width / 2 - 28, height - 48);
+          ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+
+          // Page borders
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(24, 24, width / 2 - 28, height - 48);
+          ctx.strokeRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+
+          // Page curvature shading towards gutter spine
+          const leftCurv = ctx.createLinearGradient(width / 2 - 28, 24, 24, 24);
+          leftCurv.addColorStop(0, 'rgba(15, 23, 42, 0.12)');
+          leftCurv.addColorStop(0.18, 'rgba(15, 23, 42, 0.03)');
+          leftCurv.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = leftCurv;
+          ctx.fillRect(24, 24, width / 2 - 28, height - 48);
+
+          const rightCurv = ctx.createLinearGradient(width / 2 + 4, 24, width - 24, 24);
+          rightCurv.addColorStop(0, 'rgba(15, 23, 42, 0.12)');
+          rightCurv.addColorStop(0.18, 'rgba(15, 23, 42, 0.03)');
+          rightCurv.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = rightCurv;
+          ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+
+          // Story Prose on Left Page
+          ctx.fillStyle = '#b45309';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(`CHAPTER ${chapterNum}`, 44, 64);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `bold 16px ${activeFont}`;
+          ctx.fillText(chapterTitle, 44, 90);
+
+          // Ornamental star filigree line
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(44, 102);
+          ctx.lineTo(width / 2 - 44, 102);
+          ctx.stroke();
+
+          // Illuminated Royal Drop-Cap
+          const firstLine = chapterLines[0] || '';
+          const initialChar = firstLine.slice(0, 1).toUpperCase();
+          const restFirstLine = firstLine.slice(1);
+
+          ctx.fillStyle = '#1e1b4b';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(44, 114, 26, 26, 4);
+          else ctx.rect(44, 114, 26, 26);
+          ctx.fill();
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = `bold 18px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(initialChar, 57, 133);
+
+          ctx.fillStyle = textColor;
+          ctx.font = `12px ${activeFont}`;
+          ctx.textAlign = 'left';
+          ctx.fillText(restFirstLine, 76, 131);
+
+          let lineY = 153;
+          for (let i = 1; i < chapterLines.length; i++) {
+            ctx.fillText(chapterLines[i], 44, lineY);
+            lineY += 22;
+          }
+
+          // Right Page Framed Illustration Stage with Hyper-Realistic Scene
+          const stageX = width / 2 + 16;
+          const stageY = 44;
+          const stageW = width / 2 - 48;
+          const stageH = height - 88;
+
+          drawEnvironmentScene(ctx, {
+            sceneId: activeSceneId,
+            stageX,
+            stageY,
+            stageW,
+            stageH,
+            time,
+            theme,
+            timeOfDay,
+            weatherEffect,
+            isFullBleed: false,
+          });
+
+          // Gold frame border around illustration stage
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(stageX, stageY, stageW, stageH, 8);
+          else ctx.rect(stageX, stageY, stageW, stageH);
+          ctx.stroke();
+        }
+
+        // Positions for Hero Avatar and Companion Mascot
+        const stageX = isPanoramic ? 24 : width / 2 + 16;
+        const stageW = isPanoramic ? width - 48 : width / 2 - 48;
+        const stageY = isPanoramic ? 24 : 44;
+        const stageH = isPanoramic ? height - 48 : height - 88;
+
+        const heroX = isPanoramic ? width * 0.62 : stageX + stageW * 0.35;
+        const heroY = isPanoramic ? height * 0.7 : stageY + stageH * 0.65;
+        const coStarX = isPanoramic ? width * 0.8 : stageX + stageW * 0.68;
+        const coStarY = isPanoramic ? height * 0.7 : stageY + stageH * 0.65;
+
+        // Ambient contact shadows grounding characters in scene
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
+        ctx.beginPath();
+        ctx.ellipse(heroX, heroY + 22, 18, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(coStarX, coStarY + 22, 18, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
 
         // Optional Cape behind
         if (avatar.accessory === 'cape') {
@@ -1709,9 +1998,6 @@ export function CanvasEngine({
         }
 
         // DRAW MASCOT CO-STAR (Right character on illustration stage)
-        const coStarX = stageX + stageW * 0.68;
-        const coStarY = stageY + stageH * 0.65;
-
         if (mascotCoStar === 'finley') {
           // Finley The Starlight Fox (The Little Prince homage)
           // Bushy fox tail curving up with snowy white tip
@@ -2448,69 +2734,37 @@ export function CanvasEngine({
   }, [width, height, mode, config, stickers, activeStickerId, drawSticker]);
 
   useEffect(() => {
-    renderCanvas();
-  }, [renderCanvas]);
+    let animId;
+    let lastTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    let isMounted = true;
 
-  // Handle canvas clicks for stamping or dragging
-  const handleMouseDown = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Check if clicked an existing sticker to select and drag
-    const clickedSticker = [...stickers].reverse().find((s) => {
-      const dist = Math.hypot(s.x - x, s.y - y);
-      return dist <= 28 * (s.scale || 1);
-    });
-
-    if (clickedSticker) {
-      isDraggingRef.current = true;
-      dragTargetRef.current = clickedSticker.id;
-      setActiveStickerId(clickedSticker.id);
-    } else if (selectedSticker) {
-      // Stamp new sticker
-      const newSticker = {
-        id: `stamp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        type: selectedSticker,
-        x,
-        y,
-        scale: 1.2,
-        rotation: 0,
-      };
-      onUpdateStickers([...stickers, newSticker]);
-      setActiveStickerId(newSticker.id);
-    } else {
-      setActiveStickerId(null);
-      if (onCanvasClick) {
-        onCanvasClick(x, y);
+    const loop = (currentTime) => {
+      if (!isMounted) return;
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
+      lastTime = currentTime;
+      timeRef.current += dt;
+      renderCanvas(timeRef.current);
+      if (isAnimated) {
+        animId = requestAnimationFrame(loop);
       }
+    };
+
+    // Synchronous initial paint for instant rendering and Vitest test runner
+    renderCanvas(timeRef.current);
+
+    if (isAnimated && typeof window !== 'undefined' && window.requestAnimationFrame) {
+      animId = requestAnimationFrame(loop);
     }
-  };
 
-  const handleMouseMove = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    return () => {
+      isMounted = false;
+      if (animId && typeof window !== 'undefined' && window.cancelAnimationFrame) {
+        cancelAnimationFrame(animId);
+      }
+    };
+  }, [renderCanvas, isAnimated]);
 
-    if (isDraggingRef.current && dragTargetRef.current) {
-      const updated = stickers.map((s) =>
-        s.id === dragTargetRef.current ? { ...s, x, y } : s
-      );
-      onUpdateStickers(updated);
-    } else {
-      const hover = stickers.find((s) => Math.hypot(s.x - x, s.y - y) <= 24);
-      setHoveredStickerId(hover ? hover.id : null);
-    }
-  };
 
-  const handleMouseUp = () => {
-    isDraggingRef.current = false;
-    dragTargetRef.current = null;
-  };
 
   // Sticker manipulation helpers
   const handleRotateActive = (deltaDegrees) => {
@@ -2577,7 +2831,7 @@ export function CanvasEngine({
     if (!activeStickerId) return;
     onUpdateStickers(stickers.filter((s) => s.id !== activeStickerId));
     setActiveStickerId(null);
-  }, [activeStickerId, stickers, onUpdateStickers]);
+  }, [activeStickerId, stickers, onUpdateStickers, setActiveStickerId]);
 
   // Keyboard accessibility & hotkeys for selected stamp
   useEffect(() => {
@@ -2602,7 +2856,7 @@ export function CanvasEngine({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeStickerId, handleDeleteActive, handleLayerActive]);
+  }, [activeStickerId, handleDeleteActive, handleLayerActive, setActiveStickerId]);
 
   // High-Res Proof Download
   const handleDownloadProof = () => {
@@ -2623,10 +2877,7 @@ export function CanvasEngine({
       <canvas
         ref={canvasRef}
         style={{ width: `${width}px`, height: `${height}px` }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        {...gestureHandlers}
         className={`${styles.interactiveCanvas} ${
           hoveredStickerId ? styles.cursorMove : selectedSticker ? styles.cursorStamp : ''
         }`}
