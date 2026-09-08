@@ -84,14 +84,19 @@ export function PosterStudio() {
   const canvasHeight = orientation === 'landscape' ? 420 : 540;
 
   // History tracking
-  const handleUpdateStickers = useCallback((newStickers) => {
-    setStickers(newStickers);
-    setHistory((hPrev) => {
-      const sliced = hPrev.slice(0, historyIndex + 1);
-      return [...sliced, newStickers];
-    });
-    setHistoryIndex((idx) => idx + 1);
-  }, [historyIndex]);
+  const handleUpdateStickers = useCallback(
+    (newStickers, { commit = true } = {}) => {
+      setStickers(newStickers);
+      if (commit) {
+        setHistory((hPrev) => {
+          const sliced = hPrev.slice(0, historyIndex + 1);
+          return [...sliced, newStickers];
+        });
+        setHistoryIndex((idx) => idx + 1);
+      }
+    },
+    [historyIndex]
+  );
 
   const handleUndo = useCallback(() => {
     if (historyIndex > 0) {

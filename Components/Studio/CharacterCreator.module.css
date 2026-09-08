@@ -138,17 +138,27 @@
 }
 
 .petNameInput {
-  padding: 6px 10px;
-  border: 1px solid #cbd5e1;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 0.84rem;
+  font-weight: 500;
   color: #0f172a;
+  background: #ffffff;
   outline: none;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.petNameInput:hover {
+  border-color: #94a3b8;
 }
 
 .petNameInput:focus {
   border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
 }
 
 .companionHeaderRow {
