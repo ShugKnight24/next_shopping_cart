@@ -11,6 +11,7 @@ import { CartProvider } from '../context/CartProvider';
 import { MascotProvider } from '../context/MascotProvider';
 import { ModalProvider } from '../context/ModalProvider';
 import { MascotCompanion } from '../Components/Mascot/MascotCompanion';
+import { AdminHeatmapHUD } from '../Components/Analytics/AdminHeatmapHUD';
 import '../static/normalize.css';
 import '../styles/globals.css';
 
@@ -65,6 +66,7 @@ function MyApp({ Component, pageProps }) {
                   <HoneypotField />
                   <Component {...pageProps} />
                   <MascotCompanion />
+                  <AdminHeatmapHUD />
                 </Layout>
               </MascotProvider>
             </CartProvider>

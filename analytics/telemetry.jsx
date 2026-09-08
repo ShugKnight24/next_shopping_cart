@@ -27,6 +27,7 @@ class TelemetryEngine {
     this.isInitialized = false;
     this.lastKeydownTime = 0;
     this.typingDeltas = [];
+    this.clickEvents = [];
   }
 
   init({ autoClassifyGA = true } = {}) {
@@ -144,9 +145,22 @@ class TelemetryEngine {
     };
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    // Track click dynamics
-    const onClick = () => {
+    // Track click dynamics and coordinates for Admin Heatmap HUD
+    const onClick = (e) => {
       this.interactionCounts.clicks++;
+      if (typeof window !== 'undefined' && e) {
+        const point = {
+          x: typeof e.pageX === 'number' ? e.pageX : e.clientX || 0,
+          y: typeof e.pageY === 'number' ? e.pageY : e.clientY || 0,
+          timestamp: Date.now(),
+          tag: e.target && e.target.tagName ? e.target.tagName.toLowerCase() : 'element',
+          text: e.target && e.target.textContent ? e.target.textContent.substring(0, 32).trim() : '',
+          path: window.location.pathname,
+        };
+        this.clickEvents.push(point);
+        // Persist periodically or on activity
+        this.persistSessionData();
+      }
     };
     window.addEventListener('click', onClick, { passive: true });
 
@@ -213,7 +227,50 @@ class TelemetryEngine {
             devicePixelRatio: window.devicePixelRatio || 1,
           }
         : null,
+      clickEvents: [...this.clickEvents],
     };
+  }
+
+  persistSessionData() {
+    if (typeof window === 'undefined') return;
+    try {
+      const storageKey = 'shopping_cart.admin_telemetry_sessions';
+      const existing = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const current = this.getTelemetryData();
+      const filtered = existing.filter((s) => s.sessionId !== this.sessionId);
+      filtered.unshift(current);
+      localStorage.setItem(storageKey, JSON.stringify(filtered.slice(0, 25)));
+    } catch {
+      // Storage errors ignored
+    }
+  }
+
+  getClickEvents() {
+    return [...this.clickEvents];
+  }
+
+  getAllSessions() {
+    if (typeof window === 'undefined') return [];
+    try {
+      const storageKey = 'shopping_cart.admin_telemetry_sessions';
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      if (saved.length === 0 && this.sessionId) {
+        return [this.getTelemetryData()];
+      }
+      return saved;
+    } catch {
+      return [];
+    }
+  }
+
+  clearSessions() {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.removeItem('shopping_cart.admin_telemetry_sessions');
+      this.clickEvents = [];
+    } catch {
+      // Storage errors ignored
+    }
   }
 
   flush(endpoint = process.env.NEXT_PUBLIC_TELEMETRY_ENDPOINT) {
