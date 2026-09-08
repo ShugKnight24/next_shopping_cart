@@ -40,7 +40,11 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 
 ### Areas for Improvement
 
-- Next.js App Router (RSC + Streaming) migration path for static marketing and dynamic data components.
+- **Next.js App Router (RSC + Streaming) Incremental Migration Blueprint**:
+  - *Coexistence Architecture*: Next.js 15 supports side-by-side `pages/` and `app/` directories. Maintain checkout, cart, and catalog flows in `pages/` while migrating static marketing surfaces (`/brand`, `/studio`) to `app/`.
+  - *Phase A: Server Component Shells*: Isolate pure SEO metadata and server shells in `app/brand/page.jsx` and `app/studio/page.jsx` using `generateMetadata()` to remove client `<Head>` overhead.
+  - *Phase B: Client Boundary Isolation*: Wrap interactive workstations (`CanvasEngine`, `BrandVariantPicker`, `CharacterCreator`) in `'use client'` leaves, avoiding full-page client hydration waterfalls.
+  - *Phase C: Navigation Adapter*: Bridge `next/router` and `next/navigation` hooks (`useRouter`, `usePathname`, `useSearchParams`) in shared navigation components.
 - Edge Middleware for bot filtering and security headers (CSP, HSTS).
 - Full headless commerce / CMS integration (Shopify Storefront API, Medusa, or Sanity).
 - Live Stripe / PayPal checkout gateway integration.

@@ -10,18 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10.0] - 2026-09-06
 
 ### Added
-- **Modern 3-Variant Brand Logo System (`Components/Logo.jsx`)**:
-  - Engineered 3 distinct, modern luxury vector logo marks crafted in pure vector SVG geometry:
-    - **Variant A (Geometric Luxury Monogram)**: Precision interlocking dual-arc 'C' monogram forming an architectural cart profile in champagne gold (`#f59e0b` to `#d97706`) and midnight sapphire (`#0f172a` to `#1e293b`), topped with a faceted diamond gem.
-    - **Variant B (Minimalist Continuous Line & Starlight)**: Aerodynamic continuous single-stroke cart silhouette centered around a radiant 8-point starlight jewel with micro-hollow wheel bearings.
-    - **Variant C (Archival Heritage Crest)**: Hexagonal luxury heraldic crest shield with inset double-rule, gold filigree cart lattice, and an archival navigational star compass crown.
+- **Modern 5-Variant Brand Logo System (`Components/Logo.jsx`)**:
+  - Engineered 5 distinct, modern vector logo marks crafted in pure vector SVG geometry:
+    - **Favicon Badge (`geometric`)**: Sapphire squircle badge with gold rim, high-precision cart path, and radiant starlight jewel perfectly matched to the browser favicon.
+    - **Floating Minimal Cart (`floating`)**: Clean and borderless cart and starlight jewel floating directly on the storefront canvas.
+    - **Soviet Constructivist (`soviet`)**: 1920s Constructivist poster art aesthetic with 45° diagonal dynamic geometry, industrial gear wheels, and constructivist red star accent.
+    - **Dark & Edgy (`edgy`)**: Cyber-industrial streetwear mark with razor-sharp stealth octagonal shield, matte obsidian black, and toxic acid-lime accent.
+    - **Lighthearted Pop (`lighthearted`)**: Friendly rounded cart with warm sunset gradient, playful bounce angle, and energetic speed motion lines.
   - **Dynamic Theme Adaptability**: Built native `theme="light"` and `theme="dark"` styling, completely removing legacy CSS filter hacks (`filter: brightness(0) invert(1)` in `Footer.module.css`).
-  - **Customizable Wordmark**: High-tracking luxury sans typography (`font-weight: 800`, `letter-spacing: 0.14em`) and customizable subtitle (defaulting to `"SHOPPING MADE SIMPLE"`, `"CURATED GOODS & KEEPSAKES"`, or `"CURATED LUXURY STOREFRONT"`).
+  - **Customizable Wordmark**: High-tracking luxury sans typography (`font-weight: 800`, `letter-spacing: 0.14em`) and customizable subtitle (defaulting to `"SHOPPING MADE SIMPLE"`, `"COMMERCE & INDUSTRY"`, `"BLACK LABEL"`, or `"EVERYDAY FINDS"`).
 - **Global Brand State Management & Persistence (`Components/Brand/BrandContext.jsx`)**:
   - Created `BrandContext` and `BrandProvider` wrapping the root `_app.js` tree.
   - Safely persists active brand variant choice to `localStorage` (`cart_commerce_brand_variant`), dynamically updating all headers, footers, and logo instances across the entire application in real time.
 - **Interactive Brand Identity Hub & Showcase (`pages/brand.js`)**:
-  - Dedicated brand design system portal at `/brand` featuring side-by-side high-resolution cards of all 3 variants.
+  - Dedicated brand design system portal at `/brand` featuring side-by-side high-resolution cards of all 5 variants.
   - Live canvas background switcher (Light Storefront vs. Dark Editorial), typography hierarchy documentation, and 1-click "Select This Variant for Store" buttons with animated toast confirmation.
   - Multi-surface consistency showcase presenting the vector favicon, Apple touch icon, and OpenGraph social card.
 - **Brand Variant Picker Modal & Nav Trigger (`Components/Brand/BrandVariantPicker.jsx`)**:
