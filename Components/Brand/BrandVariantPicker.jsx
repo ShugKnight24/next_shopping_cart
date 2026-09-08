@@ -8,7 +8,7 @@ import styles from './BrandVariantPicker.module.css';
 
 /**
  * BrandVariantPickerModal
- * Full modal for exploring the 3 modern logo variants, toggling preview themes,
+ * Full modal for exploring the 5 brand logo variants, toggling preview themes,
  * comparing against the legacy logo, and selecting the store's active brand.
  */
 export function BrandVariantPickerModal({ isOpen, onClose }) {
@@ -47,7 +47,7 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
               Brand Identity &amp; Logo System
             </h2>
             <p className={styles.modalSubtitle}>
-              Explore our 4 brand aesthetic variants and select your preferred style for the store.
+              Explore our 5 brand aesthetic variants and select your preferred style for the store.
             </p>
           </div>
           <button
@@ -88,7 +88,7 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
             </span>
           </div>
 
-          {/* 3 Modern Variants Grid */}
+          {/* 5 Modern Variants Grid */}
           <div className={styles.gridVariants}>
             {Object.values(BRAND_VARIANTS).map((v) => {
               const isActive = activeVariant === v.id;

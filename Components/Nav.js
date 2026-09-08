@@ -150,9 +150,14 @@ export default function Nav() {
 
   // Load recent searches from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('recentSearches');
-    if (saved) {
-      setRecentSearches(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem('recentSearches');
+      if (saved) {
+        setRecentSearches(JSON.parse(saved));
+      }
+    } catch {
+      // Ignore corrupted localStorage entries or restricted environments
+      setRecentSearches([]);
     }
   }, []);
 

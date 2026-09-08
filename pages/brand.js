@@ -27,7 +27,7 @@ export default function BrandPage() {
         <title>Brand Identity &amp; Logo System | Cart Commerce</title>
         <meta
           name="description"
-          content="Explore the diverse visual identity and logo variants for Cart Commerce: Sleek Modern, Soviet Constructivist, Dark & Edgy, and Lighthearted Pop."
+          content="Explore all five brand identity marks and logo variants for Cart Commerce: Favicon Badge, Floating Minimal Cart, Soviet Constructivist, Dark & Edgy, and Lighthearted Pop."
         />
         <meta property="og:title" content="Brand Identity | Cart Commerce" />
         <meta
@@ -84,8 +84,8 @@ export default function BrandPage() {
               lineHeight: 1.6,
             }}
           >
-            A versatile visual identity system for Cart Commerce. Four distinct aesthetic
-            variants — Sleek Modern, Soviet Constructivist, Dark &amp; Edgy, and Lighthearted Pop — designed
+            A versatile visual identity system for Cart Commerce. Five distinct aesthetic
+            variants — Favicon Badge, Floating Minimal Cart, Soviet Constructivist, Dark &amp; Edgy, and Lighthearted Pop — designed
             for personality, legibility, and effortless theme switching.
           </p>
 
@@ -141,7 +141,7 @@ export default function BrandPage() {
           </div>
         </div>
 
-        {/* 4 Variants Presentation Cards */}
+        {/* 5 Variants Presentation Cards */}
         <div
           style={{
             display: 'grid',

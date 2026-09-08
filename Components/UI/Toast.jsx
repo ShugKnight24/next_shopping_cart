@@ -179,6 +179,10 @@ export function useToast() {
       addToast: () => {},
       removeToast: () => {},
       clearToasts: () => {},
+      success: () => {},
+      error: () => {},
+      info: () => {},
+      warning: () => {},
     }),
     showToast,
   };

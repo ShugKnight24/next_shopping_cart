@@ -121,6 +121,17 @@ describe('Brand System & Logo Variants', () => {
     expect(screen.getByText('STORE & STUDIOS')).toBeInTheDocument();
   });
 
+  it('merges custom style prop onto svg element', () => {
+    const { container } = render(
+      <BrandProvider>
+        <Logo variant="geometric" style={{ maxWidth: '240px', opacity: 0.9 }} />
+      </BrandProvider>
+    );
+
+    const svg = container.querySelector('svg');
+    expect(svg).toHaveStyle({ overflow: 'visible', maxWidth: '240px', opacity: '0.9' });
+  });
+
   it('renders LegacyLogo for historical reference', () => {
     render(<LegacyLogo />);
     expect(

@@ -381,6 +381,7 @@ export function Logo({
   subtitle: customSubtitle,
   className = '',
   size = 'default',
+  style = {},
 }) {
   const brandContext = useContext(BrandContext);
 
@@ -431,7 +432,7 @@ export function Logo({
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label={`Cart Commerce - ${variantConfig.name}`}
-      style={{ overflow: 'visible' }}
+      style={{ overflow: 'visible', ...style }}
     >
       <title>{`Cart Commerce - ${variantConfig.name}`}</title>
 
@@ -491,4 +492,5 @@ Logo.propTypes = {
   subtitle: PropTypes.string,
   className: PropTypes.string,
   size: PropTypes.string,
+  style: PropTypes.object,
 };
