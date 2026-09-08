@@ -548,71 +548,66 @@
 
 .progressDot {
   position: relative;
-  padding: 0.75rem 1.5rem;
+  padding: 8px 4px;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-@media screen and (max-width: 768px) {
-  .progressDot {
-    padding: 0.5rem 1rem;
-  }
-}
-@media screen and (max-width: 600px) {
-  .progressDot {
-    padding: 0.5rem;
-  }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dotLabel {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  transition: color 0.3s ease;
-}
-.progressDot.active .dotLabel {
-  color: #1e3a5f;
-  font-weight: 600;
-}
-.progressDot:hover .dotLabel {
-  color: #1e3a5f;
-}
-@media screen and (max-width: 768px) {
-  .dotLabel {
-    font-size: 0.65rem;
-  }
-}
-@media screen and (max-width: 600px) {
-  .dotLabel {
-    display: none;
-  }
+  border: 0;
 }
 
 .dotProgress {
-  height: 3px;
-  background: #d1d5db;
-  border-radius: 2px;
+  width: 10px;
+  height: 10px;
+  background: #cbd5e1;
+  border-radius: 9999px;
   overflow: hidden;
-  transition: background-color 0.3s ease;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.progressDot:hover .dotProgress {
+  background: #94a3b8;
+  transform: scale(1.15);
+}
+
 .progressDot.active .dotProgress {
-  background: rgba(30, 58, 95, 0.2);
+  width: 28px;
+  height: 10px;
+  background: rgba(30, 58, 95, 0.18);
+  border-radius: 9999px;
+  transform: scale(1);
 }
+
 @media screen and (max-width: 600px) {
   .dotProgress {
-    width: 40px;
-    height: 4px;
+    width: 8px;
+    height: 8px;
+  }
+  .progressDot.active .dotProgress {
+    width: 22px;
+    height: 8px;
   }
 }
 
 .dotProgressBar {
   height: 100%;
   background: #1e3a5f;
-  border-radius: 2px;
+  border-radius: 9999px;
   transition: width 0.1s linear;
 }
 
