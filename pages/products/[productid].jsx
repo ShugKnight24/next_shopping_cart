@@ -78,31 +78,32 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   const { inventory, cart } = state;
   const { showToast } = useToast();
 
-  const currentItem = getCurrentItem(inventory, currentProduct.itemid) || currentProduct;
-  const isInCart = Boolean(getCurrentItem(cart, currentProduct.itemid));
-  const cartItem = getCurrentItem(cart, currentProduct.itemid);
+  const safeProduct = currentProduct || {};
+  const currentItem = getCurrentItem(inventory, safeProduct.itemid) || safeProduct;
+  const isInCart = Boolean(getCurrentItem(cart, safeProduct.itemid));
+  const cartItem = getCurrentItem(cart, safeProduct.itemid);
   const cartQuantity = cartItem?.quantity || 0;
 
   const disabledButton = currentItem.available === 0;
   const {
-    description,
-    itemid,
-    manufacturer,
-    price,
-    productName,
-    rating,
+    description = '',
+    itemid = '',
+    manufacturer = '',
+    price = 0,
+    productName = '',
+    rating = { average: 5, count: 0 },
     badges = [],
     variants = [],
     specifications = {},
     reviews = [],
     shipping = {},
     faqs = [],
-    originalPrice,
+    originalPrice = null,
     images = [],
     image = images[0] || '',
     category = '',
     available = currentItem.available ?? 1,
-  } = currentProduct;
+  } = safeProduct;
 
   const initialFavorite = Boolean(currentItem?.favorite);
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
@@ -137,8 +138,81 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
     : 0;
 
   useEffect(() => {
-    trackViewItem(currentProduct, selectedVariant);
+    if (currentProduct) {
+      trackViewItem(currentProduct, selectedVariant);
+    }
   }, [currentProduct, selectedVariant]);
+
+  if (!currentProduct) {
+    return (
+      <div className="product-not-found" data-testid="product-not-found">
+        <Head>
+          <title>Product Not Found | Cart Commerce</title>
+        </Head>
+        <div
+          style={{
+            padding: '5rem 2rem',
+            textAlign: 'center',
+            maxWidth: '600px',
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'rgba(239, 68, 68, 0.1)',
+              color: '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem',
+            }}
+          >
+            <AlertTriangleIcon size={32} />
+          </div>
+          <h1
+            style={{
+              fontSize: '1.75rem',
+              fontWeight: 800,
+              color: '#1e3a5f',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Product Unavailable
+          </h1>
+          <p
+            style={{
+              color: '#64748b',
+              fontSize: '1rem',
+              lineHeight: 1.6,
+              marginBottom: '2rem',
+            }}
+          >
+            The requested item could not be retrieved from our inventory or is currently out of circulation.
+          </p>
+          <Link
+            href="/products"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.75rem 1.5rem',
+              background: '#1e3a5f',
+              color: '#fff',
+              borderRadius: '12px',
+              fontWeight: 700,
+              textDecoration: 'none',
+            }}
+          >
+            <span>Back to All Products</span>
+            <ChevronRight size={16} />
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   function handleAddToCart(productId, qty = 1, variant = selectedVariant) {
     trackAddToCart(currentProduct, qty, variant);

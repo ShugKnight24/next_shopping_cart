@@ -70,12 +70,13 @@ export function normalizeProduct(rawItem) {
         ? rawItem.brand.trim()
         : 'Curated Brand';
 
-  // Safe price (handles string numbers "$129.99", NaN, negative)
+  // Safe price (handles string numbers "$129.99", NaN, negative, rawItem.cost)
+  const candidatePrice = rawItem.price !== undefined ? rawItem.price : rawItem.cost;
   let price = 0;
-  if (typeof rawItem.price === 'number' && !Number.isNaN(rawItem.price)) {
-    price = Math.max(0, Math.round(rawItem.price * 100) / 100);
-  } else if (typeof rawItem.price === 'string') {
-    const cleaned = rawItem.price.replace(/[^0-9.-]+/g, '');
+  if (typeof candidatePrice === 'number' && !Number.isNaN(candidatePrice)) {
+    price = Math.max(0, Math.round(candidatePrice * 100) / 100);
+  } else if (typeof candidatePrice === 'string') {
+    const cleaned = candidatePrice.replace(/[^0-9.-]+/g, '');
     const parsed = parseFloat(cleaned);
     price = !Number.isNaN(parsed)
       ? Math.max(0, Math.round(parsed * 100) / 100)

@@ -20,11 +20,11 @@ export function Hit({ itemid, setSelectedProduct: _setSelectedProduct, setRecomm
     });
   }
 
-  const { available, image, manufacturer, price, productName } = getCurrentItem(
-    inventory,
-    itemid
-  );
-  const disabledButton = available === 0 ? true : false;
+  const item = getCurrentItem(inventory, itemid);
+  if (!item) return null;
+
+  const { available = 0, image = '', manufacturer = '', price = 0, productName = '' } = item;
+  const disabledButton = available === 0;
 
   return (
     <li className={styles.hitContainer}>

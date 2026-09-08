@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import { useContext, useMemo, useState } from 'react';
 import { CartContext } from '../../context/CartProvider';
+import { useClickOutside } from '../../hooks/useClickOutside';
+import { useProductCatalog } from '../../hooks/useProductCatalog';
 import { getCurrentItem } from '../../utils/getItem';
-import { SearchIcon } from '../Icons';
+import {
+  applyProductPipeline,
+  calculateCategoryCounts,
+} from '../../utils/productFilters';
+import { AlertTriangleIcon, SearchIcon } from '../Icons';
 import { InstantSearch } from '../InstantSearch/InstantSearch';
 import { CatalogToolbar } from './CatalogToolbar';
-import { CategoryFilterTabs, CATEGORY_DEFINITIONS } from './CategoryFilterTabs';
+import { CategoryFilterTabs } from './CategoryFilterTabs';
 import { ProductCard } from './ProductCard';
 import styles from './Products.module.css';
 
@@ -13,6 +19,9 @@ export function Products({
   setSelectedProduct,
   setRecommendedProduct,
   showToolbar = true,
+  initialProducts = null,
+  fetchFromApi = false,
+  apiEndpoint = '/api/products',
 }) {
   const { state } = useContext(CartContext);
   const { inventory, cart } = state;
@@ -26,83 +35,45 @@ export function Products({
   const [priceRange, setPriceRange] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
 
-  function closeInstantSearch(event) {
-    const element = document.querySelector('.instant-search-container');
-    if (event.target !== element && !element?.contains(event.target)) {
-      setShowHitsClosed(false);
-      setTimeout(() => {
-        setShowHitsClosed(null);
-      }, 500);
-    }
-  }
+  // Declarative catalog data management & error resilience
+  const {
+    products: catalogProducts,
+    error: catalogError,
+    isError,
+    isEmpty: isCatalogEmpty,
+    refetch,
+  } = useProductCatalog({
+    initialData: initialProducts || inventory,
+    fetchFromApi,
+    apiEndpoint,
+  });
 
-  // Calculate counts for each category
-  const categoryCounts = useMemo(() => {
-    if (!inventory) return {};
-    const counts = {};
-    for (const catDef of CATEGORY_DEFINITIONS) {
-      if (catDef.id === 'all') {
-        counts.all = inventory.length;
-      } else {
-        counts[catDef.id] = inventory.filter((item) =>
-          catDef.match(item.category)
-        ).length;
-      }
-    }
-    return counts;
-  }, [inventory]);
+  // Declarative click-outside ref replacing imperative document.querySelector
+  const searchContainerRef = useClickOutside(() => {
+    setShowHitsClosed(false);
+    setTimeout(() => {
+      setShowHitsClosed(null);
+    }, 500);
+  });
 
-  // Filter and sort products
-  const processedProducts = useMemo(() => {
-    if (!inventory) return [];
+  // Declarative category counts via pure function
+  const categoryCounts = useMemo(
+    () => calculateCategoryCounts(catalogProducts),
+    [catalogProducts]
+  );
 
-    // 1. Category Filter
-    let list = inventory;
-    const activeDef = CATEGORY_DEFINITIONS.find((c) => c.id === activeCategory);
-    if (activeDef && activeDef.id !== 'all') {
-      list = list.filter((item) => activeDef.match(item.category));
-    }
-
-    // 2. In-Stock Filter
-    if (inStockOnly) {
-      list = list.filter((item) => item.available > 0);
-    }
-
-    // 3. On-Sale Filter
-    if (onSaleOnly) {
-      list = list.filter(
-        (item) =>
-          item.badges?.includes('sale') ||
-          item.badge === 'sale' ||
-          (item.originalPrice && item.originalPrice > item.price)
-      );
-    }
-
-    // 4. Price Range Filter
-    if (priceRange === 'under100') {
-      list = list.filter((item) => item.price < 100);
-    } else if (priceRange === '100to500') {
-      list = list.filter((item) => item.price >= 100 && item.price <= 500);
-    } else if (priceRange === '500to1000') {
-      list = list.filter((item) => item.price > 500 && item.price <= 1000);
-    } else if (priceRange === 'over1000') {
-      list = list.filter((item) => item.price > 1000);
-    }
-
-    // 5. Sorting
-    const sorted = [...list];
-    if (sortBy === 'price-asc') {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      sorted.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      sorted.sort((a, b) => (b.rating?.average || 0) - (a.rating?.average || 0));
-    } else if (sortBy === 'name') {
-      sorted.sort((a, b) => a.productName.localeCompare(b.productName));
-    }
-
-    return sorted;
-  }, [inventory, activeCategory, inStockOnly, onSaleOnly, priceRange, sortBy]);
+  // Declarative functional filtering and sorting pipeline
+  const processedProducts = useMemo(
+    () =>
+      applyProductPipeline(catalogProducts, {
+        activeCategory,
+        inStockOnly,
+        onSaleOnly,
+        priceRange,
+        sortBy,
+      }),
+    [catalogProducts, activeCategory, inStockOnly, onSaleOnly, priceRange, sortBy]
+  );
 
   const handleResetFilters = () => {
     setInStockOnly(false);
@@ -115,9 +86,11 @@ export function Products({
   return (
     <div
       className={`${styles.productsWrapper} ${styles.productsContainer} products-container`}
-      onClick={(event) => closeInstantSearch(event)}
     >
-      <div className={`${styles.searchContainer} product-search-container`}>
+      <div
+        ref={searchContainerRef}
+        className={`${styles.searchContainer} product-search-container`}
+      >
         <InstantSearch
           showHitsClosed={showHitsClosed}
           setSelectedProduct={setSelectedProduct}
@@ -136,7 +109,7 @@ export function Products({
       {showToolbar && (
         <div style={{ width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
           <CatalogToolbar
-            totalCount={inventory?.length || 0}
+            totalCount={catalogProducts.length}
             filteredCount={processedProducts.length}
             sortBy={sortBy}
             onSortChange={setSortBy}
@@ -153,8 +126,34 @@ export function Products({
         </div>
       )}
 
-      {/* Empty State */}
-      {processedProducts.length === 0 ? (
+      {/* Resilient Error & Empty States */}
+      {isError ? (
+        <div className={styles.errorContainer} data-testid="products-error-state">
+          <div className={styles.errorIcon}>
+            <AlertTriangleIcon size={28} />
+          </div>
+          <h3 className={styles.errorTitle}>Catalog Service Unavailable</h3>
+          <p className={styles.errorText}>
+            {catalogError || 'We encountered an error loading the product catalog.'}
+          </p>
+          <button className={styles.retryBtn} onClick={refetch}>
+            Retry Loading Catalog
+          </button>
+        </div>
+      ) : isCatalogEmpty ? (
+        <div
+          className={styles.emptyState}
+          data-testid="products-empty-catalog-state"
+        >
+          <div className={styles.emptyIcon}>
+            <SearchIcon size={28} />
+          </div>
+          <h3 className={styles.emptyTitle}>No products currently available</h3>
+          <p className={styles.emptyText}>
+            Our catalog is currently being updated with new arrivals. Please check back shortly.
+          </p>
+        </div>
+      ) : processedProducts.length === 0 ? (
         <div className={styles.emptyState} data-testid="products-empty-state">
           <div className={styles.emptyIcon}>
             <SearchIcon size={28} />
@@ -212,4 +211,8 @@ Products.propTypes = {
   setSelectedProduct: PropTypes.func,
   setRecommendedProduct: PropTypes.func,
   showToolbar: PropTypes.bool,
+  initialProducts: PropTypes.arrayOf(PropTypes.object),
+  fetchFromApi: PropTypes.bool,
+  apiEndpoint: PropTypes.string,
 };
+
