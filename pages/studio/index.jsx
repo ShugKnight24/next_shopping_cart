@@ -7,6 +7,7 @@ import { StorybookStudio } from '../../Components/Studio/StorybookStudio';
 import { PosterStudio } from '../../Components/Studio/PosterStudio';
 import { ApparelStudio } from '../../Components/Studio/ApparelStudio';
 import { KidsStudioVideoTour } from '../../Components/Video/KidsStudioVideoTour';
+import { StudioHeroAnimated } from '../../Components/Studio/StudioHeroAnimated';
 import { SparklesIcon, TruckIcon, ShieldCheckIcon, BoxIcon } from '../../Components/Icons';
 import styles from '../../styles/pages/Studio.module.css';
 
@@ -86,37 +87,70 @@ export default function StudioPage() {
       </Head>
 
       <main className={styles.studioContainer}>
-        {/* Studio Header & Storytelling Banner */}
-        <section className={styles.studioHero}>
-          <div className={styles.heroBadge}>
-            <SparklesIcon size={14} />
-            <span>Interactive Web-to-Print Workshop</span>
-          </div>
-          <h1 className={styles.heroTitle}>The Custom Creation Studio</h1>
-          <p className={styles.heroSubtitle}>
-            Create one-of-a-kind personalized keepsakes for your children and home.
-            Preview each page in real time and stamp custom emblems before we print and bind your heirloom.
-          </p>
+        {/* Animated Mascot Hero Scene */}
+        <StudioHeroAnimated
+          onExploreWorkstations={() => {
+            const el = document.getElementById('studio-workstations');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          onWatchTour={() => {
+            const el = document.getElementById('video-tour');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
 
-          {/* Workshop Trust Pillars */}
-          <div className={styles.trustPillars}>
-            <div className={styles.pillar}>
-              <ShieldCheckIcon size={18} />
-              <span>Handcrafted & Bound in the USA</span>
+        {/* 4-Step Creation Journey Ribbon */}
+        <section className={styles.journeySection} aria-label="Creation Process">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>How It Works</span>
+            <h2 className={styles.sectionTitle}>Crafting Your Keepsake in 4 Simple Steps</h2>
+            <p className={styles.sectionSubtitle}>
+              From custom story elements to museum-grade binding, our interactive workshop makes heirloom creation effortless.
+            </p>
+          </div>
+
+          <div className={styles.journeyGrid}>
+            <div className={styles.journeyCard}>
+              <span className={styles.journeyStepNum}>1</span>
+              <h3 className={styles.journeyCardTitle}>Choose Your Medium</h3>
+              <p className={styles.journeyCardDesc}>
+                Select hardcover storybooks, archival gallery posters, or customized organic kicks and apparel.
+              </p>
             </div>
-            <div className={styles.pillar}>
-              <BoxIcon size={18} />
-              <span>FSC-Certified Archival Papers</span>
+            <div className={styles.journeyCard}>
+              <span className={styles.journeyStepNum}>2</span>
+              <h3 className={styles.journeyCardTitle}>Star Your Child</h3>
+              <p className={styles.journeyCardDesc}>
+                Customize character avatars, hairstyles, skin tones, and pick faithful companion mascots like Leo or Finley.
+              </p>
             </div>
-            <div className={styles.pillar}>
-              <TruckIcon size={18} />
-              <span>Free Express Shipping Over $150</span>
+            <div className={styles.journeyCard}>
+              <span className={styles.journeyStepNum}>3</span>
+              <h3 className={styles.journeyCardTitle}>Proof in Real-Time</h3>
+              <p className={styles.journeyCardDesc}>
+                Move stamps, write heartfelt front-page dedications, and preview bleed margins in the 60 FPS live canvas engine.
+              </p>
+            </div>
+            <div className={styles.journeyCard}>
+              <span className={styles.journeyStepNum}>4</span>
+              <h3 className={styles.journeyCardTitle}>Artisan Binding</h3>
+              <p className={styles.journeyCardDesc}>
+                Each piece is individually printed with archival giclée pigment inks and hand-bound right here in the USA.
+              </p>
             </div>
           </div>
         </section>
 
         {/* Studio Mode Selector */}
-        <section className={styles.modeSection} aria-label="Creation Mode Selection">
+        <section id="studio-workstations" className={styles.modeSection} aria-label="Creation Mode Selection">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>Choose Your Workstation</span>
+            <h2 className={styles.sectionTitle}>Curated Custom Creation Suites</h2>
+            <p className={styles.sectionSubtitle}>
+              Select your product medium to enter the dedicated interactive builder with real-time canvas proofing.
+            </p>
+          </div>
+
           <div className={styles.modeGrid}>
             {MODES.map((m) => (
               <button
@@ -147,8 +181,63 @@ export default function StudioPage() {
           {activeMode === 'apparel' && <ApparelStudio />}
         </section>
 
+        {/* Heirloom Craftsmanship & Quality Standards Grid */}
+        <section className={styles.standardsSection} aria-label="Craftsmanship Standards">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>Artisan Standards</span>
+            <h2 className={styles.sectionTitle}>Heirloom Quality in Every Print</h2>
+            <p className={styles.sectionSubtitle}>
+              Built to be read, worn, and cherished for generations.
+            </p>
+          </div>
+
+          <div className={styles.standardsGrid}>
+            <div className={styles.standardCard}>
+              <div className={styles.standardCardIcon}>
+                <SparklesIcon size={22} />
+              </div>
+              <h3 className={styles.standardCardTitle}>12-Color Giclée Pigments</h3>
+              <p className={styles.standardCardDesc}>
+                Ultra-vivid museum inks tested for 200+ years of colorfastness without fading or yellowing.
+              </p>
+            </div>
+
+            <div className={styles.standardCard}>
+              <div className={styles.standardCardIcon}>
+                <BoxIcon size={22} />
+              </div>
+              <h3 className={styles.standardCardTitle}>Lay-Flat Smyth Binding</h3>
+              <p className={styles.standardCardDesc}>
+                Stitched library-grade cloth spine lets your storybook open completely flat across double-page spreads.
+              </p>
+            </div>
+
+            <div className={styles.standardCard}>
+              <div className={styles.standardCardIcon}>
+                <ShieldCheckIcon size={22} />
+              </div>
+              <h3 className={styles.standardCardTitle}>Velvet Touch FSC Paper</h3>
+              <p className={styles.standardCardDesc}>
+                Heavyweight 200 GSM glare-free archival stock that resists fingerprints and spills.
+              </p>
+            </div>
+
+            <div className={styles.standardCard}>
+              <div className={styles.standardCardIcon}>
+                <TruckIcon size={22} />
+              </div>
+              <h3 className={styles.standardCardTitle}>100% Happiness Guarantee</h3>
+              <p className={styles.standardCardDesc}>
+                Pre-flight print proof verification before press. Free reprints if your keepsake isn&apos;t 100% perfect.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Behind The Scenes Print Studio Video Tour */}
-        <KidsStudioVideoTour />
+        <div id="video-tour">
+          <KidsStudioVideoTour />
+        </div>
 
         {/* Social Media Creation Studio Callout */}
         <Link href="/studio/social" className={styles.socialStudioBanner}>
