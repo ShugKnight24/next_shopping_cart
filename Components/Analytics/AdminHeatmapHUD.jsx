@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import { telemetry } from '../../analytics/telemetry';
+import { TELEMETRY_PRESETS, telemetry } from '../../analytics/telemetry';
 import styles from './AdminHeatmapHUD.module.css';
 
 const SAMPLE_SESSIONS = [
@@ -83,6 +83,7 @@ export function AdminHeatmapHUD() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [activeTab, setActiveTab] = useState('visuals'); // 'visuals' | 'settings'
   const [sessions, setSessions] = useState([]);
   const [selectedSessionId, setSelectedSessionId] = useState('all');
   const [userFilter, setUserFilter] = useState('all'); // 'all' | 'human' | 'bot'
@@ -91,6 +92,14 @@ export function AdminHeatmapHUD() {
   const [showScrollFolds, setShowScrollFolds] = useState(true);
   const [hoveredPoint, setHoveredPoint] = useState(null);
   const [docHeight, setDocHeight] = useState(1200);
+
+  // Live telemetry settings and listener diagnostics
+  const [telemetrySettings, setTelemetrySettings] = useState(() =>
+    telemetry.getSettings()
+  );
+  const [listenerStatus, setListenerStatus] = useState(() =>
+    telemetry.getListenerStatus()
+  );
 
   // Check admin authorization via query (?admin=true), localStorage, or keyboard shortcut
   useEffect(() => {
@@ -134,6 +143,26 @@ export function AdminHeatmapHUD() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [router.query.admin]);
+
+  // Sync settings updates dispatched from TelemetryEngine
+  useEffect(() => {
+    const handleSettingsChange = (e) => {
+      if (e.detail?.settings) {
+        setTelemetrySettings(e.detail.settings);
+      }
+      setListenerStatus(telemetry.getListenerStatus());
+    };
+
+    window.addEventListener(
+      'cart_telemetry_settings_changed',
+      handleSettingsChange
+    );
+    return () =>
+      window.removeEventListener(
+        'cart_telemetry_settings_changed',
+        handleSettingsChange
+      );
+  }, []);
 
   // Load recorded sessions from telemetry engine + sample sessions
   useEffect(() => {
@@ -237,6 +266,26 @@ export function AdminHeatmapHUD() {
   const handleClearSessions = () => {
     telemetry.clearSessions();
     setSessions(SAMPLE_SESSIONS);
+  };
+
+  const handleToggleSetting = (key) => {
+    const updated = telemetry.updateSettings({
+      [key]: !telemetrySettings[key],
+    });
+    setTelemetrySettings(updated);
+    setListenerStatus(telemetry.getListenerStatus());
+  };
+
+  const handleApplyPreset = (presetKey) => {
+    const updated = telemetry.applyPreset(presetKey);
+    setTelemetrySettings(updated);
+    setListenerStatus(telemetry.getListenerStatus());
+  };
+
+  const handleResetSettings = () => {
+    const updated = telemetry.resetSettings();
+    setTelemetrySettings(updated);
+    setListenerStatus(telemetry.getListenerStatus());
   };
 
   if (!isAdmin) {
@@ -400,121 +449,449 @@ export function AdminHeatmapHUD() {
 
         {!isMinimized && (
           <div className={styles.hudBody}>
-            {/* User Session Switcher */}
-            <div className={styles.sessionSection}>
-              <span className={styles.sectionLabel}>
-                Audience / User Session:
-              </span>
-              <select
-                className={styles.sessionSelect}
-                value={selectedSessionId}
-                onChange={(e) => setSelectedSessionId(e.target.value)}
-                aria-label="Select user session for heatmap"
-              >
-                <option value="all">
-                  🔥 All Users (Aggregated Heatmap • {sessions.length} sessions)
-                </option>
-                {filteredSessions.map((s) => (
-                  <option key={s.sessionId} value={s.sessionId}>
-                    {s.classification === 'suspected_bot' ? '🤖' : '👤'}{' '}
-                    {s.label || `User ${s.sessionId.substring(0, 10)}`} (
-                    {s.clickEvents?.length || 0} clicks)
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Metrics Dashboard */}
-            <div className={styles.metricsGrid}>
-              <div className={styles.metricCard}>
-                <span className={styles.metricVal}>{metrics.totalClicks}</span>
-                <span className={styles.metricTag}>Clicks Plotted</span>
-              </div>
-              <div className={styles.metricCard}>
-                <span className={styles.metricVal}>{metrics.humanRatio}%</span>
-                <span className={styles.metricTag}>Human Traffic</span>
-              </div>
-              <div className={styles.metricCard}>
-                <span className={styles.metricVal}>{metrics.avgBotScore}</span>
-                <span className={styles.metricTag}>Avg Bot Risk</span>
-              </div>
-            </div>
-
-            {/* Layer Visibility Toggles */}
-            <div className={styles.toggleGroup}>
-              <div className={styles.toggleRow}>
-                <span>Click Density Glow</span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={showHeatmap}
-                    onChange={(e) => setShowHeatmap(e.target.checked)}
-                  />
-                  <span className={styles.slider} />
-                </label>
-              </div>
-
-              <div className={styles.toggleRow}>
-                <span>Interaction Pins & Inspect</span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={showPins}
-                    onChange={(e) => setShowPins(e.target.checked)}
-                  />
-                  <span className={styles.slider} />
-                </label>
-              </div>
-
-              <div className={styles.toggleRow}>
-                <span>Scroll Depth Fold Lines</span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={showScrollFolds}
-                    onChange={(e) => setShowScrollFolds(e.target.checked)}
-                  />
-                  <span className={styles.slider} />
-                </label>
-              </div>
-            </div>
-
-            {/* User Classification Filter */}
-            <div className={styles.sessionSection}>
-              <span className={styles.sectionLabel}>
-                Filter By Classification:
-              </span>
-              <select
-                className={styles.sessionSelect}
-                value={userFilter}
-                onChange={(e) => setUserFilter(e.target.value)}
-                aria-label="Filter sessions by traffic classification"
-              >
-                <option value="all">All Shoppers & Visitors</option>
-                <option value="human">Verified Genuine Humans Only</option>
-                <option value="bot">Suspected Crawlers & Bots Only</option>
-              </select>
-            </div>
-
-            {/* Actions */}
-            <div className={styles.actionRow}>
+            {/* HUD View Switcher Tabs */}
+            <div className={styles.hudTabs} role="tablist">
               <button
                 type="button"
-                className={styles.hudActionBtn}
-                onClick={handleExportTelemetry}
-                title="Export sessions as JSON"
+                role="tab"
+                aria-selected={activeTab === 'visuals'}
+                className={`${styles.hudTabButton} ${activeTab === 'visuals' ? styles.hudTabActive : ''}`}
+                onClick={() => setActiveTab('visuals')}
               >
-                Export JSON
+                Visuals & Heatmap
               </button>
               <button
                 type="button"
-                className={`${styles.hudActionBtn} ${styles.hudClearBtn}`}
-                onClick={handleClearSessions}
-                title="Reset local telemetry data"
+                role="tab"
+                aria-selected={activeTab === 'settings'}
+                className={`${styles.hudTabButton} ${activeTab === 'settings' ? styles.hudTabActive : ''}`}
+                onClick={() => setActiveTab('settings')}
               >
-                Reset Data
+                Telemetry Settings
               </button>
             </div>
+
+            {activeTab === 'visuals' ? (
+              <>
+                {/* User Session Switcher */}
+                <div className={styles.sessionSection}>
+                  <span className={styles.sectionLabel}>
+                    Audience / User Session:
+                  </span>
+                  <select
+                    className={styles.sessionSelect}
+                    value={selectedSessionId}
+                    onChange={(e) => setSelectedSessionId(e.target.value)}
+                    aria-label="Select user session for heatmap"
+                  >
+                    <option value="all">
+                      🔥 All Users (Aggregated Heatmap • {sessions.length}{' '}
+                      sessions)
+                    </option>
+                    {filteredSessions.map((s) => (
+                      <option key={s.sessionId} value={s.sessionId}>
+                        {s.classification === 'suspected_bot' ? '🤖' : '👤'}{' '}
+                        {s.label || `User ${s.sessionId.substring(0, 10)}`} (
+                        {s.clickEvents?.length || 0} clicks)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Metrics Dashboard */}
+                <div className={styles.metricsGrid}>
+                  <div className={styles.metricCard}>
+                    <span className={styles.metricVal}>
+                      {metrics.totalClicks}
+                    </span>
+                    <span className={styles.metricTag}>Clicks Plotted</span>
+                  </div>
+                  <div className={styles.metricCard}>
+                    <span className={styles.metricVal}>
+                      {metrics.humanRatio}%
+                    </span>
+                    <span className={styles.metricTag}>Human Traffic</span>
+                  </div>
+                  <div className={styles.metricCard}>
+                    <span className={styles.metricVal}>
+                      {metrics.avgBotScore}
+                    </span>
+                    <span className={styles.metricTag}>Avg Bot Risk</span>
+                  </div>
+                </div>
+
+                {/* Layer Visibility Toggles */}
+                <div className={styles.toggleGroup}>
+                  <div className={styles.toggleRow}>
+                    <span>Click Density Glow</span>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={showHeatmap}
+                        onChange={(e) => setShowHeatmap(e.target.checked)}
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  <div className={styles.toggleRow}>
+                    <span>Interaction Pins & Inspect</span>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={showPins}
+                        onChange={(e) => setShowPins(e.target.checked)}
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  <div className={styles.toggleRow}>
+                    <span>Scroll Depth Fold Lines</span>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={showScrollFolds}
+                        onChange={(e) => setShowScrollFolds(e.target.checked)}
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+                </div>
+
+                {/* User Classification Filter */}
+                <div className={styles.sessionSection}>
+                  <span className={styles.sectionLabel}>
+                    Filter By Classification:
+                  </span>
+                  <select
+                    className={styles.sessionSelect}
+                    value={userFilter}
+                    onChange={(e) => setUserFilter(e.target.value)}
+                    aria-label="Filter sessions by traffic classification"
+                  >
+                    <option value="all">All Shoppers & Visitors</option>
+                    <option value="human">Verified Genuine Humans Only</option>
+                    <option value="bot">Suspected Crawlers & Bots Only</option>
+                  </select>
+                </div>
+
+                {/* Actions */}
+                <div className={styles.actionRow}>
+                  <button
+                    type="button"
+                    className={styles.hudActionBtn}
+                    onClick={handleExportTelemetry}
+                    title="Export sessions as JSON"
+                  >
+                    Export JSON
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.hudActionBtn} ${styles.hudClearBtn}`}
+                    onClick={handleClearSessions}
+                    title="Reset local telemetry data"
+                  >
+                    Reset Data
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* TELEMETRY SETTINGS & PERFORMANCE CONTROLS */
+              <div className={styles.settingsSection}>
+                {/* Master Collector Toggle */}
+                <div className={styles.masterToggleCard}>
+                  <div className={styles.masterInfo}>
+                    <div className={styles.masterTitleRow}>
+                      <strong>Master Collector</strong>
+                      <span
+                        className={`${styles.statusPill} ${telemetrySettings.enabled ? styles.statusPillSuccess : styles.statusPillMuted}`}
+                      >
+                        {telemetrySettings.enabled ? 'Active' : 'Paused'}
+                      </span>
+                    </div>
+                    <span className={styles.settingDescription}>
+                      Global client telemetry engine state
+                    </span>
+                  </div>
+                  <label className={styles.switch}>
+                    <input
+                      type="checkbox"
+                      checked={telemetrySettings.enabled}
+                      onChange={() => handleToggleSetting('enabled')}
+                      aria-label="Toggle master telemetry engine"
+                    />
+                    <span className={styles.slider} />
+                  </label>
+                </div>
+
+                {/* Performance Callout */}
+                <div className={styles.perfNotice}>
+                  <div className={styles.perfNoticeHeader}>
+                    <span className={styles.perfIcon}>⚡</span>
+                    <strong>Performance First Architecture</strong>
+                  </div>
+                  <p>
+                    Advanced behavioral tracking is turned{' '}
+                    <strong>OFF by default</strong> to keep the storefront
+                    ultra-responsive. Enable tactics below as needed for
+                    diagnostic sampling.
+                  </p>
+                </div>
+
+                {/* Listener Diagnostics Status */}
+                <div className={styles.diagnosticsPill}>
+                  <div className={styles.diagnosticsLeft}>
+                    <span className={styles.diagnosticsDot} />
+                    <span>
+                      {listenerStatus.activeCount} of{' '}
+                      {listenerStatus.totalTrackers} Advanced Trackers Active
+                    </span>
+                  </div>
+                  <span className={styles.diagnosticsTag}>
+                    {listenerStatus.activeCount === 0
+                      ? 'Performance Optimized'
+                      : 'Active Sampling'}
+                  </span>
+                </div>
+
+                {/* Quick Presets */}
+                <div className={styles.presetSection}>
+                  <span className={styles.sectionLabel}>Quick Presets:</span>
+                  <div className={styles.presetGroup}>
+                    <button
+                      type="button"
+                      className={`${styles.presetBtn} ${
+                        !telemetrySettings.trackMouseMoves &&
+                        !telemetrySettings.trackScrollDepth &&
+                        !telemetrySettings.trackClickCoords &&
+                        !telemetrySettings.trackTypingCadence
+                          ? styles.presetBtnActive
+                          : ''
+                      }`}
+                      onClick={() => handleApplyPreset('performance')}
+                      title={TELEMETRY_PRESETS.performance.description}
+                    >
+                      Performance Safe
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.presetBtn} ${
+                        telemetrySettings.trackMouseMoves &&
+                        telemetrySettings.trackScrollDepth &&
+                        telemetrySettings.trackClickCoords &&
+                        telemetrySettings.trackTypingCadence
+                          ? styles.presetBtnActive
+                          : ''
+                      }`}
+                      onClick={() => handleApplyPreset('diagnostic')}
+                      title={TELEMETRY_PRESETS.diagnostic.description}
+                    >
+                      Full Diagnostic
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.presetBtn} ${
+                        telemetrySettings.trackClickCoords &&
+                        !telemetrySettings.trackMouseMoves &&
+                        !telemetrySettings.trackScrollDepth
+                          ? styles.presetBtnActive
+                          : ''
+                      }`}
+                      onClick={() => handleApplyPreset('heatmapOnly')}
+                      title={TELEMETRY_PRESETS.heatmapOnly.description}
+                    >
+                      Heatmap Only
+                    </button>
+                  </div>
+                </div>
+
+                {/* Granular Tracking Option Toggles */}
+                <div className={styles.settingCardList}>
+                  {/* Mouse Move Tracking */}
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingText}>
+                      <div className={styles.settingHeaderRow}>
+                        <span>Pointer Movement Dynamics</span>
+                        <span
+                          className={`${styles.tacticBadge} ${styles.badgeHighCpu}`}
+                        >
+                          High CPU
+                        </span>
+                      </div>
+                      <span className={styles.settingDescription}>
+                        Track cursor coordinates & velocity to verify motor
+                        dynamics (off by default).
+                      </span>
+                    </div>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={telemetrySettings.trackMouseMoves}
+                        onChange={() => handleToggleSetting('trackMouseMoves')}
+                        disabled={!telemetrySettings.enabled}
+                        aria-label="Toggle pointer movement dynamics"
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  {/* Scroll Depth Tracking */}
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingText}>
+                      <div className={styles.settingHeaderRow}>
+                        <span>Scroll Depth & Velocity</span>
+                        <span
+                          className={`${styles.tacticBadge} ${styles.badgeScroll}`}
+                        >
+                          Scroll IO
+                        </span>
+                      </div>
+                      <span className={styles.settingDescription}>
+                        Monitor document scroll boundaries & fold benchmarks
+                        (off by default).
+                      </span>
+                    </div>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={telemetrySettings.trackScrollDepth}
+                        onChange={() => handleToggleSetting('trackScrollDepth')}
+                        disabled={!telemetrySettings.enabled}
+                        aria-label="Toggle scroll depth tracking"
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  {/* Click Coordinate Heatmap */}
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingText}>
+                      <div className={styles.settingHeaderRow}>
+                        <span>Click Coordinate Capture</span>
+                        <span
+                          className={`${styles.tacticBadge} ${styles.badgeDom}`}
+                        >
+                          DOM Traversal
+                        </span>
+                      </div>
+                      <span className={styles.settingDescription}>
+                        Record exact (X, Y) click positions and element tags for
+                        heatmap (off by default).
+                      </span>
+                    </div>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={telemetrySettings.trackClickCoords}
+                        onChange={() => handleToggleSetting('trackClickCoords')}
+                        disabled={!telemetrySettings.enabled}
+                        aria-label="Toggle click coordinate capture"
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  {/* Typing Cadence Profiler */}
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingText}>
+                      <div className={styles.settingHeaderRow}>
+                        <span>Typing Cadence Profiler</span>
+                        <span
+                          className={`${styles.tacticBadge} ${styles.badgeEvent}`}
+                        >
+                          Event Listener
+                        </span>
+                      </div>
+                      <span className={styles.settingDescription}>
+                        Measure keydown-to-keyup rhythm to identify scripted
+                        autofill bots (off by default).
+                      </span>
+                    </div>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={telemetrySettings.trackTypingCadence}
+                        onChange={() =>
+                          handleToggleSetting('trackTypingCadence')
+                        }
+                        disabled={!telemetrySettings.enabled}
+                        aria-label="Toggle typing cadence profiler"
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  {/* Static Environment Heuristics */}
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingText}>
+                      <div className={styles.settingHeaderRow}>
+                        <span>Environment & Bot Heuristics</span>
+                        <span
+                          className={`${styles.tacticBadge} ${styles.badgeSafe}`}
+                        >
+                          Lightweight
+                        </span>
+                      </div>
+                      <span className={styles.settingDescription}>
+                        Inspect navigator.webdriver, automation globals, and
+                        screen size (on by default).
+                      </span>
+                    </div>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={telemetrySettings.botDetection}
+                        onChange={() => handleToggleSetting('botDetection')}
+                        disabled={!telemetrySettings.enabled}
+                        aria-label="Toggle bot environment heuristics"
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+
+                  {/* Privacy Masking */}
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingText}>
+                      <div className={styles.settingHeaderRow}>
+                        <span>Privacy Masking & Redaction</span>
+                        <span
+                          className={`${styles.tacticBadge} ${styles.badgeSafe}`}
+                        >
+                          Privacy Safe
+                        </span>
+                      </div>
+                      <span className={styles.settingDescription}>
+                        Sanitize input fields, textareas, and sensitive shopper
+                        data (on by default).
+                      </span>
+                    </div>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={telemetrySettings.privacyMasking}
+                        onChange={() => handleToggleSetting('privacyMasking')}
+                        disabled={!telemetrySettings.enabled}
+                        aria-label="Toggle privacy masking"
+                      />
+                      <span className={styles.slider} />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Settings Reset Button */}
+                <div className={styles.actionRow}>
+                  <button
+                    type="button"
+                    className={`${styles.hudActionBtn} ${styles.hudClearBtn}`}
+                    onClick={handleResetSettings}
+                    title="Restore default performance-safe settings"
+                  >
+                    Restore Performance Defaults
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </aside>
