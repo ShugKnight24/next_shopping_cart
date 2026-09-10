@@ -5,7 +5,9 @@
   margin: 0 auto;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 25px 60px -15px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 /* Ambient Backlight Glow */
@@ -15,7 +17,11 @@
   left: -20px;
   right: -20px;
   bottom: -20px;
-  background: radial-gradient(circle at 50% 50%, var(--accent, #2563eb) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--accent, #2563eb) 0%,
+    transparent 70%
+  );
   opacity: 0.15;
   filter: blur(40px);
   z-index: 0;
@@ -107,7 +113,12 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 65%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.4) 65%,
+    transparent 100%
+  );
   backdrop-filter: blur(8px);
   padding: 12px 18px 14px;
   display: flex;
@@ -162,7 +173,9 @@
   border: 2px solid #000000;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
   z-index: 2;
 }
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PlayIcon, PauseIcon } from '../Icons';
+import { PauseIcon, PlayIcon } from '../Icons';
 import styles from './CinematicVideoPlayer.module.css';
 
 /**
@@ -104,8 +104,8 @@ export function CinematicVideoPlayer({
       // Floating Dust Particles
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       for (let i = 0; i < 15; i++) {
-        const px = ((i * 73 + timestamp * 0.04) % width);
-        const py = ((i * 53 + Math.sin(timestamp * 0.002 + i) * 30) % height);
+        const px = (i * 73 + timestamp * 0.04) % width;
+        const py = (i * 53 + Math.sin(timestamp * 0.002 + i) * 30) % height;
         ctx.beginPath();
         ctx.arc(px, py, (i % 3) + 1, 0, Math.PI * 2);
         ctx.fill();
@@ -144,10 +144,22 @@ export function CinematicVideoPlayer({
       if (activeChapter?.desc || subtitle) {
         ctx.fillStyle = 'rgba(226, 232, 240, 0.75)';
         ctx.font = '12px sans-serif';
-        ctx.fillText(activeChapter?.desc || subtitle, width / 2, height * 0.48 + 28);
+        ctx.fillText(
+          activeChapter?.desc || subtitle,
+          width / 2,
+          height * 0.48 + 28
+        );
       }
     },
-    [activeChapter, activeChapterIndex, chapters.length, isPlaying, title, subtitle, accentColor]
+    [
+      activeChapter,
+      activeChapterIndex,
+      chapters.length,
+      isPlaying,
+      title,
+      subtitle,
+      accentColor,
+    ]
   );
 
   // Playback timer ticker for motion canvas mode
@@ -343,7 +355,9 @@ export function CinematicVideoPlayer({
                     key={ch.timestamp}
                     type="button"
                     className={`${styles.chapterMarker} ${
-                      currentTime >= ch.timestamp ? styles.chapterMarkerReached : ''
+                      currentTime >= ch.timestamp
+                        ? styles.chapterMarkerReached
+                        : ''
                     }`}
                     style={{ left: `${pct}%` }}
                     onClick={(e) => {
@@ -373,9 +387,13 @@ export function CinematicVideoPlayer({
 
               {/* Time Display */}
               <div className={styles.timeDisplay}>
-                <span className={styles.currentTimeText}>{formatTime(currentTime)}</span>
+                <span className={styles.currentTimeText}>
+                  {formatTime(currentTime)}
+                </span>
                 <span className={styles.timeDivider}>/</span>
-                <span className={styles.totalTimeText}>{formatTime(duration)}</span>
+                <span className={styles.totalTimeText}>
+                  {formatTime(duration)}
+                </span>
               </div>
 
               {/* Chapter Dropdown / Label */}
@@ -414,7 +432,9 @@ export function CinematicVideoPlayer({
                 type="button"
                 className={styles.iconBtn}
                 onClick={toggleFullscreen}
-                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                aria-label={
+                  isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'
+                }
               >
                 {isFullscreen ? '⤢' : '⤡'}
               </button>

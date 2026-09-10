@@ -1,11 +1,18 @@
 .heroContainer {
   position: relative;
-  background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #090d16 100%);
+  background: radial-gradient(
+    circle at 50% 0%,
+    #1e1b4b 0%,
+    #0f172a 60%,
+    #090d16 100%
+  );
   border-radius: 28px;
   padding: 48px 32px 40px 32px;
   color: #f8fafc;
   overflow: hidden;
-  box-shadow: 0 24px 60px -15px rgba(15, 23, 42, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 24px 60px -15px rgba(15, 23, 42, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   margin-bottom: 40px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -29,7 +36,11 @@
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.35) 0%,
+    transparent 70%
+  );
   filter: blur(40px);
   animation: floatSlow 8s ease-in-out infinite alternate;
 }
@@ -41,14 +52,22 @@
   width: 440px;
   height: 440px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.25) 0%,
+    transparent 70%
+  );
   filter: blur(50px);
   animation: floatSlow 10s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes floatSlow {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(30px, -25px) scale(1.1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(30px, -25px) scale(1.1);
+  }
 }
 
 .heroContent {
@@ -219,8 +238,14 @@
 }
 
 @keyframes bubblePop {
-  0% { opacity: 0; transform: translateY(6px) scale(0.9); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .childHero {
@@ -245,8 +270,13 @@
 }
 
 @keyframes gentleBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 /* Floating Craft Tools */
@@ -285,8 +315,12 @@
 }
 
 @keyframes floatTool {
-  0% { transform: translateY(0) rotate(-6deg); }
-  100% { transform: translateY(-12px) rotate(8deg); }
+  0% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  100% {
+    transform: translateY(-12px) rotate(8deg);
+  }
 }
 
 /* Drafting Table Base */

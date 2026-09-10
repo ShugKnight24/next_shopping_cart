@@ -24,7 +24,9 @@
 .gridPattern {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(30, 58, 95, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 58, 95, 0.03) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(30, 58, 95, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 58, 95, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
 }
@@ -35,7 +37,11 @@
   left: -10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(184, 134, 11, 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(184, 134, 11, 0.08) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   animation: orbFloat 15s ease-in-out infinite;
 }
@@ -46,13 +52,18 @@
   right: -10%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(30, 58, 95, 0.06) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(30, 58, 95, 0.06) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   animation: orbFloat 18s ease-in-out infinite reverse;
 }
 
 @keyframes orbFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   50% {
@@ -75,8 +86,9 @@
   color: #b8860b;
   margin-bottom: 0.75rem;
 }
-.sectionLabel::before, .sectionLabel::after {
-  content: "";
+.sectionLabel::before,
+.sectionLabel::after {
+  content: '';
   display: inline-block;
   width: 40px;
   height: 1px;
@@ -183,7 +195,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-family: "SF Mono", "Roboto Mono", monospace;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
   font-size: 0.875rem;
   color: #b8860b;
   margin-bottom: 1.5rem;
@@ -340,18 +352,30 @@
   padding: 1.5rem;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 12px 24px rgba(0, 0, 0, 0.04), 0 24px 48px rgba(0, 0, 0, 0.06);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.02),
+    0 12px 24px rgba(0, 0, 0, 0.04),
+    0 24px 48px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
 }
 .imageFrame:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.03), 0 20px 40px rgba(0, 0, 0, 0.06), 0 40px 80px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 8px 12px rgba(0, 0, 0, 0.03),
+    0 20px 40px rgba(0, 0, 0, 0.06),
+    0 40px 80px rgba(0, 0, 0, 0.08);
 }
 
 .imageGlow {
   position: absolute;
   inset: -20px;
-  background: radial-gradient(circle at center, rgba(184, 134, 11, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(184, 134, 11, 0.1) 0%,
+    transparent 70%
+  );
   border-radius: 24px;
   z-index: -1;
   opacity: 0;
@@ -416,7 +440,8 @@
 }
 
 @keyframes badgeFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -435,7 +460,8 @@
 }
 
 @keyframes circleFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
   50% {
@@ -454,7 +480,8 @@
 }
 
 @keyframes diamondFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(45deg) translate(0, 0);
   }
   50% {

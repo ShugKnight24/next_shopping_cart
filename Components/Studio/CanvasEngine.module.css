@@ -5,7 +5,9 @@
   align-items: center;
   background: #ffffff;
   border-radius: 18px;
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  box-shadow:
+    0 20px 45px -10px rgba(15, 23, 42, 0.14),
+    0 0 0 1px rgba(226, 232, 240, 0.8);
   padding: 12px;
   overflow: hidden;
   max-width: 100%;

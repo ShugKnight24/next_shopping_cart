@@ -13,12 +13,14 @@ import { CATEGORY_DEFINITIONS } from '../Components/Products/CategoryFilterTabs'
  * @param {string} categoryId - Category identifier ('all', 'sneakers', etc.)
  * @returns {(product: object) => boolean}
  */
-export const filterByCategory = (categoryId = 'all') => (product) => {
-  if (!categoryId || categoryId === 'all') return true;
-  if (!product) return false;
-  const def = CATEGORY_DEFINITIONS.find((c) => c.id === categoryId);
-  return def ? Boolean(def.match(product.category)) : true;
-};
+export const filterByCategory =
+  (categoryId = 'all') =>
+  (product) => {
+    if (!categoryId || categoryId === 'all') return true;
+    if (!product) return false;
+    const def = CATEGORY_DEFINITIONS.find((c) => c.id === categoryId);
+    return def ? Boolean(def.match(product.category)) : true;
+  };
 
 /**
  * Curried predicate to filter products by in-stock status.
@@ -26,10 +28,14 @@ export const filterByCategory = (categoryId = 'all') => (product) => {
  * @param {boolean} inStockOnly
  * @returns {(product: object) => boolean}
  */
-export const filterByStock = (inStockOnly = false) => (product) => {
-  if (!inStockOnly) return true;
-  return Boolean(product && typeof product.available === 'number' && product.available > 0);
-};
+export const filterByStock =
+  (inStockOnly = false) =>
+  (product) => {
+    if (!inStockOnly) return true;
+    return Boolean(
+      product && typeof product.available === 'number' && product.available > 0
+    );
+  };
 
 /**
  * Curried predicate to filter products on sale or with active discount badges.
@@ -37,21 +43,23 @@ export const filterByStock = (inStockOnly = false) => (product) => {
  * @param {boolean} onSaleOnly
  * @returns {(product: object) => boolean}
  */
-export const filterBySale = (onSaleOnly = false) => (product) => {
-  if (!onSaleOnly) return true;
-  if (!product) return false;
+export const filterBySale =
+  (onSaleOnly = false) =>
+  (product) => {
+    if (!onSaleOnly) return true;
+    if (!product) return false;
 
-  const hasSaleBadge =
-    (Array.isArray(product.badges) && product.badges.includes('sale')) ||
-    product.badge === 'sale';
+    const hasSaleBadge =
+      (Array.isArray(product.badges) && product.badges.includes('sale')) ||
+      product.badge === 'sale';
 
-  const hasPriceDiscount =
-    typeof product.originalPrice === 'number' &&
-    typeof product.price === 'number' &&
-    product.originalPrice > product.price;
+    const hasPriceDiscount =
+      typeof product.originalPrice === 'number' &&
+      typeof product.price === 'number' &&
+      product.originalPrice > product.price;
 
-  return Boolean(hasSaleBadge || hasPriceDiscount);
-};
+    return Boolean(hasSaleBadge || hasPriceDiscount);
+  };
 
 /**
  * Curried predicate to filter products by price bracket.
@@ -59,24 +67,26 @@ export const filterBySale = (onSaleOnly = false) => (product) => {
  * @param {string} priceRange - 'all' | 'under100' | '100to500' | '500to1000' | 'over1000'
  * @returns {(product: object) => boolean}
  */
-export const filterByPriceRange = (priceRange = 'all') => (product) => {
-  if (!priceRange || priceRange === 'all') return true;
-  if (!product || typeof product.price !== 'number') return false;
+export const filterByPriceRange =
+  (priceRange = 'all') =>
+  (product) => {
+    if (!priceRange || priceRange === 'all') return true;
+    if (!product || typeof product.price !== 'number') return false;
 
-  const price = product.price;
-  switch (priceRange) {
-    case 'under100':
-      return price < 100;
-    case '100to500':
-      return price >= 100 && price <= 500;
-    case '500to1000':
-      return price > 500 && price <= 1000;
-    case 'over1000':
-      return price > 1000;
-    default:
-      return true;
-  }
-};
+    const price = product.price;
+    switch (priceRange) {
+      case 'under100':
+        return price < 100;
+      case '100to500':
+        return price >= 100 && price <= 500;
+      case '500to1000':
+        return price > 500 && price <= 1000;
+      case 'over1000':
+        return price > 1000;
+      default:
+        return true;
+    }
+  };
 
 /**
  * Pure search matching predicate to eliminate duplicated query matching logic across components.
@@ -116,8 +126,10 @@ export const matchesProductQuery = (product, query) => {
  * @param {string} searchQuery
  * @returns {(product: object) => boolean}
  */
-export const filterBySearchQuery = (searchQuery = '') => (product) =>
-  matchesProductQuery(product, searchQuery);
+export const filterBySearchQuery =
+  (searchQuery = '') =>
+  (product) =>
+    matchesProductQuery(product, searchQuery);
 
 /**
  * Functional predicate combinator: AND conjunction.
@@ -125,8 +137,10 @@ export const filterBySearchQuery = (searchQuery = '') => (product) =>
  * @param  {...Function} predicates
  * @returns {(item: any) => boolean}
  */
-export const composePredicates = (...predicates) => (item) =>
-  predicates.every((fn) => fn(item));
+export const composePredicates =
+  (...predicates) =>
+  (item) =>
+    predicates.every((fn) => fn(item));
 
 /**
  * Pure sorting function for products. Returns a new sorted array.

@@ -1,42 +1,42 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { TrashIcon } from '../Icons';
+import styles from './StickerBar.module.css';
 import {
-  MascotLunaSvg,
-  MascotFinleySvg,
-  MascotLeoSvg,
-  MascotPennySvg,
-  MascotDexterSvg,
-  MascotCartySvg,
-  MascotSparkySvg,
-  BadgeHeroSvg,
   BadgeBraveSvg,
-  BadgeStarlightSvg,
   BadgeCertifiedSvg,
   BadgeDinoScoutSvg,
+  BadgeHeroSvg,
+  BadgeStarlightSvg,
   BubblePropSvg,
-  RosePropSvg,
-  CompassPropSvg,
-  WandPropSvg,
-  ChestPropSvg,
-  PlanetPropSvg,
   CastlePropSvg,
-  SpaceshipPropSvg,
-  CrystalPropSvg,
-  MushroomPropSvg,
-  RainbowPropSvg,
-  DragonEggPropSvg,
-  StarStampSvg,
-  RocketStampSvg,
+  ChestPropSvg,
+  CompassPropSvg,
   CrownStampSvg,
-  SneakerStampSvg,
-  SparkleStampSvg,
+  CrystalPropSvg,
+  DragonEggPropSvg,
   HeartStampSvg,
-  UndoIcon,
+  MascotCartySvg,
+  MascotDexterSvg,
+  MascotFinleySvg,
+  MascotLeoSvg,
+  MascotLunaSvg,
+  MascotPennySvg,
+  MascotSparkySvg,
+  MushroomPropSvg,
+  PlanetPropSvg,
+  RainbowPropSvg,
   RedoIcon,
+  RocketStampSvg,
+  RosePropSvg,
+  SneakerStampSvg,
+  SpaceshipPropSvg,
+  SparkleStampSvg,
+  StarStampSvg,
   TemplateToolIcon,
+  UndoIcon,
+  WandPropSvg,
 } from './StudioSVGs';
-import styles from './StickerBar.module.css';
 
 export const STICKER_CATEGORIES = [
   { id: 'all', label: 'All Assets', Icon: TemplateToolIcon },
@@ -267,7 +267,10 @@ export const STICKER_CATALOG = [
 ];
 
 // Backwards-compatible export of STICKER_TYPES
-export const STICKER_TYPES = STICKER_CATALOG.map(({ id, name }) => ({ id, name }));
+export const STICKER_TYPES = STICKER_CATALOG.map(({ id, name }) => ({
+  id,
+  name,
+}));
 
 export function StickerBar({
   selectedSticker,
@@ -289,14 +292,18 @@ export function StickerBar({
       ? STICKER_CATALOG
       : STICKER_CATALOG.filter((s) => s.category === activeCategory);
 
-  const activeStickerObj = STICKER_CATALOG.find((s) => s.id === selectedSticker);
+  const activeStickerObj = STICKER_CATALOG.find(
+    (s) => s.id === selectedSticker
+  );
 
   return (
     <div className={styles.barContainer}>
       <div className={styles.barHeader}>
         <div className={styles.headerLeft}>
           <span className={styles.barTitle}>Story Assets & Stamps</span>
-          <span className={styles.assetCountBadge}>{filteredCatalog.length} available</span>
+          <span className={styles.assetCountBadge}>
+            {filteredCatalog.length} available
+          </span>
         </div>
 
         <div className={styles.headerActions}>
@@ -342,7 +349,11 @@ export function StickerBar({
       </div>
 
       {/* Category Filter Pills */}
-      <div className={styles.categoryTabs} role="tablist" aria-label="Asset Categories">
+      <div
+        className={styles.categoryTabs}
+        role="tablist"
+        aria-label="Asset Categories"
+      >
         {STICKER_CATEGORIES.map((cat) => {
           const IconComponent = cat.Icon;
           return (
@@ -366,25 +377,26 @@ export function StickerBar({
       </div>
 
       {/* Speech Bubble text configurator if bubble is active */}
-      {(selectedSticker === 'bubble' || activeCategory === 'props') && onChangeBubbleText && (
-        <div className={styles.bubbleConfigRow}>
-          <span className={styles.bubbleIconWrap}>
-            <BubblePropSvg size={18} />
-          </span>
-          <label htmlFor="bubbleTextInput" className={styles.bubbleLabel}>
-            Speech Bubble Text:
-          </label>
-          <input
-            id="bubbleTextInput"
-            type="text"
-            className={styles.bubbleInput}
-            value={bubbleText}
-            maxLength={32}
-            onChange={(e) => onChangeBubbleText(e.target.value)}
-            placeholder="e.g. Look at that star!"
-          />
-        </div>
-      )}
+      {(selectedSticker === 'bubble' || activeCategory === 'props') &&
+        onChangeBubbleText && (
+          <div className={styles.bubbleConfigRow}>
+            <span className={styles.bubbleIconWrap}>
+              <BubblePropSvg size={18} />
+            </span>
+            <label htmlFor="bubbleTextInput" className={styles.bubbleLabel}>
+              Speech Bubble Text:
+            </label>
+            <input
+              id="bubbleTextInput"
+              type="text"
+              className={styles.bubbleInput}
+              value={bubbleText}
+              maxLength={32}
+              onChange={(e) => onChangeBubbleText(e.target.value)}
+              placeholder="e.g. Look at that star!"
+            />
+          </div>
+        )}
 
       {/* Asset Cards Grid */}
       <div className={styles.stickerRow}>

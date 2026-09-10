@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { CartProvider } from '../context/CartProvider';
-import { MascotProvider } from '../context/MascotProvider';
 import { ToastProvider } from '../Components/UI/Toast';
 import { CinematicVideoPlayer } from '../Components/Video/CinematicVideoPlayer';
 import { EcommerceSizzleReel } from '../Components/Video/EcommerceSizzleReel';
 import { KidsStudioVideoTour } from '../Components/Video/KidsStudioVideoTour';
+import { CartProvider } from '../context/CartProvider';
+import { MascotProvider } from '../context/MascotProvider';
 
 // Mock Next.js useRouter
 vi.mock('next/router', () => ({
@@ -73,7 +73,9 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
       />
     );
 
-    expect(screen.getByLabelText(/Cinematic motion reel stage/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Cinematic motion reel stage/i)
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/Play video reel/i)).toBeInTheDocument();
     expect(screen.getByText('Intro Scene')).toBeInTheDocument();
     expect(screen.getByText('00:00')).toBeInTheDocument();
@@ -121,8 +123,12 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
     expect(
       screen.getByRole('heading', { name: /Experience The Collection/i })
     ).toBeInTheDocument();
-    expect(screen.getAllByText('NYC Flagship Concept Tour').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Air Pulse Sneaker Vault').length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText('NYC Flagship Concept Tour').length
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText('Air Pulse Sneaker Vault').length
+    ).toBeGreaterThan(0);
 
     // Jump to chapter 2 (Sneakers with hotspot)
     const chapter2Marker = screen.getByRole('button', {
@@ -142,9 +148,13 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
     fireEvent.click(addBtn);
 
     // Verify cart in localStorage has item
-    const saved = JSON.parse(localStorage.getItem('shopping_cart.cart') || '{}');
+    const saved = JSON.parse(
+      localStorage.getItem('shopping_cart.cart') || '{}'
+    );
     expect(saved.cart).toBeDefined();
-    expect(saved.cart.some((i) => i.productName === 'Air Pulse High Top')).toBe(true);
+    expect(saved.cart.some((i) => i.productName === 'Air Pulse High Top')).toBe(
+      true
+    );
   });
 
   it('renders KidsStudioVideoTour with artisan craft chapters and mascot fact bubble', () => {
@@ -155,7 +165,9 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
     );
 
     expect(
-      screen.getByRole('heading', { name: /The Making of a Keepsake Heirloom/i })
+      screen.getByRole('heading', {
+        name: /The Making of a Keepsake Heirloom/i,
+      })
     ).toBeInTheDocument();
     expect(screen.getByText('Behind The Print Studio')).toBeInTheDocument();
     expect(screen.getByText('100% Archival Paper')).toBeInTheDocument();
@@ -165,7 +177,9 @@ describe('Cinematic Video Player & Brand Sizzle Suites', () => {
     // Mascot fact bubble
     expect(screen.getByText(/Studio Guide Fact:/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Every book begins right here in our interactive studio/i)
+      screen.getByText(
+        /Every book begins right here in our interactive studio/i
+      )
     ).toBeInTheDocument();
   });
 });

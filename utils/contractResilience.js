@@ -71,7 +71,8 @@ export function normalizeProduct(rawItem) {
         : 'Curated Brand';
 
   // Safe price (handles string numbers "$129.99", NaN, negative, rawItem.cost)
-  const candidatePrice = rawItem.price !== undefined ? rawItem.price : rawItem.cost;
+  const candidatePrice =
+    rawItem.price !== undefined ? rawItem.price : rawItem.cost;
   let price = 0;
   if (typeof candidatePrice === 'number' && !Number.isNaN(candidatePrice)) {
     price = Math.max(0, Math.round(candidatePrice * 100) / 100);
@@ -256,7 +257,10 @@ export function validateProductContract(rawItem) {
     };
   }
 
-  if (typeof rawItem.itemid !== 'string' || rawItem.itemid.trim().length === 0) {
+  if (
+    typeof rawItem.itemid !== 'string' ||
+    rawItem.itemid.trim().length === 0
+  ) {
     errors.push('Missing or invalid required string field: itemid');
   }
 
@@ -323,9 +327,7 @@ export function validateProductContract(rawItem) {
 export function validateCartState(state, inventory = []) {
   const safeState = {
     cart: [],
-    inventory: Array.isArray(inventory)
-      ? inventory.map(normalizeProduct)
-      : [],
+    inventory: Array.isArray(inventory) ? inventory.map(normalizeProduct) : [],
     favorites: [],
     discountCode: null,
     discountPercent: 0,
@@ -370,7 +372,10 @@ export function validateCartState(state, inventory = []) {
     typeof state.discountPercent === 'number' &&
     !Number.isNaN(state.discountPercent)
   ) {
-    safeState.discountPercent = Math.max(0, Math.min(100, state.discountPercent));
+    safeState.discountPercent = Math.max(
+      0,
+      Math.min(100, state.discountPercent)
+    );
   }
 
   if (typeof state.isDrawerOpen === 'boolean') {

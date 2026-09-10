@@ -1,4 +1,7 @@
-import { getDefaultSceneForTheme, TIME_OF_DAY_OPTIONS } from './sceneEnvironments';
+import {
+  getDefaultSceneForTheme,
+  TIME_OF_DAY_OPTIONS,
+} from './sceneEnvironments';
 
 /**
  * Hyper-Realistic Procedural 2D Canvas Scene Environments Renderer
@@ -11,18 +14,21 @@ import { getDefaultSceneForTheme, TIME_OF_DAY_OPTIONS } from './sceneEnvironment
  * - Time-of-day lighting washes and weather overlays
  */
 
-export function drawEnvironmentScene(ctx, {
-  sceneId = 'cosmic_nebula',
-  stageX,
-  stageY,
-  stageW,
-  stageH,
-  time = 0,
-  theme = 'space',
-  timeOfDay = 'midnight',
-  weatherEffect = 'none',
-  isFullBleed = false,
-}) {
+export function drawEnvironmentScene(
+  ctx,
+  {
+    sceneId = 'cosmic_nebula',
+    stageX,
+    stageY,
+    stageW,
+    stageH,
+    time = 0,
+    theme = 'space',
+    timeOfDay = 'midnight',
+    weatherEffect = 'none',
+    isFullBleed = false,
+  }
+) {
   if (!ctx) return;
 
   const activeSceneId = sceneId || getDefaultSceneForTheme(theme);
@@ -41,7 +47,12 @@ export function drawEnvironmentScene(ctx, {
   switch (activeSceneId) {
     case 'cosmic_nebula': {
       // Deep space void gradient
-      const skyGrad = ctx.createLinearGradient(stageX, stageY, stageX + stageW, stageY + stageH);
+      const skyGrad = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX + stageW,
+        stageY + stageH
+      );
       skyGrad.addColorStop(0, '#030712');
       skyGrad.addColorStop(0.4, '#0f172a');
       skyGrad.addColorStop(0.8, '#1e1b4b');
@@ -83,10 +94,16 @@ export function drawEnvironmentScene(ctx, {
       for (let i = 0; i < 42; i++) {
         const sx = stageX + (((i * 47 + 17) % 997) / 997) * stageW;
         const sy = stageY + (((i * 73 + 31) % 991) / 991) * stageH;
-        const sr = 0.8 + ((i % 3) * 0.7);
-        const alpha = Math.max(0.15, Math.min(1, 0.35 + 0.6 * Math.sin(time * 2.2 + i * 1.7)));
+        const sr = 0.8 + (i % 3) * 0.7;
+        const alpha = Math.max(
+          0.15,
+          Math.min(1, 0.35 + 0.6 * Math.sin(time * 2.2 + i * 1.7))
+        );
 
-        ctx.fillStyle = i % 5 === 0 ? `rgba(186, 230, 253, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
+        ctx.fillStyle =
+          i % 5 === 0
+            ? `rgba(186, 230, 253, ${alpha})`
+            : `rgba(255, 255, 255, ${alpha})`;
         ctx.beginPath();
         ctx.arc(sx, sy, sr, 0, Math.PI * 2);
         ctx.fill();
@@ -110,7 +127,14 @@ export function drawEnvironmentScene(ctx, {
       const pr = stageW * 0.14;
 
       // Planet Sphere
-      const planetGrad = ctx.createRadialGradient(px - pr * 0.35, py - pr * 0.35, pr * 0.1, px, py, pr);
+      const planetGrad = ctx.createRadialGradient(
+        px - pr * 0.35,
+        py - pr * 0.35,
+        pr * 0.1,
+        px,
+        py,
+        pr
+      );
       planetGrad.addColorStop(0, '#fde047');
       planetGrad.addColorStop(0.3, '#f59e0b');
       planetGrad.addColorStop(0.7, '#ea580c');
@@ -175,7 +199,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'enchanted_forest': {
       // Twilight forest canopy sky
-      const forestSky = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const forestSky = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       forestSky.addColorStop(0, '#022c22');
       forestSky.addColorStop(0.4, '#064e3b');
       forestSky.addColorStop(0.8, '#14532d');
@@ -196,7 +225,12 @@ export function drawEnvironmentScene(ctx, {
 
       // Volumetric Sunbeams / God-Rays filtering through canopy
       ctx.save();
-      const beamGrad = ctx.createLinearGradient(stageX + stageW * 0.1, stageY, stageX + stageW * 0.7, stageY + stageH);
+      const beamGrad = ctx.createLinearGradient(
+        stageX + stageW * 0.1,
+        stageY,
+        stageX + stageW * 0.7,
+        stageY + stageH
+      );
       beamGrad.addColorStop(0, 'rgba(254, 240, 138, 0.28)');
       beamGrad.addColorStop(0.5, 'rgba(254, 240, 138, 0.12)');
       beamGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
@@ -211,15 +245,30 @@ export function drawEnvironmentScene(ctx, {
       ctx.restore();
 
       // Rolling Mossy Forest Floor
-      const groundGrad = ctx.createLinearGradient(stageX, stageY + stageH * 0.65, stageX, stageY + stageH);
+      const groundGrad = ctx.createLinearGradient(
+        stageX,
+        stageY + stageH * 0.65,
+        stageX,
+        stageY + stageH
+      );
       groundGrad.addColorStop(0, '#14532d');
       groundGrad.addColorStop(0.6, '#0f3a22');
       groundGrad.addColorStop(1, '#022c22');
       ctx.fillStyle = groundGrad;
       ctx.beginPath();
       ctx.moveTo(stageX, stageY + stageH * 0.72);
-      ctx.quadraticCurveTo(stageX + stageW * 0.3, stageY + stageH * 0.65, stageX + stageW * 0.6, stageY + stageH * 0.75);
-      ctx.quadraticCurveTo(stageX + stageW * 0.85, stageY + stageH * 0.82, stageX + stageW, stageY + stageH * 0.7);
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.3,
+        stageY + stageH * 0.65,
+        stageX + stageW * 0.6,
+        stageY + stageH * 0.75
+      );
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.85,
+        stageY + stageH * 0.82,
+        stageX + stageW,
+        stageY + stageH * 0.7
+      );
       ctx.lineTo(stageX + stageW, stageY + stageH);
       ctx.lineTo(stageX, stageY + stageH);
       ctx.closePath();
@@ -232,7 +281,12 @@ export function drawEnvironmentScene(ctx, {
       ctx.moveTo(tx - 24, stageY + stageH);
       ctx.quadraticCurveTo(tx - 18, stageY + stageH * 0.5, tx - 12, stageY);
       ctx.lineTo(tx + 40, stageY);
-      ctx.quadraticCurveTo(tx + 32, stageY + stageH * 0.5, tx + 48, stageY + stageH);
+      ctx.quadraticCurveTo(
+        tx + 32,
+        stageY + stageH * 0.5,
+        tx + 48,
+        stageY + stageH
+      );
       ctx.closePath();
       ctx.fill();
 
@@ -279,8 +333,15 @@ export function drawEnvironmentScene(ctx, {
 
       // Floating Animated Fireflies
       for (let i = 0; i < 18; i++) {
-        const fx = stageX + (((i * 53 + 23) % 887) / 887) * stageW + Math.sin(time * 1.4 + i) * 12;
-        const fy = stageY + stageH * 0.4 + (((i * 41 + 11) % 661) / 661) * (stageH * 0.5) + Math.cos(time * 1.8 + i) * 8;
+        const fx =
+          stageX +
+          (((i * 53 + 23) % 887) / 887) * stageW +
+          Math.sin(time * 1.4 + i) * 12;
+        const fy =
+          stageY +
+          stageH * 0.4 +
+          (((i * 41 + 11) % 661) / 661) * (stageH * 0.5) +
+          Math.cos(time * 1.8 + i) * 8;
         const glow = Math.max(0.1, 0.3 + 0.7 * Math.sin(time * 3.2 + i * 1.8));
 
         ctx.fillStyle = `rgba(250, 204, 21, ${glow * 0.4})`;
@@ -298,7 +359,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'jurassic_valley': {
       // Golden hour prehistoric dawn sky
-      const skyGrad = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const skyGrad = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       skyGrad.addColorStop(0, '#78350f');
       skyGrad.addColorStop(0.3, '#d97706');
       skyGrad.addColorStop(0.65, '#f59e0b');
@@ -318,9 +384,27 @@ export function drawEnvironmentScene(ctx, {
       // Smoke plume from volcano
       ctx.fillStyle = 'rgba(120, 53, 15, 0.4)';
       ctx.beginPath();
-      ctx.arc(stageX + stageW * 0.35, stageY + stageH * 0.24, 8, 0, Math.PI * 2);
-      ctx.arc(stageX + stageW * 0.37, stageY + stageH * 0.18, 12, 0, Math.PI * 2);
-      ctx.arc(stageX + stageW * 0.4, stageY + stageH * 0.11, 16, 0, Math.PI * 2);
+      ctx.arc(
+        stageX + stageW * 0.35,
+        stageY + stageH * 0.24,
+        8,
+        0,
+        Math.PI * 2
+      );
+      ctx.arc(
+        stageX + stageW * 0.37,
+        stageY + stageH * 0.18,
+        12,
+        0,
+        Math.PI * 2
+      );
+      ctx.arc(
+        stageX + stageW * 0.4,
+        stageY + stageH * 0.11,
+        16,
+        0,
+        Math.PI * 2
+      );
       ctx.fill();
 
       // Midground canyon wall with Twin Waterfalls
@@ -358,14 +442,21 @@ export function drawEnvironmentScene(ctx, {
       for (let a = -0.8; a <= 0.8; a += 0.35) {
         ctx.beginPath();
         ctx.moveTo(fx, fy);
-        ctx.quadraticCurveTo(fx + Math.sin(a) * 35, fy - 40, fx + Math.sin(a) * 55, fy - 65);
+        ctx.quadraticCurveTo(
+          fx + Math.sin(a) * 35,
+          fy - 40,
+          fx + Math.sin(a) * 55,
+          fy - 65
+        );
         ctx.stroke();
       }
 
       // Soaring Pterodactyl silhouettes
       for (let p = 0; p < 3; p++) {
-        const px = stageX + stageW * (0.25 + p * 0.22) + Math.sin(time * 0.8 + p) * 15;
-        const py = stageY + stageH * (0.18 + p * 0.08) + Math.cos(time * 0.9 + p) * 6;
+        const px =
+          stageX + stageW * (0.25 + p * 0.22) + Math.sin(time * 0.8 + p) * 15;
+        const py =
+          stageY + stageH * (0.18 + p * 0.08) + Math.cos(time * 0.9 + p) * 6;
         ctx.fillStyle = '#451a03';
         ctx.beginPath();
         // Wings
@@ -383,7 +474,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'neon_metropolis': {
       // Cyberpunk deep midnight violet sky
-      const citySky = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const citySky = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       citySky.addColorStop(0, '#090d16');
       citySky.addColorStop(0.5, '#1e1b4b');
       citySky.addColorStop(1, '#311042');
@@ -423,11 +519,20 @@ export function drawEnvironmentScene(ctx, {
         ctx.fillRect(bx, stageY + stageH - bh, bw, bh);
 
         // Glowing neon window dots
-        for (let wy = stageY + stageH - bh + 14; wy < stageY + stageH - 10; wy += 12) {
+        for (
+          let wy = stageY + stageH - bh + 14;
+          wy < stageY + stageH - 10;
+          wy += 12
+        ) {
           for (let wx = bx + 6; wx < bx + bw - 6; wx += 9) {
             const isLit = (wx * 13 + wy * 19) % 5 < 2;
             if (isLit) {
-              ctx.fillStyle = (wx + wy) % 3 === 0 ? '#38bdf8' : (wx + wy) % 3 === 1 ? '#ec4899' : '#facc15';
+              ctx.fillStyle =
+                (wx + wy) % 3 === 0
+                  ? '#38bdf8'
+                  : (wx + wy) % 3 === 1
+                    ? '#ec4899'
+                    : '#facc15';
               ctx.fillRect(wx, wy, 4, 5);
             }
           }
@@ -454,7 +559,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'coral_kingdom': {
       // Underwater turquoise to deep ocean abyss
-      const seaGrad = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const seaGrad = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       seaGrad.addColorStop(0, '#38bdf8');
       seaGrad.addColorStop(0.35, '#0284c7');
       seaGrad.addColorStop(0.75, '#075985');
@@ -464,8 +574,14 @@ export function drawEnvironmentScene(ctx, {
 
       // Dancing sunlight water caustics streaming down
       for (let c = 0; c < 5; c++) {
-        const cx = stageX + stageW * (0.15 + c * 0.2) + Math.sin(time * 0.9 + c) * 10;
-        const cGrad = ctx.createLinearGradient(cx, stageY, cx + 20, stageY + stageH * 0.85);
+        const cx =
+          stageX + stageW * (0.15 + c * 0.2) + Math.sin(time * 0.9 + c) * 10;
+        const cGrad = ctx.createLinearGradient(
+          cx,
+          stageY,
+          cx + 20,
+          stageY + stageH * 0.85
+        );
         cGrad.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
         cGrad.addColorStop(0.5, 'rgba(186, 230, 253, 0.12)');
         cGrad.addColorStop(1, 'rgba(186, 230, 253, 0)');
@@ -489,7 +605,14 @@ export function drawEnvironmentScene(ctx, {
       // Purple Sea Fan
       ctx.fillStyle = '#7e22ce';
       ctx.beginPath();
-      ctx.arc(stageX + stageW - 40, stageY + stageH - 10, 42, Math.PI, 0, false);
+      ctx.arc(
+        stageX + stageW - 40,
+        stageY + stageH - 10,
+        42,
+        Math.PI,
+        0,
+        false
+      );
       ctx.fill();
 
       // Swaying giant emerald kelp fronds
@@ -519,14 +642,22 @@ export function drawEnvironmentScene(ctx, {
       for (let t = -10; t <= 10; t += 5) {
         ctx.beginPath();
         ctx.moveTo(jx + t, jy);
-        ctx.quadraticCurveTo(jx + t + Math.sin(time * 2 + t) * 6, jy + 18, jx + t, jy + 32);
+        ctx.quadraticCurveTo(
+          jx + t + Math.sin(time * 2 + t) * 6,
+          jy + 18,
+          jx + t,
+          jy + 32
+        );
         ctx.stroke();
       }
 
       // Rising air bubbles with specular gleam
       for (let b = 0; b < 16; b++) {
-        const bx = stageX + (((b * 67 + 29) % 941) / 941) * stageW + Math.sin(time * 2 + b) * 4;
-        const by = stageY + stageH - (((time * 30 + b * 26) % (stageH + 20)));
+        const bx =
+          stageX +
+          (((b * 67 + 29) % 941) / 941) * stageW +
+          Math.sin(time * 2 + b) * 4;
+        const by = stageY + stageH - ((time * 30 + b * 26) % (stageH + 20));
         const br = 2 + (b % 4);
 
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
@@ -544,7 +675,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'dreamland_castle': {
       // Twilight bedtime violet & pastel peach sky
-      const dreamSky = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const dreamSky = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       dreamSky.addColorStop(0, '#1e1b4b');
       dreamSky.addColorStop(0.4, '#4c1d95');
       dreamSky.addColorStop(0.75, '#831843');
@@ -570,10 +706,24 @@ export function drawEnvironmentScene(ctx, {
       ctx.strokeStyle = '#854d0e';
       ctx.lineWidth = 1.4;
       ctx.beginPath();
-      ctx.arc(mx - mr * 0.2, my - mr * 0.1, 4, 0.1 * Math.PI, 0.9 * Math.PI, false);
+      ctx.arc(
+        mx - mr * 0.2,
+        my - mr * 0.1,
+        4,
+        0.1 * Math.PI,
+        0.9 * Math.PI,
+        false
+      );
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(mx - mr * 0.15, my + mr * 0.2, 5, 0.1 * Math.PI, 0.9 * Math.PI, false);
+      ctx.arc(
+        mx - mr * 0.15,
+        my + mr * 0.2,
+        5,
+        0.1 * Math.PI,
+        0.9 * Math.PI,
+        false
+      );
       ctx.stroke();
 
       // Billowing Fluffy Cloud Pillows
@@ -636,7 +786,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'rainbow_meadow': {
       // Sunny morning sky
-      const skyGrad = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const skyGrad = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       skyGrad.addColorStop(0, '#0284c7');
       skyGrad.addColorStop(0.4, '#38bdf8');
       skyGrad.addColorStop(0.8, '#bae6fd');
@@ -647,31 +802,53 @@ export function drawEnvironmentScene(ctx, {
       const rx = stageX + stageW * 0.5;
       const ry = stageY + stageH * 0.85;
       const rainbowColors = [
-        'rgba(239, 68, 68, 0.5)',   // Red
-        'rgba(249, 115, 22, 0.5)',  // Orange
-        'rgba(234, 179, 8, 0.5)',   // Yellow
-        'rgba(34, 197, 94, 0.5)',   // Green
-        'rgba(59, 130, 246, 0.5)',  // Blue
-        'rgba(168, 85, 247, 0.5)',  // Purple
+        'rgba(239, 68, 68, 0.5)', // Red
+        'rgba(249, 115, 22, 0.5)', // Orange
+        'rgba(234, 179, 8, 0.5)', // Yellow
+        'rgba(34, 197, 94, 0.5)', // Green
+        'rgba(59, 130, 246, 0.5)', // Blue
+        'rgba(168, 85, 247, 0.5)', // Purple
       ];
       rainbowColors.forEach((rc, idx) => {
         ctx.strokeStyle = rc;
         ctx.lineWidth = 5;
         ctx.beginPath();
-        ctx.arc(rx, ry, stageW * 0.55 - idx * 5.5, Math.PI * 1.1, Math.PI * 1.9, false);
+        ctx.arc(
+          rx,
+          ry,
+          stageW * 0.55 - idx * 5.5,
+          Math.PI * 1.1,
+          Math.PI * 1.9,
+          false
+        );
         ctx.stroke();
       });
 
       // Rolling Emerald Hills
-      const hillGrad = ctx.createLinearGradient(stageX, stageY + stageH * 0.55, stageX, stageY + stageH);
+      const hillGrad = ctx.createLinearGradient(
+        stageX,
+        stageY + stageH * 0.55,
+        stageX,
+        stageY + stageH
+      );
       hillGrad.addColorStop(0, '#22c55e');
       hillGrad.addColorStop(0.7, '#16a34a');
       hillGrad.addColorStop(1, '#15803d');
       ctx.fillStyle = hillGrad;
       ctx.beginPath();
       ctx.moveTo(stageX, stageY + stageH * 0.68);
-      ctx.quadraticCurveTo(stageX + stageW * 0.35, stageY + stageH * 0.55, stageX + stageW * 0.65, stageY + stageH * 0.68);
-      ctx.quadraticCurveTo(stageX + stageW * 0.85, stageY + stageH * 0.76, stageX + stageW, stageY + stageH * 0.64);
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.35,
+        stageY + stageH * 0.55,
+        stageX + stageW * 0.65,
+        stageY + stageH * 0.68
+      );
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.85,
+        stageY + stageH * 0.76,
+        stageX + stageW,
+        stageY + stageH * 0.64
+      );
       ctx.lineTo(stageX + stageW, stageY + stageH);
       ctx.lineTo(stageX, stageY + stageH);
       ctx.closePath();
@@ -680,8 +857,12 @@ export function drawEnvironmentScene(ctx, {
       // Wildflowers dots across the hills
       for (let f = 0; f < 24; f++) {
         const fx = stageX + (((f * 43 + 19) % 877) / 877) * stageW;
-        const fy = stageY + stageH * 0.7 + (((f * 31 + 7) % 521) / 521) * (stageH * 0.25);
-        ctx.fillStyle = f % 3 === 0 ? '#ef4444' : f % 3 === 1 ? '#facc15' : '#ffffff';
+        const fy =
+          stageY +
+          stageH * 0.7 +
+          (((f * 31 + 7) % 521) / 521) * (stageH * 0.25);
+        ctx.fillStyle =
+          f % 3 === 0 ? '#ef4444' : f % 3 === 1 ? '#facc15' : '#ffffff';
         ctx.beginPath();
         ctx.arc(fx, fy, 2, 0, Math.PI * 2);
         ctx.fill();
@@ -691,7 +872,12 @@ export function drawEnvironmentScene(ctx, {
 
     case 'winter_aurora': {
       // Arctic midnight deep sky
-      const skyGrad = ctx.createLinearGradient(stageX, stageY, stageX, stageY + stageH);
+      const skyGrad = ctx.createLinearGradient(
+        stageX,
+        stageY,
+        stageX,
+        stageY + stageH
+      );
       skyGrad.addColorStop(0, '#020617');
       skyGrad.addColorStop(0.5, '#064e3b');
       skyGrad.addColorStop(1, '#0f172a');
@@ -701,15 +887,30 @@ export function drawEnvironmentScene(ctx, {
       // Northern Lights (Aurora Borealis) waving curtains
       ctx.save();
       const wave = Math.sin(time * 0.8) * 15;
-      const auroraGrad = ctx.createLinearGradient(stageX, stageY + stageH * 0.15, stageX + stageW, stageY + stageH * 0.5);
+      const auroraGrad = ctx.createLinearGradient(
+        stageX,
+        stageY + stageH * 0.15,
+        stageX + stageW,
+        stageY + stageH * 0.5
+      );
       auroraGrad.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
       auroraGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.35)');
       auroraGrad.addColorStop(1, 'rgba(236, 72, 153, 0.25)');
       ctx.fillStyle = auroraGrad;
       ctx.beginPath();
       ctx.moveTo(stageX, stageY + stageH * 0.45 + wave);
-      ctx.quadraticCurveTo(stageX + stageW * 0.3, stageY + stageH * 0.15 - wave, stageX + stageW * 0.6, stageY + stageH * 0.35 + wave);
-      ctx.quadraticCurveTo(stageX + stageW * 0.85, stageY + stageH * 0.2 - wave, stageX + stageW, stageY + stageH * 0.4);
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.3,
+        stageY + stageH * 0.15 - wave,
+        stageX + stageW * 0.6,
+        stageY + stageH * 0.35 + wave
+      );
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.85,
+        stageY + stageH * 0.2 - wave,
+        stageX + stageW,
+        stageY + stageH * 0.4
+      );
       ctx.lineTo(stageX + stageW, stageY + stageH * 0.1);
       ctx.lineTo(stageX, stageY + stageH * 0.1);
       ctx.closePath();
@@ -740,7 +941,12 @@ export function drawEnvironmentScene(ctx, {
       ctx.fillStyle = '#e2e8f0';
       ctx.beginPath();
       ctx.moveTo(stageX, stageY + stageH * 0.78);
-      ctx.quadraticCurveTo(stageX + stageW * 0.4, stageY + stageH * 0.72, stageX + stageW * 0.7, stageY + stageH * 0.82);
+      ctx.quadraticCurveTo(
+        stageX + stageW * 0.4,
+        stageY + stageH * 0.72,
+        stageX + stageW * 0.7,
+        stageY + stageH * 0.82
+      );
       ctx.lineTo(stageX + stageW, stageY + stageH);
       ctx.lineTo(stageX, stageY + stageH);
       ctx.closePath();
@@ -748,8 +954,11 @@ export function drawEnvironmentScene(ctx, {
 
       // Gently Falling Crystalline Snowflakes
       for (let s = 0; s < 26; s++) {
-        const sx = stageX + (((s * 59 + 17) % 883) / 883) * stageW + Math.sin(time * 1.5 + s) * 8;
-        const sy = stageY + (((time * 25 + s * 34) % (stageH + 15)));
+        const sx =
+          stageX +
+          (((s * 59 + 17) % 883) / 883) * stageW +
+          Math.sin(time * 1.5 + s) * 8;
+        const sy = stageY + ((time * 25 + s * 34) % (stageH + 15));
         const sr = 1 + (s % 3) * 0.8;
 
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
@@ -765,7 +974,9 @@ export function drawEnvironmentScene(ctx, {
   }
 
   // Time-of-Day Lighting Wash
-  const tod = TIME_OF_DAY_OPTIONS.find((t) => t.id === timeOfDay) || TIME_OF_DAY_OPTIONS[0];
+  const tod =
+    TIME_OF_DAY_OPTIONS.find((t) => t.id === timeOfDay) ||
+    TIME_OF_DAY_OPTIONS[0];
   if (tod && tod.tint) {
     ctx.fillStyle = tod.tint;
     ctx.fillRect(stageX, stageY, stageW, stageH);
@@ -774,8 +985,15 @@ export function drawEnvironmentScene(ctx, {
   // Atmospheric Weather Particles Overlay
   if (weatherEffect === 'fireflies') {
     for (let i = 0; i < 16; i++) {
-      const fx = stageX + (((i * 47 + 13) % 919) / 919) * stageW + Math.sin(time * 1.5 + i) * 10;
-      const fy = stageY + stageH * 0.3 + (((i * 37 + 7) % 647) / 647) * (stageH * 0.6) + Math.cos(time * 2 + i) * 8;
+      const fx =
+        stageX +
+        (((i * 47 + 13) % 919) / 919) * stageW +
+        Math.sin(time * 1.5 + i) * 10;
+      const fy =
+        stageY +
+        stageH * 0.3 +
+        (((i * 37 + 7) % 647) / 647) * (stageH * 0.6) +
+        Math.cos(time * 2 + i) * 8;
       const glow = 0.2 + 0.8 * Math.sin(time * 3 + i);
       ctx.fillStyle = `rgba(250, 204, 21, ${glow * 0.4})`;
       ctx.beginPath();
@@ -788,8 +1006,11 @@ export function drawEnvironmentScene(ctx, {
     }
   } else if (weatherEffect === 'snow') {
     for (let s = 0; s < 24; s++) {
-      const sx = stageX + (((s * 53 + 23) % 877) / 877) * stageW + Math.sin(time + s) * 6;
-      const sy = stageY + (((time * 28 + s * 29) % (stageH + 15)));
+      const sx =
+        stageX +
+        (((s * 53 + 23) % 877) / 877) * stageW +
+        Math.sin(time + s) * 6;
+      const sy = stageY + ((time * 28 + s * 29) % (stageH + 15));
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.beginPath();
       ctx.arc(sx, sy, 1.5 + (s % 2), 0, Math.PI * 2);
@@ -797,8 +1018,11 @@ export function drawEnvironmentScene(ctx, {
     }
   } else if (weatherEffect === 'bubbles') {
     for (let b = 0; b < 14; b++) {
-      const bx = stageX + (((b * 61 + 19) % 907) / 907) * stageW + Math.sin(time * 1.8 + b) * 5;
-      const by = stageY + stageH - (((time * 28 + b * 25) % (stageH + 15)));
+      const bx =
+        stageX +
+        (((b * 61 + 19) % 907) / 907) * stageW +
+        Math.sin(time * 1.8 + b) * 5;
+      const by = stageY + stageH - ((time * 28 + b * 25) % (stageH + 15));
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -806,7 +1030,12 @@ export function drawEnvironmentScene(ctx, {
       ctx.stroke();
     }
   } else if (weatherEffect === 'sunbeams') {
-    const beamGrad = ctx.createLinearGradient(stageX + stageW * 0.2, stageY, stageX + stageW * 0.8, stageY + stageH);
+    const beamGrad = ctx.createLinearGradient(
+      stageX + stageW * 0.2,
+      stageY,
+      stageX + stageW * 0.8,
+      stageY + stageH
+    );
     beamGrad.addColorStop(0, 'rgba(254, 240, 138, 0.3)');
     beamGrad.addColorStop(0.5, 'rgba(254, 240, 138, 0.12)');
     beamGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');

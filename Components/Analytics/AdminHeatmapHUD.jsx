@@ -11,7 +11,13 @@ const SAMPLE_SESSIONS = [
     botScore: 4,
     dwellTimeMs: 145000,
     maxScrollDepth: 88,
-    interactions: { clicks: 14, scrolls: 42, mouseMoves: 180, keystrokes: 35, touches: 0 },
+    interactions: {
+      clicks: 14,
+      scrolls: 42,
+      mouseMoves: 180,
+      keystrokes: 35,
+      touches: 0,
+    },
     screen: { width: 1440, height: 900 },
     clickEvents: [
       { x: 380, y: 320, tag: 'button', text: "Children's Storybooks" },
@@ -19,7 +25,12 @@ const SAMPLE_SESSIONS = [
       { x: 610, y: 560, tag: 'button', text: 'Continue to Next Step' },
       { x: 420, y: 650, tag: 'button', text: 'Sneakerhead Odyssey' },
       { x: 700, y: 780, tag: 'button', text: 'Continue to Next Step' },
-      { x: 480, y: 880, tag: 'textarea', text: 'Special Front Page Dedication' },
+      {
+        x: 480,
+        y: 880,
+        tag: 'textarea',
+        text: 'Special Front Page Dedication',
+      },
       { x: 820, y: 620, tag: 'canvas', text: 'Storybook Canvas Proof' },
       { x: 860, y: 640, tag: 'button', text: 'Select Luna Cosmic Companion' },
       { x: 910, y: 660, tag: 'canvas', text: 'Placed Stamp' },
@@ -33,7 +44,13 @@ const SAMPLE_SESSIONS = [
     botScore: 0,
     dwellTimeMs: 98000,
     maxScrollDepth: 95,
-    interactions: { clicks: 9, scrolls: 65, mouseMoves: 0, keystrokes: 12, touches: 78 },
+    interactions: {
+      clicks: 9,
+      scrolls: 65,
+      mouseMoves: 0,
+      keystrokes: 12,
+      touches: 78,
+    },
     screen: { width: 390, height: 844 },
     clickEvents: [
       { x: 195, y: 360, tag: 'button', text: "Kids' Apparel & Kicks" },
@@ -50,11 +67,15 @@ const SAMPLE_SESSIONS = [
     botScore: 95,
     dwellTimeMs: 3200,
     maxScrollDepth: 12,
-    interactions: { clicks: 1, scrolls: 0, mouseMoves: 0, keystrokes: 0, touches: 0 },
+    interactions: {
+      clicks: 1,
+      scrolls: 0,
+      mouseMoves: 0,
+      keystrokes: 0,
+      touches: 0,
+    },
     screen: { width: 800, height: 600 },
-    clickEvents: [
-      { x: 10, y: 10, tag: 'input', text: 'Honeypot Trap Input' },
-    ],
+    clickEvents: [{ x: 10, y: 10, tag: 'input', text: 'Honeypot Trap Input' }],
   },
 ];
 
@@ -92,7 +113,11 @@ export function AdminHeatmapHUD() {
 
     const handleKeyDown = (e) => {
       // Hotkey: Ctrl+Shift+H or Cmd+Shift+H
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'h') {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.shiftKey &&
+        e.key.toLowerCase() === 'h'
+      ) {
         e.preventDefault();
         setIsAdmin((prev) => {
           const next = !prev;
@@ -125,7 +150,9 @@ export function AdminHeatmapHUD() {
       setSessions(combined);
 
       if (typeof document !== 'undefined') {
-        setDocHeight(document.documentElement.scrollHeight || window.innerHeight);
+        setDocHeight(
+          document.documentElement.scrollHeight || window.innerHeight
+        );
       }
     };
 
@@ -166,8 +193,12 @@ export function AdminHeatmapHUD() {
   // Summary metrics for the HUD display
   const metrics = useMemo(() => {
     const totalClicks = activeClickPoints.length;
-    const humanCount = filteredSessions.filter((s) => s.classification === 'human').length;
-    const botCount = filteredSessions.filter((s) => s.classification === 'suspected_bot').length;
+    const humanCount = filteredSessions.filter(
+      (s) => s.classification === 'human'
+    ).length;
+    const botCount = filteredSessions.filter(
+      (s) => s.classification === 'suspected_bot'
+    ).length;
     const avgBotScore =
       filteredSessions.length > 0
         ? Math.round(
@@ -179,17 +210,25 @@ export function AdminHeatmapHUD() {
     return {
       totalClicks,
       sessionCount: filteredSessions.length,
-      humanRatio: filteredSessions.length > 0 ? Math.round((humanCount / filteredSessions.length) * 100) : 100,
+      humanRatio:
+        filteredSessions.length > 0
+          ? Math.round((humanCount / filteredSessions.length) * 100)
+          : 100,
       avgBotScore,
       botCount,
     };
   }, [activeClickPoints, filteredSessions]);
 
   const handleExportTelemetry = () => {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(sessions, null, 2));
+    const dataStr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(sessions, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `telemetry_heatmap_export_${Date.now()}.json`);
+    downloadAnchor.setAttribute(
+      'download',
+      `telemetry_heatmap_export_${Date.now()}.json`
+    );
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -265,7 +304,9 @@ export function AdminHeatmapHUD() {
                   <div>
                     Clicked: &lt;{pt.tag}&gt; &quot;{pt.text || 'Element'}&quot;
                   </div>
-                  <div>Coords: ({Math.round(pt.x)}, {Math.round(pt.y)})</div>
+                  <div>
+                    Coords: ({Math.round(pt.x)}, {Math.round(pt.y)})
+                  </div>
                 </div>
               )}
             </div>
@@ -278,19 +319,25 @@ export function AdminHeatmapHUD() {
               className={styles.scrollFoldLine}
               style={{ top: `${docHeight * 0.25}px` }}
             >
-              <span className={styles.scrollFoldTag}>25% Fold (92% Viewers)</span>
+              <span className={styles.scrollFoldTag}>
+                25% Fold (92% Viewers)
+              </span>
             </div>
             <div
               className={styles.scrollFoldLine}
               style={{ top: `${docHeight * 0.5}px` }}
             >
-              <span className={styles.scrollFoldTag}>50% Fold (78% Viewers)</span>
+              <span className={styles.scrollFoldTag}>
+                50% Fold (78% Viewers)
+              </span>
             </div>
             <div
               className={styles.scrollFoldLine}
               style={{ top: `${docHeight * 0.75}px` }}
             >
-              <span className={styles.scrollFoldTag}>75% Fold (54% Viewers)</span>
+              <span className={styles.scrollFoldTag}>
+                75% Fold (54% Viewers)
+              </span>
             </div>
           </>
         )}
@@ -315,8 +362,19 @@ export function AdminHeatmapHUD() {
               title={isMinimized ? 'Expand HUD' : 'Minimize HUD'}
               aria-label={isMinimized ? 'Expand HUD' : 'Minimize HUD'}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                {isMinimized ? <path d="M4 14h16M4 10h16" /> : <path d="M5 12h14" />}
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                {isMinimized ? (
+                  <path d="M4 14h16M4 10h16" />
+                ) : (
+                  <path d="M5 12h14" />
+                )}
               </svg>
             </button>
             <button
@@ -326,7 +384,14 @@ export function AdminHeatmapHUD() {
               title="Close Admin HUD"
               aria-label="Close Admin HUD"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -337,18 +402,23 @@ export function AdminHeatmapHUD() {
           <div className={styles.hudBody}>
             {/* User Session Switcher */}
             <div className={styles.sessionSection}>
-              <span className={styles.sectionLabel}>Audience / User Session:</span>
+              <span className={styles.sectionLabel}>
+                Audience / User Session:
+              </span>
               <select
                 className={styles.sessionSelect}
                 value={selectedSessionId}
                 onChange={(e) => setSelectedSessionId(e.target.value)}
                 aria-label="Select user session for heatmap"
               >
-                <option value="all">🔥 All Users (Aggregated Heatmap • {sessions.length} sessions)</option>
+                <option value="all">
+                  🔥 All Users (Aggregated Heatmap • {sessions.length} sessions)
+                </option>
                 {filteredSessions.map((s) => (
                   <option key={s.sessionId} value={s.sessionId}>
                     {s.classification === 'suspected_bot' ? '🤖' : '👤'}{' '}
-                    {s.label || `User ${s.sessionId.substring(0, 10)}`} ({s.clickEvents?.length || 0} clicks)
+                    {s.label || `User ${s.sessionId.substring(0, 10)}`} (
+                    {s.clickEvents?.length || 0} clicks)
                   </option>
                 ))}
               </select>
@@ -411,7 +481,9 @@ export function AdminHeatmapHUD() {
 
             {/* User Classification Filter */}
             <div className={styles.sessionSection}>
-              <span className={styles.sectionLabel}>Filter By Classification:</span>
+              <span className={styles.sectionLabel}>
+                Filter By Classification:
+              </span>
               <select
                 className={styles.sessionSelect}
                 value={userFilter}

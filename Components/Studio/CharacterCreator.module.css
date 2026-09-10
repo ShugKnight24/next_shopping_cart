@@ -95,7 +95,9 @@
   border: 2px solid #ffffff;
   box-shadow: 0 0 0 1px #cbd5e1;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .swatchBtn:hover {
@@ -148,7 +150,9 @@
   background: #ffffff;
   outline: none;
   box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   box-sizing: border-box;
 }
 

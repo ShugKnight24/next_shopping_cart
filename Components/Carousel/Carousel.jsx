@@ -211,7 +211,6 @@ export function Carousel({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNextClick, handlePreviousClick]);
 
-
   const handleDotClick = (dotIndex) => {
     setCurrentSlide(dotIndex);
   };

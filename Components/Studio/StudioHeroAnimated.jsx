@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { LeoSvg, LunaSvg, FoxSvg, CartySvg } from '../Mascot/MascotArtwork';
-import {
-  StudioQuillSvg,
-  StudioPaletteSvg,
-  StudioMagicWandSvg,
-  StudioBookOpenSvg,
-} from './StudioSVGs';
-import { SparklesIcon, ShieldCheckIcon, BoxIcon, TruckIcon } from '../Icons';
+import { BoxIcon, ShieldCheckIcon, SparklesIcon, TruckIcon } from '../Icons';
+import { CartySvg, FoxSvg, LeoSvg, LunaSvg } from '../Mascot/MascotArtwork';
 import styles from './StudioHeroAnimated.module.css';
+import {
+  StudioBookOpenSvg,
+  StudioMagicWandSvg,
+  StudioPaletteSvg,
+  StudioQuillSvg,
+} from './StudioSVGs';
 
 export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
   const [activeSpeech, setActiveSpeech] = useState('finley');
@@ -37,13 +37,12 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
         </div>
 
         {/* Hero Title and Subtitle */}
-        <h1 className={styles.heroTitle}>
-          The Custom Creation Studio
-        </h1>
+        <h1 className={styles.heroTitle}>The Custom Creation Studio</h1>
 
         <p className={styles.heroSubtitle}>
-          Create one-of-a-kind personalized keepsakes for your children and home.
-          Preview each page in real time and stamp custom emblems before we print and bind your heirloom.
+          Create one-of-a-kind personalized keepsakes for your children and
+          home. Preview each page in real time and stamp custom emblems before
+          we print and bind your heirloom.
         </p>
 
         {/* Primary and Secondary Call to Action Buttons */}
@@ -79,16 +78,28 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
         {/* ANIMATED INTERACTIVE WORKSHOP STAGE */}
         <div className={styles.stageWrapper}>
           {/* Floating Craft Tools */}
-          <div className={`${styles.floatingTool} ${styles.quillTool}`} title="Golden Craft Quill">
+          <div
+            className={`${styles.floatingTool} ${styles.quillTool}`}
+            title="Golden Craft Quill"
+          >
             <StudioQuillSvg size={32} />
           </div>
-          <div className={`${styles.floatingTool} ${styles.paletteTool}`} title="Artist Palette">
+          <div
+            className={`${styles.floatingTool} ${styles.paletteTool}`}
+            title="Artist Palette"
+          >
             <StudioPaletteSvg size={30} />
           </div>
-          <div className={`${styles.floatingTool} ${styles.starTool}`} title="Starlight Wand">
+          <div
+            className={`${styles.floatingTool} ${styles.starTool}`}
+            title="Starlight Wand"
+          >
             <StudioMagicWandSvg size={30} />
           </div>
-          <div className={`${styles.floatingTool} ${styles.giftTool}`} title="Heirloom Binding">
+          <div
+            className={`${styles.floatingTool} ${styles.giftTool}`}
+            title="Heirloom Binding"
+          >
             <BoxIcon size={28} />
           </div>
 
@@ -105,7 +116,9 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
               title="Leo The Story Lion"
             >
               {activeSpeech === 'leo' && (
-                <div className={styles.characterBubble}>{MASCOT_QUOTES.leo}</div>
+                <div className={styles.characterBubble}>
+                  {MASCOT_QUOTES.leo}
+                </div>
               )}
               <LeoSvg size={96} />
             </div>
@@ -118,7 +131,9 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
               title="Luna The Cosmic Shepherd"
             >
               {activeSpeech === 'luna' && (
-                <div className={styles.characterBubble}>{MASCOT_QUOTES.luna}</div>
+                <div className={styles.characterBubble}>
+                  {MASCOT_QUOTES.luna}
+                </div>
               )}
               <LunaSvg size={102} />
             </div>
@@ -131,31 +146,73 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
               title="Hero Child Creator"
             >
               {activeSpeech === 'child' && (
-                <div className={styles.characterBubble}>{MASCOT_QUOTES.child}</div>
+                <div className={styles.characterBubble}>
+                  {MASCOT_QUOTES.child}
+                </div>
               )}
-              <svg width="112" height="112" viewBox="0 0 120 120" fill="none" role="img" aria-label="Child Hero Creator">
+              <svg
+                width="112"
+                height="112"
+                viewBox="0 0 120 120"
+                fill="none"
+                role="img"
+                aria-label="Child Hero Creator"
+              >
                 {/* Child character silhouette and glowing open book */}
-                <ellipse cx="60" cy="110" rx="42" ry="8" fill="rgba(15, 23, 42, 0.4)" />
+                <ellipse
+                  cx="60"
+                  cy="110"
+                  rx="42"
+                  ry="8"
+                  fill="rgba(15, 23, 42, 0.4)"
+                />
                 {/* Torso & Green/Navy Explorer Outfit */}
-                <path d="M42 75 C40 68 46 60 60 60 C74 60 80 68 78 75 L82 105 L38 105 Z" fill="#2563eb" />
+                <path
+                  d="M42 75 C40 68 46 60 60 60 C74 60 80 68 78 75 L82 105 L38 105 Z"
+                  fill="#2563eb"
+                />
                 {/* Arms holding the book */}
-                <path d="M38 75 Q46 88 56 86" stroke="#fed7aa" strokeWidth="6" strokeLinecap="round" />
-                <path d="M82 75 Q74 88 64 86" stroke="#fed7aa" strokeWidth="6" strokeLinecap="round" />
+                <path
+                  d="M38 75 Q46 88 56 86"
+                  stroke="#fed7aa"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M82 75 Q74 88 64 86"
+                  stroke="#fed7aa"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
                 {/* Head / Face */}
                 <circle cx="60" cy="42" r="18" fill="#fed7aa" />
                 {/* Cheerful Eyes & Smile */}
                 <circle cx="54" cy="40" r="2.2" fill="#1e293b" />
                 <circle cx="66" cy="40" r="2.2" fill="#1e293b" />
-                <path d="M55 48 Q60 53 65 48" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" fill="none" />
+                <path
+                  d="M55 48 Q60 53 65 48"
+                  stroke="#1e293b"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  fill="none"
+                />
                 <circle cx="50" cy="46" r="3" fill="rgba(244, 63, 94, 0.4)" />
                 <circle cx="70" cy="46" r="3" fill="rgba(244, 63, 94, 0.4)" />
                 {/* Hair - Playful curls */}
-                <path d="M42 36 C42 22 78 20 78 36 C78 30 72 26 60 26 C48 26 42 30 42 36 Z" fill="#78350f" />
+                <path
+                  d="M42 36 C42 22 78 20 78 36 C78 30 72 26 60 26 C48 26 42 30 42 36 Z"
+                  fill="#78350f"
+                />
                 <circle cx="44" cy="30" r="6" fill="#78350f" />
                 <circle cx="76" cy="30" r="6" fill="#78350f" />
                 <circle cx="60" cy="24" r="7" fill="#78350f" />
                 {/* Open Storybook on desk */}
-                <path d="M44 92 L60 86 L76 92 L74 104 L60 98 L46 104 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1.5" />
+                <path
+                  d="M44 92 L60 86 L76 92 L74 104 L60 98 L46 104 Z"
+                  fill="#ffffff"
+                  stroke="#cbd5e1"
+                  strokeWidth="1.5"
+                />
                 <path d="M60 86 L60 98" stroke="#3b82f6" strokeWidth="2" />
                 {/* Starlight sparkles rising from book */}
                 <circle cx="56" cy="80" r="2" fill="#fbbf24" />
@@ -172,7 +229,9 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
               title="Finley The Starlight Fox"
             >
               {activeSpeech === 'finley' && (
-                <div className={styles.characterBubble}>{MASCOT_QUOTES.finley}</div>
+                <div className={styles.characterBubble}>
+                  {MASCOT_QUOTES.finley}
+                </div>
               )}
               <FoxSvg size={98} />
             </div>
@@ -185,7 +244,9 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
               title="Carty The Courier"
             >
               {activeSpeech === 'carty' && (
-                <div className={styles.characterBubble}>{MASCOT_QUOTES.carty}</div>
+                <div className={styles.characterBubble}>
+                  {MASCOT_QUOTES.carty}
+                </div>
               )}
               <CartySvg size={96} />
             </div>

@@ -1,12 +1,17 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderHook } from '@testing-library/react';
-import { describe, expect, it, vi, afterEach } from 'vitest';
-import { Products } from '../Components/Products/Products';
-import { ProductCard } from '../Components/Products/ProductCard';
+import {
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Hit } from '../Components/InstantSearch/Hit';
-import ProductID from '../pages/products/[productid]';
+import { ProductCard } from '../Components/Products/ProductCard';
+import { Products } from '../Components/Products/Products';
 import { CartContext } from '../context/CartProvider';
 import { useProductCatalog } from '../hooks/useProductCatalog';
+import ProductID from '../pages/products/[productid]';
 
 // Mock Next.js router
 vi.mock('next/router', () => ({
@@ -41,9 +46,7 @@ const mockContextValue = {
 
 const renderWithContext = (ui, contextValue = mockContextValue) => {
   return render(
-    <CartContext.Provider value={contextValue}>
-      {ui}
-    </CartContext.Provider>
+    <CartContext.Provider value={contextValue}>{ui}</CartContext.Provider>
   );
 };
 
@@ -90,7 +93,10 @@ describe('useProductCatalog Hook', () => {
     });
 
     const { result } = renderHook(() =>
-      useProductCatalog({ fetchFromApi: true, apiEndpoint: '/api/test-products' })
+      useProductCatalog({
+        fetchFromApi: true,
+        apiEndpoint: '/api/test-products',
+      })
     );
 
     expect(result.current.isLoading).toBe(true);
@@ -159,10 +165,7 @@ describe('Product Catalog Resilience & Error States', () => {
     });
 
     renderWithContext(
-      <Products
-        fetchFromApi={true}
-        apiEndpoint="/api/test-failing"
-      />
+      <Products fetchFromApi={true} apiEndpoint="/api/test-failing" />
     );
 
     await waitFor(() => {
@@ -170,7 +173,9 @@ describe('Product Catalog Resilience & Error States', () => {
     });
 
     expect(screen.getByText('Catalog Service Unavailable')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Retry Loading Catalog/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Retry Loading Catalog/i })
+    ).toBeInTheDocument();
 
     // Verify retry button triggers refetch
     global.fetch = vi.fn().mockResolvedValue({
@@ -182,7 +187,9 @@ describe('Product Catalog Resilience & Error States', () => {
       }),
     });
 
-    const retryBtn = screen.getByRole('button', { name: /Retry Loading Catalog/i });
+    const retryBtn = screen.getByRole('button', {
+      name: /Retry Loading Catalog/i,
+    });
     fireEvent.click(retryBtn);
 
     await waitFor(() => {
@@ -191,15 +198,14 @@ describe('Product Catalog Resilience & Error States', () => {
   });
 
   it('renders dedicated empty catalog state when no products exist in catalog', () => {
-    renderWithContext(
-      <Products
-        initialProducts={[]}
-        fetchFromApi={false}
-      />
-    );
+    renderWithContext(<Products initialProducts={[]} fetchFromApi={false} />);
 
-    expect(screen.getByTestId('products-empty-catalog-state')).toBeInTheDocument();
-    expect(screen.getByText('No products currently available')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('products-empty-catalog-state')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('No products currently available')
+    ).toBeInTheDocument();
   });
 
   it('renders filter empty state with reset button when active filters eliminate all products', () => {
@@ -274,6 +280,8 @@ describe('Defensive Component Resilience', () => {
 
     expect(screen.getByTestId('product-not-found')).toBeInTheDocument();
     expect(screen.getByText('Product Unavailable')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Back to All Products/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /Back to All Products/i })
+    ).toBeInTheDocument();
   });
 });

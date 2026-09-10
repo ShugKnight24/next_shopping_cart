@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Logo } from '../Components/Logo';
-import { LegacyLogo } from '../Components/Legacy/LegacyLogo';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BrandProvider, useBrand } from '../Components/Brand/BrandContext';
 import { BrandVariantPickerModal } from '../Components/Brand/BrandVariantPicker';
+import { LegacyLogo } from '../Components/Legacy/LegacyLogo';
+import { Logo } from '../Components/Logo';
 import { ToastProvider } from '../Components/UI/Toast';
 
 // Helper component to test useBrand hook
@@ -15,7 +15,9 @@ function BrandConsumer() {
       <span data-testid="current-name">{currentInfo.name}</span>
       <button onClick={() => setVariant('soviet')}>Set Soviet</button>
       <button onClick={() => setVariant('edgy')}>Set Edgy</button>
-      <button onClick={() => setVariant('lighthearted')}>Set Lighthearted</button>
+      <button onClick={() => setVariant('lighthearted')}>
+        Set Lighthearted
+      </button>
       <button onClick={() => setVariant('geometric')}>Set Sleek</button>
       <Logo />
     </div>
@@ -34,7 +36,9 @@ describe('Brand System & Logo Variants', () => {
       </BrandProvider>
     );
 
-    expect(screen.getByRole('img', { name: /Cart Commerce - Favicon Badge/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /Cart Commerce - Favicon Badge/i })
+    ).toBeInTheDocument();
     expect(screen.getByText('CART COMMERCE')).toBeInTheDocument();
     expect(screen.getByText('SHOPPING MADE SIMPLE')).toBeInTheDocument();
   });
@@ -46,7 +50,11 @@ describe('Brand System & Logo Variants', () => {
       </BrandProvider>
     );
 
-    expect(screen.getByRole('img', { name: /Cart Commerce - Floating Minimal Cart/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', {
+        name: /Cart Commerce - Floating Minimal Cart/i,
+      })
+    ).toBeInTheDocument();
     expect(screen.getByText('CART COMMERCE')).toBeInTheDocument();
   });
 
@@ -58,7 +66,9 @@ describe('Brand System & Logo Variants', () => {
     );
 
     expect(
-      screen.getByRole('img', { name: /Cart Commerce - Soviet Constructivist/i })
+      screen.getByRole('img', {
+        name: /Cart Commerce - Soviet Constructivist/i,
+      })
     ).toBeInTheDocument();
     expect(screen.getByText('COMMERCE & INDUSTRY')).toBeInTheDocument();
   });
@@ -129,7 +139,11 @@ describe('Brand System & Logo Variants', () => {
     );
 
     const svg = container.querySelector('svg');
-    expect(svg).toHaveStyle({ overflow: 'visible', maxWidth: '240px', opacity: '0.9' });
+    expect(svg).toHaveStyle({
+      overflow: 'visible',
+      maxWidth: '240px',
+      opacity: '0.9',
+    });
   });
 
   it('renders LegacyLogo for historical reference', () => {
@@ -148,12 +162,16 @@ describe('Brand System & Logo Variants', () => {
     );
 
     expect(screen.getByTestId('current-variant').textContent).toBe('geometric');
-    expect(screen.getByTestId('current-name').textContent).toBe('Favicon Badge');
+    expect(screen.getByTestId('current-name').textContent).toBe(
+      'Favicon Badge'
+    );
 
     // Switch to Soviet
     fireEvent.click(screen.getByText('Set Soviet'));
     expect(screen.getByTestId('current-variant').textContent).toBe('soviet');
-    expect(screen.getByTestId('current-name').textContent).toBe('Soviet Constructivist');
+    expect(screen.getByTestId('current-name').textContent).toBe(
+      'Soviet Constructivist'
+    );
 
     // Switch to Edgy
     fireEvent.click(screen.getByText('Set Edgy'));
@@ -162,8 +180,12 @@ describe('Brand System & Logo Variants', () => {
 
     // Switch to Lighthearted
     fireEvent.click(screen.getByText('Set Lighthearted'));
-    expect(screen.getByTestId('current-variant').textContent).toBe('lighthearted');
-    expect(screen.getByTestId('current-name').textContent).toBe('Lighthearted Pop');
+    expect(screen.getByTestId('current-variant').textContent).toBe(
+      'lighthearted'
+    );
+    expect(screen.getByTestId('current-name').textContent).toBe(
+      'Lighthearted Pop'
+    );
   });
 
   it('renders BrandVariantPickerModal and allows switching across all variants', () => {
@@ -192,11 +214,15 @@ describe('Brand System & Logo Variants', () => {
     fireEvent.click(darkThemeBtn);
 
     // Click "Set as Active Brand" on Soviet option
-    const setButtons = screen.getAllByRole('button', { name: /Set as Active Brand/i });
+    const setButtons = screen.getAllByRole('button', {
+      name: /Set as Active Brand/i,
+    });
     expect(setButtons.length).toBeGreaterThan(0);
     fireEvent.click(setButtons[0]);
 
     // Verify active state updated
-    expect(screen.getAllByText('Soviet Constructivist').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Soviet Constructivist').length).toBeGreaterThan(
+      0
+    );
   });
 });

@@ -28,9 +28,9 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 - **Interactive 3D Product Studio**: 360° orbital turntable with inertial touch & mouse physics, camera angle presets, feature hotspots, and exploded view mode.
 - **Anthropomorphic Mascot Companion Engine**: Decoupled, white-label animated companion system (`Carty The Courier`, `Leo The Story Lion`, `Luna The Shepherd`, `Finley The Starlight Fox`, `Princess Penny`, `Dexter Dino`, `Sparky Hound`) with context-aware dialogue, speech bubbles, and persistent toggle.
 - **Custom Creation Studio Suite (`/studio`)**: Agency-grade Web-to-Print platform with fullscreen workstations:
-  - *Personalized Children's Storybooks*: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
-  - *Framed Wall Art Poster Studio*: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
-  - *Kids' Custom Apparel & Kicks*: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
+  - _Personalized Children's Storybooks_: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
+  - _Framed Wall Art Poster Studio_: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
+  - _Kids' Custom Apparel & Kicks_: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
 - **Figma / Photoshop-Lite Social Studio (`/studio/social`)**: Multi-layer vector canvas editor with drag-and-drop, Figma-style selection bounding box, layer stack, property inspector, and 1-click catalog import.
 - **Modern Product Detail & Catalog Experience**: 2-column sticky desktop layout, 5-panel interactive tabs, Sticky Buy Bar, Trust Badges, and responsive Catalog Toolbar.
 - **Smart Catalog Hydration Reconciler**: Reconciles fresh product metadata without stale `localStorage` catalog overwrite while preserving active user cart quantities and favorites.
@@ -41,10 +41,10 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 ### Areas for Improvement
 
 - **Next.js App Router (RSC + Streaming) Incremental Migration Blueprint**:
-  - *Coexistence Architecture*: Next.js 15 supports side-by-side `pages/` and `app/` directories. Maintain checkout, cart, and catalog flows in `pages/` while migrating static marketing surfaces (`/brand`, `/studio`) to `app/`.
-  - *Phase A: Server Component Shells*: Isolate pure SEO metadata and server shells in `app/brand/page.jsx` and `app/studio/page.jsx` using `generateMetadata()` to remove client `<Head>` overhead.
-  - *Phase B: Client Boundary Isolation*: Wrap interactive workstations (`CanvasEngine`, `BrandVariantPicker`, `CharacterCreator`) in `'use client'` leaves, avoiding full-page client hydration waterfalls.
-  - *Phase C: Navigation Adapter*: Bridge `next/router` and `next/navigation` hooks (`useRouter`, `usePathname`, `useSearchParams`) in shared navigation components.
+  - _Coexistence Architecture_: Next.js 15 supports side-by-side `pages/` and `app/` directories. Maintain checkout, cart, and catalog flows in `pages/` while migrating static marketing surfaces (`/brand`, `/studio`) to `app/`.
+  - _Phase A: Server Component Shells_: Isolate pure SEO metadata and server shells in `app/brand/page.jsx` and `app/studio/page.jsx` using `generateMetadata()` to remove client `<Head>` overhead.
+  - _Phase B: Client Boundary Isolation_: Wrap interactive workstations (`CanvasEngine`, `BrandVariantPicker`, `CharacterCreator`) in `'use client'` leaves, avoiding full-page client hydration waterfalls.
+  - _Phase C: Navigation Adapter_: Bridge `next/router` and `next/navigation` hooks (`useRouter`, `usePathname`, `useSearchParams`) in shared navigation components.
 - Edge Middleware for bot filtering and security headers (CSP, HSTS).
 - Full headless commerce / CMS integration (Shopify Storefront API, Medusa, or Sanity).
 - Live Stripe / PayPal checkout gateway integration.
@@ -62,13 +62,13 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 
 **Theme: Build a Solid Foundation**
 
-| Priority | Task                                                | Estimate | Status |
-| -------- | --------------------------------------------------- | -------- | ------ |
-| P0       | Configure Vitest + React Testing Library            | 4h       | Done   |
-| P0       | Node 24 runtime & Vercel deployment parity          | 2h       | Done   |
-| P0       | Core Web Vitals telemetry (`reportWebVitals`)       | 3h       | Done   |
-| P0       | Client anti-bot telemetry engine & honeypot trap    | 4h       | Done   |
-| P1       | Custom GA4 Enhanced Ecommerce suite                 | 4h       | Done   |
+| Priority | Task                                             | Estimate | Status |
+| -------- | ------------------------------------------------ | -------- | ------ |
+| P0       | Configure Vitest + React Testing Library         | 4h       | Done   |
+| P0       | Node 24 runtime & Vercel deployment parity       | 2h       | Done   |
+| P0       | Core Web Vitals telemetry (`reportWebVitals`)    | 3h       | Done   |
+| P0       | Client anti-bot telemetry engine & honeypot trap | 4h       | Done   |
+| P1       | Custom GA4 Enhanced Ecommerce suite              | 4h       | Done   |
 
 **Deliverables:**
 
@@ -83,13 +83,13 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 
 **Theme: Premium Design Foundation**
 
-| Priority | Task                                                        | Estimate | Status |
-| -------- | ----------------------------------------------------------- | -------- | ------ |
-| P0       | Migrate to CSS Modules for all components                   | 8h       | Done   |
-| P0       | Create design token system (`styles/tokens.css`)            | 6h       | Done   |
-| P0       | Build accessible zero-emoji SVG icon library                | 6h       | Done   |
-| P0       | Build core UI components (RatingStars, Badge, Toast, etc.)  | 8h       | Done   |
-| P1       | Create responsive typography scale                          | 3h       | Done   |
+| Priority | Task                                                       | Estimate | Status |
+| -------- | ---------------------------------------------------------- | -------- | ------ |
+| P0       | Migrate to CSS Modules for all components                  | 8h       | Done   |
+| P0       | Create design token system (`styles/tokens.css`)           | 6h       | Done   |
+| P0       | Build accessible zero-emoji SVG icon library               | 6h       | Done   |
+| P0       | Build core UI components (RatingStars, Badge, Toast, etc.) | 8h       | Done   |
+| P1       | Create responsive typography scale                         | 3h       | Done   |
 
 **Deliverables:**
 
@@ -104,13 +104,13 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 
 **Theme: Interactive Product Experience**
 
-| Priority | Task                                                         | Estimate | Status |
-| -------- | ------------------------------------------------------------ | -------- | ------ |
-| P0       | Build interactive 3D Product Studio (`Product3DStudio.jsx`)  | 10h      | Done   |
-| P0       | Multi-animation Hero switcher (`HeroAnimationSwitcher.jsx`)  | 6h       | Done   |
-| P0       | 5-Panel interactive product tabs & Sticky Buy Bar            | 6h       | Done   |
-| P1       | Catalog Toolbar with multi-criteria sort and category chips  | 4h       | Done   |
-| P1       | Smart catalog hydration reconciler in `CartReducer.js`       | 4h       | Done   |
+| Priority | Task                                                        | Estimate | Status |
+| -------- | ----------------------------------------------------------- | -------- | ------ |
+| P0       | Build interactive 3D Product Studio (`Product3DStudio.jsx`) | 10h      | Done   |
+| P0       | Multi-animation Hero switcher (`HeroAnimationSwitcher.jsx`) | 6h       | Done   |
+| P0       | 5-Panel interactive product tabs & Sticky Buy Bar           | 6h       | Done   |
+| P1       | Catalog Toolbar with multi-criteria sort and category chips | 4h       | Done   |
+| P1       | Smart catalog hydration reconciler in `CartReducer.js`      | 4h       | Done   |
 
 **Deliverables:**
 
@@ -863,13 +863,13 @@ This roadmap outlines a 24-month development plan organized into 2-week sprint c
 
 | Feature              | Status | Priority | Target Sprint |
 | -------------------- | ------ | -------- | ------------- |
-| Premium Landing Page |      | P0       | Sprint 3-4    |
-| Checkout Flow        |      | P0       | Sprint 8-9    |
-| User Authentication  |      | P0       | Sprint 10     |
-| Industry Templates   |      | P1       | Sprint 14-17  |
-| Headless CMS         |      | P1       | Sprint 25-26  |
-| Mobile App           |      | P2       | Sprint 35-36  |
-| AI Features          |      | P2       | Sprint 37-40  |
+| Premium Landing Page |        | P0       | Sprint 3-4    |
+| Checkout Flow        |        | P0       | Sprint 8-9    |
+| User Authentication  |        | P0       | Sprint 10     |
+| Industry Templates   |        | P1       | Sprint 14-17  |
+| Headless CMS         |        | P1       | Sprint 25-26  |
+| Mobile App           |        | P2       | Sprint 35-36  |
+| AI Features          |        | P2       | Sprint 37-40  |
 
 ---
 

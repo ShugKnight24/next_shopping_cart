@@ -2,16 +2,20 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { GA_TRACKING_ID, handlePageView, trackWebVitals } from '../analytics/google';
+import {
+  GA_TRACKING_ID,
+  handlePageView,
+  trackWebVitals,
+} from '../analytics/google';
 import { HoneypotField, telemetry } from '../analytics/telemetry';
-import Layout from '../Components/Layout';
-import { ToastProvider } from '../Components/UI/Toast';
+import { AdminHeatmapHUD } from '../Components/Analytics/AdminHeatmapHUD';
 import { BrandProvider } from '../Components/Brand/BrandContext';
+import Layout from '../Components/Layout';
+import { MascotCompanion } from '../Components/Mascot/MascotCompanion';
+import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
 import { MascotProvider } from '../context/MascotProvider';
 import { ModalProvider } from '../context/ModalProvider';
-import { MascotCompanion } from '../Components/Mascot/MascotCompanion';
-import { AdminHeatmapHUD } from '../Components/Analytics/AdminHeatmapHUD';
 import '../static/normalize.css';
 import '../styles/globals.css';
 

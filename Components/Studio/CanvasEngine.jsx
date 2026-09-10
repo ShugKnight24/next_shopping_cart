@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef } from 'react';
-import { FlipHorizontalIcon, DuplicateIcon, TrashIcon } from './StudioSVGs';
 import { useCanvasGestures } from '../../hooks/useCanvasGestures';
-import { drawEnvironmentScene } from './sceneRenderer';
-import { getDefaultSceneForTheme } from './sceneEnvironments';
 import styles from './CanvasEngine.module.css';
+import { getDefaultSceneForTheme } from './sceneEnvironments';
+import { drawEnvironmentScene } from './sceneRenderer';
+import { DuplicateIcon, FlipHorizontalIcon, TrashIcon } from './StudioSVGs';
 
 /**
  * Anti-Theft Dual-Side Security Watermarks
@@ -16,7 +16,8 @@ function drawDualWatermarks(ctx, width, height, mode, activePage) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const watermarkText = 'CART COMMERCE • PROOF / PREVIEW ONLY • DO NOT REPRODUCE';
+  const watermarkText =
+    'CART COMMERCE • PROOF / PREVIEW ONLY • DO NOT REPRODUCE';
 
   if (mode === 'storybook' && activePage >= 1) {
     // 2-Page Book Spread: Dual Watermarks on Left Page AND Right Page
@@ -373,7 +374,10 @@ export function CanvasEngine({
           ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
           const rInner = 16;
           const nextAngle = angle + Math.PI / 12;
-          ctx.lineTo(Math.cos(nextAngle) * rInner, Math.sin(nextAngle) * rInner);
+          ctx.lineTo(
+            Math.cos(nextAngle) * rInner,
+            Math.sin(nextAngle) * rInner
+          );
         }
         ctx.closePath();
         ctx.fill();
@@ -1195,9 +1199,17 @@ export function CanvasEngine({
         ctx.fillRect(7, -12, 8, 26);
         ctx.fillStyle = '#3b82f6';
         ctx.beginPath();
-        ctx.moveTo(-15, -12); ctx.lineTo(-11, -20); ctx.lineTo(-7, -12); ctx.closePath(); ctx.fill();
+        ctx.moveTo(-15, -12);
+        ctx.lineTo(-11, -20);
+        ctx.lineTo(-7, -12);
+        ctx.closePath();
+        ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(7, -12); ctx.lineTo(11, -20); ctx.lineTo(15, -12); ctx.closePath(); ctx.fill();
+        ctx.moveTo(7, -12);
+        ctx.lineTo(11, -20);
+        ctx.lineTo(15, -12);
+        ctx.closePath();
+        ctx.fill();
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(-4, 4, 8, 10);
         break;
@@ -1205,40 +1217,83 @@ export function CanvasEngine({
       case 'spaceship': {
         ctx.fillStyle = '#f97316';
         ctx.beginPath();
-        ctx.moveTo(-3, 14); ctx.lineTo(0, 22); ctx.lineTo(3, 14); ctx.closePath(); ctx.fill();
+        ctx.moveTo(-3, 14);
+        ctx.lineTo(0, 22);
+        ctx.lineTo(3, 14);
+        ctx.closePath();
+        ctx.fill();
         ctx.fillStyle = '#dc2626';
         ctx.beginPath();
-        ctx.moveTo(-8, 6); ctx.lineTo(-16, 15); ctx.lineTo(-6, 14); ctx.closePath(); ctx.fill();
+        ctx.moveTo(-8, 6);
+        ctx.lineTo(-16, 15);
+        ctx.lineTo(-6, 14);
+        ctx.closePath();
+        ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(8, 6); ctx.lineTo(16, 15); ctx.lineTo(6, 14); ctx.closePath(); ctx.fill();
+        ctx.moveTo(8, 6);
+        ctx.lineTo(16, 15);
+        ctx.lineTo(6, 14);
+        ctx.closePath();
+        ctx.fill();
         ctx.fillStyle = '#f8fafc';
         ctx.beginPath();
-        ctx.moveTo(0, -18); ctx.quadraticCurveTo(-8, -4, -8, 14); ctx.lineTo(8, 14); ctx.quadraticCurveTo(8, -4, 0, -18); ctx.closePath(); ctx.fill();
+        ctx.moveTo(0, -18);
+        ctx.quadraticCurveTo(-8, -4, -8, 14);
+        ctx.lineTo(8, 14);
+        ctx.quadraticCurveTo(8, -4, 0, -18);
+        ctx.closePath();
+        ctx.fill();
         ctx.fillStyle = '#38bdf8';
-        ctx.beginPath(); ctx.arc(0, -2, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, -2, 4.5, 0, Math.PI * 2);
+        ctx.fill();
         break;
       }
       case 'crystal': {
         ctx.fillStyle = '#c084fc';
         ctx.beginPath();
-        ctx.moveTo(0, -18); ctx.lineTo(8, -6); ctx.lineTo(5, 16); ctx.lineTo(-5, 16); ctx.lineTo(-8, -6); ctx.closePath(); ctx.fill();
+        ctx.moveTo(0, -18);
+        ctx.lineTo(8, -6);
+        ctx.lineTo(5, 16);
+        ctx.lineTo(-5, 16);
+        ctx.lineTo(-8, -6);
+        ctx.closePath();
+        ctx.fill();
         ctx.fillStyle = '#a855f7';
         ctx.beginPath();
-        ctx.moveTo(-8, -6); ctx.lineTo(-15, 0); ctx.lineTo(-10, 14); ctx.lineTo(-5, 16); ctx.closePath(); ctx.fill();
+        ctx.moveTo(-8, -6);
+        ctx.lineTo(-15, 0);
+        ctx.lineTo(-10, 14);
+        ctx.lineTo(-5, 16);
+        ctx.closePath();
+        ctx.fill();
         ctx.fillStyle = '#9333ea';
         ctx.beginPath();
-        ctx.moveTo(8, -6); ctx.lineTo(15, 0); ctx.lineTo(10, 14); ctx.lineTo(5, 16); ctx.closePath(); ctx.fill();
+        ctx.moveTo(8, -6);
+        ctx.lineTo(15, 0);
+        ctx.lineTo(10, 14);
+        ctx.lineTo(5, 16);
+        ctx.closePath();
+        ctx.fill();
         break;
       }
       case 'mushroom': {
         ctx.fillStyle = '#f1f5f9';
         ctx.fillRect(-5, 2, 10, 14);
         ctx.fillStyle = '#ef4444';
-        ctx.beginPath(); ctx.arc(0, 2, 16, Math.PI, 0, false); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, 2, 16, Math.PI, 0, false);
+        ctx.fill();
         ctx.fillStyle = '#ffffff';
-        ctx.beginPath(); ctx.arc(-6, -4, 2.5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(6, -5, 2, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(0, -8, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(-6, -4, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(6, -5, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, -8, 2, 0, Math.PI * 2);
+        ctx.fill();
         break;
       }
       case 'rainbow': {
@@ -1254,11 +1309,19 @@ export function CanvasEngine({
       }
       case 'dragon_egg': {
         ctx.fillStyle = '#10b981';
-        ctx.beginPath(); ctx.ellipse(0, 0, 12, 16, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 12, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
         ctx.strokeStyle = '#a7f3d0';
         ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.moveTo(-6, -4); ctx.quadraticCurveTo(0, 0, 6, -4); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(-8, 3); ctx.quadraticCurveTo(0, 7, 8, 3); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-6, -4);
+        ctx.quadraticCurveTo(0, 0, 6, -4);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-8, 3);
+        ctx.quadraticCurveTo(0, 7, 8, 3);
+        ctx.stroke();
         break;
       }
       case 'heart':
@@ -1312,1430 +1375,1530 @@ export function CanvasEngine({
   }, []);
 
   // Main Render Routine
-  const renderCanvas = useCallback((time = 0) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const renderCanvas = useCallback(
+    (time = 0) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-    const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 2 : 2;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
+      const dpr =
+        typeof window !== 'undefined' ? window.devicePixelRatio || 2 : 2;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
 
-    ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
 
-    if (mode === 'storybook') {
-      const {
-        childName = 'Adventurer',
-        theme = 'space',
-        sceneId = '',
-        timeOfDay = 'midnight',
-        weatherEffect = 'none',
-        spreadLayout = 'framed',
-        activePage = 0,
-        dedication = 'Stay curious, brave, and kind.',
-        fontFamily = 'serif',
-        textColor = '#334155',
-        chapterProse = {},
-        avatar = {
-          skin: '#fbd38d',
-          hair: '#4a2c11',
-          outfit: '#2563eb',
-          accessory: 'cape',
-        },
-        mascotCoStar = 'leo',
-        showBleed = false,
-      } = config;
-      const activeSceneId = sceneId || getDefaultSceneForTheme(theme);
+      if (mode === 'storybook') {
+        const {
+          childName = 'Adventurer',
+          theme = 'space',
+          sceneId = '',
+          timeOfDay = 'midnight',
+          weatherEffect = 'none',
+          spreadLayout = 'framed',
+          activePage = 0,
+          dedication = 'Stay curious, brave, and kind.',
+          fontFamily = 'serif',
+          textColor = '#334155',
+          chapterProse = {},
+          avatar = {
+            skin: '#fbd38d',
+            hair: '#4a2c11',
+            outfit: '#2563eb',
+            accessory: 'cape',
+          },
+          mascotCoStar = 'leo',
+          showBleed = false,
+        } = config;
+        const activeSceneId = sceneId || getDefaultSceneForTheme(theme);
 
-      // Font Family mapping
-      const fontFamilies = {
-        serif: "'Cinzel', 'Playfair Display', Georgia, serif",
-        sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        display: "'Impact', 'Trebuchet MS', sans-serif",
-        cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
-      };
-      const activeFont = fontFamilies[fontFamily] || fontFamilies.serif;
+        // Font Family mapping
+        const fontFamilies = {
+          serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+          sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          display: "'Impact', 'Trebuchet MS', sans-serif",
+          cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+        };
+        const activeFont = fontFamilies[fontFamily] || fontFamilies.serif;
 
-      // Mascot co-star name lookup
-      const coStarNames = {
-        finley: 'Finley The Starlight Fox',
-        luna: 'Luna The Cosmic Shepherd',
-        leo: 'Leo The Story Lion',
-        penny: 'Princess Penny',
-        dexter: 'Dexter The Dino Explorer',
-        carty: 'Carty The Courier',
-        sparky: 'Sparky The Sneaker Hound',
-      };
-      const coStarLabel = coStarNames[mascotCoStar] || 'Finley The Starlight Fox';
+        // Mascot co-star name lookup
+        const coStarNames = {
+          finley: 'Finley The Starlight Fox',
+          luna: 'Luna The Cosmic Shepherd',
+          leo: 'Leo The Story Lion',
+          penny: 'Princess Penny',
+          dexter: 'Dexter The Dino Explorer',
+          carty: 'Carty The Courier',
+          sparky: 'Sparky The Sneaker Hound',
+        };
+        const coStarLabel =
+          coStarNames[mascotCoStar] || 'Finley The Starlight Fox';
 
-      // Book Outer Hardcover Spread
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      if (theme === 'space') {
-        gradient.addColorStop(0, '#090d16');
-        gradient.addColorStop(0.5, '#1e1b4b');
-        gradient.addColorStop(1, '#0f172a');
-      } else if (theme === 'magic') {
-        gradient.addColorStop(0, '#311042');
-        gradient.addColorStop(0.5, '#581c87');
-        gradient.addColorStop(1, '#1e1b4b');
-      } else if (theme === 'sneaker') {
-        gradient.addColorStop(0, '#7f1d1d');
-        gradient.addColorStop(0.5, '#991b1b');
-        gradient.addColorStop(1, '#450a0a');
-      } else {
-        // Dino
-        gradient.addColorStop(0, '#064e3b');
-        gradient.addColorStop(0.5, '#065f46');
-        gradient.addColorStop(1, '#022c22');
-      }
+        // Book Outer Hardcover Spread
+        const gradient = ctx.createLinearGradient(0, 0, width, height);
+        if (theme === 'space') {
+          gradient.addColorStop(0, '#090d16');
+          gradient.addColorStop(0.5, '#1e1b4b');
+          gradient.addColorStop(1, '#0f172a');
+        } else if (theme === 'magic') {
+          gradient.addColorStop(0, '#311042');
+          gradient.addColorStop(0.5, '#581c87');
+          gradient.addColorStop(1, '#1e1b4b');
+        } else if (theme === 'sneaker') {
+          gradient.addColorStop(0, '#7f1d1d');
+          gradient.addColorStop(0.5, '#991b1b');
+          gradient.addColorStop(1, '#450a0a');
+        } else {
+          // Dino
+          gradient.addColorStop(0, '#064e3b');
+          gradient.addColorStop(0.5, '#065f46');
+          gradient.addColorStop(1, '#022c22');
+        }
 
-      // Hardcover Backing with Outer 3D Soft Drop Shadow
-      ctx.save();
-      ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
-      ctx.shadowBlur = 24;
-      ctx.shadowOffsetY = 12;
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(14, 14, width - 28, height - 28, 14);
-      else ctx.rect(14, 14, width - 28, height - 28);
-      ctx.fill();
-      ctx.restore();
-
-      // Gold Foil Border Trim
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Physical Bound Page Edge Lines along bottom and right (simulates 32 archival pages)
-      ctx.strokeStyle = 'rgba(203, 213, 225, 0.35)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(22, height - 15);
-      ctx.lineTo(width - 22, height - 15);
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(226, 232, 240, 0.25)';
-      ctx.beginPath();
-      ctx.moveTo(24, height - 17);
-      ctx.lineTo(width - 24, height - 17);
-      ctx.stroke();
-
-      // Book Spine Center Valley Crease
-      const spineGrad = ctx.createLinearGradient(width / 2 - 10, 14, width / 2 + 10, 14);
-      spineGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      spineGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.32)');
-      spineGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = spineGrad;
-      ctx.fillRect(width / 2 - 10, 14, 20, height - 28);
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.fillRect(width / 2 - 2, 14, 1.5, height - 28);
-      ctx.fillRect(width / 2 + 0.5, 14, 1.5, height - 28);
-
-      // Silk Gold Bookmark Ribbon draping from top spine
-      ctx.fillStyle = '#f59e0b';
-      ctx.beginPath();
-      ctx.moveTo(width / 2 - 4, 14);
-      ctx.lineTo(width / 2 + 4, 14);
-      ctx.lineTo(width / 2 + 5, 80);
-      ctx.lineTo(width / 2, 72);
-      ctx.lineTo(width / 2 - 5, 80);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = '#d97706';
-      ctx.lineWidth = 0.8;
-      ctx.stroke();
-
-      if (activePage === 0) {
-        // Front Cover View: Glowing environment backdrop under gold foil
-        drawEnvironmentScene(ctx, {
-          sceneId: activeSceneId,
-          stageX: 18,
-          stageY: 18,
-          stageW: width - 36,
-          stageH: height - 36,
-          time,
-          theme,
-          timeOfDay: 'midnight',
-          weatherEffect: 'stars',
-          isFullBleed: true,
-        });
-
-        // Translucent luxury dark leather vignette overlay
-        const coverVignette = ctx.createRadialGradient(
-          width / 2,
-          height / 2,
-          40,
-          width / 2,
-          height / 2,
-          width * 0.55
-        );
-        coverVignette.addColorStop(0, 'rgba(15, 23, 42, 0.65)');
-        coverVignette.addColorStop(1, 'rgba(15, 23, 42, 0.88)');
-        ctx.fillStyle = coverVignette;
-        ctx.fillRect(18, 18, width - 36, height - 36);
-
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 3;
+        // Hardcover Backing with Outer 3D Soft Drop Shadow
+        ctx.save();
+        ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 12;
+        ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(width / 2, 140, 75, 0, Math.PI * 2);
+        if (ctx.roundRect) ctx.roundRect(14, 14, width - 28, height - 28, 14);
+        else ctx.rect(14, 14, width - 28, height - 28);
+        ctx.fill();
+        ctx.restore();
+
+        // Gold Foil Border Trim
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
+        ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Inner glowing orb
-        const orbGrad = ctx.createRadialGradient(
-          width / 2,
-          140,
-          10,
-          width / 2,
-          140,
-          75
-        );
-        orbGrad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
-        orbGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = orbGrad;
-        ctx.beginPath();
-        ctx.arc(width / 2, 140, 75, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Hero Name Typography
-        ctx.fillStyle = '#ffffff';
-        ctx.font = `bold 26px ${activeFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText(`${childName.toUpperCase()}'S`, width / 2, 250);
-
-        // Story Title Typography
-        ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 20px sans-serif';
-        const titleText =
-          theme === 'space'
-            ? 'COSMIC GALAXY QUEST'
-            : theme === 'magic'
-            ? 'ENCHANTED KINGDOM'
-            : theme === 'sneaker'
-            ? 'SNEAKERHEAD ODYSSEY'
-            : 'DINOSAUR WONDER';
-        ctx.fillText(titleText, width / 2, 280);
-
-        // Subtitle & Edition
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '12px sans-serif';
-        ctx.fillText('A Personalized Heirloom Keepsake Book', width / 2, 310);
-        ctx.fillStyle = '#cbd5e1';
-        ctx.fillText(
-          `STARRING ${childName.toUpperCase()} & ${coStarLabel.toUpperCase()}`,
-          width / 2,
-          335
-        );
-
-        // Cover Emblem Icon
-        ctx.fillStyle = '#f59e0b';
-        ctx.beginPath();
-        ctx.arc(width / 2, 140, 22, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#1e1b4b';
-        ctx.beginPath();
-        for (let i = 0; i < 5; i++) {
-          const a = (i * Math.PI * 2) / 5 - Math.PI / 2;
-          const rOut = 12;
-          ctx.lineTo(width / 2 + Math.cos(a) * rOut, 140 + Math.sin(a) * rOut);
-          const aIn = a + Math.PI / 5;
-          const rIn = 5.5;
-          ctx.lineTo(width / 2 + Math.cos(aIn) * rIn, 140 + Math.sin(aIn) * rIn);
-        }
-        ctx.closePath();
-        ctx.fill();
-      } else if (activePage === 1) {
-        // Page 1: Official Dedication Page
-        ctx.fillStyle = '#fffdfa';
-        ctx.fillRect(24, 24, width / 2 - 28, height - 48);
-        ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
-
-        // Left Page Decorative Crest
-        ctx.fillStyle = '#1e293b';
-        ctx.font = `bold 14px ${activeFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText('OFFICIAL CERTIFICATE', width / 4 + 10, 90);
-        ctx.font = '11px sans-serif';
-        ctx.fillStyle = '#64748b';
-        ctx.fillText('OF EXTRAORDINARY BRAVERY', width / 4 + 10, 110);
-
-        ctx.strokeStyle = '#cbd5e1';
+        // Physical Bound Page Edge Lines along bottom and right (simulates 32 archival pages)
+        ctx.strokeStyle = 'rgba(203, 213, 225, 0.35)';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(50, 130);
-        ctx.lineTo(width / 2 - 30, 130);
+        ctx.moveTo(22, height - 15);
+        ctx.lineTo(width - 22, height - 15);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(226, 232, 240, 0.25)';
+        ctx.beginPath();
+        ctx.moveTo(24, height - 17);
+        ctx.lineTo(width - 24, height - 17);
         ctx.stroke();
 
-        ctx.fillStyle = '#0f172a';
-        ctx.font = `italic 13px ${activeFont}`;
-        ctx.fillText(`Presented with honor to`, width / 4 + 10, 165);
-        ctx.font = `bold 18px ${activeFont}`;
-        ctx.fillStyle = '#2563eb';
-        ctx.fillText(childName, width / 4 + 10, 200);
+        // Book Spine Center Valley Crease
+        const spineGrad = ctx.createLinearGradient(
+          width / 2 - 10,
+          14,
+          width / 2 + 10,
+          14
+        );
+        spineGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        spineGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.32)');
+        spineGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = spineGrad;
+        ctx.fillRect(width / 2 - 10, 14, 20, height - 28);
 
-        // Right Page: Dedication Note
-        ctx.fillStyle = '#0f172a';
-        ctx.font = `bold 13px ${activeFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText('SPECIAL DEDICATION', (3 * width) / 4 - 10, 90);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.fillRect(width / 2 - 2, 14, 1.5, height - 28);
+        ctx.fillRect(width / 2 + 0.5, 14, 1.5, height - 28);
 
-        ctx.fillStyle = textColor;
-        ctx.font = `italic 13px ${activeFont}`;
-        const words = dedication.split(' ');
-        let line = '';
-        let y = 140;
-        for (let n = 0; n < words.length; n++) {
-          const testLine = line + words[n] + ' ';
-          const metrics = ctx.measureText(testLine);
-          if (metrics.width > width / 2 - 70 && n > 0) {
-            ctx.fillText(line, (3 * width) / 4 - 10, y);
-            line = words[n] + ' ';
-            y += 24;
-          } else {
-            line = testLine;
-          }
-        }
-        ctx.fillText(line, (3 * width) / 4 - 10, y);
+        // Silk Gold Bookmark Ribbon draping from top spine
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.moveTo(width / 2 - 4, 14);
+        ctx.lineTo(width / 2 + 4, 14);
+        ctx.lineTo(width / 2 + 5, 80);
+        ctx.lineTo(width / 2, 72);
+        ctx.lineTo(width / 2 - 5, 80);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
 
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '10px sans-serif';
-        ctx.fillText('Printed on FSC Archival Paper • Page 1', (3 * width) / 4 - 10, height - 42);
-      } else {
-        // Chapter Pages (2, 3, 4...)
-        const chapterNum = activePage - 1;
-        const customChapter = chapterProse && chapterProse[chapterNum];
-        const defaultTitle =
-          chapterNum === 1
-            ? `${childName}'s Journey Begins`
-            : chapterNum === 2
-            ? `The Secret of the Starlight Compass`
-            : `The Grand Victory Celebration`;
-        const chapterTitle = customChapter?.title || defaultTitle;
-        const defaultLines =
-          chapterNum === 1
-            ? [
-                `The morning sun peered into ${childName}'s window.`,
-                `Today wasn't an ordinary morning in the neighborhood.`,
-                `A golden letter arrived with an urgent royal seal.`,
-                `"Wake up, ${childName}!" chimed ${coStarLabel}.`,
-                `"The adventure needs someone bold enough to lead!"`,
-              ]
-            : chapterNum === 2
-            ? [
-                `Higher and higher they climbed above the velvet clouds.`,
-                `${childName} reached out a steady hand to hold the compass.`,
-                `The glowing constellation aligned directly with their path.`,
-                `"I knew you had it in you!" cheered ${coStarLabel} with joy.`,
-                `Together, there was no mystery they could not conquer.`,
-              ]
-            : [
-                `The entire kingdom gathered to celebrate ${childName}'s triumph.`,
-                `A crown of starlight was placed gently upon their head.`,
-                `"Never forget this moment," whispered ${coStarLabel} warmly.`,
-                `Because in every heart that dares to dream,`,
-                `a magnificent adventure is always waiting to be written.`,
-              ];
-        const chapterLines = customChapter?.lines || defaultLines;
-
-        const isPanoramic = spreadLayout === 'panoramic';
-
-        if (isPanoramic) {
-          // Panoramic Double-Page Spread: Full-bleed environment scene across both pages
+        if (activePage === 0) {
+          // Front Cover View: Glowing environment backdrop under gold foil
           drawEnvironmentScene(ctx, {
             sceneId: activeSceneId,
-            stageX: 24,
-            stageY: 24,
-            stageW: width - 48,
-            stageH: height - 48,
+            stageX: 18,
+            stageY: 18,
+            stageW: width - 36,
+            stageH: height - 36,
             time,
             theme,
-            timeOfDay,
-            weatherEffect,
+            timeOfDay: 'midnight',
+            weatherEffect: 'stars',
             isFullBleed: true,
           });
 
-          // Frosted Vellum Prose Card on Left Page
-          const cardX = 36;
-          const cardY = 36;
-          const cardW = width / 2 - 56;
-          const cardH = height - 72;
+          // Translucent luxury dark leather vignette overlay
+          const coverVignette = ctx.createRadialGradient(
+            width / 2,
+            height / 2,
+            40,
+            width / 2,
+            height / 2,
+            width * 0.55
+          );
+          coverVignette.addColorStop(0, 'rgba(15, 23, 42, 0.65)');
+          coverVignette.addColorStop(1, 'rgba(15, 23, 42, 0.88)');
+          ctx.fillStyle = coverVignette;
+          ctx.fillRect(18, 18, width - 36, height - 36);
 
-          ctx.save();
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 3;
           ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(cardX, cardY, cardW, cardH, 10);
-          else ctx.rect(cardX, cardY, cardW, cardH);
-          ctx.fill();
-          ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
-          ctx.lineWidth = 1.5;
+          ctx.arc(width / 2, 140, 75, 0, Math.PI * 2);
           ctx.stroke();
 
-          // Prose typography on frosted card
-          ctx.fillStyle = '#b45309';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText(`CHAPTER ${chapterNum}`, cardX + 16, cardY + 28);
+          // Inner glowing orb
+          const orbGrad = ctx.createRadialGradient(
+            width / 2,
+            140,
+            10,
+            width / 2,
+            140,
+            75
+          );
+          orbGrad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
+          orbGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = orbGrad;
+          ctx.beginPath();
+          ctx.arc(width / 2, 140, 75, 0, Math.PI * 2);
+          ctx.fill();
 
-          ctx.fillStyle = '#0f172a';
-          ctx.font = `bold 16px ${activeFont}`;
-          ctx.fillText(chapterTitle, cardX + 16, cardY + 52);
+          // Hero Name Typography
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold 26px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(`${childName.toUpperCase()}'S`, width / 2, 250);
 
-          // Illuminated Drop-Cap
-          const firstLine = chapterLines[0] || '';
-          const initialChar = firstLine.slice(0, 1).toUpperCase();
-          const restFirstLine = firstLine.slice(1);
+          // Story Title Typography
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 20px sans-serif';
+          const titleText =
+            theme === 'space'
+              ? 'COSMIC GALAXY QUEST'
+              : theme === 'magic'
+                ? 'ENCHANTED KINGDOM'
+                : theme === 'sneaker'
+                  ? 'SNEAKERHEAD ODYSSEY'
+                  : 'DINOSAUR WONDER';
+          ctx.fillText(titleText, width / 2, 280);
 
+          // Subtitle & Edition
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '12px sans-serif';
+          ctx.fillText('A Personalized Heirloom Keepsake Book', width / 2, 310);
+          ctx.fillStyle = '#cbd5e1';
+          ctx.fillText(
+            `STARRING ${childName.toUpperCase()} & ${coStarLabel.toUpperCase()}`,
+            width / 2,
+            335
+          );
+
+          // Cover Emblem Icon
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(width / 2, 140, 22, 0, Math.PI * 2);
+          ctx.fill();
           ctx.fillStyle = '#1e1b4b';
           ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(cardX + 16, cardY + 66, 26, 26, 4);
-          else ctx.rect(cardX + 16, cardY + 66, 26, 26);
-          ctx.fill();
-          ctx.strokeStyle = '#f59e0b';
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-
-          ctx.fillStyle = '#fbbf24';
-          ctx.font = `bold 18px ${activeFont}`;
-          ctx.textAlign = 'center';
-          ctx.fillText(initialChar, cardX + 29, cardY + 85);
-
-          ctx.fillStyle = textColor;
-          ctx.font = `12px ${activeFont}`;
-          ctx.textAlign = 'left';
-          ctx.fillText(restFirstLine, cardX + 48, cardY + 83);
-
-          let lineY = cardY + 108;
-          for (let i = 1; i < chapterLines.length; i++) {
-            ctx.fillText(chapterLines[i], cardX + 16, lineY);
-            lineY += 22;
+          for (let i = 0; i < 5; i++) {
+            const a = (i * Math.PI * 2) / 5 - Math.PI / 2;
+            const rOut = 12;
+            ctx.lineTo(
+              width / 2 + Math.cos(a) * rOut,
+              140 + Math.sin(a) * rOut
+            );
+            const aIn = a + Math.PI / 5;
+            const rIn = 5.5;
+            ctx.lineTo(
+              width / 2 + Math.cos(aIn) * rIn,
+              140 + Math.sin(aIn) * rIn
+            );
           }
-          ctx.restore();
-        } else {
-          // Classic Left Ivory Archival Page + Right Framed Illustration Window
-          ctx.fillStyle = '#fcfbf7';
+          ctx.closePath();
+          ctx.fill();
+        } else if (activePage === 1) {
+          // Page 1: Official Dedication Page
+          ctx.fillStyle = '#fffdfa';
           ctx.fillRect(24, 24, width / 2 - 28, height - 48);
           ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
 
-          // Page borders
-          ctx.strokeStyle = '#e2e8f0';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(24, 24, width / 2 - 28, height - 48);
-          ctx.strokeRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+          // Left Page Decorative Crest
+          ctx.fillStyle = '#1e293b';
+          ctx.font = `bold 14px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('OFFICIAL CERTIFICATE', width / 4 + 10, 90);
+          ctx.font = '11px sans-serif';
+          ctx.fillStyle = '#64748b';
+          ctx.fillText('OF EXTRAORDINARY BRAVERY', width / 4 + 10, 110);
 
-          // Page curvature shading towards gutter spine
-          const leftCurv = ctx.createLinearGradient(width / 2 - 28, 24, 24, 24);
-          leftCurv.addColorStop(0, 'rgba(15, 23, 42, 0.12)');
-          leftCurv.addColorStop(0.18, 'rgba(15, 23, 42, 0.03)');
-          leftCurv.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          ctx.fillStyle = leftCurv;
-          ctx.fillRect(24, 24, width / 2 - 28, height - 48);
-
-          const rightCurv = ctx.createLinearGradient(width / 2 + 4, 24, width - 24, 24);
-          rightCurv.addColorStop(0, 'rgba(15, 23, 42, 0.12)');
-          rightCurv.addColorStop(0.18, 'rgba(15, 23, 42, 0.03)');
-          rightCurv.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          ctx.fillStyle = rightCurv;
-          ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
-
-          // Story Prose on Left Page
-          ctx.fillStyle = '#b45309';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText(`CHAPTER ${chapterNum}`, 44, 64);
-
-          ctx.fillStyle = '#0f172a';
-          ctx.font = `bold 16px ${activeFont}`;
-          ctx.fillText(chapterTitle, 44, 90);
-
-          // Ornamental star filigree line
           ctx.strokeStyle = '#cbd5e1';
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.moveTo(44, 102);
-          ctx.lineTo(width / 2 - 44, 102);
+          ctx.moveTo(50, 130);
+          ctx.lineTo(width / 2 - 30, 130);
           ctx.stroke();
 
-          // Illuminated Royal Drop-Cap
-          const firstLine = chapterLines[0] || '';
-          const initialChar = firstLine.slice(0, 1).toUpperCase();
-          const restFirstLine = firstLine.slice(1);
-
-          ctx.fillStyle = '#1e1b4b';
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(44, 114, 26, 26, 4);
-          else ctx.rect(44, 114, 26, 26);
-          ctx.fill();
-          ctx.strokeStyle = '#f59e0b';
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-
-          ctx.fillStyle = '#fbbf24';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `italic 13px ${activeFont}`;
+          ctx.fillText(`Presented with honor to`, width / 4 + 10, 165);
           ctx.font = `bold 18px ${activeFont}`;
+          ctx.fillStyle = '#2563eb';
+          ctx.fillText(childName, width / 4 + 10, 200);
+
+          // Right Page: Dedication Note
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `bold 13px ${activeFont}`;
           ctx.textAlign = 'center';
-          ctx.fillText(initialChar, 57, 133);
+          ctx.fillText('SPECIAL DEDICATION', (3 * width) / 4 - 10, 90);
 
           ctx.fillStyle = textColor;
-          ctx.font = `12px ${activeFont}`;
-          ctx.textAlign = 'left';
-          ctx.fillText(restFirstLine, 76, 131);
-
-          let lineY = 153;
-          for (let i = 1; i < chapterLines.length; i++) {
-            ctx.fillText(chapterLines[i], 44, lineY);
-            lineY += 22;
+          ctx.font = `italic 13px ${activeFont}`;
+          const words = dedication.split(' ');
+          let line = '';
+          let y = 140;
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > width / 2 - 70 && n > 0) {
+              ctx.fillText(line, (3 * width) / 4 - 10, y);
+              line = words[n] + ' ';
+              y += 24;
+            } else {
+              line = testLine;
+            }
           }
+          ctx.fillText(line, (3 * width) / 4 - 10, y);
 
-          // Right Page Framed Illustration Stage with Hyper-Realistic Scene
-          const stageX = width / 2 + 16;
-          const stageY = 44;
-          const stageW = width / 2 - 48;
-          const stageH = height - 88;
-
-          drawEnvironmentScene(ctx, {
-            sceneId: activeSceneId,
-            stageX,
-            stageY,
-            stageW,
-            stageH,
-            time,
-            theme,
-            timeOfDay,
-            weatherEffect,
-            isFullBleed: false,
-          });
-
-          // Gold frame border around illustration stage
-          ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(stageX, stageY, stageW, stageH, 8);
-          else ctx.rect(stageX, stageY, stageW, stageH);
-          ctx.stroke();
-        }
-
-        // Positions for Hero Avatar and Companion Mascot
-        const stageX = isPanoramic ? 24 : width / 2 + 16;
-        const stageW = isPanoramic ? width - 48 : width / 2 - 48;
-        const stageY = isPanoramic ? 24 : 44;
-        const stageH = isPanoramic ? height - 48 : height - 88;
-
-        const heroX = isPanoramic ? width * 0.62 : stageX + stageW * 0.35;
-        const heroY = isPanoramic ? height * 0.7 : stageY + stageH * 0.65;
-        const coStarX = isPanoramic ? width * 0.8 : stageX + stageW * 0.68;
-        const coStarY = isPanoramic ? height * 0.7 : stageY + stageH * 0.65;
-
-        // Ambient contact shadows grounding characters in scene
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
-        ctx.beginPath();
-        ctx.ellipse(heroX, heroY + 22, 18, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(coStarX, coStarY + 22, 18, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Optional Cape behind
-        if (avatar.accessory === 'cape') {
-          ctx.fillStyle = '#ef4444';
-          ctx.beginPath();
-          ctx.moveTo(heroX - 8, heroY - 10);
-          ctx.lineTo(heroX - 24, heroY + 28);
-          ctx.lineTo(heroX, heroY + 22);
-          ctx.lineTo(heroX + 10, heroY - 10);
-          ctx.closePath();
-          ctx.fill();
-        }
-
-        // Body / Outfit
-        ctx.fillStyle = avatar.outfit || '#2563eb';
-        ctx.beginPath();
-        ctx.roundRect(heroX - 12, heroY - 10, 24, 30, 6);
-        ctx.fill();
-
-        // Head
-        ctx.fillStyle = avatar.skin || '#fbd38d';
-        ctx.beginPath();
-        ctx.arc(heroX, heroY - 22, 14, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Hair Styles
-        ctx.fillStyle = avatar.hair || '#4a2c11';
-        const hairStyle = avatar.hairStyle || 'curls';
-        if (hairStyle === 'crop') {
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 25, 14, Math.PI, 0, false);
-          ctx.fill();
-        } else if (hairStyle === 'curls') {
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-          ctx.fill();
-          for (let i = -12; i <= 12; i += 6) {
-            ctx.beginPath();
-            ctx.arc(heroX + i, heroY - 28, 4.5, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        } else if (hairStyle === 'waves') {
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.rect(heroX - 14, heroY - 25, 5, 20);
-          ctx.rect(heroX + 9, heroY - 25, 5, 20);
-          ctx.fill();
-        } else if (hairStyle === 'braids') {
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-          ctx.fill();
-          ctx.beginPath();
-          if (ctx.roundRect) {
-            ctx.roundRect(heroX - 14, heroY - 24, 4.5, 22, 2);
-            ctx.roundRect(heroX + 9.5, heroY - 24, 4.5, 22, 2);
-          } else {
-            ctx.rect(heroX - 14, heroY - 24, 4.5, 22);
-            ctx.rect(heroX + 9.5, heroY - 24, 4.5, 22);
-          }
-          ctx.fill();
-        } else if (hairStyle === 'ponytail') {
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.ellipse(heroX + 15, heroY - 30, 8, 4, 0.6, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (hairStyle === 'spiky') {
-          ctx.beginPath();
-          ctx.moveTo(heroX - 14, heroY - 24);
-          ctx.lineTo(heroX - 10, heroY - 36);
-          ctx.lineTo(heroX - 4, heroY - 28);
-          ctx.lineTo(heroX, heroY - 38);
-          ctx.lineTo(heroX + 5, heroY - 28);
-          ctx.lineTo(heroX + 10, heroY - 35);
-          ctx.lineTo(heroX + 14, heroY - 24);
-          ctx.closePath();
-          ctx.fill();
-        } else if (hairStyle === 'beanie') {
-          ctx.fillStyle = '#0284c7';
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 24, 15, Math.PI, 0, false);
-          ctx.fill();
-          ctx.fillRect(heroX - 15, heroY - 25, 30, 4);
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '10px sans-serif';
+          ctx.fillText(
+            'Printed on FSC Archival Paper • Page 1',
+            (3 * width) / 4 - 10,
+            height - 42
+          );
         } else {
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-          ctx.fill();
-        }
+          // Chapter Pages (2, 3, 4...)
+          const chapterNum = activePage - 1;
+          const customChapter = chapterProse && chapterProse[chapterNum];
+          const defaultTitle =
+            chapterNum === 1
+              ? `${childName}'s Journey Begins`
+              : chapterNum === 2
+                ? `The Secret of the Starlight Compass`
+                : `The Grand Victory Celebration`;
+          const chapterTitle = customChapter?.title || defaultTitle;
+          const defaultLines =
+            chapterNum === 1
+              ? [
+                  `The morning sun peered into ${childName}'s window.`,
+                  `Today wasn't an ordinary morning in the neighborhood.`,
+                  `A golden letter arrived with an urgent royal seal.`,
+                  `"Wake up, ${childName}!" chimed ${coStarLabel}.`,
+                  `"The adventure needs someone bold enough to lead!"`,
+                ]
+              : chapterNum === 2
+                ? [
+                    `Higher and higher they climbed above the velvet clouds.`,
+                    `${childName} reached out a steady hand to hold the compass.`,
+                    `The glowing constellation aligned directly with their path.`,
+                    `"I knew you had it in you!" cheered ${coStarLabel} with joy.`,
+                    `Together, there was no mystery they could not conquer.`,
+                  ]
+                : [
+                    `The entire kingdom gathered to celebrate ${childName}'s triumph.`,
+                    `A crown of starlight was placed gently upon their head.`,
+                    `"Never forget this moment," whispered ${coStarLabel} warmly.`,
+                    `Because in every heart that dares to dream,`,
+                    `a magnificent adventure is always waiting to be written.`,
+                  ];
+          const chapterLines = customChapter?.lines || defaultLines;
 
-        // Eyes & Smile
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.arc(heroX - 4, heroY - 22, 1.8, 0, Math.PI * 2);
-        ctx.arc(heroX + 4, heroY - 22, 1.8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#1e293b';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.arc(heroX, heroY - 18, 4, 0.1 * Math.PI, 0.9 * Math.PI, false);
-        ctx.stroke();
+          const isPanoramic = spreadLayout === 'panoramic';
 
-        // Accessories & Face Details
-        if (avatar.accessory === 'astronaut_helmet') {
-          ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 22, 17, 0, Math.PI * 2);
-          ctx.stroke();
-        } else if (avatar.accessory === 'crown') {
-          ctx.fillStyle = '#fbbf24';
-          ctx.beginPath();
-          ctx.moveTo(heroX - 10, heroY - 36);
-          ctx.lineTo(heroX - 6, -30 + heroY);
-          ctx.lineTo(heroX, heroY - 38);
-          ctx.lineTo(heroX + 6, -30 + heroY);
-          ctx.lineTo(heroX + 10, heroY - 36);
-          ctx.lineTo(heroX + 8, heroY - 28);
-          ctx.lineTo(heroX - 8, heroY - 28);
-          ctx.closePath();
-          ctx.fill();
-        } else if (avatar.accessory === 'glasses') {
-          ctx.strokeStyle = '#0f172a';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-          ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.moveTo(heroX - 1, heroY - 22);
-          ctx.lineTo(heroX + 1, heroY - 22);
-          ctx.stroke();
-        } else if (avatar.accessory === 'star_shades') {
-          ctx.fillStyle = '#f59e0b';
-          ctx.beginPath();
-          ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-          ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#d97706';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(heroX - 1, heroY - 22);
-          ctx.lineTo(heroX + 1, heroY - 22);
-          ctx.stroke();
-        } else if (avatar.accessory === 'superhero_mask') {
-          ctx.fillStyle = '#dc2626';
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(heroX - 10, heroY - 25, 20, 6.5, 3);
-          else ctx.rect(heroX - 10, heroY - 25, 20, 6.5);
-          ctx.fill();
-        } else if (avatar.accessory === 'freckles') {
-          ctx.fillStyle = '#92400e';
-          [
-            [heroX - 7, heroY - 19],
-            [heroX - 5, heroY - 18],
-            [heroX + 5, heroY - 18],
-            [heroX + 7, heroY - 19],
-          ].forEach(([fx, fy]) => {
-            ctx.fillRect(fx, fy, 1.2, 1.2);
-          });
-        }
+          if (isPanoramic) {
+            // Panoramic Double-Page Spread: Full-bleed environment scene across both pages
+            drawEnvironmentScene(ctx, {
+              sceneId: activeSceneId,
+              stageX: 24,
+              stageY: 24,
+              stageW: width - 48,
+              stageH: height - 48,
+              time,
+              theme,
+              timeOfDay,
+              weatherEffect,
+              isFullBleed: true,
+            });
 
-        // DRAW MASCOT CO-STAR (Right character on illustration stage)
-        if (mascotCoStar === 'finley') {
-          // Finley The Starlight Fox (The Little Prince homage)
-          // Bushy fox tail curving up with snowy white tip
-          ctx.fillStyle = '#ea580c';
-          ctx.beginPath();
-          ctx.moveTo(coStarX - 10, coStarY + 14);
-          ctx.quadraticCurveTo(coStarX - 32, coStarY + 12, coStarX - 28, coStarY - 8);
-          ctx.quadraticCurveTo(coStarX - 20, coStarY + 2, coStarX - 8, coStarY + 8);
-          ctx.closePath();
-          ctx.fill();
-          // Snowy white tail tip
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.moveTo(coStarX - 28, coStarY - 8);
-          ctx.quadraticCurveTo(coStarX - 32, coStarY + 2, coStarX - 24, coStarY - 2);
-          ctx.closePath();
-          ctx.fill();
+            // Frosted Vellum Prose Card on Left Page
+            const cardX = 36;
+            const cardY = 36;
+            const cardW = width / 2 - 56;
+            const cardH = height - 72;
 
-          // Amber body
-          ctx.fillStyle = '#f97316';
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(coStarX - 12, coStarY - 8, 24, 30, 8);
-          else ctx.rect(coStarX - 12, coStarY - 8, 24, 30);
-          ctx.fill();
-
-          // Cream chest ruff
-          ctx.fillStyle = '#fff7ed';
-          ctx.beginPath();
-          ctx.ellipse(coStarX, coStarY + 6, 7, 10, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Pointed Desert Fox Ears
-          ctx.fillStyle = '#c2410c';
-          ctx.beginPath();
-          ctx.moveTo(coStarX - 14, coStarY - 20);
-          ctx.lineTo(coStarX - 18, coStarY - 36);
-          ctx.lineTo(coStarX - 4, coStarY - 24);
-          ctx.closePath();
-          ctx.fill();
-          ctx.fillStyle = '#ffedd5';
-          ctx.beginPath();
-          ctx.moveTo(coStarX - 13, coStarY - 22);
-          ctx.lineTo(coStarX - 16, coStarY - 33);
-          ctx.lineTo(coStarX - 6, coStarY - 24);
-          ctx.closePath();
-          ctx.fill();
-
-          ctx.fillStyle = '#c2410c';
-          ctx.beginPath();
-          ctx.moveTo(coStarX + 14, coStarY - 20);
-          ctx.lineTo(coStarX + 18, coStarY - 36);
-          ctx.lineTo(coStarX + 4, coStarY - 24);
-          ctx.closePath();
-          ctx.fill();
-          ctx.fillStyle = '#ffedd5';
-          ctx.beginPath();
-          ctx.moveTo(coStarX + 13, coStarY - 22);
-          ctx.lineTo(coStarX + 16, coStarY - 33);
-          ctx.lineTo(coStarX + 6, coStarY - 24);
-          ctx.closePath();
-          ctx.fill();
-
-          // Fox Head
-          ctx.fillStyle = '#f97316';
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 20, 13, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Cream Cheeks
-          ctx.fillStyle = '#fff7ed';
-          ctx.beginPath();
-          ctx.ellipse(coStarX, coStarY - 17, 9, 6, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Inquisitive Soulful Amber Eyes
-          ctx.fillStyle = '#431407';
-          ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 21, 1.8, 0, Math.PI * 2);
-          ctx.arc(coStarX + 4, coStarY - 21, 1.8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#fbbf24';
-          ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 21, 0.8, 0, Math.PI * 2);
-          ctx.arc(coStarX + 4, coStarY - 21, 0.8, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Button nose
-          ctx.fillStyle = '#1c1917';
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 16, 1.6, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Flowing Celestial Scarf (The Little Prince homage)
-          ctx.fillStyle = '#38bdf8';
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(coStarX - 10, coStarY - 10, 20, 6, 3);
-          else ctx.rect(coStarX - 10, coStarY - 10, 20, 6);
-          ctx.fill();
-          // Scarf fluttering tails
-          ctx.beginPath();
-          ctx.moveTo(coStarX + 8, coStarY - 8);
-          ctx.quadraticCurveTo(coStarX + 22, coStarY - 4, coStarX + 26, coStarY + 12);
-          ctx.lineTo(coStarX + 18, coStarY + 8);
-          ctx.closePath();
-          ctx.fill();
-          // Gold star on scarf
-          ctx.fillStyle = '#fbbf24';
-          ctx.beginPath();
-          ctx.arc(coStarX + 18, coStarY + 4, 2, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (mascotCoStar === 'luna') {
-          // Luna The Cosmic Anatolian Shepherd in Spacesuit
-          // Curled Tail in Spacesuit
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 4;
-          ctx.beginPath();
-          ctx.arc(coStarX - 16, coStarY + 12, 10, 0.2 * Math.PI, 1.4 * Math.PI);
-          ctx.stroke();
-          ctx.fillStyle = '#fbbf24';
-          ctx.beginPath();
-          ctx.arc(coStarX - 22, coStarY + 4, 3, 0, Math.PI * 2);
-          ctx.fill();
-
-          // White Spacesuit Body
-          ctx.fillStyle = '#f8fafc';
-          ctx.beginPath();
-          ctx.roundRect(coStarX - 14, coStarY - 8, 28, 30, 8);
-          ctx.fill();
-          ctx.strokeStyle = '#94a3b8';
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-
-          // Navy Spacesuit Collar
-          ctx.fillStyle = '#1e293b';
-          ctx.beginPath();
-          ctx.roundRect(coStarX - 12, coStarY - 12, 24, 6, 2);
-          ctx.fill();
-
-          // Gold Name Patch: "LUNA"
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(coStarX - 10, coStarY + 6, 20, 8);
-          ctx.strokeStyle = '#fbbf24';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(coStarX - 10, coStarY + 6, 20, 8);
-          ctx.fillStyle = '#fbbf24';
-          ctx.font = 'bold 6px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('LUNA', coStarX, coStarY + 12.5);
-
-          // Anatolian Folded Drop Ears
-          ctx.fillStyle = '#713f12';
-          ctx.beginPath();
-          ctx.moveTo(coStarX - 12, coStarY - 26);
-          ctx.lineTo(coStarX - 18, coStarY - 14);
-          ctx.lineTo(coStarX - 8, coStarY - 18);
-          ctx.closePath();
-          ctx.fill();
-          ctx.beginPath();
-          ctx.moveTo(coStarX + 12, coStarY - 26);
-          ctx.lineTo(coStarX + 18, coStarY - 14);
-          ctx.lineTo(coStarX + 8, coStarY - 18);
-          ctx.closePath();
-          ctx.fill();
-
-          // Golden Fawn Head
-          ctx.fillStyle = '#e5a95d';
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 22, 14, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Anatolian Black Mask
-          ctx.fillStyle = '#1c1917';
-          ctx.beginPath();
-          ctx.ellipse(coStarX, coStarY - 18, 9, 8, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Soulful Eyes
-          ctx.fillStyle = '#fbbf24';
-          ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 23, 1.8, 0, Math.PI * 2);
-          ctx.arc(coStarX + 4, coStarY - 23, 1.8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#0f172a';
-          ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 23, 1, 0, Math.PI * 2);
-          ctx.arc(coStarX + 4, coStarY - 23, 1, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Nose Leather
-          ctx.fillStyle = '#09090b';
-          ctx.beginPath();
-          ctx.ellipse(coStarX, coStarY - 17, 3, 2, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Signature Pink Nose Blaze
-          ctx.fillStyle = '#fca5a5';
-          ctx.beginPath();
-          ctx.ellipse(coStarX, coStarY - 18.5, 2, 0.8, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Spacesuit Visor Ring
-          ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 22, 17, 0, Math.PI * 2);
-          ctx.stroke();
-        } else if (mascotCoStar === 'penny') {
-          // Princess Penny
-          ctx.fillStyle = '#ec4899';
-          ctx.beginPath();
-          ctx.moveTo(coStarX, coStarY - 10);
-          ctx.lineTo(coStarX - 16, coStarY + 22);
-          ctx.lineTo(coStarX + 16, coStarY + 22);
-          ctx.closePath();
-          ctx.fill();
-          // Head
-          ctx.fillStyle = '#fde047';
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 22, 12, 0, Math.PI * 2);
-          ctx.fill();
-          // Tiara
-          ctx.fillStyle = '#fbbf24';
-          ctx.fillRect(coStarX - 8, coStarY - 32, 16, 4);
-          // Wand
-          ctx.strokeStyle = '#fbbf24';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(coStarX + 10, coStarY - 5);
-          ctx.lineTo(coStarX + 20, coStarY - 22);
-          ctx.stroke();
-        } else if (mascotCoStar === 'dexter') {
-          // Dexter The Dino Explorer - High Quality Illustration
-          // Curved Dino Tail with Back Spikes
-          ctx.fillStyle = '#059669';
-          ctx.beginPath();
-          ctx.moveTo(coStarX + 8, coStarY + 16);
-          ctx.quadraticCurveTo(coStarX + 28, coStarY + 14, coStarX + 32, coStarY - 4);
-          ctx.lineTo(coStarX + 16, coStarY + 22);
-          ctx.closePath();
-          ctx.fill();
-
-          // Amber Back Spikes
-          ctx.fillStyle = '#f59e0b';
-          [
-            [coStarX + 6, coStarY - 4],
-            [coStarX + 12, coStarY + 4],
-            [coStarX + 20, coStarY + 8],
-            [coStarX + 27, coStarY + 4],
-          ].forEach(([sx, sy]) => {
+            ctx.save();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
             ctx.beginPath();
-            ctx.moveTo(sx - 3, sy);
-            ctx.lineTo(sx, sy - 6);
-            ctx.lineTo(sx + 3, sy);
+            if (ctx.roundRect) ctx.roundRect(cardX, cardY, cardW, cardH, 10);
+            else ctx.rect(cardX, cardY, cardW, cardH);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Prose typography on frosted card
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(`CHAPTER ${chapterNum}`, cardX + 16, cardY + 28);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = `bold 16px ${activeFont}`;
+            ctx.fillText(chapterTitle, cardX + 16, cardY + 52);
+
+            // Illuminated Drop-Cap
+            const firstLine = chapterLines[0] || '';
+            const initialChar = firstLine.slice(0, 1).toUpperCase();
+            const restFirstLine = firstLine.slice(1);
+
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(cardX + 16, cardY + 66, 26, 26, 4);
+            else ctx.rect(cardX + 16, cardY + 66, 26, 26);
+            ctx.fill();
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = `bold 18px ${activeFont}`;
+            ctx.textAlign = 'center';
+            ctx.fillText(initialChar, cardX + 29, cardY + 85);
+
+            ctx.fillStyle = textColor;
+            ctx.font = `12px ${activeFont}`;
+            ctx.textAlign = 'left';
+            ctx.fillText(restFirstLine, cardX + 48, cardY + 83);
+
+            let lineY = cardY + 108;
+            for (let i = 1; i < chapterLines.length; i++) {
+              ctx.fillText(chapterLines[i], cardX + 16, lineY);
+              lineY += 22;
+            }
+            ctx.restore();
+          } else {
+            // Classic Left Ivory Archival Page + Right Framed Illustration Window
+            ctx.fillStyle = '#fcfbf7';
+            ctx.fillRect(24, 24, width / 2 - 28, height - 48);
+            ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+
+            // Page borders
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(24, 24, width / 2 - 28, height - 48);
+            ctx.strokeRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+
+            // Page curvature shading towards gutter spine
+            const leftCurv = ctx.createLinearGradient(
+              width / 2 - 28,
+              24,
+              24,
+              24
+            );
+            leftCurv.addColorStop(0, 'rgba(15, 23, 42, 0.12)');
+            leftCurv.addColorStop(0.18, 'rgba(15, 23, 42, 0.03)');
+            leftCurv.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = leftCurv;
+            ctx.fillRect(24, 24, width / 2 - 28, height - 48);
+
+            const rightCurv = ctx.createLinearGradient(
+              width / 2 + 4,
+              24,
+              width - 24,
+              24
+            );
+            rightCurv.addColorStop(0, 'rgba(15, 23, 42, 0.12)');
+            rightCurv.addColorStop(0.18, 'rgba(15, 23, 42, 0.03)');
+            rightCurv.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = rightCurv;
+            ctx.fillRect(width / 2 + 4, 24, width / 2 - 28, height - 48);
+
+            // Story Prose on Left Page
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(`CHAPTER ${chapterNum}`, 44, 64);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = `bold 16px ${activeFont}`;
+            ctx.fillText(chapterTitle, 44, 90);
+
+            // Ornamental star filigree line
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(44, 102);
+            ctx.lineTo(width / 2 - 44, 102);
+            ctx.stroke();
+
+            // Illuminated Royal Drop-Cap
+            const firstLine = chapterLines[0] || '';
+            const initialChar = firstLine.slice(0, 1).toUpperCase();
+            const restFirstLine = firstLine.slice(1);
+
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(44, 114, 26, 26, 4);
+            else ctx.rect(44, 114, 26, 26);
+            ctx.fill();
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = `bold 18px ${activeFont}`;
+            ctx.textAlign = 'center';
+            ctx.fillText(initialChar, 57, 133);
+
+            ctx.fillStyle = textColor;
+            ctx.font = `12px ${activeFont}`;
+            ctx.textAlign = 'left';
+            ctx.fillText(restFirstLine, 76, 131);
+
+            let lineY = 153;
+            for (let i = 1; i < chapterLines.length; i++) {
+              ctx.fillText(chapterLines[i], 44, lineY);
+              lineY += 22;
+            }
+
+            // Right Page Framed Illustration Stage with Hyper-Realistic Scene
+            const stageX = width / 2 + 16;
+            const stageY = 44;
+            const stageW = width / 2 - 48;
+            const stageH = height - 88;
+
+            drawEnvironmentScene(ctx, {
+              sceneId: activeSceneId,
+              stageX,
+              stageY,
+              stageW,
+              stageH,
+              time,
+              theme,
+              timeOfDay,
+              weatherEffect,
+              isFullBleed: false,
+            });
+
+            // Gold frame border around illustration stage
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(stageX, stageY, stageW, stageH, 8);
+            else ctx.rect(stageX, stageY, stageW, stageH);
+            ctx.stroke();
+          }
+
+          // Positions for Hero Avatar and Companion Mascot
+          const stageX = isPanoramic ? 24 : width / 2 + 16;
+          const stageW = isPanoramic ? width - 48 : width / 2 - 48;
+          const stageY = isPanoramic ? 24 : 44;
+          const stageH = isPanoramic ? height - 48 : height - 88;
+
+          const heroX = isPanoramic ? width * 0.62 : stageX + stageW * 0.35;
+          const heroY = isPanoramic ? height * 0.7 : stageY + stageH * 0.65;
+          const coStarX = isPanoramic ? width * 0.8 : stageX + stageW * 0.68;
+          const coStarY = isPanoramic ? height * 0.7 : stageY + stageH * 0.65;
+
+          // Ambient contact shadows grounding characters in scene
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
+          ctx.beginPath();
+          ctx.ellipse(heroX, heroY + 22, 18, 5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(coStarX, coStarY + 22, 18, 5, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Optional Cape behind
+          if (avatar.accessory === 'cape') {
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.moveTo(heroX - 8, heroY - 10);
+            ctx.lineTo(heroX - 24, heroY + 28);
+            ctx.lineTo(heroX, heroY + 22);
+            ctx.lineTo(heroX + 10, heroY - 10);
             ctx.closePath();
             ctx.fill();
-          });
+          }
 
-          // Emerald Dino Body
-          ctx.fillStyle = '#10b981';
+          // Body / Outfit
+          ctx.fillStyle = avatar.outfit || '#2563eb';
           ctx.beginPath();
-          ctx.roundRect(coStarX - 16, coStarY - 8, 30, 32, 10);
-          ctx.fill();
-
-          // Mint Belly Patch
-          ctx.fillStyle = '#6ee7b7';
-          ctx.beginPath();
-          ctx.ellipse(coStarX - 4, coStarY + 10, 8, 12, 0, 0, Math.PI * 2);
+          ctx.roundRect(heroX - 12, heroY - 10, 24, 30, 6);
           ctx.fill();
 
-          // Dino Head & Snout
-          ctx.fillStyle = '#10b981';
-          ctx.beginPath();
-          ctx.ellipse(coStarX - 4, coStarY - 20, 15, 12, -0.1, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Snout
-          ctx.fillStyle = '#34d399';
-          ctx.beginPath();
-          ctx.ellipse(coStarX - 12, coStarY - 17, 8, 6, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Friendly Smile with Teeth
-          ctx.strokeStyle = '#064e3b';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(coStarX - 10, coStarY - 16, 5, 0.1 * Math.PI, 0.8 * Math.PI);
-          ctx.stroke();
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.moveTo(coStarX - 12, coStarY - 14);
-          ctx.lineTo(coStarX - 10, coStarY - 11);
-          ctx.lineTo(coStarX - 8, coStarY - 14);
-          ctx.closePath();
-          ctx.fill();
-
-          // Curious Eye
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.arc(coStarX - 2, coStarY - 23, 4.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#064e3b';
-          ctx.beginPath();
-          ctx.arc(coStarX - 2, coStarY - 23, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.arc(coStarX - 3, coStarY - 24, 1, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Safari Explorer Hat
-          ctx.fillStyle = '#d97706';
-          ctx.beginPath();
-          ctx.ellipse(coStarX - 4, coStarY - 30, 18, 4, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 30, 10, Math.PI, 0, false);
-          ctx.fill();
-          // Compass Badge on Hat
-          ctx.fillStyle = '#38bdf8';
-          ctx.beginPath();
-          ctx.arc(coStarX - 4, coStarY - 33, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (mascotCoStar === 'carty') {
-          // Carty Courier
-          ctx.fillStyle = '#94a3b8';
-          ctx.beginPath();
-          ctx.roundRect(coStarX - 14, coStarY - 12, 28, 28, 6);
-          ctx.fill();
-          // Cyan visor
-          ctx.fillStyle = '#06b6d4';
-          ctx.fillRect(coStarX - 10, coStarY - 6, 20, 6);
-          // Antenna
-          ctx.strokeStyle = '#f59e0b';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(coStarX, coStarY - 12);
-          ctx.lineTo(coStarX, coStarY - 24);
-          ctx.stroke();
-          ctx.fillStyle = '#f59e0b';
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 24, 3, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // Leo Lion Cub
-          ctx.fillStyle = '#f59e0b';
-          // Mane
-          ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 14, 18, 0, Math.PI * 2);
-          ctx.fill();
           // Head
-          ctx.fillStyle = '#fcd34d';
+          ctx.fillStyle = avatar.skin || '#fbd38d';
           ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 14, 12, 0, Math.PI * 2);
+          ctx.arc(heroX, heroY - 22, 14, 0, Math.PI * 2);
           ctx.fill();
-          // Ears
-          ctx.fillStyle = '#f59e0b';
-          ctx.beginPath();
-          ctx.arc(coStarX - 10, coStarY - 24, 5, 0, Math.PI * 2);
-          ctx.arc(coStarX + 10, coStarY - 24, 5, 0, Math.PI * 2);
-          ctx.fill();
-          // Smile
+
+          // Hair Styles
+          ctx.fillStyle = avatar.hair || '#4a2c11';
+          const hairStyle = avatar.hairStyle || 'curls';
+          if (hairStyle === 'crop') {
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 25, 14, Math.PI, 0, false);
+            ctx.fill();
+          } else if (hairStyle === 'curls') {
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+            ctx.fill();
+            for (let i = -12; i <= 12; i += 6) {
+              ctx.beginPath();
+              ctx.arc(heroX + i, heroY - 28, 4.5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          } else if (hairStyle === 'waves') {
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.rect(heroX - 14, heroY - 25, 5, 20);
+            ctx.rect(heroX + 9, heroY - 25, 5, 20);
+            ctx.fill();
+          } else if (hairStyle === 'braids') {
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+            ctx.fill();
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(heroX - 14, heroY - 24, 4.5, 22, 2);
+              ctx.roundRect(heroX + 9.5, heroY - 24, 4.5, 22, 2);
+            } else {
+              ctx.rect(heroX - 14, heroY - 24, 4.5, 22);
+              ctx.rect(heroX + 9.5, heroY - 24, 4.5, 22);
+            }
+            ctx.fill();
+          } else if (hairStyle === 'ponytail') {
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(heroX + 15, heroY - 30, 8, 4, 0.6, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (hairStyle === 'spiky') {
+            ctx.beginPath();
+            ctx.moveTo(heroX - 14, heroY - 24);
+            ctx.lineTo(heroX - 10, heroY - 36);
+            ctx.lineTo(heroX - 4, heroY - 28);
+            ctx.lineTo(heroX, heroY - 38);
+            ctx.lineTo(heroX + 5, heroY - 28);
+            ctx.lineTo(heroX + 10, heroY - 35);
+            ctx.lineTo(heroX + 14, heroY - 24);
+            ctx.closePath();
+            ctx.fill();
+          } else if (hairStyle === 'beanie') {
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 24, 15, Math.PI, 0, false);
+            ctx.fill();
+            ctx.fillRect(heroX - 15, heroY - 25, 30, 4);
+          } else {
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
+            ctx.fill();
+          }
+
+          // Eyes & Smile
           ctx.fillStyle = '#1e293b';
           ctx.beginPath();
-          ctx.arc(coStarX, coStarY - 12, 2, 0, Math.PI * 2);
+          ctx.arc(heroX - 4, heroY - 22, 1.8, 0, Math.PI * 2);
+          ctx.arc(heroX + 4, heroY - 22, 1.8, 0, Math.PI * 2);
           ctx.fill();
+          ctx.strokeStyle = '#1e293b';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(heroX, heroY - 18, 4, 0.1 * Math.PI, 0.9 * Math.PI, false);
+          ctx.stroke();
+
+          // Accessories & Face Details
+          if (avatar.accessory === 'astronaut_helmet') {
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(heroX, heroY - 22, 17, 0, Math.PI * 2);
+            ctx.stroke();
+          } else if (avatar.accessory === 'crown') {
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.moveTo(heroX - 10, heroY - 36);
+            ctx.lineTo(heroX - 6, -30 + heroY);
+            ctx.lineTo(heroX, heroY - 38);
+            ctx.lineTo(heroX + 6, -30 + heroY);
+            ctx.lineTo(heroX + 10, heroY - 36);
+            ctx.lineTo(heroX + 8, heroY - 28);
+            ctx.lineTo(heroX - 8, heroY - 28);
+            ctx.closePath();
+            ctx.fill();
+          } else if (avatar.accessory === 'glasses') {
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+            ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(heroX - 1, heroY - 22);
+            ctx.lineTo(heroX + 1, heroY - 22);
+            ctx.stroke();
+          } else if (avatar.accessory === 'star_shades') {
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+            ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(heroX - 1, heroY - 22);
+            ctx.lineTo(heroX + 1, heroY - 22);
+            ctx.stroke();
+          } else if (avatar.accessory === 'superhero_mask') {
+            ctx.fillStyle = '#dc2626';
+            ctx.beginPath();
+            if (ctx.roundRect)
+              ctx.roundRect(heroX - 10, heroY - 25, 20, 6.5, 3);
+            else ctx.rect(heroX - 10, heroY - 25, 20, 6.5);
+            ctx.fill();
+          } else if (avatar.accessory === 'freckles') {
+            ctx.fillStyle = '#92400e';
+            [
+              [heroX - 7, heroY - 19],
+              [heroX - 5, heroY - 18],
+              [heroX + 5, heroY - 18],
+              [heroX + 7, heroY - 19],
+            ].forEach(([fx, fy]) => {
+              ctx.fillRect(fx, fy, 1.2, 1.2);
+            });
+          }
+
+          // DRAW MASCOT CO-STAR (Right character on illustration stage)
+          if (mascotCoStar === 'finley') {
+            // Finley The Starlight Fox (The Little Prince homage)
+            // Bushy fox tail curving up with snowy white tip
+            ctx.fillStyle = '#ea580c';
+            ctx.beginPath();
+            ctx.moveTo(coStarX - 10, coStarY + 14);
+            ctx.quadraticCurveTo(
+              coStarX - 32,
+              coStarY + 12,
+              coStarX - 28,
+              coStarY - 8
+            );
+            ctx.quadraticCurveTo(
+              coStarX - 20,
+              coStarY + 2,
+              coStarX - 8,
+              coStarY + 8
+            );
+            ctx.closePath();
+            ctx.fill();
+            // Snowy white tail tip
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(coStarX - 28, coStarY - 8);
+            ctx.quadraticCurveTo(
+              coStarX - 32,
+              coStarY + 2,
+              coStarX - 24,
+              coStarY - 2
+            );
+            ctx.closePath();
+            ctx.fill();
+
+            // Amber body
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            if (ctx.roundRect)
+              ctx.roundRect(coStarX - 12, coStarY - 8, 24, 30, 8);
+            else ctx.rect(coStarX - 12, coStarY - 8, 24, 30);
+            ctx.fill();
+
+            // Cream chest ruff
+            ctx.fillStyle = '#fff7ed';
+            ctx.beginPath();
+            ctx.ellipse(coStarX, coStarY + 6, 7, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pointed Desert Fox Ears
+            ctx.fillStyle = '#c2410c';
+            ctx.beginPath();
+            ctx.moveTo(coStarX - 14, coStarY - 20);
+            ctx.lineTo(coStarX - 18, coStarY - 36);
+            ctx.lineTo(coStarX - 4, coStarY - 24);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#ffedd5';
+            ctx.beginPath();
+            ctx.moveTo(coStarX - 13, coStarY - 22);
+            ctx.lineTo(coStarX - 16, coStarY - 33);
+            ctx.lineTo(coStarX - 6, coStarY - 24);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#c2410c';
+            ctx.beginPath();
+            ctx.moveTo(coStarX + 14, coStarY - 20);
+            ctx.lineTo(coStarX + 18, coStarY - 36);
+            ctx.lineTo(coStarX + 4, coStarY - 24);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#ffedd5';
+            ctx.beginPath();
+            ctx.moveTo(coStarX + 13, coStarY - 22);
+            ctx.lineTo(coStarX + 16, coStarY - 33);
+            ctx.lineTo(coStarX + 6, coStarY - 24);
+            ctx.closePath();
+            ctx.fill();
+
+            // Fox Head
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 20, 13, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cream Cheeks
+            ctx.fillStyle = '#fff7ed';
+            ctx.beginPath();
+            ctx.ellipse(coStarX, coStarY - 17, 9, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Inquisitive Soulful Amber Eyes
+            ctx.fillStyle = '#431407';
+            ctx.beginPath();
+            ctx.arc(coStarX - 4, coStarY - 21, 1.8, 0, Math.PI * 2);
+            ctx.arc(coStarX + 4, coStarY - 21, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(coStarX - 4, coStarY - 21, 0.8, 0, Math.PI * 2);
+            ctx.arc(coStarX + 4, coStarY - 21, 0.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Button nose
+            ctx.fillStyle = '#1c1917';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 16, 1.6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Flowing Celestial Scarf (The Little Prince homage)
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            if (ctx.roundRect)
+              ctx.roundRect(coStarX - 10, coStarY - 10, 20, 6, 3);
+            else ctx.rect(coStarX - 10, coStarY - 10, 20, 6);
+            ctx.fill();
+            // Scarf fluttering tails
+            ctx.beginPath();
+            ctx.moveTo(coStarX + 8, coStarY - 8);
+            ctx.quadraticCurveTo(
+              coStarX + 22,
+              coStarY - 4,
+              coStarX + 26,
+              coStarY + 12
+            );
+            ctx.lineTo(coStarX + 18, coStarY + 8);
+            ctx.closePath();
+            ctx.fill();
+            // Gold star on scarf
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(coStarX + 18, coStarY + 4, 2, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (mascotCoStar === 'luna') {
+            // Luna The Cosmic Anatolian Shepherd in Spacesuit
+            // Curled Tail in Spacesuit
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(
+              coStarX - 16,
+              coStarY + 12,
+              10,
+              0.2 * Math.PI,
+              1.4 * Math.PI
+            );
+            ctx.stroke();
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(coStarX - 22, coStarY + 4, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // White Spacesuit Body
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.roundRect(coStarX - 14, coStarY - 8, 28, 30, 8);
+            ctx.fill();
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Navy Spacesuit Collar
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.roundRect(coStarX - 12, coStarY - 12, 24, 6, 2);
+            ctx.fill();
+
+            // Gold Name Patch: "LUNA"
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(coStarX - 10, coStarY + 6, 20, 8);
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(coStarX - 10, coStarY + 6, 20, 8);
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 6px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('LUNA', coStarX, coStarY + 12.5);
+
+            // Anatolian Folded Drop Ears
+            ctx.fillStyle = '#713f12';
+            ctx.beginPath();
+            ctx.moveTo(coStarX - 12, coStarY - 26);
+            ctx.lineTo(coStarX - 18, coStarY - 14);
+            ctx.lineTo(coStarX - 8, coStarY - 18);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(coStarX + 12, coStarY - 26);
+            ctx.lineTo(coStarX + 18, coStarY - 14);
+            ctx.lineTo(coStarX + 8, coStarY - 18);
+            ctx.closePath();
+            ctx.fill();
+
+            // Golden Fawn Head
+            ctx.fillStyle = '#e5a95d';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 22, 14, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Anatolian Black Mask
+            ctx.fillStyle = '#1c1917';
+            ctx.beginPath();
+            ctx.ellipse(coStarX, coStarY - 18, 9, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Soulful Eyes
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(coStarX - 4, coStarY - 23, 1.8, 0, Math.PI * 2);
+            ctx.arc(coStarX + 4, coStarY - 23, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(coStarX - 4, coStarY - 23, 1, 0, Math.PI * 2);
+            ctx.arc(coStarX + 4, coStarY - 23, 1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose Leather
+            ctx.fillStyle = '#09090b';
+            ctx.beginPath();
+            ctx.ellipse(coStarX, coStarY - 17, 3, 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Signature Pink Nose Blaze
+            ctx.fillStyle = '#fca5a5';
+            ctx.beginPath();
+            ctx.ellipse(coStarX, coStarY - 18.5, 2, 0.8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Spacesuit Visor Ring
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 22, 17, 0, Math.PI * 2);
+            ctx.stroke();
+          } else if (mascotCoStar === 'penny') {
+            // Princess Penny
+            ctx.fillStyle = '#ec4899';
+            ctx.beginPath();
+            ctx.moveTo(coStarX, coStarY - 10);
+            ctx.lineTo(coStarX - 16, coStarY + 22);
+            ctx.lineTo(coStarX + 16, coStarY + 22);
+            ctx.closePath();
+            ctx.fill();
+            // Head
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 22, 12, 0, Math.PI * 2);
+            ctx.fill();
+            // Tiara
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(coStarX - 8, coStarY - 32, 16, 4);
+            // Wand
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(coStarX + 10, coStarY - 5);
+            ctx.lineTo(coStarX + 20, coStarY - 22);
+            ctx.stroke();
+          } else if (mascotCoStar === 'dexter') {
+            // Dexter The Dino Explorer - High Quality Illustration
+            // Curved Dino Tail with Back Spikes
+            ctx.fillStyle = '#059669';
+            ctx.beginPath();
+            ctx.moveTo(coStarX + 8, coStarY + 16);
+            ctx.quadraticCurveTo(
+              coStarX + 28,
+              coStarY + 14,
+              coStarX + 32,
+              coStarY - 4
+            );
+            ctx.lineTo(coStarX + 16, coStarY + 22);
+            ctx.closePath();
+            ctx.fill();
+
+            // Amber Back Spikes
+            ctx.fillStyle = '#f59e0b';
+            [
+              [coStarX + 6, coStarY - 4],
+              [coStarX + 12, coStarY + 4],
+              [coStarX + 20, coStarY + 8],
+              [coStarX + 27, coStarY + 4],
+            ].forEach(([sx, sy]) => {
+              ctx.beginPath();
+              ctx.moveTo(sx - 3, sy);
+              ctx.lineTo(sx, sy - 6);
+              ctx.lineTo(sx + 3, sy);
+              ctx.closePath();
+              ctx.fill();
+            });
+
+            // Emerald Dino Body
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.roundRect(coStarX - 16, coStarY - 8, 30, 32, 10);
+            ctx.fill();
+
+            // Mint Belly Patch
+            ctx.fillStyle = '#6ee7b7';
+            ctx.beginPath();
+            ctx.ellipse(coStarX - 4, coStarY + 10, 8, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Dino Head & Snout
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.ellipse(
+              coStarX - 4,
+              coStarY - 20,
+              15,
+              12,
+              -0.1,
+              0,
+              Math.PI * 2
+            );
+            ctx.fill();
+
+            // Snout
+            ctx.fillStyle = '#34d399';
+            ctx.beginPath();
+            ctx.ellipse(coStarX - 12, coStarY - 17, 8, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Friendly Smile with Teeth
+            ctx.strokeStyle = '#064e3b';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(
+              coStarX - 10,
+              coStarY - 16,
+              5,
+              0.1 * Math.PI,
+              0.8 * Math.PI
+            );
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(coStarX - 12, coStarY - 14);
+            ctx.lineTo(coStarX - 10, coStarY - 11);
+            ctx.lineTo(coStarX - 8, coStarY - 14);
+            ctx.closePath();
+            ctx.fill();
+
+            // Curious Eye
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(coStarX - 2, coStarY - 23, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#064e3b';
+            ctx.beginPath();
+            ctx.arc(coStarX - 2, coStarY - 23, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(coStarX - 3, coStarY - 24, 1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Safari Explorer Hat
+            ctx.fillStyle = '#d97706';
+            ctx.beginPath();
+            ctx.ellipse(coStarX - 4, coStarY - 30, 18, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(coStarX - 4, coStarY - 30, 10, Math.PI, 0, false);
+            ctx.fill();
+            // Compass Badge on Hat
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.arc(coStarX - 4, coStarY - 33, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (mascotCoStar === 'carty') {
+            // Carty Courier
+            ctx.fillStyle = '#94a3b8';
+            ctx.beginPath();
+            ctx.roundRect(coStarX - 14, coStarY - 12, 28, 28, 6);
+            ctx.fill();
+            // Cyan visor
+            ctx.fillStyle = '#06b6d4';
+            ctx.fillRect(coStarX - 10, coStarY - 6, 20, 6);
+            // Antenna
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(coStarX, coStarY - 12);
+            ctx.lineTo(coStarX, coStarY - 24);
+            ctx.stroke();
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 24, 3, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Leo Lion Cub
+            ctx.fillStyle = '#f59e0b';
+            // Mane
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 14, 18, 0, Math.PI * 2);
+            ctx.fill();
+            // Head
+            ctx.fillStyle = '#fcd34d';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 14, 12, 0, Math.PI * 2);
+            ctx.fill();
+            // Ears
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(coStarX - 10, coStarY - 24, 5, 0, Math.PI * 2);
+            ctx.arc(coStarX + 10, coStarY - 24, 5, 0, Math.PI * 2);
+            ctx.fill();
+            // Smile
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.arc(coStarX, coStarY - 12, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Stage Title Banner
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(
+            `${childName} & ${coStarLabel.split(' ')[0]}`,
+            stageX + stageW / 2,
+            stageY + stageH - 14
+          );
+
+          // Page Numbers
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '10px sans-serif';
+          ctx.fillText(`Page ${activePage * 2 - 1}`, width / 4, height - 40);
+          ctx.fillText(`Page ${activePage * 2}`, (3 * width) / 4, height - 40);
         }
 
-        // Stage Title Banner
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.font = 'bold 11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(
-          `${childName} & ${coStarLabel.split(' ')[0]}`,
-          stageX + stageW / 2,
-          stageY + stageH - 14
+        // PRINT BLEED GUIDES OVERLAY (If enabled)
+        if (showBleed) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+          ctx.lineWidth = 1;
+          if (ctx.setLineDash) ctx.setLineDash([4, 4]);
+          ctx.strokeRect(10, 10, width - 20, height - 20);
+
+          ctx.strokeStyle = 'rgba(16, 185, 129, 0.85)';
+          ctx.strokeRect(22, 22, width - 44, height - 44);
+          if (ctx.setLineDash) ctx.setLineDash([]);
+
+          // Technical registration marks
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 1.5;
+          const rLen = 12;
+          // Top-left
+          ctx.beginPath();
+          ctx.moveTo(10, 10 - rLen);
+          ctx.lineTo(10, 10);
+          ctx.lineTo(10 - rLen, 10);
+          // Top-right
+          ctx.moveTo(width - 10, 10 - rLen);
+          ctx.lineTo(width - 10, 10);
+          ctx.lineTo(width - 10 + rLen, 10);
+          // Bottom-left
+          ctx.moveTo(10, height - 10 + rLen);
+          ctx.lineTo(10, height - 10);
+          ctx.lineTo(10 - rLen, height - 10);
+          // Bottom-right
+          ctx.moveTo(width - 10, height - 10 + rLen);
+          ctx.lineTo(width - 10, height - 10);
+          ctx.lineTo(width - 10 + rLen, height - 10);
+          ctx.stroke();
+
+          ctx.fillStyle = '#ef4444';
+          ctx.font = 'bold 8px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText('[---] 3MM BLEED CUT LINE', 14, 8);
+          ctx.fillStyle = '#10b981';
+          ctx.fillText('SAFE ARTWORK ZONE', 26, 20);
+          ctx.restore();
+        }
+      } else if (mode === 'poster') {
+        // Custom Framed Poster Engine
+        const {
+          headline = 'REACH FOR THE STARS',
+          subquote = 'Dream bigger, explore further, and shine bright.',
+          artStyle = 'cosmic',
+          frame = 'oak',
+          fontFamily = 'sans',
+          textColor = '#ffffff',
+          showBleed = false,
+        } = config;
+
+        const fontFamilies = {
+          serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+          sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          display: "'Impact', 'Trebuchet MS', sans-serif",
+          cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+        };
+        const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
+
+        // Outer Frame
+        const frameColor =
+          frame === 'oak'
+            ? '#d4a373'
+            : frame === 'black'
+              ? '#1e293b'
+              : frame === 'white'
+                ? '#f8fafc'
+                : frame === 'gold'
+                  ? '#d97706'
+                  : 'transparent';
+
+        if (frame !== 'none') {
+          ctx.fillStyle = frameColor;
+          ctx.fillRect(8, 8, width - 16, height - 16);
+          ctx.strokeStyle =
+            frame === 'gold' ? '#f59e0b' : 'rgba(0, 0, 0, 0.15)';
+          ctx.lineWidth = frame === 'gold' ? 3 : 2;
+          ctx.strokeRect(8, 8, width - 16, height - 16);
+
+          if (frame === 'gold') {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(12, 12, width - 24, height - 24);
+          }
+        }
+
+        // Poster Mat Board
+        const matInset = frame !== 'none' ? 24 : 12;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(
+          matInset,
+          matInset,
+          width - matInset * 2,
+          height - matInset * 2
         );
 
-        // Page Numbers
-        ctx.fillStyle = '#94a3b8';
+        // Artwork Inner Canvas
+        const artInset = matInset + 20;
+        const artW = width - artInset * 2;
+        const artH = height - artInset * 2;
+
+        const artGrad = ctx.createLinearGradient(
+          artInset,
+          artInset,
+          artInset + artW,
+          artInset + artH
+        );
+        if (artStyle === 'cosmic') {
+          artGrad.addColorStop(0, '#0f172a');
+          artGrad.addColorStop(0.5, '#312e81');
+          artGrad.addColorStop(1, '#0369a1');
+        } else if (artStyle === 'sunburst') {
+          artGrad.addColorStop(0, '#ea580c');
+          artGrad.addColorStop(0.5, '#f59e0b');
+          artGrad.addColorStop(1, '#fef08a');
+        } else if (artStyle === 'retro') {
+          artGrad.addColorStop(0, '#4c1d95');
+          artGrad.addColorStop(0.5, '#db2777');
+          artGrad.addColorStop(1, '#fbbf24');
+        } else if (artStyle === 'botanical') {
+          artGrad.addColorStop(0, '#064e3b');
+          artGrad.addColorStop(0.5, '#047857');
+          artGrad.addColorStop(1, '#6ee7b7');
+        } else if (artStyle === 'sunset') {
+          artGrad.addColorStop(0, '#831843');
+          artGrad.addColorStop(0.5, '#ea580c');
+          artGrad.addColorStop(1, '#fde047');
+        } else {
+          artGrad.addColorStop(0, '#f1f5f9');
+          artGrad.addColorStop(1, '#e2e8f0');
+        }
+
+        ctx.fillStyle = artGrad;
+        ctx.fillRect(artInset, artInset, artW, artH);
+
+        // Sun / Orb Graphic
+        const isLandscape = width > height;
+        const orbY = isLandscape ? artInset + artH * 0.38 : artInset + 80;
+        const orbRadius = isLandscape ? 40 : 50;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.beginPath();
+        ctx.arc(width / 2, orbY, orbRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Poster Typography
+        const isMinimal = artStyle === 'minimal';
+        ctx.fillStyle = isMinimal ? '#0f172a' : textColor || '#ffffff';
+        const headlineSize = isLandscape ? 20 : 24;
+        ctx.font = `bold ${headlineSize}px ${activeFont}`;
+        ctx.textAlign = 'center';
+        const headlineY = isLandscape
+          ? artInset + artH - 56
+          : artInset + artH - 70;
+        ctx.fillText(headline.toUpperCase(), width / 2, headlineY);
+
+        ctx.fillStyle = isMinimal ? '#475569' : 'rgba(255, 255, 255, 0.85)';
+        ctx.font = `12px ${activeFont}`;
+        const subquoteY = isLandscape
+          ? artInset + artH - 34
+          : artInset + artH - 42;
+        ctx.fillText(subquote, width / 2, subquoteY);
+
         ctx.font = '10px sans-serif';
-        ctx.fillText(`Page ${activePage * 2 - 1}`, width / 4, height - 40);
-        ctx.fillText(`Page ${activePage * 2}`, (3 * width) / 4, height - 40);
-      }
+        ctx.fillStyle = isMinimal ? '#94a3b8' : 'rgba(255, 255, 255, 0.6)';
+        const footerY = isLandscape
+          ? artInset + artH - 16
+          : artInset + artH - 22;
+        ctx.fillText(
+          'CUSTOM GALLERY PRINT • ARCHIVAL EDITION',
+          width / 2,
+          footerY
+        );
 
-      // PRINT BLEED GUIDES OVERLAY (If enabled)
-      if (showBleed) {
-        ctx.save();
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
-        ctx.lineWidth = 1;
-        if (ctx.setLineDash) ctx.setLineDash([4, 4]);
-        ctx.strokeRect(10, 10, width - 20, height - 20);
-
-        ctx.strokeStyle = 'rgba(16, 185, 129, 0.85)';
-        ctx.strokeRect(22, 22, width - 44, height - 44);
-        if (ctx.setLineDash) ctx.setLineDash([]);
-
-        // Technical registration marks
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 1.5;
-        const rLen = 12;
-        // Top-left
-        ctx.beginPath();
-        ctx.moveTo(10, 10 - rLen);
-        ctx.lineTo(10, 10);
-        ctx.lineTo(10 - rLen, 10);
-        // Top-right
-        ctx.moveTo(width - 10, 10 - rLen);
-        ctx.lineTo(width - 10, 10);
-        ctx.lineTo(width - 10 + rLen, 10);
-        // Bottom-left
-        ctx.moveTo(10, height - 10 + rLen);
-        ctx.lineTo(10, height - 10);
-        ctx.lineTo(10 - rLen, height - 10);
-        // Bottom-right
-        ctx.moveTo(width - 10, height - 10 + rLen);
-        ctx.lineTo(width - 10, height - 10);
-        ctx.lineTo(width - 10 + rLen, height - 10);
-        ctx.stroke();
-
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 8px monospace';
-        ctx.textAlign = 'left';
-        ctx.fillText('[---] 3MM BLEED CUT LINE', 14, 8);
-        ctx.fillStyle = '#10b981';
-        ctx.fillText('SAFE ARTWORK ZONE', 26, 20);
-        ctx.restore();
-      }
-    } else if (mode === 'poster') {
-      // Custom Framed Poster Engine
-      const {
-        headline = 'REACH FOR THE STARS',
-        subquote = 'Dream bigger, explore further, and shine bright.',
-        artStyle = 'cosmic',
-        frame = 'oak',
-        fontFamily = 'sans',
-        textColor = '#ffffff',
-        showBleed = false,
-      } = config;
-
-      const fontFamilies = {
-        serif: "'Cinzel', 'Playfair Display', Georgia, serif",
-        sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        display: "'Impact', 'Trebuchet MS', sans-serif",
-        cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
-      };
-      const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
-
-      // Outer Frame
-      const frameColor =
-        frame === 'oak'
-          ? '#d4a373'
-          : frame === 'black'
-          ? '#1e293b'
-          : frame === 'white'
-          ? '#f8fafc'
-          : frame === 'gold'
-          ? '#d97706'
-          : 'transparent';
-
-      if (frame !== 'none') {
-        ctx.fillStyle = frameColor;
-        ctx.fillRect(8, 8, width - 16, height - 16);
-        ctx.strokeStyle = frame === 'gold' ? '#f59e0b' : 'rgba(0, 0, 0, 0.15)';
-        ctx.lineWidth = frame === 'gold' ? 3 : 2;
-        ctx.strokeRect(8, 8, width - 16, height - 16);
-
-        if (frame === 'gold') {
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(12, 12, width - 24, height - 24);
+        if (showBleed) {
+          ctx.save();
+          ctx.strokeStyle = '#ef4444';
+          if (ctx.setLineDash) ctx.setLineDash([4, 4]);
+          ctx.strokeRect(6, 6, width - 12, height - 12);
+          ctx.fillStyle = '#ef4444';
+          ctx.font = 'bold 8px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText('[---] BLEED MARGIN', 10, 16);
+          ctx.restore();
         }
-      }
+      } else if (mode === 'apparel') {
+        // Kids' Apparel & Shoes Engine
+        const {
+          garment = 'hoodie',
+          color = '#1e293b',
+          monogram = 'NOAH',
+          placement = 'chest',
+          fontFamily = 'sans',
+        } = config;
 
-      // Poster Mat Board
-      const matInset = frame !== 'none' ? 24 : 12;
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(matInset, matInset, width - matInset * 2, height - matInset * 2);
+        const fontFamilies = {
+          serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+          sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          display: "'Impact', 'Trebuchet MS', sans-serif",
+          cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+        };
+        const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
 
-      // Artwork Inner Canvas
-      const artInset = matInset + 20;
-      const artW = width - artInset * 2;
-      const artH = height - artInset * 2;
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(0, 0, width, height);
 
-      const artGrad = ctx.createLinearGradient(artInset, artInset, artInset + artW, artInset + artH);
-      if (artStyle === 'cosmic') {
-        artGrad.addColorStop(0, '#0f172a');
-        artGrad.addColorStop(0.5, '#312e81');
-        artGrad.addColorStop(1, '#0369a1');
-      } else if (artStyle === 'sunburst') {
-        artGrad.addColorStop(0, '#ea580c');
-        artGrad.addColorStop(0.5, '#f59e0b');
-        artGrad.addColorStop(1, '#fef08a');
-      } else if (artStyle === 'retro') {
-        artGrad.addColorStop(0, '#4c1d95');
-        artGrad.addColorStop(0.5, '#db2777');
-        artGrad.addColorStop(1, '#fbbf24');
-      } else if (artStyle === 'botanical') {
-        artGrad.addColorStop(0, '#064e3b');
-        artGrad.addColorStop(0.5, '#047857');
-        artGrad.addColorStop(1, '#6ee7b7');
-      } else if (artStyle === 'sunset') {
-        artGrad.addColorStop(0, '#831843');
-        artGrad.addColorStop(0.5, '#ea580c');
-        artGrad.addColorStop(1, '#fde047');
-      } else {
-        artGrad.addColorStop(0, '#f1f5f9');
-        artGrad.addColorStop(1, '#e2e8f0');
-      }
-
-      ctx.fillStyle = artGrad;
-      ctx.fillRect(artInset, artInset, artW, artH);
-
-      // Sun / Orb Graphic
-      const isLandscape = width > height;
-      const orbY = isLandscape ? artInset + artH * 0.38 : artInset + 80;
-      const orbRadius = isLandscape ? 40 : 50;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.beginPath();
-      ctx.arc(width / 2, orbY, orbRadius, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Poster Typography
-      const isMinimal = artStyle === 'minimal';
-      ctx.fillStyle = isMinimal ? '#0f172a' : textColor || '#ffffff';
-      const headlineSize = isLandscape ? 20 : 24;
-      ctx.font = `bold ${headlineSize}px ${activeFont}`;
-      ctx.textAlign = 'center';
-      const headlineY = isLandscape ? artInset + artH - 56 : artInset + artH - 70;
-      ctx.fillText(headline.toUpperCase(), width / 2, headlineY);
-
-      ctx.fillStyle = isMinimal ? '#475569' : 'rgba(255, 255, 255, 0.85)';
-      ctx.font = `12px ${activeFont}`;
-      const subquoteY = isLandscape ? artInset + artH - 34 : artInset + artH - 42;
-      ctx.fillText(subquote, width / 2, subquoteY);
-
-      ctx.font = '10px sans-serif';
-      ctx.fillStyle = isMinimal ? '#94a3b8' : 'rgba(255, 255, 255, 0.6)';
-      const footerY = isLandscape ? artInset + artH - 16 : artInset + artH - 22;
-      ctx.fillText('CUSTOM GALLERY PRINT • ARCHIVAL EDITION', width / 2, footerY);
-
-      if (showBleed) {
-        ctx.save();
-        ctx.strokeStyle = '#ef4444';
-        if (ctx.setLineDash) ctx.setLineDash([4, 4]);
-        ctx.strokeRect(6, 6, width - 12, height - 12);
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 8px monospace';
-        ctx.textAlign = 'left';
-        ctx.fillText('[---] BLEED MARGIN', 10, 16);
-        ctx.restore();
-      }
-    } else if (mode === 'apparel') {
-      // Kids' Apparel & Shoes Engine
-      const {
-        garment = 'hoodie',
-        color = '#1e293b',
-        monogram = 'NOAH',
-        placement = 'chest',
-        fontFamily = 'sans',
-      } = config;
-
-      const fontFamilies = {
-        serif: "'Cinzel', 'Playfair Display', Georgia, serif",
-        sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        display: "'Impact', 'Trebuchet MS', sans-serif",
-        cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
-      };
-      const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
-
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(0, 0, width, height);
-
-      // Garment Shadow
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
-      ctx.beginPath();
-      ctx.ellipse(width / 2, height - 40, 110, 16, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (garment === 'hoodie' || garment === 'tee') {
-        ctx.fillStyle = color;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.lineWidth = 2;
-
+        // Garment Shadow
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
         ctx.beginPath();
-        ctx.moveTo(width / 2 - 34, 70);
-        ctx.quadraticCurveTo(width / 2, 85, width / 2 + 34, 70);
-        ctx.lineTo(width / 2 + 100, 110);
-        ctx.lineTo(width / 2 + 135, 175);
-        ctx.lineTo(width / 2 + 95, 195);
-        ctx.lineTo(width / 2 + 75, 150);
-        ctx.lineTo(width / 2 + 70, height - 70);
-        ctx.lineTo(width / 2 - 70, height - 70);
-        ctx.lineTo(width / 2 - 75, 150);
-        ctx.lineTo(width / 2 - 95, 195);
-        ctx.lineTo(width / 2 - 135, 175);
-        ctx.lineTo(width / 2 - 100, 110);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-        ctx.beginPath();
-        ctx.ellipse(width / 2, 70, 34, 12, 0, 0, Math.PI);
+        ctx.ellipse(width / 2, height - 40, 110, 16, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Embroidery Position according to placement zone
-        let embroiderX = width / 2;
-        let embroiderY = 170;
-        let fontSize = 18;
-        if (placement === 'pocket') {
-          embroiderX = width / 2 - 36;
-          embroiderY = 145;
-          fontSize = 13;
-        } else if (placement === 'back') {
-          embroiderY = 180;
-          fontSize = 22;
-        }
+        if (garment === 'hoodie' || garment === 'tee') {
+          ctx.fillStyle = color;
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+          ctx.lineWidth = 2;
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = `bold ${fontSize}px ${activeFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
-
-        ctx.font = '9px sans-serif';
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-        ctx.fillText('AUTHENTIC EMBROIDERY', embroiderX, embroiderY + 16);
-      } else if (garment === 'jacket') {
-        // Varsity Bomber Jacket
-        // Contrast sleeves
-        ctx.fillStyle = '#e2e8f0';
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.lineWidth = 2;
-
-        ctx.beginPath();
-        ctx.moveTo(width / 2 - 34, 70);
-        ctx.lineTo(width / 2 + 34, 70);
-        ctx.lineTo(width / 2 + 100, 110);
-        ctx.lineTo(width / 2 + 135, 185);
-        ctx.lineTo(width / 2 + 95, 200);
-        ctx.lineTo(width / 2 + 75, 150);
-        ctx.lineTo(width / 2 - 75, 150);
-        ctx.lineTo(width / 2 - 95, 200);
-        ctx.lineTo(width / 2 - 135, 185);
-        ctx.lineTo(width / 2 - 100, 110);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        // Jacket Body
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(width / 2 - 36, 75);
-        ctx.lineTo(width / 2 + 36, 75);
-        ctx.lineTo(width / 2 + 70, 140);
-        ctx.lineTo(width / 2 + 66, height - 70);
-        ctx.lineTo(width / 2 - 66, height - 70);
-        ctx.lineTo(width / 2 - 70, 140);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        // Striped Ribbed Collar
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.ellipse(width / 2, 75, 36, 12, 0, 0, Math.PI);
-        ctx.fill();
-
-        // Snap Placket Center Line
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(width / 2, 85);
-        ctx.lineTo(width / 2, height - 72);
-        ctx.stroke();
-
-        // Snaps
-        for (let snapY = 100; snapY <= height - 85; snapY += 28) {
-          ctx.fillStyle = '#f8fafc';
           ctx.beginPath();
-          ctx.arc(width / 2, snapY, 4, 0, Math.PI * 2);
+          ctx.moveTo(width / 2 - 34, 70);
+          ctx.quadraticCurveTo(width / 2, 85, width / 2 + 34, 70);
+          ctx.lineTo(width / 2 + 100, 110);
+          ctx.lineTo(width / 2 + 135, 175);
+          ctx.lineTo(width / 2 + 95, 195);
+          ctx.lineTo(width / 2 + 75, 150);
+          ctx.lineTo(width / 2 + 70, height - 70);
+          ctx.lineTo(width / 2 - 70, height - 70);
+          ctx.lineTo(width / 2 - 75, 150);
+          ctx.lineTo(width / 2 - 95, 195);
+          ctx.lineTo(width / 2 - 135, 175);
+          ctx.lineTo(width / 2 - 100, 110);
+          ctx.closePath();
           ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+          ctx.beginPath();
+          ctx.ellipse(width / 2, 70, 34, 12, 0, 0, Math.PI);
+          ctx.fill();
+
+          // Embroidery Position according to placement zone
+          let embroiderX = width / 2;
+          let embroiderY = 170;
+          let fontSize = 18;
+          if (placement === 'pocket') {
+            embroiderX = width / 2 - 36;
+            embroiderY = 145;
+            fontSize = 13;
+          } else if (placement === 'back') {
+            embroiderY = 180;
+            fontSize = 22;
+          }
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold ${fontSize}px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
+
+          ctx.font = '9px sans-serif';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+          ctx.fillText('AUTHENTIC EMBROIDERY', embroiderX, embroiderY + 16);
+        } else if (garment === 'jacket') {
+          // Varsity Bomber Jacket
+          // Contrast sleeves
+          ctx.fillStyle = '#e2e8f0';
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+          ctx.moveTo(width / 2 - 34, 70);
+          ctx.lineTo(width / 2 + 34, 70);
+          ctx.lineTo(width / 2 + 100, 110);
+          ctx.lineTo(width / 2 + 135, 185);
+          ctx.lineTo(width / 2 + 95, 200);
+          ctx.lineTo(width / 2 + 75, 150);
+          ctx.lineTo(width / 2 - 75, 150);
+          ctx.lineTo(width / 2 - 95, 200);
+          ctx.lineTo(width / 2 - 135, 185);
+          ctx.lineTo(width / 2 - 100, 110);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Jacket Body
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(width / 2 - 36, 75);
+          ctx.lineTo(width / 2 + 36, 75);
+          ctx.lineTo(width / 2 + 70, 140);
+          ctx.lineTo(width / 2 + 66, height - 70);
+          ctx.lineTo(width / 2 - 66, height - 70);
+          ctx.lineTo(width / 2 - 70, 140);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Striped Ribbed Collar
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.ellipse(width / 2, 75, 36, 12, 0, 0, Math.PI);
+          ctx.fill();
+
+          // Snap Placket Center Line
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(width / 2, 85);
+          ctx.lineTo(width / 2, height - 72);
+          ctx.stroke();
+
+          // Snaps
+          for (let snapY = 100; snapY <= height - 85; snapY += 28) {
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.arc(width / 2, snapY, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Varsity Monogram
+          let embroiderX = width / 2 - 34;
+          let embroiderY = 135;
+          let fontSize = 14;
+          if (placement === 'chest') {
+            embroiderX = width / 2 - 32;
+          }
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold ${fontSize}px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
+        } else {
+          // Kicks Silhouette
+          ctx.fillStyle = color;
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+          ctx.moveTo(width / 2 - 110, height / 2 + 10);
+          ctx.lineTo(width / 2 - 110, height / 2 - 40);
+          ctx.lineTo(width / 2 - 20, height / 2 - 45);
+          ctx.lineTo(width / 2 + 30, height / 2 - 10);
+          ctx.lineTo(width / 2 + 110, height / 2 + 15);
+          ctx.lineTo(width / 2 + 115, height / 2 + 45);
+          ctx.lineTo(width / 2 - 110, height / 2 + 45);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // White Midsole
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(width / 2 - 115, height / 2 + 35, 235, 22);
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.strokeRect(width / 2 - 115, height / 2 + 35, 235, 22);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold 14px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(monogram.toUpperCase(), width / 2 - 65, height / 2 - 15);
         }
-
-        // Varsity Monogram
-        let embroiderX = width / 2 - 34;
-        let embroiderY = 135;
-        let fontSize = 14;
-        if (placement === 'chest') {
-          embroiderX = width / 2 - 32;
-        }
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = `bold ${fontSize}px ${activeFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
-      } else {
-        // Kicks Silhouette
-        ctx.fillStyle = color;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.lineWidth = 2;
-
-        ctx.beginPath();
-        ctx.moveTo(width / 2 - 110, height / 2 + 10);
-        ctx.lineTo(width / 2 - 110, height / 2 - 40);
-        ctx.lineTo(width / 2 - 20, height / 2 - 45);
-        ctx.lineTo(width / 2 + 30, height / 2 - 10);
-        ctx.lineTo(width / 2 + 110, height / 2 + 15);
-        ctx.lineTo(width / 2 + 115, height / 2 + 45);
-        ctx.lineTo(width / 2 - 110, height / 2 + 45);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        // White Midsole
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(width / 2 - 115, height / 2 + 35, 235, 22);
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.strokeRect(width / 2 - 115, height / 2 + 35, 235, 22);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = `bold 14px ${activeFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText(monogram.toUpperCase(), width / 2 - 65, height / 2 - 15);
       }
-    }
 
-    // Render Draggable Stickers Layer
-    stickers.forEach((s) => {
-      drawSticker(ctx, s, s.id === activeStickerId);
-    });
+      // Render Draggable Stickers Layer
+      stickers.forEach((s) => {
+        drawSticker(ctx, s, s.id === activeStickerId);
+      });
 
-    // Anti-Theft Dual-Side Security Watermarks (prevents upscaling & unauthorized copying)
-    drawDualWatermarks(ctx, width, height, mode, config?.activePage ?? 0);
-  }, [width, height, mode, config, stickers, activeStickerId, drawSticker]);
+      // Anti-Theft Dual-Side Security Watermarks (prevents upscaling & unauthorized copying)
+      drawDualWatermarks(ctx, width, height, mode, config?.activePage ?? 0);
+    },
+    [width, height, mode, config, stickers, activeStickerId, drawSticker]
+  );
 
   useEffect(() => {
     let animId;
-    let lastTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    let lastTime =
+      typeof performance !== 'undefined' ? performance.now() : Date.now();
     let isMounted = true;
 
     const loop = (currentTime) => {
@@ -2752,19 +2915,25 @@ export function CanvasEngine({
     // Synchronous initial paint for instant rendering and Vitest test runner
     renderCanvas(timeRef.current);
 
-    if (isAnimated && typeof window !== 'undefined' && window.requestAnimationFrame) {
+    if (
+      isAnimated &&
+      typeof window !== 'undefined' &&
+      window.requestAnimationFrame
+    ) {
       animId = requestAnimationFrame(loop);
     }
 
     return () => {
       isMounted = false;
-      if (animId && typeof window !== 'undefined' && window.cancelAnimationFrame) {
+      if (
+        animId &&
+        typeof window !== 'undefined' &&
+        window.cancelAnimationFrame
+      ) {
         cancelAnimationFrame(animId);
       }
     };
   }, [renderCanvas, isAnimated]);
-
-
 
   // Sticker manipulation helpers
   const handleRotateActive = (deltaDegrees) => {
@@ -2785,7 +2954,10 @@ export function CanvasEngine({
         s.id === activeStickerId
           ? {
               ...s,
-              scale: Math.max(0.4, Math.min(3, ((s.scale || 1) + deltaScale).toFixed(2) * 1)),
+              scale: Math.max(
+                0.4,
+                Math.min(3, ((s.scale || 1) + deltaScale).toFixed(2) * 1)
+              ),
             }
           : s
       )
@@ -2815,17 +2987,20 @@ export function CanvasEngine({
     setActiveStickerId(duplicated.id);
   };
 
-  const handleLayerActive = useCallback((direction) => {
-    if (!activeStickerId) return;
-    const idx = stickers.findIndex((s) => s.id === activeStickerId);
-    if (idx === -1) return;
-    const targetIdx = idx + direction;
-    if (targetIdx < 0 || targetIdx >= stickers.length) return;
-    const updated = [...stickers];
-    const [moved] = updated.splice(idx, 1);
-    updated.splice(targetIdx, 0, moved);
-    onUpdateStickers(updated);
-  }, [activeStickerId, stickers, onUpdateStickers]);
+  const handleLayerActive = useCallback(
+    (direction) => {
+      if (!activeStickerId) return;
+      const idx = stickers.findIndex((s) => s.id === activeStickerId);
+      if (idx === -1) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= stickers.length) return;
+      const updated = [...stickers];
+      const [moved] = updated.splice(idx, 1);
+      updated.splice(targetIdx, 0, moved);
+      onUpdateStickers(updated);
+    },
+    [activeStickerId, stickers, onUpdateStickers]
+  );
 
   const handleDeleteActive = useCallback(() => {
     if (!activeStickerId) return;
@@ -2856,7 +3031,12 @@ export function CanvasEngine({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeStickerId, handleDeleteActive, handleLayerActive, setActiveStickerId]);
+  }, [
+    activeStickerId,
+    handleDeleteActive,
+    handleLayerActive,
+    setActiveStickerId,
+  ]);
 
   // High-Res Proof Download
   const handleDownloadProof = () => {
@@ -2879,13 +3059,21 @@ export function CanvasEngine({
         style={{ width: `${width}px`, height: `${height}px` }}
         {...gestureHandlers}
         className={`${styles.interactiveCanvas} ${
-          hoveredStickerId ? styles.cursorMove : selectedSticker ? styles.cursorStamp : ''
+          hoveredStickerId
+            ? styles.cursorMove
+            : selectedSticker
+              ? styles.cursorStamp
+              : ''
         }`}
       />
 
       {/* Layer Transformation Bar if an item is selected */}
       {activeStickerId && (
-        <div className={styles.layerToolbar} role="toolbar" aria-label="Stamp layer controls">
+        <div
+          className={styles.layerToolbar}
+          role="toolbar"
+          aria-label="Stamp layer controls"
+        >
           <span className={styles.toolbarLabel}>Layer:</span>
           <button
             type="button"
@@ -2983,7 +3171,14 @@ export function CanvasEngine({
           title="Export 300-DPI Print Proof"
           aria-label="Download print-ready proof"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />

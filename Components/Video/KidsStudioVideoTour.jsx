@@ -1,6 +1,6 @@
 import { useMascot } from '../../context/MascotProvider';
-import { CinematicVideoPlayer } from './CinematicVideoPlayer';
 import { SparklesIcon } from '../Icons';
+import { CinematicVideoPlayer } from './CinematicVideoPlayer';
 import styles from './KidsStudioVideoTour.module.css';
 
 const STUDIO_TOUR_CHAPTERS = [
@@ -34,7 +34,10 @@ export function KidsStudioVideoTour() {
   const { currentCompanion } = useMascot();
 
   return (
-    <section className={styles.tourSection} aria-label="Behind the scenes bookmaking workshop tour">
+    <section
+      className={styles.tourSection}
+      aria-label="Behind the scenes bookmaking workshop tour"
+    >
       <div className={styles.tourHeader}>
         <div className={styles.badgeRow}>
           <span className={styles.craftBadge}>
@@ -44,8 +47,9 @@ export function KidsStudioVideoTour() {
         </div>
         <h2 className={styles.tourTitle}>The Making of a Keepsake Heirloom</h2>
         <p className={styles.tourSubtitle}>
-          Watch how our master bookbinders and craftspeople transform your child's story into a museum-quality
-          hardcover book bound to last generations.
+          Watch how our master bookbinders and craftspeople transform your
+          child's story into a museum-quality hardcover book bound to last
+          generations.
         </p>
       </div>
 
@@ -76,17 +80,23 @@ export function KidsStudioVideoTour() {
       <div className={styles.craftPillarsGrid}>
         <div className={styles.craftCard}>
           <div className={styles.craftCardIcon}>1</div>
-          <strong className={styles.craftCardHeading}>100% Archival Paper</strong>
+          <strong className={styles.craftCardHeading}>
+            100% Archival Paper
+          </strong>
           <p className={styles.craftCardDesc}>
-            FSC-certified acid-free cotton paper prevents yellowing or brittleness over decades.
+            FSC-certified acid-free cotton paper prevents yellowing or
+            brittleness over decades.
           </p>
         </div>
 
         <div className={styles.craftCard}>
           <div className={styles.craftCardIcon}>2</div>
-          <strong className={styles.craftCardHeading}>Reinforced Stitching</strong>
+          <strong className={styles.craftCardHeading}>
+            Reinforced Stitching
+          </strong>
           <p className={styles.craftCardDesc}>
-            Durable casebound hardcover with cloth spine reinforcement withstands curious little hands.
+            Durable casebound hardcover with cloth spine reinforcement
+            withstands curious little hands.
           </p>
         </div>
 
@@ -94,7 +104,8 @@ export function KidsStudioVideoTour() {
           <div className={styles.craftCardIcon}>3</div>
           <strong className={styles.craftCardHeading}>Non-Toxic Inks</strong>
           <p className={styles.craftCardDesc}>
-            Eco-friendly, odorless vegetable-based inks safe for bedtime reading and toddler snuggles.
+            Eco-friendly, odorless vegetable-based inks safe for bedtime reading
+            and toddler snuggles.
           </p>
         </div>
       </div>

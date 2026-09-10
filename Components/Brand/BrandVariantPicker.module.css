@@ -14,14 +14,20 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modalContent {
   background: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 980px;
   max-height: 90vh;
@@ -301,7 +307,9 @@
   align-items: center;
   gap: 0.6rem;
   cursor: pointer;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4), 0 0 12px rgba(245, 158, 11, 0.25);
+  box-shadow:
+    0 10px 25px -5px rgba(15, 23, 42, 0.4),
+    0 0 12px rgba(245, 158, 11, 0.25);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.82rem;
   font-weight: 700;

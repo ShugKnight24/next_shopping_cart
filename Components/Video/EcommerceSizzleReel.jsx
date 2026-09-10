@@ -1,11 +1,11 @@
 import { useContext } from 'react';
-import products from '../../data/products.json';
+import { trackAddToCart } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { useMascot } from '../../context/MascotProvider';
+import products from '../../data/products.json';
+import { CartIcon, SparklesIcon } from '../Icons';
 import { useToast } from '../UI/Toast';
-import { trackAddToCart } from '../../analytics/google';
 import { CinematicVideoPlayer } from './CinematicVideoPlayer';
-import { SparklesIcon, CartIcon } from '../Icons';
 import styles from './EcommerceSizzleReel.module.css';
 
 const SIZZLE_CHAPTERS = [
@@ -81,11 +81,17 @@ export function EcommerceSizzleReel() {
     trackAddToCart(catalogItem, 1);
     showToast(`"${hotspot.title}" added from the video scene!`, 'success');
     setIsCartOpen(true);
-    speak(`Nice catch! You just shopped "${hotspot.title}" directly from the reel!`, 'celebrating');
+    speak(
+      `Nice catch! You just shopped "${hotspot.title}" directly from the reel!`,
+      'celebrating'
+    );
   };
 
   return (
-    <section className={styles.sizzleSection} aria-label="Brand Sizzle Reel Showcase">
+    <section
+      className={styles.sizzleSection}
+      aria-label="Brand Sizzle Reel Showcase"
+    >
       <div className={styles.sizzleHeader}>
         <div className={styles.eyebrowBadge}>
           <SparklesIcon size={14} />
@@ -93,8 +99,9 @@ export function EcommerceSizzleReel() {
         </div>
         <h2 className={styles.sizzleTitle}>Experience The Collection</h2>
         <p className={styles.sizzleSubtitle}>
-          Step inside our flagship gallery and craftsmanship vaults. Watch the reel and tap interactive
-          product hotspots to shop the scene in real time.
+          Step inside our flagship gallery and craftsmanship vaults. Watch the
+          reel and tap interactive product hotspots to shop the scene in real
+          time.
         </p>
       </div>
 
@@ -123,9 +130,13 @@ export function EcommerceSizzleReel() {
                 {/* Floating Hotspot Card */}
                 <div className={styles.hotspotCard}>
                   <span className={styles.hotspotTag}>Shop The Scene</span>
-                  <strong className={styles.hotspotTitle}>{hotspot.title}</strong>
+                  <strong className={styles.hotspotTitle}>
+                    {hotspot.title}
+                  </strong>
                   <div className={styles.hotspotBottomRow}>
-                    <span className={styles.hotspotPrice}>${hotspot.price}</span>
+                    <span className={styles.hotspotPrice}>
+                      ${hotspot.price}
+                    </span>
                     <button
                       type="button"
                       className={styles.quickAddBtn}

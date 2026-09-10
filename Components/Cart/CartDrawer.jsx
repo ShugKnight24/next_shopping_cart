@@ -1,8 +1,14 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import {
+  trackAddToCart,
+  trackApplyPromotion,
+  trackBeginCheckout,
+  trackRemoveFromCart,
+  trackViewCart,
+} from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
-import { useToast } from '../UI/Toast';
 import {
   calculateDiscount,
   formatCurrency,
@@ -11,20 +17,21 @@ import {
 } from '../../utils/cartUtils';
 import { getAllProducts } from '../../utils/productCatalog';
 import {
-  trackAddToCart,
-  trackApplyPromotion,
-  trackBeginCheckout,
-  trackRemoveFromCart,
-  trackViewCart,
-} from '../../analytics/google';
-import { CloseIcon, CartIcon, TrashIcon, CheckCircleIcon, SparklesIcon } from '../Icons';
+  CartIcon,
+  CheckCircleIcon,
+  CloseIcon,
+  SparklesIcon,
+  TrashIcon,
+} from '../Icons';
+import { useToast } from '../UI/Toast';
 import styles from './CartDrawer.module.css';
 
 const FREE_SHIPPING_THRESHOLD = 150;
 
 export function CartDrawer() {
   const router = useRouter();
-  const { state, dispatch, isCartOpen, setIsCartOpen } = useContext(CartContext);
+  const { state, dispatch, isCartOpen, setIsCartOpen } =
+    useContext(CartContext);
   const { cart = [], promo = null } = state || {};
   const { showToast } = useToast();
 
@@ -195,7 +202,9 @@ export function CartDrawer() {
             {amountToFreeShipping <= 0 ? (
               <span className={styles.freeSuccess}>
                 <CheckCircleIcon size={16} />
-                <span>You unlocked <strong>Free Express Shipping!</strong></span>
+                <span>
+                  You unlocked <strong>Free Express Shipping!</strong>
+                </span>
               </span>
             ) : (
               <span>
@@ -234,130 +243,137 @@ export function CartDrawer() {
           ) : (
             <>
               <ul className={styles.itemList}>
-              {cart.map((item) => (
-                <li key={item.itemid} className={styles.cartItem}>
-                  <div className={styles.itemImage}>
-                    <img
-                      src={item.image}
-                      alt={`${item.manufacturer} ${item.productName}`}
-                    />
-                  </div>
-
-                  <div className={styles.itemDetails}>
-                    <div className={styles.itemHeaderRow}>
-                      <span className={styles.itemBrand}>
-                        {item.manufacturer}
-                      </span>
-                      <button
-                        className={styles.removeBtn}
-                        onClick={() =>
-                          handleRemoveItem(item.itemid, item.productName)
-                        }
-                        aria-label={`Remove ${item.productName} from bag`}
-                      >
-                        <TrashIcon size={16} />
-                      </button>
+                {cart.map((item) => (
+                  <li key={item.itemid} className={styles.cartItem}>
+                    <div className={styles.itemImage}>
+                      <img
+                        src={item.image}
+                        alt={`${item.manufacturer} ${item.productName}`}
+                      />
                     </div>
 
-                    {item.isCustom ? (
-                      <span className={styles.itemName}>{item.productName}</span>
-                    ) : (
-                      <Link
-                        href={`/products/${item.itemid}`}
-                        className={styles.itemName}
-                        onClick={() => setIsCartOpen(false)}
-                      >
-                        {item.productName}
-                      </Link>
-                    )}
+                    <div className={styles.itemDetails}>
+                      <div className={styles.itemHeaderRow}>
+                        <span className={styles.itemBrand}>
+                          {item.manufacturer}
+                        </span>
+                        <button
+                          className={styles.removeBtn}
+                          onClick={() =>
+                            handleRemoveItem(item.itemid, item.productName)
+                          }
+                          aria-label={`Remove ${item.productName} from bag`}
+                        >
+                          <TrashIcon size={16} />
+                        </button>
+                      </div>
 
-                    {item.customAttributes && (
-                      <div className={styles.customAttributesGrid}>
-                        {Object.entries(item.customAttributes).map(([k, v]) => (
-                          <span key={k} className={styles.customAttributeBadge}>
-                            {k}: <strong>{v}</strong>
+                      {item.isCustom ? (
+                        <span className={styles.itemName}>
+                          {item.productName}
+                        </span>
+                      ) : (
+                        <Link
+                          href={`/products/${item.itemid}`}
+                          className={styles.itemName}
+                          onClick={() => setIsCartOpen(false)}
+                        >
+                          {item.productName}
+                        </Link>
+                      )}
+
+                      {item.customAttributes && (
+                        <div className={styles.customAttributesGrid}>
+                          {Object.entries(item.customAttributes).map(
+                            ([k, v]) => (
+                              <span
+                                key={k}
+                                className={styles.customAttributeBadge}
+                              >
+                                {k}: <strong>{v}</strong>
+                              </span>
+                            )
+                          )}
+                        </div>
+                      )}
+
+                      <div className={styles.itemPriceRow}>
+                        <div className={styles.qtyControls}>
+                          <button
+                            className={styles.qtyBtn}
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.itemid,
+                                Math.max(0, item.quantity - 1)
+                              )
+                            }
+                            aria-label="Decrease quantity"
+                          >
+                            -
+                          </button>
+                          <span className={styles.qtyVal}>{item.quantity}</span>
+                          <button
+                            className={styles.qtyBtn}
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.itemid,
+                                item.quantity + 1
+                              )
+                            }
+                            disabled={item.available <= 0}
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <span className={styles.itemTotal}>
+                          {formatCurrency(item.price * item.quantity)}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Frequently Paired With / Cross-Sell Shelf */}
+              {crossSellRecommendations.length > 0 && (
+                <div className={styles.crossSellSection}>
+                  <div className={styles.crossSellHeader}>
+                    <SparklesIcon size={14} />
+                    <span>Frequently Paired With</span>
+                  </div>
+                  <div className={styles.crossSellList}>
+                    {crossSellRecommendations.map((rec) => (
+                      <div key={rec.itemid} className={styles.crossSellItem}>
+                        <div className={styles.crossSellImage}>
+                          <img src={rec.image} alt={rec.productName} />
+                        </div>
+                        <div className={styles.crossSellInfo}>
+                          <span className={styles.crossSellBrand}>
+                            {rec.manufacturer}
                           </span>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className={styles.itemPriceRow}>
-                      <div className={styles.qtyControls}>
+                          <span className={styles.crossSellName}>
+                            {rec.productName}
+                          </span>
+                          <span className={styles.crossSellPrice}>
+                            {formatCurrency(rec.price)}
+                          </span>
+                        </div>
                         <button
-                          className={styles.qtyBtn}
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.itemid,
-                              Math.max(0, item.quantity - 1)
-                            )
-                          }
-                          aria-label="Decrease quantity"
+                          className={styles.crossSellAddBtn}
+                          onClick={() => handleQuickAddCrossSell(rec)}
+                          aria-label={`Quick add ${rec.productName} to bag`}
+                          type="button"
                         >
-                          -
-                        </button>
-                        <span className={styles.qtyVal}>{item.quantity}</span>
-                        <button
-                          className={styles.qtyBtn}
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.itemid,
-                              item.quantity + 1
-                            )
-                          }
-                          disabled={item.available <= 0}
-                          aria-label="Increase quantity"
-                        >
-                          +
+                          + Add
                         </button>
                       </div>
-
-                      <span className={styles.itemTotal}>
-                        {formatCurrency(item.price * item.quantity)}
-                      </span>
-                    </div>
+                    ))}
                   </div>
-                </li>
-              ))}
-            </ul>
-
-            {/* Frequently Paired With / Cross-Sell Shelf */}
-            {crossSellRecommendations.length > 0 && (
-              <div className={styles.crossSellSection}>
-                <div className={styles.crossSellHeader}>
-                  <SparklesIcon size={14} />
-                  <span>Frequently Paired With</span>
                 </div>
-                <div className={styles.crossSellList}>
-                  {crossSellRecommendations.map((rec) => (
-                    <div key={rec.itemid} className={styles.crossSellItem}>
-                      <div className={styles.crossSellImage}>
-                        <img src={rec.image} alt={rec.productName} />
-                      </div>
-                      <div className={styles.crossSellInfo}>
-                        <span className={styles.crossSellBrand}>
-                          {rec.manufacturer}
-                        </span>
-                        <span className={styles.crossSellName}>
-                          {rec.productName}
-                        </span>
-                        <span className={styles.crossSellPrice}>
-                          {formatCurrency(rec.price)}
-                        </span>
-                      </div>
-                      <button
-                        className={styles.crossSellAddBtn}
-                        onClick={() => handleQuickAddCrossSell(rec)}
-                        aria-label={`Quick add ${rec.productName} to bag`}
-                        type="button"
-                      >
-                        + Add
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+              )}
+            </>
           )}
         </div>
 
@@ -382,10 +398,7 @@ export function CartDrawer() {
                   </button>
                 </div>
               ) : (
-                <form
-                  onSubmit={handleApplyPromo}
-                  className={styles.promoForm}
-                >
+                <form onSubmit={handleApplyPromo} className={styles.promoForm}>
                   <input
                     type="text"
                     placeholder="Discount code (e.g. WELCOME10)"
@@ -421,7 +434,9 @@ export function CartDrawer() {
               <div className={styles.totalRow}>
                 <span>Shipping</span>
                 <span>
-                  {amountToFreeShipping <= 0 ? 'Free' : 'Calculated at checkout'}
+                  {amountToFreeShipping <= 0
+                    ? 'Free'
+                    : 'Calculated at checkout'}
                 </span>
               </div>
               <div className={`${styles.totalRow} ${styles.grandTotal}`}>

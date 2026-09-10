@@ -20,9 +20,7 @@ describe('SEO & Dynamic XML Sitemap', () => {
   it('indexes all static routes with appropriate priority', () => {
     const sitemap = generateSiteMap(mockProducts);
 
-    expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app</loc>'
-    );
+    expect(sitemap).toContain('<loc>https://cart-commerce.vercel.app</loc>');
     expect(sitemap).toContain(
       '<loc>https://cart-commerce.vercel.app/products</loc>'
     );

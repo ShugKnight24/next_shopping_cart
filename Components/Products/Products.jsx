@@ -72,7 +72,14 @@ export function Products({
         priceRange,
         sortBy,
       }),
-    [catalogProducts, activeCategory, inStockOnly, onSaleOnly, priceRange, sortBy]
+    [
+      catalogProducts,
+      activeCategory,
+      inStockOnly,
+      onSaleOnly,
+      priceRange,
+      sortBy,
+    ]
   );
 
   const handleResetFilters = () => {
@@ -128,13 +135,17 @@ export function Products({
 
       {/* Resilient Error & Empty States */}
       {isError ? (
-        <div className={styles.errorContainer} data-testid="products-error-state">
+        <div
+          className={styles.errorContainer}
+          data-testid="products-error-state"
+        >
           <div className={styles.errorIcon}>
             <AlertTriangleIcon size={28} />
           </div>
           <h3 className={styles.errorTitle}>Catalog Service Unavailable</h3>
           <p className={styles.errorText}>
-            {catalogError || 'We encountered an error loading the product catalog.'}
+            {catalogError ||
+              'We encountered an error loading the product catalog.'}
           </p>
           <button className={styles.retryBtn} onClick={refetch}>
             Retry Loading Catalog
@@ -150,7 +161,8 @@ export function Products({
           </div>
           <h3 className={styles.emptyTitle}>No products currently available</h3>
           <p className={styles.emptyText}>
-            Our catalog is currently being updated with new arrivals. Please check back shortly.
+            Our catalog is currently being updated with new arrivals. Please
+            check back shortly.
           </p>
         </div>
       ) : processedProducts.length === 0 ? (
@@ -160,7 +172,8 @@ export function Products({
           </div>
           <h3 className={styles.emptyTitle}>No matching products found</h3>
           <p className={styles.emptyText}>
-            Try clearing active filters or selecting a different category to browse our collection.
+            Try clearing active filters or selecting a different category to
+            browse our collection.
           </p>
           <button className={styles.resetBtn} onClick={handleResetFilters}>
             Reset All Filters
@@ -215,4 +228,3 @@ Products.propTypes = {
   fetchFromApi: PropTypes.bool,
   apiEndpoint: PropTypes.string,
 };
-

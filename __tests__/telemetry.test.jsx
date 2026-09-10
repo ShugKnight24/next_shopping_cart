@@ -1,6 +1,6 @@
-import { describe, expect, it, beforeEach } from 'vitest';
-import { render, fireEvent } from '@testing-library/react';
-import { telemetry, HoneypotField } from '../analytics/telemetry';
+import { fireEvent, render } from '@testing-library/react';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { HoneypotField, telemetry } from '../analytics/telemetry';
 
 describe('Telemetry & Bot Detection Engine', () => {
   beforeEach(() => {

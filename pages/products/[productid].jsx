@@ -2,42 +2,42 @@ import Head from 'next/head';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { CartContext } from '../../context/CartProvider';
-import { formatCurrency } from '../../utils/cartUtils';
-import { getCurrentItem } from '../../utils/getItem';
 import {
   trackAddToCart,
   trackRemoveFromCart,
   trackViewItem,
 } from '../../analytics/google';
+import { CartContext } from '../../context/CartProvider';
+import { formatCurrency } from '../../utils/cartUtils';
+import { getCurrentItem } from '../../utils/getItem';
 import {
   getAllProducts,
   getProductById,
   getRelatedProducts,
 } from '../../utils/productCatalog';
 
+import {
+  AlertTriangleIcon,
+  CartIcon,
+  CheckCircleIcon,
+  ChevronRight,
+  HeartIcon,
+  MinusIcon,
+  PlusIcon,
+  ShareIcon,
+  SparklesIcon,
+  TimesCircleIcon,
+  TrashIcon,
+} from '../../Components/Icons';
 import { ImageGallery } from '../../Components/Products/ImageGallery';
 import { ProductTabs } from '../../Components/Products/ProductTabs';
-import { TrustBadges } from '../../Components/Products/TrustBadges';
-import { StickyBuyBar } from '../../Components/Products/StickyBuyBar';
-import { RelatedProducts } from '../../Components/Products/RelatedProducts';
 import { RecentlyViewed } from '../../Components/Products/RecentlyViewed';
+import { RelatedProducts } from '../../Components/Products/RelatedProducts';
+import { StickyBuyBar } from '../../Components/Products/StickyBuyBar';
+import { TrustBadges } from '../../Components/Products/TrustBadges';
 import { Badge, RatingStars } from '../../Components/UI';
 import { useToast } from '../../Components/UI/Toast';
 import styles from '../../styles/pages/Products.module.css';
-import {
-  ChevronRight,
-  AlertTriangleIcon,
-  CheckCircleIcon,
-  TimesCircleIcon,
-  MinusIcon,
-  PlusIcon,
-  CartIcon,
-  HeartIcon,
-  TrashIcon,
-  ShareIcon,
-  SparklesIcon,
-} from '../../Components/Icons';
 
 export const getStaticPaths = async () => {
   const all = getAllProducts();
@@ -79,7 +79,8 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   const { showToast } = useToast();
 
   const safeProduct = currentProduct || {};
-  const currentItem = getCurrentItem(inventory, safeProduct.itemid) || safeProduct;
+  const currentItem =
+    getCurrentItem(inventory, safeProduct.itemid) || safeProduct;
   const isInCart = Boolean(getCurrentItem(cart, safeProduct.itemid));
   const cartItem = getCurrentItem(cart, safeProduct.itemid);
   const cartQuantity = cartItem?.quantity || 0;
@@ -130,7 +131,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   // Dynamic price calculation based on selected variant modifier
   const modifier = selectedVariant?.priceModifier || 0;
   const effectivePrice = price + modifier;
-  const effectiveOriginalPrice = originalPrice ? originalPrice + modifier : null;
+  const effectiveOriginalPrice = originalPrice
+    ? originalPrice + modifier
+    : null;
 
   const isOnSale = badges.includes('sale') && effectiveOriginalPrice;
   const discountPercentage = isOnSale
@@ -190,7 +193,8 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
               marginBottom: '2rem',
             }}
           >
-            The requested item could not be retrieved from our inventory or is currently out of circulation.
+            The requested item could not be retrieved from our inventory or is
+            currently out of circulation.
           </p>
           <Link
             href="/products"
@@ -358,7 +362,10 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
         <meta property="og:description" content={description} />
         <meta property="og:type" content="product" />
         <meta property="og:image" content={image} />
-        <meta property="product:price:amount" content={String(effectivePrice)} />
+        <meta
+          property="product:price:amount"
+          content={String(effectivePrice)}
+        />
         <meta property="product:price:currency" content="USD" />
 
         {/* Twitter Cards */}
@@ -460,7 +467,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                     <span className={styles.originalPrice}>
                       {formatCurrency(effectiveOriginalPrice)}
                     </span>
-                    <span className={styles.discountBadge}>-{discountPercentage}%</span>
+                    <span className={styles.discountBadge}>
+                      -{discountPercentage}%
+                    </span>
                   </>
                 )}
               </div>
@@ -471,7 +480,8 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                   currentItem.available <= 5 ? (
                     <div>
                       <span className={styles.lowStock}>
-                        <AlertTriangleIcon size={16} /> Only {currentItem.available} left in stock — order soon
+                        <AlertTriangleIcon size={16} /> Only{' '}
+                        {currentItem.available} left in stock — order soon
                       </span>
                       <div
                         style={{
@@ -495,7 +505,8 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                     </div>
                   ) : (
                     <span className={styles.inStock}>
-                      <CheckCircleIcon size={16} /> In Stock ({currentItem.available} units available)
+                      <CheckCircleIcon size={16} /> In Stock (
+                      {currentItem.available} units available)
                     </span>
                   )
                 ) : (
@@ -571,7 +582,13 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                   </button>
                 </div>
                 {cartQuantity > 0 && (
-                  <span style={{ fontSize: '0.82rem', color: '#16a34a', fontWeight: 600 }}>
+                  <span
+                    style={{
+                      fontSize: '0.82rem',
+                      color: '#16a34a',
+                      fontWeight: 600,
+                    }}
+                  >
                     {cartQuantity} currently in cart
                   </span>
                 )}
@@ -581,7 +598,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
               <div className={styles.productActions}>
                 <button
                   className={`${styles.addToCartBtn} ${isInCart ? styles.inCartBtn : ''}`}
-                  onClick={() => handleAddToCart(itemid, quantity, selectedVariant)}
+                  onClick={() =>
+                    handleAddToCart(itemid, quantity, selectedVariant)
+                  }
                   disabled={disabledButton}
                 >
                   <CartIcon size={18} />
@@ -598,7 +617,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                   aria-label={
                     isFavorite ? 'Remove from favorites' : 'Add to favorites'
                   }
-                  title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                  title={
+                    isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                  }
                 >
                   <HeartIcon filled={isFavorite} size={20} />
                 </button>
@@ -639,29 +660,31 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
             </div>
           </div>
 
-        {/* 5-Panel Product Tabs */}
-        <ProductTabs
-          product={currentProduct}
-          specifications={specifications}
-          shipping={shipping}
-          reviews={reviews}
-          faqs={faqs}
-        />
+          {/* 5-Panel Product Tabs */}
+          <ProductTabs
+            product={currentProduct}
+            specifications={specifications}
+            shipping={shipping}
+            reviews={reviews}
+            faqs={faqs}
+          />
 
-        {/* Related & Recommended Products */}
-        <RelatedProducts products={relatedProducts} />
+          {/* Related & Recommended Products */}
+          <RelatedProducts products={relatedProducts} />
 
-        {/* Recently Viewed Session History */}
-        <RecentlyViewed currentProductId={itemid} />
+          {/* Recently Viewed Session History */}
+          <RecentlyViewed currentProductId={itemid} />
 
-        {/* Floating Sticky Buy Bar */}
-        <StickyBuyBar
-          product={currentProduct}
-          selectedVariant={selectedVariant}
-          totalPrice={effectivePrice}
-          onAddToCart={() => handleAddToCart(itemid, quantity, selectedVariant)}
-          disabled={disabledButton}
-        />
+          {/* Floating Sticky Buy Bar */}
+          <StickyBuyBar
+            product={currentProduct}
+            selectedVariant={selectedVariant}
+            totalPrice={effectivePrice}
+            onAddToCart={() =>
+              handleAddToCart(itemid, quantity, selectedVariant)
+            }
+            disabled={disabledButton}
+          />
         </div>
       </div>
     </>

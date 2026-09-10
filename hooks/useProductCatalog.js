@@ -74,7 +74,9 @@ export function useProductCatalog({
       } catch (err) {
         if (err.name === 'AbortError') return;
 
-        setError(err.message || 'Failed to retrieve products from catalog service.');
+        setError(
+          err.message || 'Failed to retrieve products from catalog service.'
+        );
         setStatus('error');
       }
     },

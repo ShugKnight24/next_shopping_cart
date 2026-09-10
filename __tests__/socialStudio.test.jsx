@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MascotProvider } from '../context/MascotProvider';
-import { ToastProvider } from '../Components/UI/Toast';
 import { SocialStudio } from '../Components/Studio/SocialStudio';
+import { ToastProvider } from '../Components/UI/Toast';
+import { MascotProvider } from '../context/MascotProvider';
 
 // Mock Next.js useRouter
 vi.mock('next/router', () => ({
@@ -75,7 +75,9 @@ describe('Social Media Creation Studio', () => {
     expect(
       screen.getByRole('heading', { name: /Social Media Creation Studio/i })
     ).toBeInTheDocument();
-    expect(screen.getByText('Store Owner & Creator Workshop')).toBeInTheDocument();
+    expect(
+      screen.getByText('Store Owner & Creator Workshop')
+    ).toBeInTheDocument();
 
     // 4 Platforms
     expect(screen.getAllByText('Instagram Square').length).toBeGreaterThan(0);

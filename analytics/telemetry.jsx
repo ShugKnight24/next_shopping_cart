@@ -56,7 +56,12 @@ class TelemetryEngine {
   }
 
   generateSessionId() {
-    return 't_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now().toString(36);
+    return (
+      't_' +
+      Math.random().toString(36).substring(2, 11) +
+      '_' +
+      Date.now().toString(36)
+    );
   }
 
   runEnvironmentChecks() {
@@ -95,7 +100,11 @@ class TelemetryEngine {
 
     // 3. Screen and viewport anomaly checks
     const screen = win.screen || {};
-    if (screen.width === 0 || screen.height === 0 || win.outerWidth === 0 && win.outerHeight === 0) {
+    if (
+      screen.width === 0 ||
+      screen.height === 0 ||
+      (win.outerWidth === 0 && win.outerHeight === 0)
+    ) {
       this.botScore += 35;
       this.detectionFlags.zeroDimensionScreen = true;
     }
@@ -108,7 +117,8 @@ class TelemetryEngine {
 
     // 5. User-Agent regex check for known crawlers and headless environments
     const ua = (nav.userAgent || '').toLowerCase();
-    const botPattern = /bot|crawler|spider|headlesschrome|phantomjs|slurp|seekport|ahrefs|semrush|python-requests|axios|curl|wget/i;
+    const botPattern =
+      /bot|crawler|spider|headlesschrome|phantomjs|slurp|seekport|ahrefs|semrush|python-requests|axios|curl|wget/i;
     if (botPattern.test(ua)) {
       this.botScore += 45;
       this.detectionFlags.botUserAgent = true;
@@ -134,10 +144,15 @@ class TelemetryEngine {
     // Track scroll dynamics and scroll depth
     const onScroll = () => {
       this.interactionCounts.scrolls++;
-      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop =
+        window.scrollY || document.documentElement.scrollTop || 0;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       if (docHeight > 0) {
-        const depthPercent = Math.min(100, Math.round((scrollTop / docHeight) * 100));
+        const depthPercent = Math.min(
+          100,
+          Math.round((scrollTop / docHeight) * 100)
+        );
         if (depthPercent > this.maxScrollDepth) {
           this.maxScrollDepth = depthPercent;
         }
@@ -153,8 +168,14 @@ class TelemetryEngine {
           x: typeof e.pageX === 'number' ? e.pageX : e.clientX || 0,
           y: typeof e.pageY === 'number' ? e.pageY : e.clientY || 0,
           timestamp: Date.now(),
-          tag: e.target && e.target.tagName ? e.target.tagName.toLowerCase() : 'element',
-          text: e.target && e.target.textContent ? e.target.textContent.substring(0, 32).trim() : '',
+          tag:
+            e.target && e.target.tagName
+              ? e.target.tagName.toLowerCase()
+              : 'element',
+          text:
+            e.target && e.target.textContent
+              ? e.target.textContent.substring(0, 32).trim()
+              : '',
           path: window.location.pathname,
         };
         this.clickEvents.push(point);
@@ -169,25 +190,39 @@ class TelemetryEngine {
       this.interactionCounts.touches++;
       this.botScore = Math.max(0, this.botScore - 15);
     };
-    window.addEventListener('touchstart', onTouch, { passive: true, once: true });
+    window.addEventListener('touchstart', onTouch, {
+      passive: true,
+      once: true,
+    });
 
     // Track human typing rhythm vs instantaneous script autofill
-    window.addEventListener('keydown', () => {
-      this.interactionCounts.keystrokes++;
-      this.lastKeydownTime = performance.now();
-    }, { passive: true });
+    window.addEventListener(
+      'keydown',
+      () => {
+        this.interactionCounts.keystrokes++;
+        this.lastKeydownTime = performance.now();
+      },
+      { passive: true }
+    );
 
-    window.addEventListener('keyup', () => {
-      if (this.lastKeydownTime > 0) {
-        const delta = Math.round(performance.now() - this.lastKeydownTime);
-        this.typingDeltas.push(delta);
-        // Instant keyup (0ms delta) repeatedly indicates scripted input
-        if (delta === 0 && this.typingDeltas.filter((d) => d === 0).length >= 3) {
-          this.botScore += 30;
-          this.detectionFlags.instantTyping = true;
+    window.addEventListener(
+      'keyup',
+      () => {
+        if (this.lastKeydownTime > 0) {
+          const delta = Math.round(performance.now() - this.lastKeydownTime);
+          this.typingDeltas.push(delta);
+          // Instant keyup (0ms delta) repeatedly indicates scripted input
+          if (
+            delta === 0 &&
+            this.typingDeltas.filter((d) => d === 0).length >= 3
+          ) {
+            this.botScore += 30;
+            this.detectionFlags.instantTyping = true;
+          }
         }
-      }
-    }, { passive: true });
+      },
+      { passive: true }
+    );
   }
 
   triggerHoneypot() {
@@ -220,13 +255,14 @@ class TelemetryEngine {
       maxScrollDepth: this.maxScrollDepth,
       interactions: { ...this.interactionCounts },
       flags: { ...this.detectionFlags },
-      screen: typeof window !== 'undefined'
-        ? {
-            width: window.innerWidth,
-            height: window.innerHeight,
-            devicePixelRatio: window.devicePixelRatio || 1,
-          }
-        : null,
+      screen:
+        typeof window !== 'undefined'
+          ? {
+              width: window.innerWidth,
+              height: window.innerHeight,
+              devicePixelRatio: window.devicePixelRatio || 1,
+            }
+          : null,
       clickEvents: [...this.clickEvents],
     };
   }
@@ -279,7 +315,9 @@ class TelemetryEngine {
 
     if (endpoint && typeof navigator.sendBeacon === 'function') {
       try {
-        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        const blob = new Blob([JSON.stringify(payload)], {
+          type: 'application/json',
+        });
         navigator.sendBeacon(endpoint, blob);
       } catch {
         // Beacon failure ignored gracefully

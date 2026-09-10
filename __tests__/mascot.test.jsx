@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { MascotProvider } from '../context/MascotProvider';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MascotCompanion } from '../Components/Mascot/MascotCompanion';
 import { MASCOTS } from '../config/mascots';
+import { MascotProvider } from '../context/MascotProvider';
 
 // Mock Next.js useRouter
 vi.mock('next/router', () => ({
@@ -29,10 +29,10 @@ describe('Mascot Companion System', () => {
     );
 
     expect(screen.getByText('Luna The Cosmic Shepherd')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Welcome home!/i)
+      screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)
     ).toBeInTheDocument();
+    expect(screen.getByText(/Welcome home!/i)).toBeInTheDocument();
   });
 
   it('allows toggling the companion OFF and persists in localStorage', () => {
@@ -42,18 +42,26 @@ describe('Mascot Companion System', () => {
       </MascotProvider>
     );
 
-    const toggleBtn = screen.getByRole('button', { name: /Turn off companion/i });
+    const toggleBtn = screen.getByRole('button', {
+      name: /Turn off companion/i,
+    });
     fireEvent.click(toggleBtn);
 
     // After turning off, the full mascot and bubble disappear, replaced by the subtle enable pill
-    expect(screen.queryByLabelText(/Luna The Cosmic Shepherd Mascot/i)).not.toBeInTheDocument();
-    const enableBtn = screen.getByRole('button', { name: /Turn on Brand Companion/i });
+    expect(
+      screen.queryByLabelText(/Luna The Cosmic Shepherd Mascot/i)
+    ).not.toBeInTheDocument();
+    const enableBtn = screen.getByRole('button', {
+      name: /Turn on Brand Companion/i,
+    });
     expect(enableBtn).toBeInTheDocument();
     expect(localStorage.getItem('shopping_cart.mascot_enabled')).toBe('false');
 
     // Clicking enable restores the companion
     fireEvent.click(enableBtn);
-    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)
+    ).toBeInTheDocument();
     expect(localStorage.getItem('shopping_cart.mascot_enabled')).toBe('true');
   });
 
@@ -70,27 +78,42 @@ describe('Mascot Companion System', () => {
 
     // 1. Initial on Luna -> identifies next as Carty
     expect(switchBtn).toHaveTextContent(/Switch to Carty/i);
-    expect(switchBtn).toHaveAttribute('title', 'Switch to next companion (Carty)');
+    expect(switchBtn).toHaveAttribute(
+      'title',
+      'Switch to next companion (Carty)'
+    );
     fireEvent.click(switchBtn);
 
     expect(screen.getByText('Carty The Courier')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Carty The Courier Mascot/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Carty The Courier Mascot/i)
+    ).toBeInTheDocument();
 
     // 2. Now on Carty (the companion after the first) -> must properly identify Sparky (not Luna!)
     expect(switchBtn).toHaveTextContent(/Switch to Sparky/i);
-    expect(switchBtn).toHaveAttribute('title', 'Switch to next companion (Sparky)');
+    expect(switchBtn).toHaveAttribute(
+      'title',
+      'Switch to next companion (Sparky)'
+    );
     fireEvent.click(switchBtn);
 
     expect(screen.getByText('Sparky The Sneaker Hound')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Sparky The Sneaker Hound Mascot/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Sparky The Sneaker Hound Mascot/i)
+    ).toBeInTheDocument();
 
     // 3. Now on Sparky -> cycles back and identifies Luna
     expect(switchBtn).toHaveTextContent(/Switch to Luna/i);
-    expect(switchBtn).toHaveAttribute('title', 'Switch to next companion (Luna)');
+    expect(switchBtn).toHaveAttribute(
+      'title',
+      'Switch to next companion (Luna)'
+    );
     fireEvent.click(switchBtn);
 
     expect(screen.getByText('Luna The Cosmic Shepherd')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)
+    ).toBeInTheDocument();
   });
 
   it('dismisses the speech bubble without unmounting the mascot', () => {
@@ -104,11 +127,11 @@ describe('Mascot Companion System', () => {
     fireEvent.click(dismissBtn);
 
     // Speech text is gone
-    expect(
-      screen.queryByText(/Welcome home!/i)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Welcome home!/i)).not.toBeInTheDocument();
     // But character is still present
-    expect(screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Luna The Cosmic Shepherd Mascot/i)
+    ).toBeInTheDocument();
   });
 
   it('provides interactive action chips that trigger speech and particle reactions', () => {
@@ -118,18 +141,23 @@ describe('Mascot Companion System', () => {
       </MascotProvider>
     );
 
-    const treatBtn = screen.getByRole('button', { name: /Give Astronaut Treat/i });
+    const treatBtn = screen.getByRole('button', {
+      name: /Give Astronaut Treat/i,
+    });
     expect(treatBtn).toBeInTheDocument();
     fireEvent.click(treatBtn);
 
     expect(
-      screen.getByText(/Luna wags her tail happily and does a zero-gravity spin/i)
+      screen.getByText(
+        /Luna wags her tail happily and does a zero-gravity spin/i
+      )
     ).toBeInTheDocument();
   });
 
   it('contains zero Unicode emojis in mascot configurations', () => {
     // Check all mascot configs for emojis (unicode range \u{1F300}-\u{1F9FF} etc)
-    const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+    const emojiRegex =
+      /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
 
     Object.values(MASCOTS).forEach((m) => {
       expect(emojiRegex.test(m.name)).toBe(false);
@@ -152,6 +180,8 @@ describe('Mascot Companion System', () => {
     expect(MASCOTS.finley.realm).toBe('kids');
     expect(MASCOTS.finley.name).toBe('Finley The Starlight Fox');
     expect(MASCOTS.finley.quotes.home).toContain('stars');
-    expect(MASCOTS.finley.interactiveActions.some((a) => a.id === 'secret')).toBe(true);
+    expect(
+      MASCOTS.finley.interactiveActions.some((a) => a.id === 'secret')
+    ).toBe(true);
   });
 });

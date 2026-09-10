@@ -9,18 +9,18 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
 - **Interactive 3D Product Studio**: 360° orbital turntable with touch & drag gesture physics, preset camera angles, animated feature hotspot pins, and exploded anatomy view mode.
 - **Modern Product Detail Experience**: 2-column sticky desktop layout, variant/colorway selectors with dynamic pricing modifiers, stock urgency indicators, 5-panel interactive tabs (Overview, Specs, Shipping, Reviews with rating breakdown bars, FAQs), and a sticky purchase bar.
 - **Curated Multi-Vertical Catalog**: 40+ verified items spanning 6 product categories:
-  - *Sneakers & Running* (Air Jordan, Nike Kobe, LeBron, Hoka, Altra)
-  - *Collectibles & TCG* (Warhammer 40k, Magic: The Gathering)
-  - *Musical Instruments* (Gibson, Fender Custom Shop, Martin, Nord, Yamaha)
-  - *Strength & Fitness* (Rogue, Eleiko, Bowflex)
-  - *Audio & Tech* (Sony, Sennheiser, Apple Vision Pro, Teenage Engineering)
+  - _Sneakers & Running_ (Air Jordan, Nike Kobe, LeBron, Hoka, Altra)
+  - _Collectibles & TCG_ (Warhammer 40k, Magic: The Gathering)
+  - _Musical Instruments_ (Gibson, Fender Custom Shop, Martin, Nord, Yamaha)
+  - _Strength & Fitness_ (Rogue, Eleiko, Bowflex)
+  - _Audio & Tech_ (Sony, Sennheiser, Apple Vision Pro, Teenage Engineering)
 - **Interactive Custom Creation Studio Suite (`/studio`)**:
-  - *Personalized Children's Storybooks*: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
-  - *Framed Wall Art Poster Studio*: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
-  - *Kids' Custom Apparel & Kicks*: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
+  - _Personalized Children's Storybooks_: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
+  - _Framed Wall Art Poster Studio_: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
+  - _Kids' Custom Apparel & Kicks_: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
 - **Social Media Creation Studio (`/studio/social`)**: Multi-layer vector canvas editor with drag-and-drop, Figma-style selection bounding box, layer stack, property inspector, and 1-click catalog import.
 - **Modern Brand Identity & 3-Variant Logo System (`/brand`)**:
-  - Three distinct, bespoke vector marks: *Geometric Monogram* (precision dual-arc interlock in gold & navy), *Minimalist Continuous Line & Starlight* (aerodynamic continuous stroke with radiant 8-point starlight jewel), and *Archival Heritage Crest* (hexagonal luxury heraldic shield with star compass).
+  - Three distinct, bespoke vector marks: _Geometric Monogram_ (precision dual-arc interlock in gold & navy), _Minimalist Continuous Line & Starlight_ (aerodynamic continuous stroke with radiant 8-point starlight jewel), and _Archival Heritage Crest_ (hexagonal luxury heraldic shield with star compass).
   - Dynamic `BrandContext` with real-time reactive theme switching, persistent active variant selection across all headers and footers, interactive `BrandVariantPickerModal`, and an editorial brand showcase portal at `/brand`.
   - Upgraded high-contrast vector favicon (`/favicon.svg`), 180×180 Apple Touch Icon (`/apple-touch-icon.svg`), and 1200×630 editorial OpenGraph social banner (`/static/img/og-preview.svg`).
   - Archived original 2020 cyan/red cloud logo to `public/static/img/legacy/` and `Components/Legacy/LegacyLogo.jsx`.
@@ -34,17 +34,17 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
 
 ## Tech Stack
 
-| Layer | Technology |
-| :--- | :--- |
-| **Framework** | Next.js 15 (`15.5.25`) with Pages Router & Static Site Generation (SSG) |
-| **UI Library** | React 19 (`19.2.8`) & React DOM |
-| **Runtime** | Node.js 24 (`24.x`) |
-| **State Management** | React Context API (`CartContext`) + Reducer pattern (`CartReducer.js`) |
-| **Styling** | Native CSS Modules + Design Tokens (`tokens.css`) |
-| **Icons** | Custom Scalable Vector SVGs with zero emoji dependencies (`Components/Icons/`, `StudioSVGs.jsx`) |
-| **Analytics & Telemetry** | GA4 Enhanced Ecommerce (`gtag.js`), Next.js Web Vitals, Custom Bot Scorer |
-| **Testing** | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (129 tests across 16 suites) |
-| **Code Quality** | ESLint 9 (Flat Config) + Prettier |
+| Layer                     | Technology                                                                                       |
+| :------------------------ | :----------------------------------------------------------------------------------------------- |
+| **Framework**             | Next.js 15 (`15.5.25`) with Pages Router & Static Site Generation (SSG)                          |
+| **UI Library**            | React 19 (`19.2.8`) & React DOM                                                                  |
+| **Runtime**               | Node.js 24 (`24.x`)                                                                              |
+| **State Management**      | React Context API (`CartContext`) + Reducer pattern (`CartReducer.js`)                           |
+| **Styling**               | Native CSS Modules + Design Tokens (`tokens.css`)                                                |
+| **Icons**                 | Custom Scalable Vector SVGs with zero emoji dependencies (`Components/Icons/`, `StudioSVGs.jsx`) |
+| **Analytics & Telemetry** | GA4 Enhanced Ecommerce (`gtag.js`), Next.js Web Vitals, Custom Bot Scorer                        |
+| **Testing**               | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (129 tests across 16 suites)   |
+| **Code Quality**          | ESLint 9 (Flat Config) + Prettier                                                                |
 
 ---
 
@@ -150,6 +150,7 @@ All core systems are rigorously tested with Vitest:
 ## Deployment (Vercel)
 
 This repository is configured for automated deployments on Vercel:
+
 - **Node.js Runtime**: Set to `24.x` in `package.json` (`engines.node`) and `.nvmrc`.
 - **Image Optimization**: Remote image domains configured in `next.config.js`.
 - **Production Build**: Zero build-step errors with all 47 static pages prerendered.

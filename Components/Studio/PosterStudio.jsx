@@ -1,18 +1,33 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { trackAddToCart } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { useMascot } from '../../context/MascotProvider';
+import { CheckCircleIcon, CloseIcon, SparklesIcon } from '../Icons';
 import { useToast } from '../UI/Toast';
-import { trackAddToCart } from '../../analytics/google';
 import { CanvasEngine } from './CanvasEngine';
-import { StickerBar } from './StickerBar';
-import { CheckCircleIcon, SparklesIcon, CloseIcon } from '../Icons';
-import { EyePreviewIcon } from './StudioSVGs';
 import styles from './PosterStudio.module.css';
+import { StickerBar } from './StickerBar';
+import { EyePreviewIcon } from './StudioSVGs';
 
 const SIZES = [
-  { id: '12x18', name: '12" × 18" Gallery Print', basePrice: 29.99, badge: 'Compact' },
-  { id: '18x24', name: '18" × 24" Classic Exhibition', basePrice: 44.99, badge: 'Most Popular' },
-  { id: '24x36', name: '24" × 36" Statement Archival', basePrice: 59.99, badge: 'Gallery Grand' },
+  {
+    id: '12x18',
+    name: '12" × 18" Gallery Print',
+    basePrice: 29.99,
+    badge: 'Compact',
+  },
+  {
+    id: '18x24',
+    name: '18" × 24" Classic Exhibition',
+    basePrice: 44.99,
+    badge: 'Most Popular',
+  },
+  {
+    id: '24x36',
+    name: '24" × 36" Statement Archival',
+    basePrice: 59.99,
+    badge: 'Gallery Grand',
+  },
 ];
 
 const ORIENTATIONS = [
@@ -30,17 +45,47 @@ const PALETTES = [
 ];
 
 const FRAMES = [
-  { id: 'oak', name: 'Solid Natural Oak', priceDelta: 25, badge: 'Best Seller' },
+  {
+    id: 'oak',
+    name: 'Solid Natural Oak',
+    priceDelta: 25,
+    badge: 'Best Seller',
+  },
   { id: 'black', name: 'Matte Gallery Black', priceDelta: 20, badge: 'Modern' },
   { id: 'white', name: 'Gallery Crisp White', priceDelta: 20, badge: 'Clean' },
-  { id: 'gold', name: 'Vintage Florentine Gold', priceDelta: 30, badge: 'Luxury' },
-  { id: 'none', name: 'Unframed Archival Print', priceDelta: 0, badge: 'Print Only' },
+  {
+    id: 'gold',
+    name: 'Vintage Florentine Gold',
+    priceDelta: 30,
+    badge: 'Luxury',
+  },
+  {
+    id: 'none',
+    name: 'Unframed Archival Print',
+    priceDelta: 0,
+    badge: 'Print Only',
+  },
 ];
 
 const PAPERS = [
-  { id: 'cotton', name: '250gsm Archival Cotton Rag', priceDelta: 0, badge: 'Museum' },
-  { id: 'canvas', name: 'Textured Stretched Canvas', priceDelta: 15, badge: 'Canvas' },
-  { id: 'luster', name: 'Ultra Semi-Gloss Luster', priceDelta: 10, badge: 'Vibrant' },
+  {
+    id: 'cotton',
+    name: '250gsm Archival Cotton Rag',
+    priceDelta: 0,
+    badge: 'Museum',
+  },
+  {
+    id: 'canvas',
+    name: 'Textured Stretched Canvas',
+    priceDelta: 15,
+    badge: 'Canvas',
+  },
+  {
+    id: 'luster',
+    name: 'Ultra Semi-Gloss Luster',
+    priceDelta: 10,
+    badge: 'Vibrant',
+  },
 ];
 
 const FONTS = [
@@ -77,7 +122,10 @@ export function PosterStudio() {
   const activeSizeObj = SIZES.find((s) => s.id === size) || SIZES[1];
   const activeFrameObj = FRAMES.find((f) => f.id === frame) || FRAMES[0];
   const activePaperObj = PAPERS.find((p) => p.id === paper) || PAPERS[0];
-  const totalPrice = activeSizeObj.basePrice + activeFrameObj.priceDelta + activePaperObj.priceDelta;
+  const totalPrice =
+    activeSizeObj.basePrice +
+    activeFrameObj.priceDelta +
+    activePaperObj.priceDelta;
 
   // Canvas dynamic dimensions based on orientation
   const canvasWidth = orientation === 'landscape' ? 560 : 440;
@@ -152,10 +200,10 @@ export function PosterStudio() {
       frame === 'oak'
         ? '#d4a373'
         : frame === 'black'
-        ? '#1e293b'
-        : frame === 'gold'
-        ? '#d97706'
-        : '#f8fafc';
+          ? '#1e293b'
+          : frame === 'gold'
+            ? '#d97706'
+            : '#f8fafc';
     const customPosterSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
       <rect width="160" height="160" fill="#f8fafc" rx="8"/>
       <rect x="14" y="14" width="132" height="132" fill="${frameColor}" rx="4"/>
@@ -179,7 +227,10 @@ export function PosterStudio() {
       customAttributes: {
         Headline: headline,
         Size: activeSizeObj.name,
-        Orientation: orientation === 'landscape' ? 'Landscape (Horizontal)' : 'Portrait (Vertical)',
+        Orientation:
+          orientation === 'landscape'
+            ? 'Landscape (Horizontal)'
+            : 'Portrait (Vertical)',
         Palette: artStyle.toUpperCase(),
         Frame: activeFrameObj.name,
         Paper: activePaperObj.name,
@@ -291,7 +342,9 @@ export function PosterStudio() {
                     <span className={styles.sizeName}>{s.name}</span>
                     <span className={styles.sizeBadge}>{s.badge}</span>
                   </div>
-                  <span className={styles.sizePrice}>${s.basePrice.toFixed(2)}</span>
+                  <span className={styles.sizePrice}>
+                    ${s.basePrice.toFixed(2)}
+                  </span>
                 </button>
               ))}
             </div>
@@ -402,7 +455,9 @@ export function PosterStudio() {
                     <span className={styles.frameBadge}>{f.badge}</span>
                   </div>
                   <span className={styles.framePrice}>
-                    {f.priceDelta === 0 ? 'Included' : `+ $${f.priceDelta.toFixed(2)}`}
+                    {f.priceDelta === 0
+                      ? 'Included'
+                      : `+ $${f.priceDelta.toFixed(2)}`}
                   </span>
                 </button>
               ))}
@@ -427,7 +482,9 @@ export function PosterStudio() {
                     <span className={styles.frameBadge}>{pap.badge}</span>
                   </div>
                   <span className={styles.framePrice}>
-                    {pap.priceDelta === 0 ? 'Included' : `+ $${pap.priceDelta.toFixed(2)}`}
+                    {pap.priceDelta === 0
+                      ? 'Included'
+                      : `+ $${pap.priceDelta.toFixed(2)}`}
                   </span>
                 </button>
               ))}
@@ -436,7 +493,9 @@ export function PosterStudio() {
 
           <div className={styles.guaranteeBox}>
             <CheckCircleIcon size={18} />
-            <span>Ready to Hang with Premium Hanging Wire & Corner Bumpers Installed</span>
+            <span>
+              Ready to Hang with Premium Hanging Wire & Corner Bumpers Installed
+            </span>
           </div>
 
           <button
@@ -513,7 +572,8 @@ export function PosterStudio() {
 
               <div className={styles.proofModalFooter}>
                 <p className={styles.proofDisclaimer}>
-                  Certified pigment proof. Hand-inspected and printed with 100% acid-free museum inks.
+                  Certified pigment proof. Hand-inspected and printed with 100%
+                  acid-free museum inks.
                 </p>
                 <button
                   type="button"

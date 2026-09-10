@@ -1,21 +1,21 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { SparklesIcon, CheckCircleIcon } from '../Icons';
+import { CheckCircleIcon, SparklesIcon } from '../Icons';
+import styles from './CharacterCreator.module.css';
 import {
-  MascotLunaSvg,
-  MascotFinleySvg,
-  MascotLeoSvg,
-  MascotPennySvg,
-  MascotDexterSvg,
-  MascotCartySvg,
-  MascotSparkySvg,
-  BadgeHeroSvg,
   BadgeBraveSvg,
-  BadgeStarlightSvg,
   BadgeCertifiedSvg,
   BadgeDinoScoutSvg,
+  BadgeHeroSvg,
+  BadgeStarlightSvg,
+  MascotCartySvg,
+  MascotDexterSvg,
+  MascotFinleySvg,
+  MascotLeoSvg,
+  MascotLunaSvg,
+  MascotPennySvg,
+  MascotSparkySvg,
 } from './StudioSVGs';
-import styles from './CharacterCreator.module.css';
 
 export const SKIN_TONES = [
   { id: '#fed7aa', label: 'Porcelain Peach', hex: '#fed7aa' },
@@ -64,13 +64,48 @@ export const OUTFIT_COLORS = [
 ];
 
 export const PET_SPECIES = [
-  { id: 'leo', name: 'Leo The Story Lion', archetype: 'Courage Lion', Svg: MascotLeoSvg },
-  { id: 'penny', name: 'Princess Penny', archetype: 'Royal Kitty', Svg: MascotPennySvg },
-  { id: 'finley', name: 'Finley Fox', archetype: 'Celestial Fox', Svg: MascotFinleySvg },
-  { id: 'luna', name: 'Luna Shepherd', archetype: 'Starlight Pup', Svg: MascotLunaSvg },
-  { id: 'dexter', name: 'Dexter Dino', archetype: 'Explorer Dino', Svg: MascotDexterSvg },
-  { id: 'carty', name: 'Carty Courier', archetype: 'Courier Bot', Svg: MascotCartySvg },
-  { id: 'sparky', name: 'Sparky Hound', archetype: 'Hero Dragon Hound', Svg: MascotSparkySvg },
+  {
+    id: 'leo',
+    name: 'Leo The Story Lion',
+    archetype: 'Courage Lion',
+    Svg: MascotLeoSvg,
+  },
+  {
+    id: 'penny',
+    name: 'Princess Penny',
+    archetype: 'Royal Kitty',
+    Svg: MascotPennySvg,
+  },
+  {
+    id: 'finley',
+    name: 'Finley Fox',
+    archetype: 'Celestial Fox',
+    Svg: MascotFinleySvg,
+  },
+  {
+    id: 'luna',
+    name: 'Luna Shepherd',
+    archetype: 'Starlight Pup',
+    Svg: MascotLunaSvg,
+  },
+  {
+    id: 'dexter',
+    name: 'Dexter Dino',
+    archetype: 'Explorer Dino',
+    Svg: MascotDexterSvg,
+  },
+  {
+    id: 'carty',
+    name: 'Carty Courier',
+    archetype: 'Courier Bot',
+    Svg: MascotCartySvg,
+  },
+  {
+    id: 'sparky',
+    name: 'Sparky Hound',
+    archetype: 'Hero Dragon Hound',
+    Svg: MascotSparkySvg,
+  },
 ];
 
 export const PET_COLLARS = [
@@ -134,12 +169,17 @@ export function CharacterCreator({
   const petCollar = companion.collar || 'star_bandana';
   const petBadge = companion.badge || 'badge_hero';
 
-  const activePetObj = PET_SPECIES.find((p) => p.id === petSpecies) || PET_SPECIES[0];
-  const activePetBadgeObj = PET_BADGES.find((b) => b.id === petBadge) || PET_BADGES[0];
+  const activePetObj =
+    PET_SPECIES.find((p) => p.id === petSpecies) || PET_SPECIES[0];
+  const activePetBadgeObj =
+    PET_BADGES.find((b) => b.id === petBadge) || PET_BADGES[0];
 
   const curPetIdx = PET_SPECIES.findIndex((p) => p.id === petSpecies);
   const nextPetIdx = curPetIdx >= 0 ? (curPetIdx + 1) % PET_SPECIES.length : 0;
-  const prevPetIdx = curPetIdx >= 0 ? (curPetIdx - 1 + PET_SPECIES.length) % PET_SPECIES.length : 0;
+  const prevPetIdx =
+    curPetIdx >= 0
+      ? (curPetIdx - 1 + PET_SPECIES.length) % PET_SPECIES.length
+      : 0;
   const nextPetSpecies = PET_SPECIES[nextPetIdx];
   const nextCompanionLabel = nextPetSpecies?.name.split(' ')[0] || 'Next';
 
@@ -172,7 +212,11 @@ export function CharacterCreator({
   return (
     <div className={styles.creatorRoot}>
       {/* Creator Tabs */}
-      <div className={styles.tabBar} role="tablist" aria-label="Character Customizer Tabs">
+      <div
+        className={styles.tabBar}
+        role="tablist"
+        aria-label="Character Customizer Tabs"
+      >
         <button
           type="button"
           role="tab"
@@ -212,7 +256,9 @@ export function CharacterCreator({
                         currentSkin === st.hex ? styles.swatchActive : ''
                       }`}
                       style={{ background: st.hex }}
-                      onClick={() => onChangeAvatar({ ...avatar, skin: st.hex })}
+                      onClick={() =>
+                        onChangeAvatar({ ...avatar, skin: st.hex })
+                      }
                       title={st.label}
                       aria-label={`Select ${st.label} skin tone`}
                     />
@@ -273,7 +319,9 @@ export function CharacterCreator({
 
               {/* Accessory & Headwear */}
               <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Face & Character Accessory:</label>
+                <label className={styles.groupLabel}>
+                  Face & Character Accessory:
+                </label>
                 <div className={styles.pillGrid}>
                   {ACCESSORIES.map((acc) => (
                     <button
@@ -282,7 +330,9 @@ export function CharacterCreator({
                       className={`${styles.pillBtn} ${
                         currentAccessory === acc.id ? styles.pillBtnActive : ''
                       }`}
-                      onClick={() => onChangeAvatar({ ...avatar, accessory: acc.id })}
+                      onClick={() =>
+                        onChangeAvatar({ ...avatar, accessory: acc.id })
+                      }
                     >
                       {acc.label}
                     </button>
@@ -292,7 +342,9 @@ export function CharacterCreator({
 
               {/* Outfit Color */}
               <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Outfit / Cape Color:</label>
+                <label className={styles.groupLabel}>
+                  Outfit / Cape Color:
+                </label>
                 <div className={styles.swatchGrid}>
                   {OUTFIT_COLORS.map((oc) => (
                     <button
@@ -341,7 +393,9 @@ export function CharacterCreator({
               {/* Companion Species */}
               <div className={styles.optionGroup}>
                 <div className={styles.companionHeaderRow}>
-                  <label className={styles.groupLabel}>Companion Archetype:</label>
+                  <label className={styles.groupLabel}>
+                    Companion Archetype:
+                  </label>
                   <div className={styles.companionNav}>
                     <button
                       type="button"
@@ -353,7 +407,8 @@ export function CharacterCreator({
                       ‹
                     </button>
                     <span className={styles.cycleCounter}>
-                      {curPetIdx >= 0 ? curPetIdx + 1 : 1} of {PET_SPECIES.length}
+                      {curPetIdx >= 0 ? curPetIdx + 1 : 1} of{' '}
+                      {PET_SPECIES.length}
                     </span>
                     <button
                       type="button"
@@ -435,7 +490,9 @@ export function CharacterCreator({
 
               {/* Pet Superpower Badge */}
               <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Companion Superpower Badge:</label>
+                <label className={styles.groupLabel}>
+                  Companion Superpower Badge:
+                </label>
                 <div className={styles.badgeGrid}>
                   {PET_BADGES.map((b) => (
                     <button
@@ -508,7 +565,13 @@ export function CharacterCreator({
                     fill={currentOutfit}
                   />
                   {/* Neck */}
-                  <rect x="58" y="65" width="14" height="12" fill={currentSkin} />
+                  <rect
+                    x="58"
+                    y="65"
+                    width="14"
+                    height="12"
+                    fill={currentSkin}
+                  />
                   {/* Head */}
                   <circle cx="65" cy="48" r="24" fill={currentSkin} />
                   {/* Hair Style */}
@@ -543,7 +606,13 @@ export function CharacterCreator({
                   {currentHairStyle === 'ponytail' && (
                     <g fill={currentHairColor}>
                       <path d="M41 45 C41 26 89 26 89 45 Z" />
-                      <ellipse cx="88" cy="30" rx="14" ry="7" transform="rotate(35 88 30)" />
+                      <ellipse
+                        cx="88"
+                        cy="30"
+                        rx="14"
+                        ry="7"
+                        transform="rotate(35 88 30)"
+                      />
                     </g>
                   )}
                   {currentHairStyle === 'spiky' && (
@@ -573,7 +642,11 @@ export function CharacterCreator({
                   />
                   {/* Glasses Accessory */}
                   {currentAccessory === 'glasses' && (
-                    <g stroke="#0f172a" strokeWidth="2" fill="rgba(255,255,255,0.4)">
+                    <g
+                      stroke="#0f172a"
+                      strokeWidth="2"
+                      fill="rgba(255,255,255,0.4)"
+                    >
                       <circle cx="57" cy="46" r="6" />
                       <circle cx="73" cy="46" r="6" />
                       <line x1="63" y1="46" x2="67" y2="46" />
@@ -584,7 +657,14 @@ export function CharacterCreator({
                     <g fill="#f59e0b">
                       <polygon points="57,40 59,44 63,44 60,47 61,51 57,48 53,51 54,47 51,44 55,44" />
                       <polygon points="73,40 75,44 79,44 76,47 77,51 73,48 69,51 70,47 67,44 71,44" />
-                      <line x1="63" y1="45" x2="67" y2="45" stroke="#f59e0b" strokeWidth="2" />
+                      <line
+                        x1="63"
+                        y1="45"
+                        x2="67"
+                        y2="45"
+                        stroke="#f59e0b"
+                        strokeWidth="2"
+                      />
                     </g>
                   )}
                   {/* Superhero mask */}

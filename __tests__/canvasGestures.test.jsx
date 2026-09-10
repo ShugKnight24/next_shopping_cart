@@ -1,6 +1,6 @@
-import { render, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { fireEvent, render } from '@testing-library/react';
 import { useRef } from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { useCanvasGestures } from '../hooks/useCanvasGestures';
 
 function TestCanvasComponent({
@@ -54,7 +54,9 @@ describe('useCanvasGestures Hook', () => {
 
   it('buffers drag movements with commit=false and commits on mouseUp', () => {
     const onUpdateStickers = vi.fn();
-    const initialStickers = [{ id: 'stk-1', type: 'star', x: 50, y: 50, scale: 1 }];
+    const initialStickers = [
+      { id: 'stk-1', type: 'star', x: 50, y: 50, scale: 1 },
+    ];
 
     const { getByTestId } = render(
       <TestCanvasComponent
@@ -72,28 +74,36 @@ describe('useCanvasGestures Hook', () => {
     // Drag move 1
     fireEvent.mouseMove(canvas, { clientX: 60, clientY: 60 });
     expect(onUpdateStickers).toHaveBeenLastCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'stk-1', x: 60, y: 60 })]),
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'stk-1', x: 60, y: 60 }),
+      ]),
       { commit: false }
     );
 
     // Drag move 2
     fireEvent.mouseMove(canvas, { clientX: 70, clientY: 70 });
     expect(onUpdateStickers).toHaveBeenLastCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'stk-1', x: 70, y: 70 })]),
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'stk-1', x: 70, y: 70 }),
+      ]),
       { commit: false }
     );
 
     // Mouse up - commits to history exactly once
     fireEvent.mouseUp(canvas);
     expect(onUpdateStickers).toHaveBeenLastCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'stk-1', x: 70, y: 70 })]),
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'stk-1', x: 70, y: 70 }),
+      ]),
       { commit: true }
     );
   });
 
   it('supports touch drag movements and commits on touchEnd', () => {
     const onUpdateStickers = vi.fn();
-    const initialStickers = [{ id: 'stk-touch', type: 'luna', x: 80, y: 80, scale: 1 }];
+    const initialStickers = [
+      { id: 'stk-touch', type: 'luna', x: 80, y: 80, scale: 1 },
+    ];
 
     const { getByTestId } = render(
       <TestCanvasComponent
@@ -115,14 +125,18 @@ describe('useCanvasGestures Hook', () => {
       touches: [{ clientX: 120, clientY: 120 }],
     });
     expect(onUpdateStickers).toHaveBeenLastCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'stk-touch', x: 120, y: 120 })]),
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'stk-touch', x: 120, y: 120 }),
+      ]),
       { commit: false }
     );
 
     // Touch end
     fireEvent.touchEnd(canvas);
     expect(onUpdateStickers).toHaveBeenLastCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'stk-touch', x: 120, y: 120 })]),
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'stk-touch', x: 120, y: 120 }),
+      ]),
       { commit: true }
     );
   });

@@ -14,10 +14,14 @@
 }
 
 .productsContainer::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(30, 58, 95, 0.035) 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(30, 58, 95, 0.035) 1px,
+    transparent 0
+  );
   background-size: 36px 36px;
   pointer-events: none;
 }
@@ -182,4 +186,3 @@
   background: #dc2626;
   transform: translateY(-2px);
 }
-

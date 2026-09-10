@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
+import { trackAddToCart } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
-import { trackAddToCart } from '../../analytics/google';
-import { useToast } from '../UI/Toast';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
+import { useToast } from '../UI/Toast';
 import styles from './QuickView.module.css';
 
 export function QuickView({ product, isOpen, onClose }) {

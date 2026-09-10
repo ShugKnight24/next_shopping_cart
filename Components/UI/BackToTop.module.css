@@ -19,7 +19,9 @@
   visibility: hidden;
   transform: translateY(20px) scale(0.8);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25), 0 8px 24px rgba(30, 58, 95, 0.15);
+  box-shadow:
+    0 4px 12px rgba(30, 58, 95, 0.25),
+    0 8px 24px rgba(30, 58, 95, 0.15);
 }
 .backToTop.visible {
   opacity: 1;
@@ -28,7 +30,9 @@
 }
 .backToTop:hover {
   transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3), 0 16px 40px rgba(30, 58, 95, 0.2);
+  box-shadow:
+    0 8px 20px rgba(30, 58, 95, 0.3),
+    0 16px 40px rgba(30, 58, 95, 0.2);
 }
 .backToTop:hover .arrowIcon {
   transform: translateY(-2px);
@@ -68,7 +72,9 @@
 
 .progressBar {
   stroke: #b8860b;
-  transition: stroke-dashoffset 0.15s linear, stroke 0.3s ease;
+  transition:
+    stroke-dashoffset 0.15s linear,
+    stroke 0.3s ease;
   filter: drop-shadow(0 0 4px rgba(218, 165, 32, 0.4));
 }
 
@@ -118,7 +124,7 @@
   gap: 0.15rem;
 }
 .tooltip::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 100%;
   left: 26px;

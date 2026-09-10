@@ -61,8 +61,8 @@ export function FeaturedCategories() {
           </div>
           <h2 className={styles.title}>Explore By Category</h2>
           <p className={styles.subtitle}>
-            Explore our specialty departments with 100% verified authenticity and
-            insured express courier transit.
+            Explore our specialty departments with 100% verified authenticity
+            and insured express courier transit.
           </p>
         </div>
 

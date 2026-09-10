@@ -21,7 +21,11 @@ export const handlePageView = (url, trackingId = getTrackingId()) => {
 // track specific events
 // More info on Event Tracking: https://developers.google.com/analytics/devguides/collection/gtagjs/events
 export const handleEvent = ({ action, params } = {}) => {
-  if (typeof window !== 'undefined' && typeof window.gtag === 'function' && action) {
+  if (
+    typeof window !== 'undefined' &&
+    typeof window.gtag === 'function' &&
+    action
+  ) {
     window.gtag('event', action, params);
   }
 };
@@ -39,19 +43,26 @@ export const setTrafficClassification = (classification) => {
 /**
  * Normalizes internal product structure to Google Analytics 4 Item format
  */
-export const formatGA4Item = (item, quantity = 1, variant = null, index = undefined) => {
+export const formatGA4Item = (
+  item,
+  quantity = 1,
+  variant = null,
+  index = undefined
+) => {
   if (!item) return {};
   const activeVariant = variant || item.selectedVariant;
-  const variantString = typeof activeVariant === 'object' && activeVariant !== null
-    ? activeVariant.name || activeVariant.id
-    : activeVariant;
+  const variantString =
+    typeof activeVariant === 'object' && activeVariant !== null
+      ? activeVariant.name || activeVariant.id
+      : activeVariant;
 
   return {
     item_id: item.itemid || item.id || 'unknown',
     item_name: item.productName || item.name || 'Unknown Product',
     item_category: item.category || 'General',
     item_brand: item.manufacturer || item.brand || 'Cart Commerce',
-    price: typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0,
+    price:
+      typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0,
     quantity: parseInt(quantity, 10) || 1,
     ...(variantString ? { item_variant: String(variantString) } : {}),
     ...(index !== undefined ? { index: Number(index) } : {}),
@@ -61,13 +72,19 @@ export const formatGA4Item = (item, quantity = 1, variant = null, index = undefi
 /**
  * GA4 Enhanced Ecommerce: View Item List (Catalog / Categories)
  */
-export const trackViewItemList = (items = [], listName = 'Product Catalog', listId = 'catalog') => {
+export const trackViewItemList = (
+  items = [],
+  listName = 'Product Catalog',
+  listId = 'catalog'
+) => {
   handleEvent({
     action: 'view_item_list',
     params: {
       item_list_id: listId,
       item_list_name: listName,
-      items: items.slice(0, 30).map((item, idx) => formatGA4Item(item, 1, null, idx + 1)),
+      items: items
+        .slice(0, 30)
+        .map((item, idx) => formatGA4Item(item, 1, null, idx + 1)),
     },
   });
 };
@@ -75,7 +92,11 @@ export const trackViewItemList = (items = [], listName = 'Product Catalog', list
 /**
  * GA4 Enhanced Ecommerce: Select Item from List
  */
-export const trackSelectItem = (item, listName = 'Product Catalog', index = 1) => {
+export const trackSelectItem = (
+  item,
+  listName = 'Product Catalog',
+  index = 1
+) => {
   if (!item) return;
   handleEvent({
     action: 'select_item',
@@ -91,7 +112,8 @@ export const trackSelectItem = (item, listName = 'Product Catalog', index = 1) =
  */
 export const trackViewItem = (item, variant = null) => {
   if (!item) return;
-  const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+  const price =
+    typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
   handleEvent({
     action: 'view_item',
     params: {
@@ -108,7 +130,8 @@ export const trackViewItem = (item, variant = null) => {
 export const trackAddToCart = (item, quantity = 1, variant = null) => {
   if (!item) return;
   const qty = parseInt(quantity, 10) || 1;
-  const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+  const price =
+    typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
   handleEvent({
     action: 'add_to_cart',
     params: {
@@ -125,7 +148,8 @@ export const trackAddToCart = (item, quantity = 1, variant = null) => {
 export const trackRemoveFromCart = (item, quantity = 1) => {
   if (!item) return;
   const qty = parseInt(quantity, 10) || 1;
-  const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+  const price =
+    typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
   handleEvent({
     action: 'remove_from_cart',
     params: {
@@ -145,7 +169,9 @@ export const trackViewCart = (cartItems = [], total = 0) => {
     params: {
       currency: 'USD',
       value: typeof total === 'number' ? total : parseFloat(total) || 0,
-      items: cartItems.map((item) => formatGA4Item(item, item.quantity, item.selectedVariant)),
+      items: cartItems.map((item) =>
+        formatGA4Item(item, item.quantity, item.selectedVariant)
+      ),
     },
   });
 };
@@ -153,14 +179,20 @@ export const trackViewCart = (cartItems = [], total = 0) => {
 /**
  * GA4 Enhanced Ecommerce: Begin Checkout
  */
-export const trackBeginCheckout = (cartItems = [], total = 0, coupon = null) => {
+export const trackBeginCheckout = (
+  cartItems = [],
+  total = 0,
+  coupon = null
+) => {
   handleEvent({
     action: 'begin_checkout',
     params: {
       currency: 'USD',
       value: typeof total === 'number' ? total : parseFloat(total) || 0,
       ...(coupon ? { coupon } : {}),
-      items: cartItems.map((item) => formatGA4Item(item, item.quantity, item.selectedVariant)),
+      items: cartItems.map((item) =>
+        formatGA4Item(item, item.quantity, item.selectedVariant)
+      ),
     },
   });
 };
@@ -195,7 +227,11 @@ export const trackSearch = (searchTerm, resultCount = 0) => {
 /**
  * Custom Interaction Tracking: 3D Product Studio & Interactive Features
  */
-export const trackStudioInteraction = (interactionAction, interactionLabel, metadata = {}) => {
+export const trackStudioInteraction = (
+  interactionAction,
+  interactionLabel,
+  metadata = {}
+) => {
   handleEvent({
     action: 'studio_3d_interaction',
     params: {
@@ -214,8 +250,11 @@ export const trackWebVitals = (metric) => {
   handleEvent({
     action: metric.name,
     params: {
-      event_category: metric.label === 'web-vital' ? 'Web Vitals' : 'Next.js Custom Metric',
-      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      event_category:
+        metric.label === 'web-vital' ? 'Web Vitals' : 'Next.js Custom Metric',
+      value: Math.round(
+        metric.name === 'CLS' ? metric.value * 1000 : metric.value
+      ),
       event_label: metric.id,
       non_interaction: true,
     },

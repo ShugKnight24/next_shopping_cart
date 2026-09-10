@@ -26,17 +26,22 @@ export function useCanvasGestures({
   }, [stickers]);
 
   // Helper to extract canvas-relative x, y from mouse or touch event
-  const getCanvasCoords = useCallback((e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    };
-  }, [canvasRef]);
+  const getCanvasCoords = useCallback(
+    (e) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return { x: 0, y: 0 };
+      const rect = canvas.getBoundingClientRect();
+      const clientX =
+        e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+      const clientY =
+        e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      };
+    },
+    [canvasRef]
+  );
 
   const handlePointerDown = useCallback(
     (e) => {
@@ -44,10 +49,12 @@ export function useCanvasGestures({
       hasMovedRef.current = false;
 
       // Check if clicked an existing sticker (from top of stack down)
-      const clickedSticker = [...currentStickersRef.current].reverse().find((s) => {
-        const dist = Math.hypot(s.x - x, y - s.y);
-        return dist <= 28 * (s.scale || 1);
-      });
+      const clickedSticker = [...currentStickersRef.current]
+        .reverse()
+        .find((s) => {
+          const dist = Math.hypot(s.x - x, y - s.y);
+          return dist <= 28 * (s.scale || 1);
+        });
 
       if (clickedSticker) {
         isDraggingRef.current = true;
@@ -94,7 +101,9 @@ export function useCanvasGestures({
         // Live coordinate update without committing intermediate frames to undo history stack
         onUpdateStickers(updated, { commit: false });
       } else {
-        const hover = currentStickersRef.current.find((s) => Math.hypot(s.x - x, s.y - y) <= 24);
+        const hover = currentStickersRef.current.find(
+          (s) => Math.hypot(s.x - x, s.y - y) <= 24
+        );
         setHoveredStickerId(hover ? hover.id : null);
       }
     },

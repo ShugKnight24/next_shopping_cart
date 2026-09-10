@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
-import { BrandContext, BRAND_VARIANTS } from './Brand/BrandContext';
+import { BRAND_VARIANTS, BrandContext } from './Brand/BrandContext';
 
 /**
  * 1. Favicon Badge Mark (Primary / Default)
@@ -208,14 +208,38 @@ function SovietMark({ uniqueId, isDark }) {
       {/* Heavy Industrial Gear Wheels */}
       <circle cx="27" cy="51" r="5" fill={`url(#${redGradId})`} />
       <circle cx="27" cy="51" r="2" fill={isDark ? '#18181b' : '#ffffff'} />
-      <rect x="25.5" y="44.5" width="3" height="13" fill={isDark ? '#ffffff' : '#18181b'} />
-      <rect x="20.5" y="49.5" width="13" height="3" fill={isDark ? '#ffffff' : '#18181b'} />
+      <rect
+        x="25.5"
+        y="44.5"
+        width="3"
+        height="13"
+        fill={isDark ? '#ffffff' : '#18181b'}
+      />
+      <rect
+        x="20.5"
+        y="49.5"
+        width="13"
+        height="3"
+        fill={isDark ? '#ffffff' : '#18181b'}
+      />
       <circle cx="27" cy="51" r="3.2" fill={`url(#${redGradId})`} />
 
       <circle cx="48" cy="51" r="5" fill={`url(#${redGradId})`} />
       <circle cx="48" cy="51" r="2" fill={isDark ? '#18181b' : '#ffffff'} />
-      <rect x="46.5" y="44.5" width="3" height="13" fill={isDark ? '#ffffff' : '#18181b'} />
-      <rect x="41.5" y="49.5" width="13" height="3" fill={isDark ? '#ffffff' : '#18181b'} />
+      <rect
+        x="46.5"
+        y="44.5"
+        width="3"
+        height="13"
+        fill={isDark ? '#ffffff' : '#18181b'}
+      />
+      <rect
+        x="41.5"
+        y="49.5"
+        width="13"
+        height="3"
+        fill={isDark ? '#ffffff' : '#18181b'}
+      />
       <circle cx="48" cy="51" r="3.2" fill={`url(#${redGradId})`} />
     </g>
   );
@@ -237,8 +261,20 @@ function EdgyMark({ uniqueId, isDark }) {
   return (
     <g transform="translate(6, 6)">
       <defs>
-        <filter id={`edgyGlow_${uniqueId}`} x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor={limeColor} floodOpacity={0.6} />
+        <filter
+          id={`edgyGlow_${uniqueId}`}
+          x="-20%"
+          y="-20%"
+          width="140%"
+          height="140%"
+        >
+          <feDropShadow
+            dx="0"
+            dy="0"
+            stdDeviation="3"
+            floodColor={limeColor}
+            floodOpacity={0.6}
+          />
         </filter>
       </defs>
 
@@ -253,8 +289,22 @@ function EdgyMark({ uniqueId, isDark }) {
       {/* Cyber Corner Grid Ticks */}
       <line x1="6" y1="6" x2="14" y2="6" stroke={limeColor} strokeWidth="1.2" />
       <line x1="6" y1="6" x2="6" y2="14" stroke={limeColor} strokeWidth="1.2" />
-      <line x1="58" y1="58" x2="50" y2="58" stroke={limeColor} strokeWidth="1.2" />
-      <line x1="58" y1="58" x2="58" y2="50" stroke={limeColor} strokeWidth="1.2" />
+      <line
+        x1="58"
+        y1="58"
+        x2="50"
+        y2="58"
+        stroke={limeColor}
+        strokeWidth="1.2"
+      />
+      <line
+        x1="58"
+        y1="58"
+        x2="58"
+        y2="50"
+        stroke={limeColor}
+        strokeWidth="1.2"
+      />
 
       {/* Razor-Edge Angular Cart Chassis */}
       <path
@@ -275,16 +325,10 @@ function EdgyMark({ uniqueId, isDark }) {
       </g>
 
       {/* Dual Turbine Hex-Bolt Wheels */}
-      <polygon
-        points="28,45 33,48 33,54 28,57 23,54 23,48"
-        fill={limeColor}
-      />
+      <polygon points="28,45 33,48 33,54 28,57 23,54 23,48" fill={limeColor} />
       <circle cx="28" cy="51" r="2" fill="#09090b" />
 
-      <polygon
-        points="48,45 53,48 53,54 48,57 43,54 43,48"
-        fill={limeColor}
-      />
+      <polygon points="48,45 53,48 53,54 48,57 43,54 43,48" fill={limeColor} />
       <circle cx="48" cy="51" r="2" fill="#09090b" />
     </g>
   );
@@ -347,8 +391,24 @@ function LightheartedMark({ uniqueId, isDark }) {
         />
 
         {/* Motion lines indicating fun speed */}
-        <line x1="8" y1="30" x2="13" y2="30" stroke="#fb7185" strokeWidth="2.2" strokeLinecap="round" />
-        <line x1="6" y1="36" x2="14" y2="36" stroke="#f97316" strokeWidth="2.2" strokeLinecap="round" />
+        <line
+          x1="8"
+          y1="30"
+          x2="13"
+          y2="30"
+          stroke="#fb7185"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+        <line
+          x1="6"
+          y1="36"
+          x2="14"
+          y2="36"
+          stroke="#f97316"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
 
         {/* Plump Balloon Wheels */}
         <circle cx="29" cy="51" r="5" fill={`url(#${popGradId})`} />
@@ -387,7 +447,11 @@ export function Logo({
 
   // Normalize variant name (map legacy or aliases)
   let rawVariant = propVariant || brandContext?.variant || 'geometric';
-  if (rawVariant === 'sleek' || rawVariant === 'badge' || rawVariant === 'favicon') {
+  if (
+    rawVariant === 'sleek' ||
+    rawVariant === 'badge' ||
+    rawVariant === 'favicon'
+  ) {
     rawVariant = 'geometric';
   }
 
@@ -486,7 +550,16 @@ export function Logo({
 }
 
 Logo.propTypes = {
-  variant: PropTypes.oneOf(['geometric', 'badge', 'favicon', 'sleek', 'floating', 'soviet', 'edgy', 'lighthearted']),
+  variant: PropTypes.oneOf([
+    'geometric',
+    'badge',
+    'favicon',
+    'sleek',
+    'floating',
+    'soviet',
+    'edgy',
+    'lighthearted',
+  ]),
   theme: PropTypes.oneOf(['light', 'dark', 'auto']),
   showSubtitle: PropTypes.bool,
   subtitle: PropTypes.string,

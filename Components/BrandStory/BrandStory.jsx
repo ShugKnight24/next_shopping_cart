@@ -1,5 +1,10 @@
 import Link from 'next/link';
-import { ShieldCheckIcon, TruckIcon, SparklesIcon, CheckCircleIcon } from '../Icons';
+import {
+  CheckCircleIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+  TruckIcon,
+} from '../Icons';
 import styles from './BrandStory.module.css';
 
 const pillars = [
@@ -38,25 +43,28 @@ export function BrandStory() {
               Curated for Connoisseurs. Built on Absolute Trust.
             </h2>
             <p className={styles.leadText}>
-              We founded Cart Commerce with a single unyielding conviction: luxury
-              goods, iconic sneakers, and rare collectibles deserve an uncompromising
-              standard of authenticity, transparency, and service.
+              We founded Cart Commerce with a single unyielding conviction:
+              luxury goods, iconic sneakers, and rare collectibles deserve an
+              uncompromising standard of authenticity, transparency, and
+              service.
             </p>
             <p className={styles.bodyText}>
               In an era flooded with replicas and automated marketplaces, our
-              curators select only the finest specimens. We inspect stitching, materials,
-              serial registrations, and packaging so that you can acquire your
-              grail pieces with absolute confidence.
+              curators select only the finest specimens. We inspect stitching,
+              materials, serial registrations, and packaging so that you can
+              acquire your grail pieces with absolute confidence.
             </p>
 
             <div className={styles.quoteCard}>
               <p className={styles.quoteText}>
-                "True luxury is peace of mind. Knowing that what you hold in your hands
-                is genuine, pristine, and backed for a lifetime."
+                "True luxury is peace of mind. Knowing that what you hold in
+                your hands is genuine, pristine, and backed for a lifetime."
               </p>
               <div className={styles.quoteAuthor}>
                 <span className={styles.authorName}>Curatorial Board</span>
-                <span className={styles.authorTitle}>Cart Commerce Archives</span>
+                <span className={styles.authorTitle}>
+                  Cart Commerce Archives
+                </span>
               </div>
             </div>
 
@@ -82,9 +90,7 @@ export function BrandStory() {
             <div className={styles.pillarsList}>
               {pillars.map((pillar, idx) => (
                 <div key={idx} className={styles.pillarCard}>
-                  <div className={styles.pillarIconWrapper}>
-                    {pillar.icon}
-                  </div>
+                  <div className={styles.pillarIconWrapper}>{pillar.icon}</div>
                   <div className={styles.pillarContent}>
                     <h3 className={styles.pillarTitle}>{pillar.title}</h3>
                     <p className={styles.pillarDesc}>{pillar.description}</p>

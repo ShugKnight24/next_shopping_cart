@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useBrand, BRAND_VARIANTS } from './BrandContext';
-import { Logo } from '../Logo';
+import { useState } from 'react';
 import { LegacyLogo } from '../Legacy/LegacyLogo';
+import { Logo } from '../Logo';
 import { useToast } from '../UI/Toast';
+import { BRAND_VARIANTS, useBrand } from './BrandContext';
 import styles from './BrandVariantPicker.module.css';
 
 /**
@@ -36,10 +36,7 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
       aria-modal="true"
       aria-labelledby="brandModalTitle"
     >
-      <div
-        className={styles.modalContent}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className={styles.modalHeader}>
           <div className={styles.modalTitleGroup}>
@@ -47,7 +44,8 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
               Brand Identity &amp; Logo System
             </h2>
             <p className={styles.modalSubtitle}>
-              Explore our 5 brand aesthetic variants and select your preferred style for the store.
+              Explore our 5 brand aesthetic variants and select your preferred
+              style for the store.
             </p>
           </div>
           <button
@@ -65,7 +63,13 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
           {/* Controls Bar: Theme Switcher */}
           <div className={styles.controlsBar}>
             <div className={styles.modeToggleGroup}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>
+              <span
+                style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: '#475569',
+                }}
+              >
                 Preview Canvas:
               </span>
               <button
@@ -84,7 +88,8 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
               </button>
             </div>
             <span style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Active Brand: <strong>{BRAND_VARIANTS[activeVariant]?.name}</strong>
+              Active Brand:{' '}
+              <strong>{BRAND_VARIANTS[activeVariant]?.name}</strong>
             </span>
           </div>
 
@@ -98,7 +103,9 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
                   className={`${styles.variantCard} ${isActive ? styles.variantCardActive : ''}`}
                 >
                   {isActive && (
-                    <span className={styles.activeBadge}>Active Store Brand</span>
+                    <span className={styles.activeBadge}>
+                      Active Store Brand
+                    </span>
                   )}
                   <div className={styles.variantHeader}>
                     <span className={styles.variantTag}>{v.badge}</span>
@@ -108,7 +115,9 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
                   {/* Logo Preview Canvas */}
                   <div
                     className={`${styles.logoPreviewBox} ${
-                      previewTheme === 'dark' ? styles.previewDark : styles.previewLight
+                      previewTheme === 'dark'
+                        ? styles.previewDark
+                        : styles.previewLight
                     }`}
                   >
                     <Logo
@@ -123,14 +132,25 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
                   <button
                     type="button"
                     className={`${styles.selectButton} ${
-                      isActive ? styles.selectButtonActive : styles.selectButtonInactive
+                      isActive
+                        ? styles.selectButtonActive
+                        : styles.selectButtonInactive
                     }`}
                     onClick={() => handleSelect(v.id)}
                     disabled={isActive}
                   >
                     {isActive ? (
                       <>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                         Currently Active
@@ -149,8 +169,8 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
             <div className={styles.legacyInfo}>
               <h4>Legacy 2020 Asset Archive</h4>
               <p>
-                Original cyan and red cloud logo preserved for archival reference in{' '}
-                <code>public/static/img/legacy/logo.svg</code>.
+                Original cyan and red cloud logo preserved for archival
+                reference in <code>public/static/img/legacy/logo.svg</code>.
               </p>
             </div>
             <div className={styles.legacyLogoBox}>

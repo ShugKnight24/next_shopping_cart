@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
 import { MascotProvider } from '../context/MascotProvider';
-import { ToastProvider } from '../Components/UI/Toast';
 import StudioPage from '../pages/studio/index';
 
 // Mock Next.js useRouter
@@ -82,8 +82,12 @@ describe('Web-to-Print Studio Platform', () => {
     renderStudio();
 
     expect(screen.getByText('The Custom Creation Studio')).toBeInTheDocument();
-    expect(screen.getByText('Handcrafted & Bound in the USA')).toBeInTheDocument();
-    expect(screen.getByText('FSC-Certified Archival Papers')).toBeInTheDocument();
+    expect(
+      screen.getByText('Handcrafted & Bound in the USA')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('FSC-Certified Archival Papers')
+    ).toBeInTheDocument();
 
     // 3 Mode Tabs
     expect(
@@ -108,20 +112,26 @@ describe('Web-to-Print Studio Platform', () => {
     expect(nameInput).toHaveValue('Maya');
 
     // Go to Step 2
-    const nextBtn = screen.getByRole('button', { name: /Continue to Next Step/i });
+    const nextBtn = screen.getByRole('button', {
+      name: /Continue to Next Step/i,
+    });
     fireEvent.click(nextBtn);
 
     expect(screen.getByText('Step 2 of 5')).toBeInTheDocument();
     expect(screen.getByText('Choose an Adventure Theme')).toBeInTheDocument();
 
     // Select Sneakerhead Odyssey
-    const sneakerTheme = screen.getByRole('button', { name: /Sneakerhead Odyssey/i });
+    const sneakerTheme = screen.getByRole('button', {
+      name: /Sneakerhead Odyssey/i,
+    });
     fireEvent.click(sneakerTheme);
 
     // Go to Step 3
     fireEvent.click(nextBtn);
     expect(screen.getByText('Step 3 of 5')).toBeInTheDocument();
-    expect(screen.getByText('Special Front Page Dedication')).toBeInTheDocument();
+    expect(
+      screen.getByText('Special Front Page Dedication')
+    ).toBeInTheDocument();
 
     // Click a preset dedication
     const presetBtn = screen.getByRole('button', {
@@ -138,7 +148,9 @@ describe('Web-to-Print Studio Platform', () => {
     expect(screen.getByText('Hardcover Front')).toBeInTheDocument();
 
     // Flip to next page
-    const nextSpreadBtn = screen.getByRole('button', { name: /Next book spread/i });
+    const nextSpreadBtn = screen.getByRole('button', {
+      name: /Next book spread/i,
+    });
     fireEvent.click(nextSpreadBtn);
     expect(screen.getByText('Page 1 & Dedication')).toBeInTheDocument();
 
@@ -180,10 +192,14 @@ describe('Web-to-Print Studio Platform', () => {
   it('allows switching to Framed Poster Studio and adding to cart', () => {
     renderStudio();
 
-    const posterTab = screen.getByRole('button', { name: /Framed Art Posters/i });
+    const posterTab = screen.getByRole('button', {
+      name: /Framed Art Posters/i,
+    });
     fireEvent.click(posterTab);
 
-    expect(screen.getByText('Design Custom Wall Art Poster')).toBeInTheDocument();
+    expect(
+      screen.getByText('Design Custom Wall Art Poster')
+    ).toBeInTheDocument();
     const headlineInput = screen.getByLabelText(/Poster Headline:/i);
     fireEvent.change(headlineInput, { target: { value: 'MAYA’S ROOM' } });
 
@@ -195,16 +211,22 @@ describe('Web-to-Print Studio Platform', () => {
     const savedCartData = JSON.parse(
       localStorage.getItem('shopping_cart.cart') || '{}'
     );
-    expect(savedCartData.cart.some((i) => i.customMode === 'poster')).toBe(true);
+    expect(savedCartData.cart.some((i) => i.customMode === 'poster')).toBe(
+      true
+    );
   });
 
   it('allows switching to Kids Apparel Studio and adding to cart', () => {
     renderStudio();
 
-    const apparelTab = screen.getByRole('button', { name: /Kids' Apparel & Kicks/i });
+    const apparelTab = screen.getByRole('button', {
+      name: /Kids' Apparel & Kicks/i,
+    });
     fireEvent.click(apparelTab);
 
-    expect(screen.getByText("Customize Kids' Apparel & Kicks")).toBeInTheDocument();
+    expect(
+      screen.getByText("Customize Kids' Apparel & Kicks")
+    ).toBeInTheDocument();
     const monogramInput = screen.getByLabelText(/Monogram or Child Name:/i);
     fireEvent.change(monogramInput, { target: { value: 'LEO' } });
 
@@ -216,7 +238,9 @@ describe('Web-to-Print Studio Platform', () => {
     const savedCartData = JSON.parse(
       localStorage.getItem('shopping_cart.cart') || '{}'
     );
-    expect(savedCartData.cart.some((i) => i.customMode === 'apparel')).toBe(true);
+    expect(savedCartData.cart.some((i) => i.customMode === 'apparel')).toBe(
+      true
+    );
   });
 
   it('supports deep studio customization with prose editing, co-star mascots, and print bleed guides', () => {
@@ -229,14 +253,24 @@ describe('Web-to-Print Studio Platform', () => {
     expect(screen.getByText('Deep Customization Workshop')).toBeInTheDocument();
 
     // Verify sub-tabs exist
-    expect(screen.getByRole('tab', { name: /Prose Editor/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Avatar & Co-Star/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Typography & Bleed/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Stamps & Badges/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Prose Editor/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Avatar & Co-Star/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Typography & Bleed/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Stamps & Badges/i })
+    ).toBeInTheDocument();
 
     // Edit Chapter 1 Title in Prose Editor
     const titleInput = screen.getByLabelText(/Chapter 1 Title:/i);
-    fireEvent.change(titleInput, { target: { value: 'The Starlight Expedition' } });
+    fireEvent.change(titleInput, {
+      target: { value: 'The Starlight Expedition' },
+    });
     expect(titleInput).toHaveValue('The Starlight Expedition');
 
     // Switch to Avatar & Co-Star subtab
@@ -252,7 +286,9 @@ describe('Web-to-Print Studio Platform', () => {
     // Switch to Typography & Bleed subtab
     const typoTab = screen.getByRole('tab', { name: /Typography & Bleed/i });
     fireEvent.click(typoTab);
-    expect(screen.getByRole('button', { name: /Storybook Cursive/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Storybook Cursive/i })
+    ).toBeInTheDocument();
 
     // Toggle Print Bleed checkbox
     const bleedCheckbox = screen.getByLabelText(
@@ -272,20 +308,32 @@ describe('Web-to-Print Studio Platform', () => {
     renderStudio();
 
     // Verify Asset Categories exist
-    expect(screen.getByRole('tab', { name: /Cute Companions/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Story Badges/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Props & Wonders/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Classic Stamps/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Cute Companions/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Story Badges/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Props & Wonders/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Classic Stamps/i })
+    ).toBeInTheDocument();
 
     // Switch to Cute Companions Category
     const companionsTab = screen.getByRole('tab', { name: /Cute Companions/i });
     fireEvent.click(companionsTab);
 
     expect(
-      screen.getByRole('button', { name: /Select Luna Cosmic Companion sticker to stamp/i })
+      screen.getByRole('button', {
+        name: /Select Luna Cosmic Companion sticker to stamp/i,
+      })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /Select Finley Starlight Companion sticker to stamp/i })
+      screen.getByRole('button', {
+        name: /Select Finley Starlight Companion sticker to stamp/i,
+      })
     ).toBeInTheDocument();
 
     // Quick-drop Luna into page center
@@ -295,7 +343,9 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(addLunaBtn);
 
     // Verify sticker counter in clear button
-    expect(screen.getByRole('button', { name: /Clear \(1\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(1\)/i })
+    ).toBeInTheDocument();
 
     // Switch to Props & Wonders
     const propsTab = screen.getByRole('tab', { name: /Props & Wonders/i });
@@ -303,7 +353,9 @@ describe('Web-to-Print Studio Platform', () => {
 
     // Customize Speech Bubble text
     const bubbleInput = screen.getByLabelText(/Speech Bubble Text:/i);
-    fireEvent.change(bubbleInput, { target: { value: 'Follow the northern stars!' } });
+    fireEvent.change(bubbleInput, {
+      target: { value: 'Follow the northern stars!' },
+    });
     expect(bubbleInput).toHaveValue('Follow the northern stars!');
 
     // Add speech bubble to center
@@ -313,19 +365,25 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(addBubbleBtn);
 
     // Now 2 stickers on canvas
-    expect(screen.getByRole('button', { name: /Clear \(2\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(2\)/i })
+    ).toBeInTheDocument();
 
     // Test Undo Button
     const undoBtn = screen.getByRole('button', { name: /Undo stamp action/i });
     expect(undoBtn).not.toBeDisabled();
     fireEvent.click(undoBtn);
-    expect(screen.getByRole('button', { name: /Clear \(1\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(1\)/i })
+    ).toBeInTheDocument();
 
     // Test Redo Button
     const redoBtn = screen.getByRole('button', { name: /Redo stamp action/i });
     expect(redoBtn).not.toBeDisabled();
     fireEvent.click(redoBtn);
-    expect(screen.getByRole('button', { name: /Clear \(2\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(2\)/i })
+    ).toBeInTheDocument();
   });
 
   it('toggles widescreen studio theater mode and manipulates active sticker layer', () => {
@@ -361,31 +419,49 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.mouseDown(canvas, { clientX: 200, clientY: 200 });
 
     // Floating layer transformation toolbar should appear
-    expect(screen.getByRole('toolbar', { name: /Stamp layer controls/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Flip stamp horizontally/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Duplicate stamp/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Delete selected stamp/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('toolbar', { name: /Stamp layer controls/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Flip stamp horizontally/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Duplicate stamp/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Delete selected stamp/i })
+    ).toBeInTheDocument();
 
     // Test Flip
-    const flipBtn = screen.getByRole('button', { name: /Flip stamp horizontally/i });
+    const flipBtn = screen.getByRole('button', {
+      name: /Flip stamp horizontally/i,
+    });
     fireEvent.click(flipBtn);
 
     // Test Clone / Duplicate
     const cloneBtn = screen.getByRole('button', { name: /Duplicate stamp/i });
     fireEvent.click(cloneBtn);
-    expect(screen.getByRole('button', { name: /Clear \(2\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(2\)/i })
+    ).toBeInTheDocument();
 
     // Test Delete
-    const deleteBtn = screen.getByRole('button', { name: /Delete selected stamp/i });
+    const deleteBtn = screen.getByRole('button', {
+      name: /Delete selected stamp/i,
+    });
     fireEvent.click(deleteBtn);
-    expect(screen.getByRole('button', { name: /Clear \(1\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(1\)/i })
+    ).toBeInTheDocument();
   });
 
   it('launches immersive fullscreen custom builder workstation and physical flipbook reader proof', () => {
     renderStudio();
 
     // 1. Launch Fullscreen Studio Workstation
-    const fsBtn = screen.getByRole('button', { name: /Expand to fullscreen studio/i });
+    const fsBtn = screen.getByRole('button', {
+      name: /Expand to fullscreen studio/i,
+    });
     expect(fsBtn).toBeInTheDocument();
     fireEvent.click(fsBtn);
 
@@ -396,9 +472,15 @@ describe('Web-to-Print Studio Platform', () => {
     expect(fsModal).toBeInTheDocument();
 
     // Verify fullscreen controls
-    expect(screen.getByLabelText(/Book child hero name in fullscreen/i)).toHaveValue('Noah');
-    expect(screen.getByRole('button', { name: /Undo canvas change in fullscreen/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Redo canvas change in fullscreen/i })).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Book child hero name in fullscreen/i)
+    ).toHaveValue('Noah');
+    expect(
+      screen.getByRole('button', { name: /Undo canvas change in fullscreen/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Redo canvas change in fullscreen/i })
+    ).toBeInTheDocument();
 
     // 2. Open Flipbook Reader Proof from fullscreen
     const readerBtn = screen.getByRole('button', {
@@ -418,7 +500,9 @@ describe('Web-to-Print Studio Platform', () => {
     });
     fireEvent.click(closeReaderBtn);
     expect(
-      screen.queryByRole('dialog', { name: /Physical Flipbook Preview Reader/i })
+      screen.queryByRole('dialog', {
+        name: /Physical Flipbook Preview Reader/i,
+      })
     ).not.toBeInTheDocument();
 
     // Exit Fullscreen Mode
@@ -427,7 +511,9 @@ describe('Web-to-Print Studio Platform', () => {
     });
     fireEvent.click(exitFsBtn);
     expect(
-      screen.queryByRole('dialog', { name: /Immersive Storybook Builder Studio/i })
+      screen.queryByRole('dialog', {
+        name: /Immersive Storybook Builder Studio/i,
+      })
     ).not.toBeInTheDocument();
   });
 
@@ -449,7 +535,9 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(spaceTemplateCard);
 
     // Verify template stamps populated (4 stamps in space template)
-    expect(screen.getByRole('button', { name: /Clear \(4\)/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Clear \(4\)/i })
+    ).toBeInTheDocument();
 
     // Apply Blank Canvas (Clean Slate)
     const blankCanvasCard = screen.getByRole('button', {
@@ -458,7 +546,9 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(blankCanvasCard);
 
     // Verify canvas cleared of stamps
-    expect(screen.queryByRole('button', { name: /Clear \(/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Clear \(/i })
+    ).not.toBeInTheDocument();
 
     // Add new story spread in bottom reel
     const addSpreadBtn = screen.getByRole('button', {
@@ -473,53 +563,89 @@ describe('Web-to-Print Studio Platform', () => {
   it('tests poster studio multi-size formats, orientation toggling, paper options, and gallery proof modal', () => {
     renderStudio();
 
-    const posterTab = screen.getByRole('button', { name: /Framed Art Posters/i });
+    const posterTab = screen.getByRole('button', {
+      name: /Framed Art Posters/i,
+    });
     fireEvent.click(posterTab);
 
     // Verify sizes exist
-    expect(screen.getByRole('button', { name: /12" × 18" Gallery Print/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /18" × 24" Classic Exhibition/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /24" × 36" Statement Archival/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /12" × 18" Gallery Print/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /18" × 24" Classic Exhibition/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /24" × 36" Statement Archival/i })
+    ).toBeInTheDocument();
 
     // Select 24x36 Statement Archival
-    const grandSizeBtn = screen.getByRole('button', { name: /24" × 36" Statement Archival/i });
+    const grandSizeBtn = screen.getByRole('button', {
+      name: /24" × 36" Statement Archival/i,
+    });
     fireEvent.click(grandSizeBtn);
 
     // Switch to Horizontal Landscape orientation
-    const landscapeBtn = screen.getByRole('button', { name: /Horizontal Landscape/i });
+    const landscapeBtn = screen.getByRole('button', {
+      name: /Horizontal Landscape/i,
+    });
     fireEvent.click(landscapeBtn);
 
     // Select Textured Stretched Canvas paper
-    const canvasPaperBtn = screen.getByRole('button', { name: /Textured Stretched Canvas/i });
+    const canvasPaperBtn = screen.getByRole('button', {
+      name: /Textured Stretched Canvas/i,
+    });
     fireEvent.click(canvasPaperBtn);
 
     // Open Gallery Proof Modal
-    const proofBtn = screen.getByRole('button', { name: /View Gallery Proof/i });
+    const proofBtn = screen.getByRole('button', {
+      name: /View Gallery Proof/i,
+    });
     fireEvent.click(proofBtn);
 
-    expect(screen.getByRole('dialog', { name: /Gallery Proof Preview Modal/i })).toBeInTheDocument();
-    expect(screen.getByText('Archival Gallery Proof Verification')).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: /Gallery Proof Preview Modal/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Archival Gallery Proof Verification')
+    ).toBeInTheDocument();
 
     // Close proof modal
-    const closeProofBtn = screen.getByRole('button', { name: /Confirm Proof & Continue/i });
+    const closeProofBtn = screen.getByRole('button', {
+      name: /Confirm Proof & Continue/i,
+    });
     fireEvent.click(closeProofBtn);
-    expect(screen.queryByRole('dialog', { name: /Gallery Proof Preview Modal/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: /Gallery Proof Preview Modal/i })
+    ).not.toBeInTheDocument();
   });
 
   it('tests apparel studio garments, youth sizing pills, placement zones, and sizing guide modal', () => {
     renderStudio();
 
-    const apparelTab = screen.getByRole('button', { name: /Kids' Apparel & Kicks/i });
+    const apparelTab = screen.getByRole('button', {
+      name: /Kids' Apparel & Kicks/i,
+    });
     fireEvent.click(apparelTab);
 
     // Verify garments
-    expect(screen.getByRole('button', { name: /Organic Kids' Hoodie/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Kids' Heavyweight Graphic Tee/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Kids' Varsity Bomber Jacket/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Custom Kids' Canvas High-Tops/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Organic Kids' Hoodie/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Kids' Heavyweight Graphic Tee/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Kids' Varsity Bomber Jacket/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Custom Kids' Canvas High-Tops/i })
+    ).toBeInTheDocument();
 
     // Select Varsity Bomber Jacket
-    const jacketBtn = screen.getByRole('button', { name: /Kids' Varsity Bomber Jacket/i });
+    const jacketBtn = screen.getByRole('button', {
+      name: /Kids' Varsity Bomber Jacket/i,
+    });
     fireEvent.click(jacketBtn);
 
     // Select Youth L size
@@ -531,16 +657,26 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(pocketBtn);
 
     // Open Sizing Chart modal
-    const sizeChartBtn = screen.getByRole('button', { name: /View Sizing Chart/i });
+    const sizeChartBtn = screen.getByRole('button', {
+      name: /View Sizing Chart/i,
+    });
     fireEvent.click(sizeChartBtn);
 
-    expect(screen.getByRole('dialog', { name: /Youth Apparel Sizing Guide/i })).toBeInTheDocument();
-    expect(screen.getByText('Youth Garment Sizing & Fit Guide')).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: /Youth Apparel Sizing Guide/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Youth Garment Sizing & Fit Guide')
+    ).toBeInTheDocument();
 
     // Close sizing modal
-    const closeModalBtn = screen.getByRole('button', { name: /Got It, Return to Studio/i });
+    const closeModalBtn = screen.getByRole('button', {
+      name: /Got It, Return to Studio/i,
+    });
     fireEvent.click(closeModalBtn);
-    expect(screen.queryByRole('dialog', { name: /Youth Apparel Sizing Guide/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: /Youth Apparel Sizing Guide/i })
+    ).not.toBeInTheDocument();
   });
 
   it('allows customizing child hero avatar hairstyles and trusty companion pet in character creator', () => {
@@ -555,7 +691,9 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(avatarTab);
 
     // Switch to Hero Avatar tab inside CharacterCreator
-    const heroTab = screen.getByRole('tab', { name: /Star Hero \(Child \/ You\)/i });
+    const heroTab = screen.getByRole('tab', {
+      name: /Star Hero \(Child \/ You\)/i,
+    });
     fireEvent.click(heroTab);
 
     // Select Fluffy Curls hair style
@@ -567,11 +705,15 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(glassesBtn);
 
     // Switch back to Trusty Companion tab
-    const companionTab = screen.getByRole('tab', { name: /Trusty Companion \(Pet \/ Co-Star\)/i });
+    const companionTab = screen.getByRole('tab', {
+      name: /Trusty Companion \(Pet \/ Co-Star\)/i,
+    });
     fireEvent.click(companionTab);
 
     // Verify next companion button identifies the next companion (Penny after Leo)
-    const nextCompanionBtn = screen.getByRole('button', { name: /Switch to next companion \(Princess\)/i });
+    const nextCompanionBtn = screen.getByRole('button', {
+      name: /Switch to next companion \(Princess\)/i,
+    });
     expect(nextCompanionBtn).toBeInTheDocument();
     fireEvent.click(nextCompanionBtn);
 
@@ -580,7 +722,9 @@ describe('Web-to-Print Studio Platform', () => {
     expect(petNameInput).toHaveValue('Penny');
 
     // Next should now identify Finley
-    const nextFinleyBtn = screen.getByRole('button', { name: /Switch to next companion \(Finley\)/i });
+    const nextFinleyBtn = screen.getByRole('button', {
+      name: /Switch to next companion \(Finley\)/i,
+    });
     expect(nextFinleyBtn).toBeInTheDocument();
     fireEvent.click(nextFinleyBtn);
     expect(petNameInput).toHaveValue('Finley');
@@ -594,13 +738,19 @@ describe('Web-to-Print Studio Platform', () => {
     renderStudio();
 
     // Verify Motion toggle button in canvas header
-    const motionBtn = screen.getByRole('button', { name: /Pause scene animation/i });
+    const motionBtn = screen.getByRole('button', {
+      name: /Pause scene animation/i,
+    });
     expect(motionBtn).toBeInTheDocument();
     fireEvent.click(motionBtn);
-    expect(screen.getByRole('button', { name: /Play scene animation/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Play scene animation/i })
+    ).toBeInTheDocument();
 
     // Verify Spread Layout toggle button (Panoramic vs Framed)
-    const layoutBtn = screen.getByRole('button', { name: /Switch spread layout/i });
+    const layoutBtn = screen.getByRole('button', {
+      name: /Switch spread layout/i,
+    });
     expect(layoutBtn).toBeInTheDocument();
     fireEvent.click(layoutBtn);
     expect(screen.getByText('Framed')).toBeInTheDocument();
@@ -608,10 +758,14 @@ describe('Web-to-Print Studio Platform', () => {
     expect(screen.getByText('Panoramic')).toBeInTheDocument();
 
     // Navigate to Step 2
-    const nextBtn = screen.getByRole('button', { name: /Continue to Next Step/i });
+    const nextBtn = screen.getByRole('button', {
+      name: /Continue to Next Step/i,
+    });
     fireEvent.click(nextBtn);
 
-    expect(screen.getByText('Adventure World & Scene Environments')).toBeInTheDocument();
+    expect(
+      screen.getByText('Adventure World & Scene Environments')
+    ).toBeInTheDocument();
     expect(screen.getByText('8 Worlds')).toBeInTheDocument();
 
     // Category filter pills
@@ -626,11 +780,15 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(enchantedScene);
 
     // Change Time of Day to Golden Sunset
-    const sunsetBtn = screen.getByRole('button', { name: /Set time of day to Golden Sunset/i });
+    const sunsetBtn = screen.getByRole('button', {
+      name: /Set time of day to Golden Sunset/i,
+    });
     fireEvent.click(sunsetBtn);
 
     // Change Weather Particles to Gentle Snowfall
-    const snowBtn = screen.getByRole('button', { name: /Set weather effect to Gentle Snowfall/i });
+    const snowBtn = screen.getByRole('button', {
+      name: /Set weather effect to Gentle Snowfall/i,
+    });
     fireEvent.click(snowBtn);
 
     // Navigate to Step 4
@@ -650,4 +808,3 @@ describe('Web-to-Print Studio Platform', () => {
     fireEvent.click(auroraScene);
   });
 });
-

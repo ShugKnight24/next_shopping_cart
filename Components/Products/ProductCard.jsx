@@ -1,22 +1,26 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
+import {
+  trackAddToCart,
+  trackRemoveFromCart,
+  trackSelectItem,
+} from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
-import { trackAddToCart, trackRemoveFromCart, trackSelectItem } from '../../analytics/google';
-import { QuickView } from './QuickView';
-import { RatingStars } from '../UI/RatingStars';
-import styles from './ProductCard.module.css';
 import {
-  HeartIcon,
   CartIcon,
-  TrashIcon,
   CheckCircleIcon,
   EyeIcon,
+  HeartIcon,
   InfoIcon,
-  TagIcon,
   SparklesIcon,
+  TagIcon,
+  TrashIcon,
 } from '../Icons';
+import { RatingStars } from '../UI/RatingStars';
+import styles from './ProductCard.module.css';
+import { QuickView } from './QuickView';
 
 export function ProductCard({
   available,
@@ -39,7 +43,8 @@ export function ProductCard({
   const { dispatch } = useContext(CartContext);
   const [showQuickView, setShowQuickView] = useState(false);
   const [hasImgError, setHasImgError] = useState(false);
-  const displayImage = hasImgError || !image ? '/images/placeholder.svg' : image;
+  const displayImage =
+    hasImgError || !image ? '/images/placeholder.svg' : image;
 
   // Build product object for QuickView
   const productData = {
@@ -177,7 +182,10 @@ export function ProductCard({
         <div className={`${styles.cardContent} product-content`}>
           {/* Header Row: Title & Favorite */}
           <div className={`${styles.headerRow} name-favorite`}>
-            <h2 className={`${styles.productTitle} product-name`} title={productName}>
+            <h2
+              className={`${styles.productTitle} product-name`}
+              title={productName}
+            >
               {productName}
             </h2>
             {favorite ? (
@@ -279,9 +287,7 @@ export function ProductCard({
                       '−'
                     )}
                   </button>
-                  <span
-                    className={`${styles.stepperValue} quantity-display`}
-                  >
+                  <span className={`${styles.stepperValue} quantity-display`}>
                     {cartQuantity}
                   </span>
                   <button

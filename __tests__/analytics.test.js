@@ -1,20 +1,20 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  formatGA4Item,
   GA_TRACKING_ID,
   handleEvent,
   handlePageView,
   setTrafficClassification,
-  formatGA4Item,
-  trackViewItemList,
-  trackSelectItem,
-  trackViewItem,
   trackAddToCart,
-  trackRemoveFromCart,
-  trackViewCart,
-  trackBeginCheckout,
   trackApplyPromotion,
+  trackBeginCheckout,
+  trackRemoveFromCart,
   trackSearch,
+  trackSelectItem,
   trackStudioInteraction,
+  trackViewCart,
+  trackViewItem,
+  trackViewItemList,
   trackWebVitals,
 } from '../analytics/google';
 
@@ -77,7 +77,10 @@ describe('Google Analytics Utility', () => {
       const mockGtag = vi.fn();
       window.gtag = mockGtag;
 
-      handleEvent({ action: 'add_to_cart', params: { id: 1, name: 'Jordan 1' } });
+      handleEvent({
+        action: 'add_to_cart',
+        params: { id: 1, name: 'Jordan 1' },
+      });
 
       expect(mockGtag).toHaveBeenCalledTimes(1);
       expect(mockGtag).toHaveBeenCalledWith('event', 'add_to_cart', {

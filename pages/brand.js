@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useBrand, BRAND_VARIANTS } from '../Components/Brand/BrandContext';
-import { Logo } from '../Components/Logo';
+import { BRAND_VARIANTS, useBrand } from '../Components/Brand/BrandContext';
 import { LegacyLogo } from '../Components/Legacy/LegacyLogo';
+import { Logo } from '../Components/Logo';
 import { useToast } from '../Components/UI/Toast';
 
 export default function BrandPage() {
@@ -37,12 +37,31 @@ export default function BrandPage() {
         <meta property="og:image" content="/static/img/og-preview.svg" />
       </Head>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '2.5rem 1.5rem 5rem',
+        }}
+      >
         {/* Breadcrumb navigation */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: '#64748b', marginBottom: '1.5rem' }}>
-          <Link href="/" style={{ color: '#0284c7', textDecoration: 'none' }}>Home</Link>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            fontSize: '0.88rem',
+            color: '#64748b',
+            marginBottom: '1.5rem',
+          }}
+        >
+          <Link href="/" style={{ color: '#0284c7', textDecoration: 'none' }}>
+            Home
+          </Link>
           <span>/</span>
-          <span style={{ color: '#0f172a', fontWeight: 600 }}>Brand Identity</span>
+          <span style={{ color: '#0f172a', fontWeight: 600 }}>
+            Brand Identity
+          </span>
         </div>
 
         {/* Hero Section */}
@@ -84,9 +103,10 @@ export default function BrandPage() {
               lineHeight: 1.6,
             }}
           >
-            A versatile visual identity system for Cart Commerce. Five distinct aesthetic
-            variants — Favicon Badge, Floating Minimal Cart, Soviet Constructivist, Dark &amp; Edgy, and Lighthearted Pop — designed
-            for personality, legibility, and effortless theme switching.
+            A versatile visual identity system for Cart Commerce. Five distinct
+            aesthetic variants — Favicon Badge, Floating Minimal Cart, Soviet
+            Constructivist, Dark &amp; Edgy, and Lighthearted Pop — designed for
+            personality, legibility, and effortless theme switching.
           </p>
 
           {/* Theme preview selector */}
@@ -101,7 +121,14 @@ export default function BrandPage() {
               border: '1px solid #e2e8f0',
             }}
           >
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569', padding: '0 0.5rem' }}>
+            <span
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#475569',
+                padding: '0 0.5rem',
+              }}
+            >
               Preview Background:
             </span>
             <button
@@ -111,7 +138,8 @@ export default function BrandPage() {
                 padding: '0.45rem 1rem',
                 borderRadius: '8px',
                 border: 'none',
-                background: previewTheme === 'light' ? '#0f172a' : 'transparent',
+                background:
+                  previewTheme === 'light' ? '#0f172a' : 'transparent',
                 color: previewTheme === 'light' ? '#ffffff' : '#475569',
                 fontWeight: 700,
                 fontSize: '0.85rem',
@@ -267,11 +295,23 @@ export default function BrandPage() {
                       border: '1px solid #f1f5f9',
                     }}
                   >
-                    <div style={{ fontWeight: 700, color: '#334155', marginBottom: '0.25rem' }}>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        color: '#334155',
+                        marginBottom: '0.25rem',
+                      }}
+                    >
                       Typography &amp; Subtitle:
                     </div>
-                    <div>Line 1: <code>CART COMMERCE</code> (Bold 800, tracking 0.14em)</div>
-                    <div>Line 2: <code>{variant.subtitle}</code> (Gold 700, tracking 0.28em)</div>
+                    <div>
+                      Line 1: <code>CART COMMERCE</code> (Bold 800, tracking
+                      0.14em)
+                    </div>
+                    <div>
+                      Line 2: <code>{variant.subtitle}</code> (Gold 700,
+                      tracking 0.28em)
+                    </div>
                   </div>
                 </div>
 
@@ -303,7 +343,16 @@ export default function BrandPage() {
                 >
                   {isActive ? (
                     <>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#f59e0b"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                       Currently Selected for Store
@@ -350,7 +399,8 @@ export default function BrandPage() {
               Icons &amp; Social Previews
             </h2>
             <p style={{ color: '#64748b', margin: 0, fontSize: '0.95rem' }}>
-              All brand marks scale gracefully from 16px browser tabs to 1200px editorial social banners.
+              All brand marks scale gracefully from 16px browser tabs to 1200px
+              editorial social banners.
             </p>
           </div>
 
@@ -392,7 +442,13 @@ export default function BrandPage() {
                   height="64"
                 />
               </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.25rem' }}>
+              <h3
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  margin: '0 0 0.25rem',
+                }}
+              >
                 Vector Favicon
               </h3>
               <code style={{ fontSize: '0.78rem', color: '#64748b' }}>
@@ -430,7 +486,13 @@ export default function BrandPage() {
                   height="90"
                 />
               </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.25rem' }}>
+              <h3
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  margin: '0 0 0.25rem',
+                }}
+              >
                 Apple Touch Icon
               </h3>
               <code style={{ fontSize: '0.78rem', color: '#64748b' }}>
@@ -464,7 +526,13 @@ export default function BrandPage() {
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
               </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.25rem' }}>
+              <h3
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  margin: '0 0 0.25rem',
+                }}
+              >
                 OpenGraph Social Card
               </h3>
               <code style={{ fontSize: '0.78rem', color: '#64748b' }}>
@@ -510,10 +578,17 @@ export default function BrandPage() {
             >
               Original Legacy 2020 Brand Assets
             </h3>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>
+            <p
+              style={{
+                color: '#64748b',
+                fontSize: '0.9rem',
+                lineHeight: 1.5,
+                margin: 0,
+              }}
+            >
               The legacy cyan/red cloud logo is preserved in{' '}
-              <code>public/static/img/legacy/logo.svg</code> and can be rendered at any time via{' '}
-              <code>Components/Legacy/LegacyLogo.jsx</code>.
+              <code>public/static/img/legacy/logo.svg</code> and can be rendered
+              at any time via <code>Components/Legacy/LegacyLogo.jsx</code>.
             </p>
           </div>
           <div style={{ maxWidth: '240px', width: '100%', opacity: 0.85 }}>

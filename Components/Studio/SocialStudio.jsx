@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import products from '../../data/products.json';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMascot } from '../../context/MascotProvider';
-import { useToast } from '../UI/Toast';
+import products from '../../data/products.json';
 import {
-  SparklesIcon,
-  ChevronLeft,
   CheckCircleIcon,
-  EyeIcon,
-  ShareIcon,
+  ChevronLeft,
   CloseIcon,
+  EyeIcon,
   RotateCcwIcon,
+  ShareIcon,
+  SparklesIcon,
 } from '../Icons';
+import { useToast } from '../UI/Toast';
 import styles from './SocialStudio.module.css';
 
 export const PLATFORMS = [
@@ -86,11 +86,31 @@ export const TEMPLATES = [
 ];
 
 export const COLOR_THEMES = [
-  { id: 'obsidian', name: 'Obsidian Midnight', bg: '#090d16', accent: '#f59e0b' },
-  { id: 'luxe_cream', name: 'Alabaster Luxe', bg: '#fdfbf7', accent: '#0f172a' },
+  {
+    id: 'obsidian',
+    name: 'Obsidian Midnight',
+    bg: '#090d16',
+    accent: '#f59e0b',
+  },
+  {
+    id: 'luxe_cream',
+    name: 'Alabaster Luxe',
+    bg: '#fdfbf7',
+    accent: '#0f172a',
+  },
   { id: 'cyber_volt', name: 'Cyber Volt', bg: '#050811', accent: '#a3e635' },
-  { id: 'electric_blue', name: 'Electric Cobalt', bg: '#030712', accent: '#38bdf8' },
-  { id: 'crimson_drop', name: 'Crimson Heat', bg: '#180507', accent: '#ef4444' },
+  {
+    id: 'electric_blue',
+    name: 'Electric Cobalt',
+    bg: '#030712',
+    accent: '#38bdf8',
+  },
+  {
+    id: 'crimson_drop',
+    name: 'Crimson Heat',
+    bg: '#180507',
+    accent: '#ef4444',
+  },
 ];
 
 function generateStarterLayers(templateId, platformId, product, colorTheme) {
@@ -488,7 +508,9 @@ export function SocialStudio() {
   const [selectedPlatform, setSelectedPlatform] = useState('flyer_print');
   const [selectedTemplate, setSelectedTemplate] = useState('minimal_luxury');
   const [selectedColorTheme, setSelectedColorTheme] = useState('obsidian');
-  const [selectedProductId, setSelectedProductId] = useState(products[0]?.itemid || 'SM57');
+  const [selectedProductId, setSelectedProductId] = useState(
+    products[0]?.itemid || 'SM57'
+  );
   const [showPhoneMockup, setShowPhoneMockup] = useState(false);
   const [activeTab, setActiveTab] = useState('catalog'); // 'catalog' | 'inspector' | 'layers'
 
@@ -500,7 +522,8 @@ export function SocialStudio() {
 
   // Selected Catalog Product
   const activeProduct = useMemo(
-    () => products.find((p) => p.itemid === selectedProductId) || products[0] || {},
+    () =>
+      products.find((p) => p.itemid === selectedProductId) || products[0] || {},
     [selectedProductId]
   );
 
@@ -525,7 +548,7 @@ export function SocialStudio() {
   useEffect(() => {
     setMascot('sparky');
     speak(
-      "Welcome to the Figma-Grade Designer Studio! Select any element right on the canvas, drag it to compose your flyer, or remix the layers!",
+      'Welcome to the Figma-Grade Designer Studio! Select any element right on the canvas, drag it to compose your flyer, or remix the layers!',
       'happy'
     );
   }, [setMascot, speak]);
@@ -539,7 +562,12 @@ export function SocialStudio() {
   // Headline sync for test contract
   const headline = useMemo(() => {
     const hlLayer = layers.find((l) => l.id === 'headline');
-    return hlLayer?.text || (activeProduct.productName ? `${activeProduct.productName.toUpperCase()} ARCHIVE` : 'EXCLUSIVE DROP');
+    return (
+      hlLayer?.text ||
+      (activeProduct.productName
+        ? `${activeProduct.productName.toUpperCase()} ARCHIVE`
+        : 'EXCLUSIVE DROP')
+    );
   }, [layers, activeProduct]);
 
   // Handle product selection change
@@ -564,7 +592,11 @@ export function SocialStudio() {
               text: `${prod.productName.toUpperCase()} ARCHIVE`,
             };
           }
-          if (l.id === 'price-tag' || l.id === 'price-cta' || l.id === 'cta-pill') {
+          if (
+            l.id === 'price-tag' ||
+            l.id === 'price-cta' ||
+            l.id === 'cta-pill'
+          ) {
             return {
               ...l,
               text: l.text.includes('COP NOW')
@@ -575,7 +607,10 @@ export function SocialStudio() {
           return l;
         })
       );
-      speak(`Imported "${prod.productName}" into your flyer design! Ready to fly!`, 'guiding');
+      speak(
+        `Imported "${prod.productName}" into your flyer design! Ready to fly!`,
+        'guiding'
+      );
     }
   };
 
@@ -700,7 +735,10 @@ export function SocialStudio() {
       id: newId,
       name: preset === 'headline' ? 'Custom Headline' : 'Custom Copy',
       type: 'text',
-      text: preset === 'headline' ? 'NEW COLLECTION 2026' : 'Exclusive craft for modern collectors.',
+      text:
+        preset === 'headline'
+          ? 'NEW COLLECTION 2026'
+          : 'Exclusive craft for modern collectors.',
       fontFamily: preset === 'headline' ? 'display' : 'sans',
       fontSize: preset === 'headline' ? 22 : 13,
       color: activeColorThemeObj.id === 'luxe_cream' ? '#0f172a' : '#ffffff',
@@ -750,7 +788,10 @@ export function SocialStudio() {
       y: height / 2,
       width: width - 80,
       height: 100,
-      fill: activeColorThemeObj.id === 'luxe_cream' ? '#ffffff' : 'rgba(255, 255, 255, 0.08)',
+      fill:
+        activeColorThemeObj.id === 'luxe_cream'
+          ? '#ffffff'
+          : 'rgba(255, 255, 255, 0.08)',
       stroke: activeColorThemeObj.accent,
       strokeWidth: 1.5,
       borderRadius: 12,
@@ -769,7 +810,8 @@ export function SocialStudio() {
 
     if (alignType === 'left') newX = (selectedLayer.width || 120) / 2 + 20;
     if (alignType === 'center') newX = width / 2;
-    if (alignType === 'right') newX = width - (selectedLayer.width || 120) / 2 - 20;
+    if (alignType === 'right')
+      newX = width - (selectedLayer.width || 120) / 2 - 20;
     if (alignType === 'middle') newY = height / 2;
 
     updateSelectedLayer({ x: newX, y: newY });
@@ -784,7 +826,8 @@ export function SocialStudio() {
     if (!ctx) return;
 
     const { width, height } = activePlatformObj;
-    const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 2 : 2;
+    const dpr =
+      typeof window !== 'undefined' ? window.devicePixelRatio || 2 : 2;
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     ctx.scale(dpr, dpr);
@@ -815,7 +858,9 @@ export function SocialStudio() {
     ctx.fillRect(0, 0, width, height);
 
     // Subtle darkroom grid/starlight
-    ctx.fillStyle = isLight ? 'rgba(0, 0, 0, 0.03)' : 'rgba(255, 255, 255, 0.04)';
+    ctx.fillStyle = isLight
+      ? 'rgba(0, 0, 0, 0.03)'
+      : 'rgba(255, 255, 255, 0.04)';
     for (let gx = 20; gx < width; gx += 40) {
       for (let gy = 20; gy < height; gy += 40) {
         ctx.beginPath();
@@ -873,7 +918,13 @@ export function SocialStudio() {
         } else {
           ctx.beginPath();
           if (ctx.roundRect) {
-            ctx.roundRect(lx - lw / 2, ly - lh / 2, lw, lh, layer.borderRadius || 6);
+            ctx.roundRect(
+              lx - lw / 2,
+              ly - lh / 2,
+              lw,
+              lh,
+              layer.borderRadius || 6
+            );
           } else {
             ctx.rect(lx - lw / 2, ly - lh / 2, lw, lh);
           }
@@ -898,7 +949,11 @@ export function SocialStudio() {
         ctx.fillStyle = isLight ? '#64748b' : '#94a3b8';
         ctx.font = 'bold 9px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText((layer.productCategory || 'CURATED DROP').toUpperCase(), lx, ly - cardH / 2 + 18);
+        ctx.fillText(
+          (layer.productCategory || 'CURATED DROP').toUpperCase(),
+          lx,
+          ly - cardH / 2 + 18
+        );
 
         ctx.fillStyle = isLight ? '#0f172a' : '#f8fafc';
         ctx.font = 'bold 14px sans-serif';
@@ -927,17 +982,22 @@ export function SocialStudio() {
           layer.fontFamily === 'serif'
             ? "'Cinzel', 'Playfair Display', Georgia, serif"
             : layer.fontFamily === 'display'
-            ? "'Impact', 'Trebuchet MS', sans-serif"
-            : layer.fontFamily === 'script'
-            ? "'Brush Script MT', cursive"
-            : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+              ? "'Impact', 'Trebuchet MS', sans-serif"
+              : layer.fontFamily === 'script'
+                ? "'Brush Script MT', cursive"
+                : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
         ctx.font = `bold ${layer.fontSize || 18}px ${fontFam}`;
         ctx.fillStyle = layer.color || (isLight ? '#0f172a' : '#ffffff');
         ctx.textAlign = layer.align || 'center';
         ctx.textBaseline = 'middle';
 
-        const drawX = layer.align === 'left' ? lx - lw / 2 : layer.align === 'right' ? lx + lw / 2 : lx;
+        const drawX =
+          layer.align === 'left'
+            ? lx - lw / 2
+            : layer.align === 'right'
+              ? lx + lw / 2
+              : lx;
         ctx.fillText(layer.text || '', drawX, ly);
       }
 
@@ -990,7 +1050,13 @@ export function SocialStudio() {
 
       ctx.restore();
     }
-  }, [activePlatformObj, activeColorThemeObj, selectedColorTheme, layers, selectedLayer]);
+  }, [
+    activePlatformObj,
+    activeColorThemeObj,
+    selectedColorTheme,
+    layers,
+    selectedLayer,
+  ]);
 
   useEffect(() => {
     renderSocialCanvas();
@@ -1006,8 +1072,14 @@ export function SocialStudio() {
       link.download = `cart-flyer-${selectedPlatform}-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
-      showToast('High-resolution graphic flyer exported successfully!', 'success');
-      speak("Boom! Your high-res social flyer is downloaded and ready to blow up the feed!", 'celebrating');
+      showToast(
+        'High-resolution graphic flyer exported successfully!',
+        'success'
+      );
+      speak(
+        'Boom! Your high-res social flyer is downloaded and ready to blow up the feed!',
+        'celebrating'
+      );
     } catch {
       showToast('Image export simulated in test environment', 'info');
     }
@@ -1018,15 +1090,23 @@ export function SocialStudio() {
     const captionText = `${headline}\n\n${activeProduct.shortDescription || activeProduct.description || 'Exclusive drop available now at Cart Commerce.'}\n\nShop the collection: https://cartcommerce.shop/products/${activeProduct.itemid}\n\n#streetwear #drops #grails #curated #limitededition #design`;
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(captionText);
-      showToast('Marketing caption and hashtags copied to clipboard!', 'success');
-      speak("Caption and hashtags copied! Ready to paste straight into your social campaign!", 'happy');
+      showToast(
+        'Marketing caption and hashtags copied to clipboard!',
+        'success'
+      );
+      speak(
+        'Caption and hashtags copied! Ready to paste straight into your social campaign!',
+        'happy'
+      );
     }
   };
 
   return (
     <>
       <Head>
-        <title>Social Media Creation Studio & Flier Designer | Cart Commerce</title>
+        <title>
+          Social Media Creation Studio & Flier Designer | Cart Commerce
+        </title>
         <meta
           name="description"
           content="Figma-grade graphic design studio for e-commerce store owners. Build, customize, and compose promotional fliers, Instagram posts, TikTok reels, and banners."
@@ -1042,11 +1122,14 @@ export function SocialStudio() {
               <span>Back to Storefront</span>
             </Link>
             <div className={styles.titleRow}>
-              <h1 className={styles.studioTitle}>Social Media Creation Studio</h1>
+              <h1 className={styles.studioTitle}>
+                Social Media Creation Studio
+              </h1>
               <span className={styles.editionPill}>FIGMA-LITE WORKBENCH</span>
             </div>
             <p className={styles.studioSubtitle}>
-              <span>Store Owner & Creator Workshop</span> • Interactive Multi-Layer Canvas Engine
+              <span>Store Owner & Creator Workshop</span> • Interactive
+              Multi-Layer Canvas Engine
             </p>
           </div>
 
@@ -1058,7 +1141,9 @@ export function SocialStudio() {
               aria-label="Toggle smartphone mockup preview"
             >
               <EyeIcon size={16} />
-              <span>{showPhoneMockup ? 'Hide Phone Frame' : 'OLED Phone Frame'}</span>
+              <span>
+                {showPhoneMockup ? 'Hide Phone Frame' : 'OLED Phone Frame'}
+              </span>
             </button>
             <button
               type="button"
@@ -1197,7 +1282,9 @@ export function SocialStudio() {
                 <div className={styles.smartphoneBezel}>
                   <div className={styles.phoneSpeaker} />
                   <div className={styles.phoneCamera} />
-                  <div className={styles.phoneStatusBar}><span>9:41</span></div>
+                  <div className={styles.phoneStatusBar}>
+                    <span>9:41</span>
+                  </div>
                   <div className={styles.phoneScreen}>
                     <canvas
                       ref={canvasRef}
@@ -1226,7 +1313,8 @@ export function SocialStudio() {
             <div className={styles.resolutionNotice}>
               <CheckCircleIcon size={16} />
               <span>
-                300-DPI Print Ready Proof • Multi-layer vector composite engine with 2× retina scale
+                300-DPI Print Ready Proof • Multi-layer vector composite engine
+                with 2× retina scale
               </span>
             </div>
           </div>
@@ -1265,8 +1353,12 @@ export function SocialStudio() {
                   <div className={styles.inspectorPane}>
                     <div className={styles.selectedLayerHeader}>
                       <div>
-                        <span className={styles.layerTypePill}>{selectedLayer.type.toUpperCase()}</span>
-                        <h3 className={styles.selectedLayerTitle}>{selectedLayer.name}</h3>
+                        <span className={styles.layerTypePill}>
+                          {selectedLayer.type.toUpperCase()}
+                        </span>
+                        <h3 className={styles.selectedLayerTitle}>
+                          {selectedLayer.name}
+                        </h3>
                       </div>
                       <button
                         type="button"
@@ -1280,14 +1372,18 @@ export function SocialStudio() {
 
                     {/* Transform Coordinates */}
                     <div className={styles.propGroup}>
-                      <span className={styles.propGroupTitle}>Transform & Position</span>
+                      <span className={styles.propGroupTitle}>
+                        Transform & Position
+                      </span>
                       <div className={styles.coordGrid}>
                         <div className={styles.coordItem}>
                           <label>X (px):</label>
                           <input
                             type="number"
                             value={selectedLayer.x}
-                            onChange={(e) => updateSelectedLayer({ x: Number(e.target.value) })}
+                            onChange={(e) =>
+                              updateSelectedLayer({ x: Number(e.target.value) })
+                            }
                           />
                         </div>
                         <div className={styles.coordItem}>
@@ -1295,7 +1391,9 @@ export function SocialStudio() {
                           <input
                             type="number"
                             value={selectedLayer.y}
-                            onChange={(e) => updateSelectedLayer({ y: Number(e.target.value) })}
+                            onChange={(e) =>
+                              updateSelectedLayer({ y: Number(e.target.value) })
+                            }
                           />
                         </div>
                         <div className={styles.coordItem}>
@@ -1303,7 +1401,11 @@ export function SocialStudio() {
                           <input
                             type="number"
                             value={selectedLayer.width || 120}
-                            onChange={(e) => updateSelectedLayer({ width: Number(e.target.value) })}
+                            onChange={(e) =>
+                              updateSelectedLayer({
+                                width: Number(e.target.value),
+                              })
+                            }
                           />
                         </div>
                         <div className={styles.coordItem}>
@@ -1311,23 +1413,32 @@ export function SocialStudio() {
                           <input
                             type="number"
                             value={selectedLayer.height || 36}
-                            onChange={(e) => updateSelectedLayer({ height: Number(e.target.value) })}
+                            onChange={(e) =>
+                              updateSelectedLayer({
+                                height: Number(e.target.value),
+                              })
+                            }
                           />
                         </div>
                       </div>
                     </div>
 
                     {/* Typography Settings (If text or badge) */}
-                    {(selectedLayer.type === 'text' || selectedLayer.type === 'badge') && (
+                    {(selectedLayer.type === 'text' ||
+                      selectedLayer.type === 'badge') && (
                       <div className={styles.propGroup}>
-                        <span className={styles.propGroupTitle}>Typography & Text</span>
+                        <span className={styles.propGroupTitle}>
+                          Typography & Text
+                        </span>
                         <div className={styles.fieldItem}>
                           <label htmlFor="inspectorTextInput">Content:</label>
                           <input
                             id="inspectorTextInput"
                             type="text"
                             value={selectedLayer.text || ''}
-                            onChange={(e) => updateSelectedLayer({ text: e.target.value })}
+                            onChange={(e) =>
+                              updateSelectedLayer({ text: e.target.value })
+                            }
                             className={styles.inputField}
                           />
                         </div>
@@ -1337,7 +1448,11 @@ export function SocialStudio() {
                             <label>Font Family:</label>
                             <select
                               value={selectedLayer.fontFamily || 'sans'}
-                              onChange={(e) => updateSelectedLayer({ fontFamily: e.target.value })}
+                              onChange={(e) =>
+                                updateSelectedLayer({
+                                  fontFamily: e.target.value,
+                                })
+                              }
                               className={styles.selectField}
                             >
                               <option value="sans">Modern Sans</option>
@@ -1348,13 +1463,19 @@ export function SocialStudio() {
                           </div>
 
                           <div className={styles.fieldHalf}>
-                            <label>Font Size ({selectedLayer.fontSize || 16}px):</label>
+                            <label>
+                              Font Size ({selectedLayer.fontSize || 16}px):
+                            </label>
                             <input
                               type="range"
                               min={9}
                               max={48}
                               value={selectedLayer.fontSize || 16}
-                              onChange={(e) => updateSelectedLayer({ fontSize: Number(e.target.value) })}
+                              onChange={(e) =>
+                                updateSelectedLayer({
+                                  fontSize: Number(e.target.value),
+                                })
+                              }
                             />
                           </div>
                         </div>
@@ -1366,10 +1487,14 @@ export function SocialStudio() {
                               <input
                                 type="color"
                                 value={selectedLayer.color || '#ffffff'}
-                                onChange={(e) => updateSelectedLayer({ color: e.target.value })}
+                                onChange={(e) =>
+                                  updateSelectedLayer({ color: e.target.value })
+                                }
                                 className={styles.colorInput}
                               />
-                              <span className={styles.colorHexText}>{selectedLayer.color || '#ffffff'}</span>
+                              <span className={styles.colorHexText}>
+                                {selectedLayer.color || '#ffffff'}
+                              </span>
                             </div>
                           </div>
 
@@ -1378,22 +1503,40 @@ export function SocialStudio() {
                             <div className={styles.alignToggleGroup}>
                               <button
                                 type="button"
-                                className={selectedLayer.align === 'left' ? styles.alignBtnActive : styles.alignBtn}
-                                onClick={() => updateSelectedLayer({ align: 'left' })}
+                                className={
+                                  selectedLayer.align === 'left'
+                                    ? styles.alignBtnActive
+                                    : styles.alignBtn
+                                }
+                                onClick={() =>
+                                  updateSelectedLayer({ align: 'left' })
+                                }
                               >
                                 L
                               </button>
                               <button
                                 type="button"
-                                className={selectedLayer.align === 'center' ? styles.alignBtnActive : styles.alignBtn}
-                                onClick={() => updateSelectedLayer({ align: 'center' })}
+                                className={
+                                  selectedLayer.align === 'center'
+                                    ? styles.alignBtnActive
+                                    : styles.alignBtn
+                                }
+                                onClick={() =>
+                                  updateSelectedLayer({ align: 'center' })
+                                }
                               >
                                 C
                               </button>
                               <button
                                 type="button"
-                                className={selectedLayer.align === 'right' ? styles.alignBtnActive : styles.alignBtn}
-                                onClick={() => updateSelectedLayer({ align: 'right' })}
+                                className={
+                                  selectedLayer.align === 'right'
+                                    ? styles.alignBtnActive
+                                    : styles.alignBtn
+                                }
+                                onClick={() =>
+                                  updateSelectedLayer({ align: 'right' })
+                                }
                               >
                                 R
                               </button>
@@ -1404,16 +1547,23 @@ export function SocialStudio() {
                     )}
 
                     {/* Shape / Badge Appearance */}
-                    {(selectedLayer.type === 'shape' || selectedLayer.type === 'badge') && (
+                    {(selectedLayer.type === 'shape' ||
+                      selectedLayer.type === 'badge') && (
                       <div className={styles.propGroup}>
-                        <span className={styles.propGroupTitle}>Appearance & Fill</span>
+                        <span className={styles.propGroupTitle}>
+                          Appearance & Fill
+                        </span>
                         <div className={styles.fieldRow}>
                           <div className={styles.fieldHalf}>
                             <label>Fill Color:</label>
                             <div className={styles.colorPickerRow}>
                               <input
                                 type="color"
-                                value={selectedLayer.fill || selectedLayer.bg || '#f59e0b'}
+                                value={
+                                  selectedLayer.fill ||
+                                  selectedLayer.bg ||
+                                  '#f59e0b'
+                                }
                                 onChange={(e) =>
                                   updateSelectedLayer({
                                     fill: e.target.value,
@@ -1423,7 +1573,9 @@ export function SocialStudio() {
                                 className={styles.colorInput}
                               />
                               <span className={styles.colorHexText}>
-                                {selectedLayer.fill || selectedLayer.bg || '#f59e0b'}
+                                {selectedLayer.fill ||
+                                  selectedLayer.bg ||
+                                  '#f59e0b'}
                               </span>
                             </div>
                           </div>
@@ -1436,7 +1588,9 @@ export function SocialStudio() {
                               max={32}
                               value={selectedLayer.borderRadius || 6}
                               onChange={(e) =>
-                                updateSelectedLayer({ borderRadius: Number(e.target.value) })
+                                updateSelectedLayer({
+                                  borderRadius: Number(e.target.value),
+                                })
                               }
                             />
                           </div>
@@ -1447,7 +1601,10 @@ export function SocialStudio() {
                 ) : (
                   <div className={styles.emptyInspector}>
                     <p>No element selected on canvas.</p>
-                    <span>Click any text, badge, or card on the canvas to inspect and edit properties!</span>
+                    <span>
+                      Click any text, badge, or card on the canvas to inspect
+                      and edit properties!
+                    </span>
                   </div>
                 )}
               </div>
@@ -1499,11 +1656,18 @@ export function SocialStudio() {
                       </button>
 
                       <div className={styles.layerInfo}>
-                        <span className={styles.layerBadgeType}>{l.type.toUpperCase()}</span>
-                        <strong className={styles.layerItemName}>{l.name}</strong>
+                        <span className={styles.layerBadgeType}>
+                          {l.type.toUpperCase()}
+                        </span>
+                        <strong className={styles.layerItemName}>
+                          {l.name}
+                        </strong>
                       </div>
 
-                      <div className={styles.layerControls} onClick={(e) => e.stopPropagation()}>
+                      <div
+                        className={styles.layerControls}
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
                           type="button"
                           className={styles.layerOrderBtn}
@@ -1542,14 +1706,18 @@ export function SocialStudio() {
               <div className={styles.tabContent}>
                 {/* 1. Target Platform Preset */}
                 <section className={styles.sidebarSection}>
-                  <h2 className={styles.sidebarHeading}>1. Flier & Platform Format</h2>
+                  <h2 className={styles.sidebarHeading}>
+                    1. Flier & Platform Format
+                  </h2>
                   <div className={styles.platformGrid}>
                     {PLATFORMS.map((p) => (
                       <button
                         key={p.id}
                         type="button"
                         className={`${styles.platformCard} ${
-                          selectedPlatform === p.id ? styles.platformCardActive : ''
+                          selectedPlatform === p.id
+                            ? styles.platformCardActive
+                            : ''
                         }`}
                         onClick={() => setSelectedPlatform(p.id)}
                       >
@@ -1562,9 +1730,13 @@ export function SocialStudio() {
 
                 {/* 2. 1-Click Product Catalog Selector */}
                 <section className={styles.sidebarSection}>
-                  <h2 className={styles.sidebarHeading}>2. Import from Store Catalog</h2>
+                  <h2 className={styles.sidebarHeading}>
+                    2. Import from Store Catalog
+                  </h2>
                   <div className={styles.productSelectBox}>
-                    <label htmlFor="productCatalogSelect">Choose Catalog Product:</label>
+                    <label htmlFor="productCatalogSelect">
+                      Choose Catalog Product:
+                    </label>
                     <select
                       id="productCatalogSelect"
                       value={selectedProductId}
@@ -1582,20 +1754,26 @@ export function SocialStudio() {
 
                 {/* 3. Designer Template Selection */}
                 <section className={styles.sidebarSection}>
-                  <h2 className={styles.sidebarHeading}>3. Designer Starter Template</h2>
+                  <h2 className={styles.sidebarHeading}>
+                    3. Designer Starter Template
+                  </h2>
                   <div className={styles.templateGrid}>
                     {TEMPLATES.map((t) => (
                       <button
                         key={t.id}
                         type="button"
                         className={`${styles.templateCard} ${
-                          selectedTemplate === t.id ? styles.templateCardActive : ''
+                          selectedTemplate === t.id
+                            ? styles.templateCardActive
+                            : ''
                         }`}
                         onClick={() => setSelectedTemplate(t.id)}
                       >
                         <div className={styles.templateCardTop}>
                           <span className={styles.templateName}>{t.name}</span>
-                          <span className={styles.templateBadge}>{t.badge}</span>
+                          <span className={styles.templateBadge}>
+                            {t.badge}
+                          </span>
                         </div>
                         <p className={styles.templateDesc}>{t.desc}</p>
                       </button>
@@ -1605,14 +1783,18 @@ export function SocialStudio() {
 
                 {/* 4. Color Palette */}
                 <section className={styles.sidebarSection}>
-                  <h2 className={styles.sidebarHeading}>4. Color Palette & Mood</h2>
+                  <h2 className={styles.sidebarHeading}>
+                    4. Color Palette & Mood
+                  </h2>
                   <div className={styles.paletteRow}>
                     {COLOR_THEMES.map((c) => (
                       <button
                         key={c.id}
                         type="button"
                         className={`${styles.paletteBtn} ${
-                          selectedColorTheme === c.id ? styles.paletteBtnActive : ''
+                          selectedColorTheme === c.id
+                            ? styles.paletteBtnActive
+                            : ''
                         }`}
                         style={{ backgroundColor: c.bg, borderColor: c.accent }}
                         onClick={() => setSelectedColorTheme(c.id)}
@@ -1630,7 +1812,9 @@ export function SocialStudio() {
 
                 {/* 5. Direct Headline Input for test compatibility */}
                 <section className={styles.sidebarSection}>
-                  <h2 className={styles.sidebarHeading}>5. Quick Headline Sync</h2>
+                  <h2 className={styles.sidebarHeading}>
+                    5. Quick Headline Sync
+                  </h2>
                   <div className={styles.fieldItem}>
                     <label htmlFor="postHeadlineInput">Headline:</label>
                     <input
@@ -1641,7 +1825,9 @@ export function SocialStudio() {
                       onChange={(e) => {
                         const newText = e.target.value;
                         setLayers((prev) =>
-                          prev.map((l) => (l.id === 'headline' ? { ...l, text: newText } : l))
+                          prev.map((l) =>
+                            l.id === 'headline' ? { ...l, text: newText } : l
+                          )
                         );
                       }}
                       className={styles.inputField}

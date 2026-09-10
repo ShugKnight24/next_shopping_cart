@@ -69,7 +69,10 @@ export default function Home() {
           name="description"
           content="Discover our curated collection of premium products. Award-winning quality, free express shipping, and 100% verified authenticity."
         />
-        <meta property="og:title" content="Cart Commerce | Curated Luxury Storefront" />
+        <meta
+          property="og:title"
+          content="Cart Commerce | Curated Luxury Storefront"
+        />
         <meta
           property="og:description"
           content="Discover our curated collection of premium products. Award-winning quality, free express shipping, and 100% verified authenticity."

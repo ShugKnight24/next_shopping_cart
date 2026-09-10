@@ -3,13 +3,13 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CartContext } from '../context/CartProvider';
 import { totalQuantity } from '../utils/cartUtils';
+import { BrandVariantPickerModal } from './Brand/BrandVariantPicker';
+import { CartDrawer } from './Cart/CartDrawer';
+import { CartIcon, SearchIcon } from './Icons';
 import { Logo } from './Logo';
+import styles from './Nav.module.css';
 import PromoBanner from './PromoBanner/PromoBanner';
 import { CommandPalette } from './Search/CommandPalette';
-import { CartDrawer } from './Cart/CartDrawer';
-import { BrandVariantPickerModal } from './Brand/BrandVariantPicker';
-import { SearchIcon, CartIcon } from './Icons';
-import styles from './Nav.module.css';
 
 // Import product data for search
 import items from '../data/items.json';
@@ -191,7 +191,11 @@ export default function Nav() {
   return (
     <div className={styles.navContainer}>
       <div className={styles.navHeader}>
-        <Link href="/" className={styles.navLogoLink} aria-label="Cart Commerce Home">
+        <Link
+          href="/"
+          className={styles.navLogoLink}
+          aria-label="Cart Commerce Home"
+        >
           <Logo className={styles.brandLogoSvg} />
         </Link>
         <div className={styles.navControls}>
@@ -205,7 +209,11 @@ export default function Nav() {
             <Link href="/favorites" aria-label="Favorites">
               Favorites
             </Link>
-            <Link href="/cart" className={styles.cartDirectLink} aria-label="Cart Bag">
+            <Link
+              href="/cart"
+              className={styles.cartDirectLink}
+              aria-label="Cart Bag"
+            >
               Cart
             </Link>
 
@@ -258,7 +266,9 @@ export default function Nav() {
                     role="menuitem"
                   >
                     <div className={styles.dropdownItemHeader}>
-                      <span className={styles.dropdownTitle}>Custom W2P Studio</span>
+                      <span className={styles.dropdownTitle}>
+                        Custom W2P Studio
+                      </span>
                       <span className={styles.dropdownItemBadgeW2p}>W2P</span>
                     </div>
                     <span className={styles.dropdownDesc}>
@@ -273,7 +283,9 @@ export default function Nav() {
                     role="menuitem"
                   >
                     <div className={styles.dropdownItemHeader}>
-                      <span className={styles.dropdownTitle}>Social Media Studio</span>
+                      <span className={styles.dropdownTitle}>
+                        Social Media Studio
+                      </span>
                       <span className={styles.dropdownItemBadgeHot}>NEW</span>
                     </div>
                     <span className={styles.dropdownDesc}>
@@ -311,7 +323,11 @@ export default function Nav() {
               aria-label={`Open Cart Bag (${cartCount} ${cartCount === 1 ? 'item' : 'items'})`}
             >
               <CartIcon size={24} className={styles.cartNavSvg} />
-              <span className={`${styles.cartCount} ${cartIconSize ? styles[cartIconSize] : ''}`.trim()}>{cartCount}</span>
+              <span
+                className={`${styles.cartCount} ${cartIconSize ? styles[cartIconSize] : ''}`.trim()}
+              >
+                {cartCount}
+              </span>
             </button>
           </div>
         </div>

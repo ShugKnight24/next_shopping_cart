@@ -165,7 +165,9 @@ describe('CartReducer', () => {
     expect(newState.cart[0].quantity).toBe(2);
     expect(newState.promo).toEqual({ code: 'VIP20', discountPercent: 20 });
 
-    const jordan = newState.inventory.find((i) => i.itemid === 'JORDAN-4-BRED-REIM');
+    const jordan = newState.inventory.find(
+      (i) => i.itemid === 'JORDAN-4-BRED-REIM'
+    );
     expect(jordan).toBeDefined();
     expect(jordan.favorite).toBe(true);
     expect(jordan.image).toBe('/images/products/jordan-4-bred-reimagined.jpg');
@@ -194,7 +196,9 @@ describe('CartReducer', () => {
     expect(stateWithCustom.cart[0].itemid).toBe('CUSTOM-BOOK-123');
     expect(stateWithCustom.cart[0].isCustom).toBe(true);
     expect(stateWithCustom.cart[0].quantity).toBe(1);
-    expect(stateWithCustom.inventory.some((i) => i.itemid === 'CUSTOM-BOOK-123')).toBe(true);
+    expect(
+      stateWithCustom.inventory.some((i) => i.itemid === 'CUSTOM-BOOK-123')
+    ).toBe(true);
   });
 
   it('throws an error for unrecognized actions', () => {

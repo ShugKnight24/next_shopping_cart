@@ -1,18 +1,38 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { trackAddToCart } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { useMascot } from '../../context/MascotProvider';
+import { CheckCircleIcon, CloseIcon, SparklesIcon } from '../Icons';
 import { useToast } from '../UI/Toast';
-import { trackAddToCart } from '../../analytics/google';
+import styles from './ApparelStudio.module.css';
 import { CanvasEngine } from './CanvasEngine';
 import { StickerBar } from './StickerBar';
-import { CheckCircleIcon, SparklesIcon, CloseIcon } from '../Icons';
-import styles from './ApparelStudio.module.css';
 
 const GARMENTS = [
-  { id: 'hoodie', name: "Organic Kids' Hoodie", price: 48.0, badge: 'Organic Fleece' },
-  { id: 'tee', name: "Kids' Heavyweight Graphic Tee", price: 32.0, badge: '240gsm Cotton' },
-  { id: 'jacket', name: "Kids' Varsity Bomber Jacket", price: 68.0, badge: 'Snap Closure' },
-  { id: 'kicks', name: "Custom Kids' Canvas High-Tops", price: 65.0, badge: 'Cushioned Insole' },
+  {
+    id: 'hoodie',
+    name: "Organic Kids' Hoodie",
+    price: 48.0,
+    badge: 'Organic Fleece',
+  },
+  {
+    id: 'tee',
+    name: "Kids' Heavyweight Graphic Tee",
+    price: 32.0,
+    badge: '240gsm Cotton',
+  },
+  {
+    id: 'jacket',
+    name: "Kids' Varsity Bomber Jacket",
+    price: 68.0,
+    badge: 'Snap Closure',
+  },
+  {
+    id: 'kicks',
+    name: "Custom Kids' Canvas High-Tops",
+    price: 65.0,
+    badge: 'Cushioned Insole',
+  },
 ];
 
 const SIZES = [
@@ -65,7 +85,8 @@ export function ApparelStudio() {
   const [history, setHistory] = useState([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
-  const activeGarmentObj = GARMENTS.find((g) => g.id === garment) || GARMENTS[0];
+  const activeGarmentObj =
+    GARMENTS.find((g) => g.id === garment) || GARMENTS[0];
   const activeColorObj = COLORS.find((c) => c.hex === colorHex) || COLORS[0];
 
   // History tracking
@@ -236,7 +257,10 @@ export function ApparelStudio() {
         <div className={styles.controlsStage}>
           <div className={styles.paneHeader}>
             <h3>Customize Kids' Apparel & Kicks</h3>
-            <p>Embroidered and assembled with certified organic, child-safe materials.</p>
+            <p>
+              Embroidered and assembled with certified organic, child-safe
+              materials.
+            </p>
           </div>
 
           {/* Garment Silhouette */}
@@ -256,7 +280,9 @@ export function ApparelStudio() {
                     <span className={styles.garmentName}>{g.name}</span>
                     <span className={styles.garmentBadge}>{g.badge}</span>
                   </div>
-                  <span className={styles.garmentPrice}>${g.price.toFixed(2)}</span>
+                  <span className={styles.garmentPrice}>
+                    ${g.price.toFixed(2)}
+                  </span>
                 </button>
               ))}
             </div>
@@ -370,7 +396,10 @@ export function ApparelStudio() {
 
           <div className={styles.guaranteeBox}>
             <CheckCircleIcon size={18} />
-            <span>High-Density Japanese Satin Stitch Embroidery • Pre-Shrunk Organic Cotton</span>
+            <span>
+              High-Density Japanese Satin Stitch Embroidery • Pre-Shrunk Organic
+              Cotton
+            </span>
           </div>
 
           <button
@@ -379,7 +408,9 @@ export function ApparelStudio() {
             onClick={handleAddToCart}
             aria-label="Add Custom Apparel to Bag"
           >
-            <span>Add Custom Apparel to Bag • ${activeGarmentObj.price.toFixed(2)}</span>
+            <span>
+              Add Custom Apparel to Bag • ${activeGarmentObj.price.toFixed(2)}
+            </span>
           </button>
         </div>
       </div>
@@ -409,7 +440,8 @@ export function ApparelStudio() {
 
             <div className={styles.sizingModalBody}>
               <p className={styles.sizingIntro}>
-                All garments feature a relaxed, modern unisex fit designed with room for growth. Pre-washed to prevent shrinkage.
+                All garments feature a relaxed, modern unisex fit designed with
+                room for growth. Pre-washed to prevent shrinkage.
               </p>
               <table className={styles.sizingTable}>
                 <thead>
@@ -456,7 +488,10 @@ export function ApparelStudio() {
 
               <div className={styles.sizingTips}>
                 <strong>Care Instructions:</strong>
-                <span>Machine wash cold inside out with gentle detergent. Tumble dry low or hang dry to preserve embroidery sheen.</span>
+                <span>
+                  Machine wash cold inside out with gentle detergent. Tumble dry
+                  low or hang dry to preserve embroidery sheen.
+                </span>
               </div>
 
               <button

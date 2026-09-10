@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { FeaturedCategories } from '../Components/FeaturedCategories/FeaturedCategories';
 import { BrandStory } from '../Components/BrandStory/BrandStory';
+import { FeaturedCategories } from '../Components/FeaturedCategories/FeaturedCategories';
 
 describe('Homepage Discovery & Storytelling Components', () => {
   it('renders FeaturedCategories with all 5 curated department tiles', () => {
@@ -20,9 +20,7 @@ describe('Homepage Discovery & Storytelling Components', () => {
   it('renders BrandStory editorial section with 3 trust pillars and authentication proof', () => {
     render(<BrandStory />);
 
-    expect(
-      screen.getByText(/The Cart Commerce Standard/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/The Cart Commerce Standard/i)).toBeInTheDocument();
     expect(
       screen.getByText(/Curated for Connoisseurs. Built on Absolute Trust./i)
     ).toBeInTheDocument();
