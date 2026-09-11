@@ -165,12 +165,40 @@ describe('CartReducer', () => {
     expect(newState.cart[0].quantity).toBe(2);
     expect(newState.promo).toEqual({ code: 'VIP20', discountPercent: 20 });
 
-    const jordan = newState.inventory.find((i) => i.itemid === 'JORDAN-4-BRED-REIM');
+    const jordan = newState.inventory.find(
+      (i) => i.itemid === 'JORDAN-4-BRED-REIM'
+    );
     expect(jordan).toBeDefined();
     expect(jordan.favorite).toBe(true);
     expect(jordan.image).toBe('/images/products/jordan-4-bred-reimagined.jpg');
     // Available was 8 in catalog, minus 2 in cart => 6
     expect(jordan.available).toBe(6);
+  });
+
+  it('handles ADD_CUSTOM_ITEM for personalized Web-to-Print studio creations', () => {
+    const customItem = {
+      itemid: 'CUSTOM-BOOK-123',
+      productName: "Custom Storybook: 'Noah's Cosmic Quest'",
+      price: 34.99,
+      image: 'data:image/png;base64,sample',
+      isCustom: true,
+      customAttributes: { Hero: 'Noah', Theme: 'Cosmic Galaxy Quest' },
+      quantity: 1,
+    };
+
+    const addCustomAction = {
+      type: 'ADD_CUSTOM_ITEM',
+      payload: { customItem },
+    };
+
+    const stateWithCustom = reducer(sampleState, addCustomAction);
+    expect(stateWithCustom.cart).toHaveLength(1);
+    expect(stateWithCustom.cart[0].itemid).toBe('CUSTOM-BOOK-123');
+    expect(stateWithCustom.cart[0].isCustom).toBe(true);
+    expect(stateWithCustom.cart[0].quantity).toBe(1);
+    expect(
+      stateWithCustom.inventory.some((i) => i.itemid === 'CUSTOM-BOOK-123')
+    ).toBe(true);
   });
 
   it('throws an error for unrecognized actions', () => {

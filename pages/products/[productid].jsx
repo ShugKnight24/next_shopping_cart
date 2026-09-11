@@ -1,7 +1,12 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import {
+  trackAddToCart,
+  trackRemoveFromCart,
+  trackViewItem,
+} from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
@@ -11,28 +16,28 @@ import {
   getRelatedProducts,
 } from '../../utils/productCatalog';
 
+import {
+  AlertTriangleIcon,
+  CartIcon,
+  CheckCircleIcon,
+  ChevronRight,
+  HeartIcon,
+  MinusIcon,
+  PlusIcon,
+  ShareIcon,
+  SparklesIcon,
+  TimesCircleIcon,
+  TrashIcon,
+} from '../../Components/Icons';
 import { ImageGallery } from '../../Components/Products/ImageGallery';
 import { ProductTabs } from '../../Components/Products/ProductTabs';
-import { TrustBadges } from '../../Components/Products/TrustBadges';
-import { StickyBuyBar } from '../../Components/Products/StickyBuyBar';
-import { RelatedProducts } from '../../Components/Products/RelatedProducts';
 import { RecentlyViewed } from '../../Components/Products/RecentlyViewed';
+import { RelatedProducts } from '../../Components/Products/RelatedProducts';
+import { StickyBuyBar } from '../../Components/Products/StickyBuyBar';
+import { TrustBadges } from '../../Components/Products/TrustBadges';
 import { Badge, RatingStars } from '../../Components/UI';
 import { useToast } from '../../Components/UI/Toast';
 import styles from '../../styles/pages/Products.module.css';
-import {
-  ChevronRight,
-  AlertTriangleIcon,
-  CheckCircleIcon,
-  TimesCircleIcon,
-  MinusIcon,
-  PlusIcon,
-  CartIcon,
-  HeartIcon,
-  TrashIcon,
-  ShareIcon,
-  SparklesIcon,
-} from '../../Components/Icons';
 
 export const getStaticPaths = async () => {
   const all = getAllProducts();
@@ -73,28 +78,33 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   const { inventory, cart } = state;
   const { showToast } = useToast();
 
-  const currentItem = getCurrentItem(inventory, currentProduct.itemid) || currentProduct;
-  const isInCart = Boolean(getCurrentItem(cart, currentProduct.itemid));
-  const cartItem = getCurrentItem(cart, currentProduct.itemid);
+  const safeProduct = currentProduct || {};
+  const currentItem =
+    getCurrentItem(inventory, safeProduct.itemid) || safeProduct;
+  const isInCart = Boolean(getCurrentItem(cart, safeProduct.itemid));
+  const cartItem = getCurrentItem(cart, safeProduct.itemid);
   const cartQuantity = cartItem?.quantity || 0;
 
   const disabledButton = currentItem.available === 0;
   const {
-    description,
-    itemid,
-    manufacturer,
-    price,
-    productName,
-    rating,
+    description = '',
+    itemid = '',
+    manufacturer = '',
+    price = 0,
+    productName = '',
+    rating = { average: 5, count: 0 },
     badges = [],
     variants = [],
     specifications = {},
     reviews = [],
     shipping = {},
     faqs = [],
-    originalPrice,
+    originalPrice = null,
     images = [],
-  } = currentProduct;
+    image = images[0] || '',
+    category = '',
+    available = currentItem.available ?? 1,
+  } = safeProduct;
 
   const initialFavorite = Boolean(currentItem?.favorite);
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
@@ -121,14 +131,95 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   // Dynamic price calculation based on selected variant modifier
   const modifier = selectedVariant?.priceModifier || 0;
   const effectivePrice = price + modifier;
-  const effectiveOriginalPrice = originalPrice ? originalPrice + modifier : null;
+  const effectiveOriginalPrice = originalPrice
+    ? originalPrice + modifier
+    : null;
 
   const isOnSale = badges.includes('sale') && effectiveOriginalPrice;
   const discountPercentage = isOnSale
     ? Math.round((1 - effectivePrice / effectiveOriginalPrice) * 100)
     : 0;
 
+  useEffect(() => {
+    if (currentProduct) {
+      trackViewItem(currentProduct, selectedVariant);
+    }
+  }, [currentProduct, selectedVariant]);
+
+  if (!currentProduct) {
+    return (
+      <div className="product-not-found" data-testid="product-not-found">
+        <Head>
+          <title>Product Not Found | Cart Commerce</title>
+        </Head>
+        <div
+          style={{
+            padding: '5rem 2rem',
+            textAlign: 'center',
+            maxWidth: '600px',
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'rgba(239, 68, 68, 0.1)',
+              color: '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem',
+            }}
+          >
+            <AlertTriangleIcon size={32} />
+          </div>
+          <h1
+            style={{
+              fontSize: '1.75rem',
+              fontWeight: 800,
+              color: '#1e3a5f',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Product Unavailable
+          </h1>
+          <p
+            style={{
+              color: '#64748b',
+              fontSize: '1rem',
+              lineHeight: 1.6,
+              marginBottom: '2rem',
+            }}
+          >
+            The requested item could not be retrieved from our inventory or is
+            currently out of circulation.
+          </p>
+          <Link
+            href="/products"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.75rem 1.5rem',
+              background: '#1e3a5f',
+              color: '#fff',
+              borderRadius: '12px',
+              fontWeight: 700,
+              textDecoration: 'none',
+            }}
+          >
+            <span>Back to All Products</span>
+            <ChevronRight size={16} />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   function handleAddToCart(productId, qty = 1, variant = selectedVariant) {
+    trackAddToCart(currentProduct, qty, variant);
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -145,6 +236,7 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
   }
 
   function handleRemoveFromCart(productId) {
+    trackRemoveFromCart(currentProduct, cartQuantity);
     dispatch({
       type: 'REMOVE_ITEM',
       payload: {
@@ -193,11 +285,104 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
     }
   }
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: productName,
+    image: images && images.length > 0 ? images : [image],
+    description: description,
+    sku: itemid,
+    brand: {
+      '@type': 'Brand',
+      name: manufacturer,
+    },
+    category: category || undefined,
+    offers: {
+      '@type': 'Offer',
+      url: `https://cart-commerce.vercel.app/products/${itemid}`,
+      priceCurrency: 'USD',
+      price: effectivePrice,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      availability:
+        available > 0
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Cart Commerce',
+      },
+    },
+    ...(rating && rating.average && rating.count
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: rating.average,
+            reviewCount: rating.count,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://cart-commerce.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: 'https://cart-commerce.vercel.app/products',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: productName,
+        item: `https://cart-commerce.vercel.app/products/${itemid}`,
+      },
+    ],
+  };
+
   return (
     <>
       <Head>
-        <title>{`${productName} | Premium Collection`}</title>
+        <title>{`${productName} by ${manufacturer} | Cart Commerce`}</title>
         <meta name="description" content={description} />
+
+        {/* OpenGraph Social Meta Tags */}
+        <meta property="og:title" content={`${productName} | Cart Commerce`} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="product" />
+        <meta property="og:image" content={image} />
+        <meta
+          property="product:price:amount"
+          content={String(effectivePrice)}
+        />
+        <meta property="product:price:currency" content="USD" />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${productName} | Cart Commerce`} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+
+        {/* Schema.org Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
       </Head>
 
       <div className={styles.productsPage}>
@@ -282,7 +467,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                     <span className={styles.originalPrice}>
                       {formatCurrency(effectiveOriginalPrice)}
                     </span>
-                    <span className={styles.discountBadge}>-{discountPercentage}%</span>
+                    <span className={styles.discountBadge}>
+                      -{discountPercentage}%
+                    </span>
                   </>
                 )}
               </div>
@@ -293,7 +480,8 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                   currentItem.available <= 5 ? (
                     <div>
                       <span className={styles.lowStock}>
-                        <AlertTriangleIcon size={16} /> Only {currentItem.available} left in stock — order soon
+                        <AlertTriangleIcon size={16} /> Only{' '}
+                        {currentItem.available} left in stock — order soon
                       </span>
                       <div
                         style={{
@@ -317,7 +505,8 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                     </div>
                   ) : (
                     <span className={styles.inStock}>
-                      <CheckCircleIcon size={16} /> In Stock ({currentItem.available} units available)
+                      <CheckCircleIcon size={16} /> In Stock (
+                      {currentItem.available} units available)
                     </span>
                   )
                 ) : (
@@ -393,7 +582,13 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                   </button>
                 </div>
                 {cartQuantity > 0 && (
-                  <span style={{ fontSize: '0.82rem', color: '#16a34a', fontWeight: 600 }}>
+                  <span
+                    style={{
+                      fontSize: '0.82rem',
+                      color: '#16a34a',
+                      fontWeight: 600,
+                    }}
+                  >
                     {cartQuantity} currently in cart
                   </span>
                 )}
@@ -403,7 +598,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
               <div className={styles.productActions}>
                 <button
                   className={`${styles.addToCartBtn} ${isInCart ? styles.inCartBtn : ''}`}
-                  onClick={() => handleAddToCart(itemid, quantity, selectedVariant)}
+                  onClick={() =>
+                    handleAddToCart(itemid, quantity, selectedVariant)
+                  }
                   disabled={disabledButton}
                 >
                   <CartIcon size={18} />
@@ -420,7 +617,9 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
                   aria-label={
                     isFavorite ? 'Remove from favorites' : 'Add to favorites'
                   }
-                  title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                  title={
+                    isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                  }
                 >
                   <HeartIcon filled={isFavorite} size={20} />
                 </button>
@@ -461,29 +660,31 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
             </div>
           </div>
 
-        {/* 5-Panel Product Tabs */}
-        <ProductTabs
-          product={currentProduct}
-          specifications={specifications}
-          shipping={shipping}
-          reviews={reviews}
-          faqs={faqs}
-        />
+          {/* 5-Panel Product Tabs */}
+          <ProductTabs
+            product={currentProduct}
+            specifications={specifications}
+            shipping={shipping}
+            reviews={reviews}
+            faqs={faqs}
+          />
 
-        {/* Related & Recommended Products */}
-        <RelatedProducts products={relatedProducts} />
+          {/* Related & Recommended Products */}
+          <RelatedProducts products={relatedProducts} />
 
-        {/* Recently Viewed Session History */}
-        <RecentlyViewed currentProductId={itemid} />
+          {/* Recently Viewed Session History */}
+          <RecentlyViewed currentProductId={itemid} />
 
-        {/* Floating Sticky Buy Bar */}
-        <StickyBuyBar
-          product={currentProduct}
-          selectedVariant={selectedVariant}
-          totalPrice={effectivePrice}
-          onAddToCart={() => handleAddToCart(itemid, quantity, selectedVariant)}
-          disabled={disabledButton}
-        />
+          {/* Floating Sticky Buy Bar */}
+          <StickyBuyBar
+            product={currentProduct}
+            selectedVariant={selectedVariant}
+            totalPrice={effectivePrice}
+            onAddToCart={() =>
+              handleAddToCart(itemid, quantity, selectedVariant)
+            }
+            disabled={disabledButton}
+          />
         </div>
       </div>
     </>

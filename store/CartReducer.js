@@ -1,5 +1,5 @@
-import { getAllProducts } from '../utils/productCatalog';
 import { getCurrentItem } from '../utils/getItem';
+import { getAllProducts } from '../utils/productCatalog';
 
 const buildInitialInventory = () => getAllProducts();
 
@@ -20,18 +20,27 @@ export const reducer = (state, action) => {
 
       const savedFavorites = new Set([
         ...(action.payload.favorites || []),
-        ...(action.payload.inventory?.filter((si) => si.favorite).map((si) => si.itemid) || []),
+        ...(action.payload.inventory
+          ?.filter((si) => si.favorite)
+          .map((si) => si.itemid) || []),
       ]);
 
       const freshCatalog = buildInitialInventory();
-      const baseInventory = freshCatalog.length > 0 ? freshCatalog : (action.payload.inventory || inventory);
+      const baseInventory =
+        freshCatalog.length > 0
+          ? freshCatalog
+          : action.payload.inventory || inventory;
 
       const inventoryToUse = baseInventory.map((freshItem) => {
-        const cartItem = loadedCart.find((ci) => ci.itemid === freshItem.itemid);
+        const cartItem = loadedCart.find(
+          (ci) => ci.itemid === freshItem.itemid
+        );
         const inCartQty = cartItem ? cartItem.quantity : 0;
         const isFav = savedFavorites.has(freshItem.itemid)
           ? true
-          : (action.payload.inventory?.find((si) => si.itemid === freshItem.itemid)?.favorite ?? Boolean(freshItem.favorite));
+          : (action.payload.inventory?.find(
+              (si) => si.itemid === freshItem.itemid
+            )?.favorite ?? Boolean(freshItem.favorite));
 
         return {
           ...freshItem,
@@ -50,7 +59,12 @@ export const reducer = (state, action) => {
     }
 
     case 'ADD_ITEM': {
-      const { productId, quantity = 1, variant, selectedVariant } = action.payload;
+      const {
+        productId,
+        quantity = 1,
+        variant,
+        selectedVariant,
+      } = action.payload;
       const addQty = parseInt(quantity, 10) || 1;
       const currentItem = getCurrentItem(inventory, productId);
 
@@ -86,6 +100,43 @@ export const reducer = (state, action) => {
           ? { ...item, available: item.available - clampedQty }
           : item
       );
+
+      return {
+        ...state,
+        cart: updatedCart,
+        inventory: updatedInventory,
+      };
+    }
+
+    case 'ADD_CUSTOM_ITEM': {
+      const { customItem } = action.payload || {};
+      if (!customItem || !customItem.itemid) return state;
+
+      const itemQty = parseInt(customItem.quantity, 10) || 1;
+      const normalizedItem = {
+        available: 99,
+        quantity: itemQty,
+        favorite: false,
+        ...customItem,
+      };
+
+      const existingCartItem = cart.find(
+        (item) => item.itemid === customItem.itemid
+      );
+      const updatedCart = existingCartItem
+        ? cart.map((item) =>
+            item.itemid === customItem.itemid
+              ? { ...item, quantity: item.quantity + itemQty }
+              : item
+          )
+        : [...cart, normalizedItem];
+
+      const existingInv = inventory.find(
+        (item) => item.itemid === customItem.itemid
+      );
+      const updatedInventory = existingInv
+        ? inventory
+        : [...inventory, normalizedItem];
 
       return {
         ...state,
@@ -179,7 +230,9 @@ export const reducer = (state, action) => {
         cart: [],
         promo: null,
         inventory: buildInitialInventory().map((initItem) => {
-          const currentInv = inventory.find((i) => i.itemid === initItem.itemid);
+          const currentInv = inventory.find(
+            (i) => i.itemid === initItem.itemid
+          );
           return {
             ...initItem,
             favorite: currentInv ? currentInv.favorite : initItem.favorite,

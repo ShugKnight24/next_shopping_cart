@@ -1,0 +1,13 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /products/*
+
+# Disallow private user flows
+Disallow: /api/
+Disallow: /checkout
+Disallow: /favorites
+
+# Host & Sitemap
+Sitemap: https://cart-commerce.vercel.app/sitemap.xml

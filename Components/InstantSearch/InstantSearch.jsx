@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { trackSearch } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { Hit } from './Hit';
 import styles from './InstantSearch.module.css';
@@ -48,11 +49,22 @@ export function InstantSearch({
   }
 
   useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    const timer = setTimeout(() => {
+      trackSearch(trimmed, hitList.length);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [searchQuery, hitList.length]);
+
+  useEffect(() => {
     if (showHitsClosed === false) setShowHits(false);
   }, [showHitsClosed]);
 
   return (
-    <div className={`${styles.instantSearchContainer} ${showHits ? styles.populated : ''}`.trim()}>
+    <div
+      className={`${styles.instantSearchContainer} ${showHits ? styles.populated : ''}`.trim()}
+    >
       <input
         className={styles.instantSearch}
         type="text"

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <linearGradient id="touchNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+    <linearGradient id="touchGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#f59e0b" />
+      <stop offset="75%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <filter id="touchShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Premium Dark App Icon Background -->
+  <rect width="180" height="180" rx="40" fill="url(#touchNavy)" />
+  <rect x="4" y="4" width="172" height="172" rx="36" fill="none" stroke="url(#touchGold)" stroke-width="2.5" stroke-opacity="0.4" />
+
+  <!-- Centered Precision Cart & Monogram -->
+  <g filter="url(#touchShadow)" transform="translate(18, 16)">
+    <!-- Cart Basket -->
+    <path
+      d="M24 42 H42 L58 92 A7 7 0 0 0 64.6 97 H111 A7 7 0 0 0 117.6 91.8 L126 55 H48"
+      fill="none"
+      stroke="url(#touchGold)"
+      stroke-width="7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Radiant Starlight Jewel -->
+    <g transform="translate(86, 62)">
+      <polygon
+        points="0,-22 5,-6 22,0 5,6 0,22 -5,6 -22,0 -5,-6"
+        fill="#ffffff"
+      />
+      <polygon
+        points="0,-12 3,-3 12,0 3,3 0,12 -3,3 -12,0 -3,-3"
+        fill="#fde047"
+      />
+      <circle cx="0" cy="0" r="3" fill="#f59e0b" />
+    </g>
+
+    <!-- Wheels -->
+    <circle cx="64" cy="116" r="9" fill="url(#touchGold)" />
+    <circle cx="64" cy="116" r="3.5" fill="#090d16" />
+    <circle cx="111" cy="116" r="9" fill="url(#touchGold)" />
+    <circle cx="111" cy="116" r="3.5" fill="#090d16" />
+  </g>
+</svg>

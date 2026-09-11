@@ -211,7 +211,6 @@ export function Carousel({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNextClick, handlePreviousClick]);
 
-
   const handleDotClick = (dotIndex) => {
     setCurrentSlide(dotIndex);
   };
@@ -320,7 +319,7 @@ export function Carousel({
               aria-label={`Go to slide ${index + 1}: ${slide.productName}`}
               aria-current={index === currentSlide ? 'true' : 'false'}
             >
-              <span className={styles.dotLabel}>{slide.productName}</span>
+              <span className={styles.srOnly}>{slide.productName}</span>
               <div className={styles.dotProgress}>
                 {index === currentSlide && !isPaused && (
                   <div

@@ -2,27 +2,38 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { GA_TRACKING_ID, handlePageView } from '../analytics/google';
+import {
+  GA_TRACKING_ID,
+  handlePageView,
+  trackWebVitals,
+} from '../analytics/google';
+import { HoneypotField, telemetry } from '../analytics/telemetry';
+import { AdminHeatmapHUD } from '../Components/Analytics/AdminHeatmapHUD';
+import { BrandProvider } from '../Components/Brand/BrandContext';
 import Layout from '../Components/Layout';
+import { MascotCompanion } from '../Components/Mascot/MascotCompanion';
 import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
+import { MascotProvider } from '../context/MascotProvider';
 import { ModalProvider } from '../context/ModalProvider';
 import '../static/normalize.css';
 import '../styles/globals.css';
+
+export function reportWebVitals(metric) {
+  trackWebVitals(metric);
+}
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   useEffect(() => {
+    telemetry.init();
+
     const handleRouteChange = (url) => {
       handlePageView(url);
     };
 
-    // Next Router Events: https://nextjs.org/docs/api-reference/next/router#routerevents
-    // handle pageview on mount
     router.events.on('routeChangeComplete', handleRouteChange);
-
-    // cleanup
     return () => router.events.off('routeChangeComplete', handleRouteChange);
   }, [router.events]);
 
@@ -50,15 +61,22 @@ function MyApp({ Component, pageProps }) {
           />
         </>
       )}
-      <ToastProvider>
-        <ModalProvider>
-          <CartProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </CartProvider>
-        </ModalProvider>
-      </ToastProvider>
+      <BrandProvider>
+        <ToastProvider>
+          <ModalProvider>
+            <CartProvider>
+              <MascotProvider>
+                <Layout>
+                  <HoneypotField />
+                  <Component {...pageProps} />
+                  <MascotCompanion />
+                  <AdminHeatmapHUD />
+                </Layout>
+              </MascotProvider>
+            </CartProvider>
+          </ModalProvider>
+        </ToastProvider>
+      </BrandProvider>
     </>
   );
 }

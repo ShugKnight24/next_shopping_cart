@@ -3,8 +3,8 @@
    ============================================================================ */
 .backToTop {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 28px;
+  left: 28px;
   width: 52px;
   height: 52px;
   background: linear-gradient(135deg, #1e3a5f 0%, #152943 100%);
@@ -14,12 +14,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99;
+  z-index: 950;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px) scale(0.8);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25), 0 8px 24px rgba(30, 58, 95, 0.15);
+  box-shadow:
+    0 4px 12px rgba(30, 58, 95, 0.25),
+    0 8px 24px rgba(30, 58, 95, 0.15);
 }
 .backToTop.visible {
   opacity: 1;
@@ -28,7 +30,9 @@
 }
 .backToTop:hover {
   transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3), 0 16px 40px rgba(30, 58, 95, 0.2);
+  box-shadow:
+    0 8px 20px rgba(30, 58, 95, 0.3),
+    0 16px 40px rgba(30, 58, 95, 0.2);
 }
 .backToTop:hover .arrowIcon {
   transform: translateY(-2px);
@@ -39,15 +43,15 @@
 .backToTop:hover .tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 .backToTop:active {
   transform: translateY(-2px) scale(1);
 }
 @media (max-width: 600px) {
   .backToTop {
-    bottom: 1.25rem;
-    right: 1.25rem;
+    bottom: 20px;
+    left: 16px;
     width: 46px;
     height: 46px;
   }
@@ -68,7 +72,9 @@
 
 .progressBar {
   stroke: #b8860b;
-  transition: stroke-dashoffset 0.15s linear, stroke 0.3s ease;
+  transition:
+    stroke-dashoffset 0.15s linear,
+    stroke 0.3s ease;
   filter: drop-shadow(0 0 4px rgba(218, 165, 32, 0.4));
 }
 
@@ -99,8 +105,8 @@
 .tooltip {
   position: absolute;
   bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
+  left: 0;
+  transform: translateY(8px);
   background: linear-gradient(135deg, #1e3a5f 0%, #152943 100%);
   color: #fff;
   font-size: 0.75rem;
@@ -118,10 +124,10 @@
   gap: 0.15rem;
 }
 .tooltip::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 26px;
   transform: translateX(-50%);
   border: 6px solid transparent;
   border-top-color: #193150;

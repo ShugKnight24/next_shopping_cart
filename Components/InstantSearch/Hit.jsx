@@ -1,12 +1,16 @@
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
-import Link from 'next/link';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
 import styles from './InstantSearch.module.css';
 
-export function Hit({ itemid, setSelectedProduct: _setSelectedProduct, setRecommendedProduct: _setRecommendedProduct }) {
+export function Hit({
+  itemid,
+  setSelectedProduct: _setSelectedProduct,
+  setRecommendedProduct: _setRecommendedProduct,
+}) {
   const { state, dispatch } = useContext(CartContext);
   const { inventory } = state;
 
@@ -20,11 +24,17 @@ export function Hit({ itemid, setSelectedProduct: _setSelectedProduct, setRecomm
     });
   }
 
-  const { available, image, manufacturer, price, productName } = getCurrentItem(
-    inventory,
-    itemid
-  );
-  const disabledButton = available === 0 ? true : false;
+  const item = getCurrentItem(inventory, itemid);
+  if (!item) return null;
+
+  const {
+    available = 0,
+    image = '',
+    manufacturer = '',
+    price = 0,
+    productName = '',
+  } = item;
+  const disabledButton = available === 0;
 
   return (
     <li className={styles.hitContainer}>

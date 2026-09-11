@@ -1,21 +1,26 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
+import {
+  trackAddToCart,
+  trackRemoveFromCart,
+  trackSelectItem,
+} from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
-import { QuickView } from './QuickView';
-import { RatingStars } from '../UI/RatingStars';
-import styles from './ProductCard.module.css';
 import {
-  HeartIcon,
   CartIcon,
-  TrashIcon,
   CheckCircleIcon,
   EyeIcon,
+  HeartIcon,
   InfoIcon,
-  TagIcon,
   SparklesIcon,
+  TagIcon,
+  TrashIcon,
 } from '../Icons';
+import { RatingStars } from '../UI/RatingStars';
+import styles from './ProductCard.module.css';
+import { QuickView } from './QuickView';
 
 export function ProductCard({
   available,
@@ -37,11 +42,9 @@ export function ProductCard({
 }) {
   const { dispatch } = useContext(CartContext);
   const [showQuickView, setShowQuickView] = useState(false);
-  const [imgSrc, setImgSrc] = useState(image || '/images/placeholder.svg');
-
-  useEffect(() => {
-    setImgSrc(image || '/images/placeholder.svg');
-  }, [image]);
+  const [hasImgError, setHasImgError] = useState(false);
+  const displayImage =
+    hasImgError || !image ? '/images/placeholder.svg' : image;
 
   // Build product object for QuickView
   const productData = {
@@ -50,7 +53,7 @@ export function ProductCard({
     manufacturer,
     price,
     originalPrice,
-    image: imgSrc,
+    image: displayImage,
     available,
     badges: badge ? [badge, ...badges] : badges,
     rating,
@@ -60,6 +63,7 @@ export function ProductCard({
   };
 
   function handleAddToCart(productId, qty = 1) {
+    trackAddToCart(productData, qty);
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -70,6 +74,7 @@ export function ProductCard({
   }
 
   function handleRemoveFromCart(productId) {
+    trackRemoveFromCart(productData, 1);
     dispatch({
       type: 'REMOVE_ITEM',
       payload: {
@@ -136,10 +141,10 @@ export function ProductCard({
         <div className={`${styles.imageWrapper} product-image-wrapper`}>
           <img
             className={`${styles.image} product-image ${trimmedLowerProductName}`}
-            src={imgSrc}
+            src={displayImage}
             alt={`${productName} made by ${manufacturer}`}
             loading="lazy"
-            onError={() => setImgSrc('/images/placeholder.svg')}
+            onError={() => setHasImgError(true)}
           />
           <div className={`${styles.imageOverlay} image-overlay`} />
 
@@ -177,7 +182,10 @@ export function ProductCard({
         <div className={`${styles.cardContent} product-content`}>
           {/* Header Row: Title & Favorite */}
           <div className={`${styles.headerRow} name-favorite`}>
-            <h2 className={`${styles.productTitle} product-name`} title={productName}>
+            <h2
+              className={`${styles.productTitle} product-name`}
+              title={productName}
+            >
               {productName}
             </h2>
             {favorite ? (
@@ -279,9 +287,7 @@ export function ProductCard({
                       '−'
                     )}
                   </button>
-                  <span
-                    className={`${styles.stepperValue} quantity-display`}
-                  >
+                  <span className={`${styles.stepperValue} quantity-display`}>
                     {cartQuantity}
                   </span>
                   <button
@@ -301,6 +307,7 @@ export function ProductCard({
             <Link
               href={`/products/${itemid.toString()}`}
               className={`${styles.actionBtn} ${styles.detailsBtn} action-btn more-info-button`}
+              onClick={() => trackSelectItem(productData)}
             >
               <InfoIcon size={16} strokeWidth={2} />
               <span>View Details</span>

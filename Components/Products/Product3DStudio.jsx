@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { trackStudioInteraction } from '../../analytics/google';
 import {
   Cube3DIcon,
-  RotateCcwIcon,
-  PlayIcon,
-  PauseIcon,
-  LayersIcon,
   EyeIcon,
+  LayersIcon,
+  PauseIcon,
+  PlayIcon,
+  RotateCcwIcon,
   TimesCircleIcon,
 } from '../Icons';
 import styles from './Product3DStudio.module.css';
@@ -22,7 +23,12 @@ const PRESET_ANGLES = {
 function getCategoryHotspots(category) {
   const cat = (category || '').toLowerCase();
 
-  if (cat.includes('footwear') || cat.includes('shoe') || cat.includes('jordan') || cat.includes('running')) {
+  if (
+    cat.includes('footwear') ||
+    cat.includes('shoe') ||
+    cat.includes('jordan') ||
+    cat.includes('running')
+  ) {
     return [
       {
         id: 'toe',
@@ -112,7 +118,9 @@ export function Product3DStudio({
   const [isExploded, setIsExploded] = useState(false);
   const [showHotspots, setShowHotspots] = useState(true);
   const [activeHotspot, setActiveHotspot] = useState(null);
-  const [colorAccent, setColorAccent] = useState(selectedVariant?.value || '#ef4444');
+  const [colorAccent, setColorAccent] = useState(
+    selectedVariant?.value || '#ef4444'
+  );
 
   const isDraggingRef = useRef(false);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
@@ -139,7 +147,10 @@ export function Product3DStudio({
         }));
       } else if (!isDraggingRef.current) {
         // Apply inertia dampening
-        if (Math.abs(velocityRef.current.x) > 0.05 || Math.abs(velocityRef.current.y) > 0.05) {
+        if (
+          Math.abs(velocityRef.current.x) > 0.05 ||
+          Math.abs(velocityRef.current.y) > 0.05
+        ) {
           setRotation((prev) => ({
             x: Math.max(-85, Math.min(85, prev.x + velocityRef.current.x)),
             y: (prev.y + velocityRef.current.y) % 360,
@@ -192,6 +203,7 @@ export function Product3DStudio({
   const setPresetView = (key) => {
     const preset = PRESET_ANGLES[key];
     if (!preset) return;
+    trackStudioInteraction('preset_angle', key, { productId: product?.itemid });
     setIsAutoRotating(false);
     setActivePreset(key);
     setRotation({ x: preset.x, y: preset.y });
@@ -199,6 +211,9 @@ export function Product3DStudio({
   };
 
   const resetView = () => {
+    trackStudioInteraction('reset_view', 'isometric', {
+      productId: product?.itemid,
+    });
     setPresetView('isometric');
     setIsExploded(false);
     setIsAutoRotating(true);
@@ -207,7 +222,13 @@ export function Product3DStudio({
 
   const handleHotspotClick = (spot, e) => {
     e.stopPropagation();
-    setActiveHotspot(activeHotspot?.id === spot.id ? null : spot);
+    const willOpen = activeHotspot?.id !== spot.id;
+    if (willOpen) {
+      trackStudioInteraction('hotspot_click', spot.title, {
+        productId: product?.itemid,
+      });
+    }
+    setActiveHotspot(willOpen ? spot : null);
     setIsAutoRotating(false);
   };
 
@@ -372,10 +393,17 @@ export function Product3DStudio({
             ) : (
               /* Exploded Anatomy Mode */
               <div className={styles.explodedContainer}>
-                <div className={styles.explodedLayer} style={{ transform: 'translateY(-40px) translateZ(40px)' }}>
+                <div
+                  className={styles.explodedLayer}
+                  style={{ transform: 'translateY(-40px) translateZ(40px)' }}
+                >
                   <div>
-                    <div className={styles.layerTitle}>Layer 1: Performance Outer Shell</div>
-                    <div className={styles.layerDesc}>Full-grain leather with aerodynamic perforations</div>
+                    <div className={styles.layerTitle}>
+                      Layer 1: Performance Outer Shell
+                    </div>
+                    <div className={styles.layerDesc}>
+                      Full-grain leather with aerodynamic perforations
+                    </div>
                   </div>
                 </div>
 
@@ -390,17 +418,31 @@ export function Product3DStudio({
                   draggable={false}
                 />
 
-                <div className={styles.explodedLayer} style={{ transform: 'translateY(40px) translateZ(-30px)' }}>
+                <div
+                  className={styles.explodedLayer}
+                  style={{ transform: 'translateY(40px) translateZ(-30px)' }}
+                >
                   <div>
-                    <div className={styles.layerTitle}>Layer 2: Responsive Cushioning Matrix</div>
-                    <div className={styles.layerDesc}>Polyurethane midsole core with pressurized air pod</div>
+                    <div className={styles.layerTitle}>
+                      Layer 2: Responsive Cushioning Matrix
+                    </div>
+                    <div className={styles.layerDesc}>
+                      Polyurethane midsole core with pressurized air pod
+                    </div>
                   </div>
                 </div>
 
-                <div className={styles.explodedLayer} style={{ transform: 'translateY(75px) translateZ(-60px)' }}>
+                <div
+                  className={styles.explodedLayer}
+                  style={{ transform: 'translateY(75px) translateZ(-60px)' }}
+                >
                   <div>
-                    <div className={styles.layerTitle}>Layer 3: Solid Rubber Traction Base</div>
-                    <div className={styles.layerDesc}>Concentric circular pivot channels for multi-surface grip</div>
+                    <div className={styles.layerTitle}>
+                      Layer 3: Solid Rubber Traction Base
+                    </div>
+                    <div className={styles.layerDesc}>
+                      Concentric circular pivot channels for multi-surface grip
+                    </div>
                   </div>
                 </div>
               </div>
@@ -410,7 +452,10 @@ export function Product3DStudio({
 
         {/* Hotspot Info Drawer */}
         {activeHotspot && (
-          <div className={styles.hotspotCard} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.hotspotCard}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.hotspotCardHeader}>
               <h4 className={styles.hotspotCardTitle}>{activeHotspot.title}</h4>
               <button
