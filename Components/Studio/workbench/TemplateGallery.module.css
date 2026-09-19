@@ -1,0 +1,239 @@
+/* The template and style browser. Tokens come from theme.module.css. */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1.1rem;
+}
+
+/* --------------------------------------------------------------- header -- */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.95rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--wb-border);
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wb-text-faint);
+}
+
+/* The promise that makes browsing safe is worth its own line, not a tooltip. */
+.headerNote {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--wb-text-dim);
+}
+
+/* --------------------------------------------------------------- groups -- */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1rem 0;
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--wb-text);
+}
+
+.groupNote {
+  margin: -0.2rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--wb-text-faint);
+}
+
+.empty {
+  margin: 1rem;
+  padding: 1.1rem 1rem;
+  border: 1px dashed var(--wb-border-strong);
+  border-radius: var(--wb-radius-lg);
+  background: var(--wb-chrome-sunken);
+  font-size: 0.76rem;
+  line-height: 1.6;
+  color: var(--wb-text-dim);
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- cards -- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardItem {
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-lg);
+  background: var(--wb-chrome-sunken);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--wb-accent-line);
+  box-shadow: var(--wb-shadow-panel);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+.card:active {
+  transform: translateY(0);
+}
+
+/* The thumbnail field is a shade of the canvas field, so a card reads as a
+   tiny artboard rather than as an image tile. */
+.thumb {
+  display: block;
+  background: var(--wb-field);
+  border-bottom: 1px solid var(--wb-border);
+}
+
+.thumbCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0 0.6rem 0.65rem;
+  min-width: 0;
+}
+
+.cardName {
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--wb-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardDescription {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--wb-text-faint);
+}
+
+/* --------------------------------------------------------------- styles -- */
+
+.styleRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.style {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.55rem;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease;
+}
+
+.style:hover:not(:disabled) {
+  background: var(--wb-chrome-raised);
+  border-color: var(--wb-border-strong);
+}
+
+.style:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+.style:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.stylePalette {
+  display: flex;
+  gap: 3px;
+}
+
+.styleDot {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 50%;
+  background: var(--wb-style-dot, var(--wb-chrome));
+}
+
+.styleName {
+  overflow: hidden;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--wb-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .style {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

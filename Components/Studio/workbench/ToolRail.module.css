@@ -1,0 +1,176 @@
+/* The left tool rail. Lives inside WorkbenchShell's `.rail` nav, which already
+   owns the 56px width and the chrome background. */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.divider {
+  width: 24px;
+  height: 1px;
+  margin: 0.4rem 0;
+  background: var(--wb-border-strong);
+}
+
+/* --------------------------------------------------------------- button -- */
+
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--wb-radius);
+  background: transparent;
+  color: var(--wb-text-dim);
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.button:hover {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.button:active {
+  background: var(--wb-chrome-sunken);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: -1px;
+}
+
+.buttonActive,
+.buttonActive:hover {
+  background: var(--wb-accent-soft);
+  color: var(--wb-accent);
+}
+
+/* The accent marker rides the rail edge rather than the button, so the active
+   tool reads down the full column the way a docked tool palette does. */
+.marker {
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  width: 3px;
+  height: 0;
+  border-radius: 0 2px 2px 0;
+  background: var(--wb-accent);
+  transform: translateY(-50%);
+  transition: height 0.16s ease;
+}
+
+.buttonActive .marker {
+  height: 22px;
+}
+
+/* -------------------------------------------------------------- tooltip -- */
+
+/* Positioned beside the rail, not above it: the rail is flush to the viewport
+   edge, so a top tooltip would clip on the first button. */
+.tip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 12px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 6px;
+  background: var(--wb-chrome-raised);
+  box-shadow: var(--wb-shadow-panel);
+  color: var(--wb-text);
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.button:hover .tip,
+.button:focus-visible .tip {
+  opacity: 1;
+  /* A couple of pixels of travel so the tooltip arrives rather than blinks. */
+  transform: translate(2px, -50%);
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 0.25rem;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 4px;
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text-dim);
+  font-family: var(--wb-font-mono);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+/* ----------------------------------------------------------- responsive -- */
+
+/* Matches the shell's breakpoint, where the rail becomes a horizontal strip:
+   the stacks turn into rows, the marker to an underline, the tooltip below. */
+@media (max-width: 900px) {
+  .group {
+    flex-direction: row;
+  }
+
+  .divider {
+    width: 1px;
+    height: 24px;
+    margin: 0 0.4rem;
+  }
+
+  .marker {
+    top: auto;
+    bottom: -6px;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    border-radius: 2px 2px 0 0;
+    transform: translateX(-50%);
+    transition: width 0.16s ease;
+  }
+
+  .buttonActive .marker {
+    width: 22px;
+    height: 3px;
+  }
+
+  .tip {
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .button:hover .tip,
+  .button:focus-visible .tip {
+    transform: translate(-50%, 2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .marker,
+  .tip {
+    transition: none;
+  }
+}

@@ -1,0 +1,109 @@
+.panelHost {
+  display: flex;
+  flex-direction: column;
+  /* The shell's aside is the scroll container; this keeps the layer list and
+     template grid bounded so they scroll inside it rather than growing. */
+  min-height: 0;
+  flex: 1;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ------------------------------------------------------------- pricing -- */
+
+.priceList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.priceLine {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--wb-text-dim);
+}
+
+.priceLine span:last-child {
+  color: var(--wb-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.priceTotal {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  margin-bottom: 0.3rem;
+  border-top: 1px solid var(--wb-border);
+  font-size: 0.8rem;
+  color: var(--wb-text-dim);
+}
+
+.priceTotal strong {
+  font-size: 1.05rem;
+  color: var(--wb-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- zoom -- */
+
+.zoomGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.zoomBtn {
+  min-width: 24px;
+  height: 22px;
+  padding: 0 0.35rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--wb-text-dim);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.zoomBtn:hover {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.zoomBtn:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 1px;
+}
+
+.zoomValue {
+  min-width: 42px;
+  text-align: center;
+  color: var(--wb-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  margin: 0;
+  color: var(--wb-success);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zoomBtn {
+    transition: none;
+  }
+}

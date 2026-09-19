@@ -37,6 +37,42 @@ const MODES = [
   },
 ];
 
+const WORKBENCHES = [
+  {
+    href: '/studio/book',
+    badge: 'Kids Favorite',
+    title: 'Storybook Designer',
+    desc: 'Personalized hardcover heirloom books starring your child.',
+    features: [
+      '8 cover and spread templates',
+      'Scene environments',
+      'Character creator',
+    ],
+  },
+  {
+    href: '/studio/poster',
+    badge: 'Gallery Archival',
+    title: 'Poster Designer',
+    desc: 'Museum-grade giclee prints, framed and ready to hang.',
+    features: [
+      '12 layouts, 7 styles',
+      'Frames, mats and paper stocks',
+      'Live 300 DPI proof',
+    ],
+  },
+  {
+    href: '/studio/apparel',
+    badge: 'Craft Workshop',
+    title: 'Apparel Designer',
+    desc: 'Hoodies, tees, varsity jackets and canvas kicks.',
+    features: [
+      '10 layouts, 7 styles',
+      'Colourways and accent trim',
+      'Embroidery finishes',
+    ],
+  },
+];
+
 export default function StudioPage() {
   const router = useRouter();
   const { setMascot, speak } = useMascot();
@@ -183,6 +219,43 @@ export default function StudioPage() {
                 inks and hand-bound right here in the USA.
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Full-screen workbench launcher. These are the real editors; the
+            in-page workstations below are the previous generation and are kept
+            only until their tests are migrated. */}
+        <section
+          className={styles.launcherSection}
+          aria-label="Design workbenches"
+        >
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>Design Workbenches</span>
+            <h2 className={styles.sectionTitle}>Open a Full Design Studio</h2>
+            <p className={styles.sectionSubtitle}>
+              Layers, templates, styles and live print proofing on a full-screen
+              canvas. Your work autosaves and every design gets a share link.
+            </p>
+          </div>
+
+          <div className={styles.launcherGrid}>
+            {WORKBENCHES.map((bench) => (
+              <Link
+                key={bench.href}
+                href={bench.href}
+                className={styles.launcherCard}
+              >
+                <span className={styles.launcherBadge}>{bench.badge}</span>
+                <h3 className={styles.launcherTitle}>{bench.title}</h3>
+                <p className={styles.launcherDesc}>{bench.desc}</p>
+                <ul className={styles.launcherFeatures}>
+                  {bench.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+                <span className={styles.launcherCta}>Open designer</span>
+              </Link>
+            ))}
           </div>
         </section>
 
