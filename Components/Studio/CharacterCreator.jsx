@@ -1,7 +1,29 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { CheckCircleIcon, SparklesIcon } from '../Icons';
+import { useId, useMemo, useState } from 'react';
+import { CheckCircleIcon, RotateCcwIcon, SparklesIcon } from '../Icons';
 import styles from './CharacterCreator.module.css';
+import {
+  BACK_ACCESSORIES,
+  BUILDS,
+  CHARACTER_GROUPS,
+  COMPANION_GROUPS,
+  DEFAULT_AVATAR,
+  DEFAULT_COMPANION,
+  FACE_ACCESSORIES,
+  HEAD_ACCESSORIES,
+  PET_SIZES,
+  SKIN_TONES,
+  contrastInk,
+  describeCharacter,
+  findById,
+  findByValue,
+  normalizeAvatar,
+  normalizeCompanion,
+  randomAvatar,
+  randomCompanion,
+  shade,
+} from './core/characterSchema';
+import { OptionPills, SwatchRow } from './core/StudioControls';
 import {
   BadgeBraveSvg,
   BadgeCertifiedSvg,
@@ -17,51 +39,30 @@ import {
   MascotSparkySvg,
 } from './StudioSVGs';
 
-export const SKIN_TONES = [
-  { id: '#fed7aa', label: 'Porcelain Peach', hex: '#fed7aa' },
-  { id: '#fbd38d', label: 'Honey Gold', hex: '#fbd38d' },
-  { id: '#e5a95d', label: 'Warm Sand', hex: '#e5a95d' },
-  { id: '#d97706', label: 'Caramel Bronze', hex: '#d97706' },
-  { id: '#92400e', label: 'Deep Chestnut', hex: '#92400e' },
-  { id: '#451a03', label: 'Rich Espresso', hex: '#451a03' },
-];
+/**
+ * Every appearance option now lives in `core/characterSchema`. The tables that
+ * used to be declared here shipped a different, smaller set than the canvas
+ * renderer knew about, which is how the editor ended up offering choices that
+ * never reached the page. Re-exported under their old names so nothing that
+ * imported them from this module has to move.
+ */
+export {
+  HAIR_COLORS,
+  HAIR_STYLES,
+  OUTFIT_COLORS,
+  PET_COLLARS,
+  SKIN_TONES,
+} from './core/characterSchema';
 
-export const HAIR_STYLES = [
-  { id: 'crop', label: 'Short Crop' },
-  { id: 'curls', label: 'Fluffy Curls' },
-  { id: 'waves', label: 'Long Waves' },
-  { id: 'braids', label: 'Royal Braids' },
-  { id: 'ponytail', label: 'High Ponytail' },
-  { id: 'spiky', label: 'Spiky Adventure' },
-  { id: 'beanie', label: 'Starlight Beanie' },
-];
-
-export const HAIR_COLORS = [
-  { id: '#1c1917', label: 'Ebony Black', hex: '#1c1917' },
-  { id: '#4a2c11', label: 'Chestnut Brown', hex: '#4a2c11' },
-  { id: '#fde047', label: 'Golden Sun', hex: '#fde047' },
-  { id: '#ea580c', label: 'Auburn Red', hex: '#ea580c' },
-  { id: '#ec4899', label: 'Pastel Rose', hex: '#ec4899' },
-  { id: '#0284c7', label: 'Galactic Cyan', hex: '#0284c7' },
-];
-
+/** v1 mixed face, head and back items into one exclusive list. Kept for any
+ *  caller still reading the flat shape; the editor drives the three slots. */
 export const ACCESSORIES = [
-  { id: 'none', label: 'None' },
-  { id: 'glasses', label: 'Round Specs' },
-  { id: 'star_shades', label: 'Star Shades' },
-  { id: 'superhero_mask', label: 'Hero Mask' },
-  { id: 'freckles', label: 'Sun Freckles' },
-  { id: 'cape', label: 'Hero Cape' },
+  ...FACE_ACCESSORIES,
+  ...HEAD_ACCESSORIES.filter((o) => o.id !== 'none'),
+  ...BACK_ACCESSORIES.filter((o) => o.id !== 'none'),
 ];
 
-export const OUTFIT_COLORS = [
-  { id: '#2563eb', label: 'Royal Blue', hex: '#2563eb' },
-  { id: '#dc2626', label: 'Ruby Crimson', hex: '#dc2626' },
-  { id: '#059669', label: 'Emerald Pine', hex: '#059669' },
-  { id: '#d97706', label: 'Golden Ochre', hex: '#d97706' },
-  { id: '#7c3aed', label: 'Nebula Purple', hex: '#7c3aed' },
-  { id: '#0f172a', label: 'Obsidian Black', hex: '#0f172a' },
-];
+/* Species and badges stay local: they bind components from `StudioSVGs`. */
 
 export const PET_SPECIES = [
   {
@@ -108,14 +109,6 @@ export const PET_SPECIES = [
   },
 ];
 
-export const PET_COLLARS = [
-  { id: 'star_bandana', label: 'Star Bandana' },
-  { id: 'golden_bell', label: 'Gold Bell Collar' },
-  { id: 'explorer_scarf', label: 'Explorer Scarf' },
-  { id: 'capelet', label: 'Mini Capelet' },
-  { id: 'bowtie', label: 'Royal Bowtie' },
-];
-
 export const PET_BADGES = [
   { id: 'badge_hero', label: 'Hero Shield', Svg: BadgeHeroSvg },
   { id: 'badge_brave', label: 'Brave Heart', Svg: BadgeBraveSvg },
@@ -134,15 +127,1251 @@ export const DEFAULT_PET_NAMES = {
   sparky: 'Sparky',
 };
 
-const SPECIES_ALIASES = {
-  dog: 'luna',
-  cat: 'penny',
-  fox: 'finley',
-  lion: 'leo',
-  dino: 'dexter',
-  robot: 'carty',
-  dragon: 'sparky',
+/** Named looks, each a partial avatar merged over the current default. */
+export const STARTER_PRESETS = [
+  {
+    id: 'space_explorer',
+    name: 'Space Explorer',
+    avatar: {
+      hairStyle: 'crop',
+      expression: 'determined',
+      faceAccessory: 'none',
+      headAccessory: 'astronaut_helmet',
+      backAccessory: 'jetpack',
+      outfitStyle: 'space_suit',
+      outfitColor: '#f8fafc',
+      outfitAccentColor: '#0ea5e9',
+      outfitPattern: 'solid',
+    },
+  },
+  {
+    id: 'storybook_knight',
+    name: 'Storybook Knight',
+    avatar: {
+      hairStyle: 'braids',
+      expression: 'determined',
+      brows: 'bold',
+      faceAccessory: 'none',
+      headAccessory: 'crown',
+      backAccessory: 'cape',
+      outfitStyle: 'hero_suit',
+      outfitColor: '#0f172a',
+      outfitAccentColor: '#facc15',
+      outfitPattern: 'solid',
+    },
+  },
+  {
+    id: 'playground_champion',
+    name: 'Playground Champion',
+    avatar: {
+      hairStyle: 'ponytail',
+      expression: 'grin',
+      freckles: 'cheeks',
+      faceAccessory: 'none',
+      headAccessory: 'headband',
+      backAccessory: 'backpack',
+      outfitStyle: 'tee',
+      outfitColor: '#f97316',
+      outfitAccentColor: '#2563eb',
+      outfitPattern: 'stripes',
+    },
+  },
+  {
+    id: 'deep_sea_diver',
+    name: 'Deep Sea Diver',
+    avatar: {
+      hairStyle: 'waves',
+      expression: 'surprised',
+      faceAccessory: 'snorkel',
+      headAccessory: 'none',
+      backAccessory: 'none',
+      outfitStyle: 'explorer',
+      outfitColor: '#14b8a6',
+      outfitAccentColor: '#f8fafc',
+      outfitPattern: 'dots',
+    },
+  },
+];
+
+/* ---------------------------------------------------------------- portrait -- */
+
+const TORSO_PATHS = {
+  tee: 'M56 98 Q80 91 104 98 L108 152 Q80 159 52 152 Z',
+  hoodie: 'M54 100 Q80 93 106 100 L110 156 Q80 163 50 156 Z',
+  dungarees: 'M56 98 Q80 91 104 98 L106 152 Q80 159 54 152 Z',
+  dress: 'M56 98 Q80 91 104 98 L120 161 Q80 172 40 161 Z',
+  hero_suit: 'M56 98 Q80 90 104 98 L106 150 Q80 160 54 150 Z',
+  space_suit: 'M52 100 Q80 92 108 100 L112 154 Q80 163 48 154 Z',
+  explorer: 'M56 98 Q80 91 104 98 L106 152 Q80 159 54 152 Z',
 };
+
+const patternFill = (id, accent, pattern) => {
+  switch (pattern) {
+    case 'stripes':
+      return (
+        <pattern
+          id={id}
+          width="12"
+          height="12"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(28)"
+        >
+          <rect width="5" height="12" fill={accent} />
+        </pattern>
+      );
+    case 'dots':
+      return (
+        <pattern id={id} width="12" height="12" patternUnits="userSpaceOnUse">
+          <circle cx="6" cy="6" r="2.6" fill={accent} />
+        </pattern>
+      );
+    case 'stars':
+      return (
+        <pattern id={id} width="16" height="16" patternUnits="userSpaceOnUse">
+          <polygon
+            points="8,2 9.8,6.3 14.4,6.6 10.9,9.7 12,14.2 8,11.6 4,14.2 5.1,9.7 1.6,6.6 6.2,6.3"
+            fill={accent}
+          />
+        </pattern>
+      );
+    case 'chevron':
+      return (
+        <pattern id={id} width="14" height="10" patternUnits="userSpaceOnUse">
+          <path
+            d="M0 8 L7 2 L14 8"
+            fill="none"
+            stroke={accent}
+            strokeWidth="2.6"
+          />
+        </pattern>
+      );
+    default:
+      return null;
+  }
+};
+
+/** Long hair, hoods and ponytails that sit behind the head and shoulders. */
+const hairBehind = (style, color) => {
+  const dark = shade(color, -0.22);
+
+  switch (style) {
+    case 'afro':
+      return <circle cx="80" cy="54" r="41" fill={color} />;
+    case 'waves':
+      return (
+        <path
+          d="M46 52 C46 20 114 20 114 52 L121 128 C110 124 106 100 105 64 L55 64 C54 100 50 124 39 128 Z"
+          fill={color}
+        />
+      );
+    case 'bob':
+      return (
+        <path
+          d="M48 50 C48 20 112 20 112 50 L114 94 C98 100 62 100 46 94 Z"
+          fill={color}
+        />
+      );
+    case 'locs':
+      return (
+        <g fill={color}>
+          <path d="M48 50 C48 20 112 20 112 50 L112 72 L48 72 Z" />
+          {[42, 52, 108, 118].map((x, i) => (
+            <rect
+              key={x}
+              x={x - 4}
+              y={56 + (i % 2) * 4}
+              width="8"
+              height={52 - (i % 2) * 6}
+              rx="4"
+              fill={i % 2 ? dark : color}
+            />
+          ))}
+        </g>
+      );
+    case 'braids':
+      return (
+        <g fill={color}>
+          <rect x="38" y="52" width="9" height="46" rx="4.5" />
+          <rect x="113" y="52" width="9" height="46" rx="4.5" />
+          {[62, 76, 90].map((y) => (
+            <g key={y}>
+              <circle cx="42.5" cy={y} r="5.6" fill={dark} />
+              <circle cx="117.5" cy={y} r="5.6" fill={dark} />
+            </g>
+          ))}
+        </g>
+      );
+    case 'ponytail':
+      return (
+        <g fill={color}>
+          <ellipse
+            cx="120"
+            cy="58"
+            rx="11"
+            ry="24"
+            transform="rotate(22 120 58)"
+          />
+          <ellipse cx="121" cy="86" rx="8" ry="10" fill={dark} />
+        </g>
+      );
+    case 'coils':
+      return <circle cx="80" cy="56" r="35" fill={dark} />;
+    default:
+      return null;
+  }
+};
+
+/** The cap of hair that covers the crown, drawn over the face layer. */
+const hairInFront = (style, color, beanieColor) => {
+  const dark = shade(color, -0.24);
+  const cap = (
+    <path
+      d="M50 58 C50 26 110 26 110 58 C104 40 94 32 80 32 C66 32 56 40 50 58 Z"
+      fill={color}
+    />
+  );
+
+  switch (style) {
+    case 'crop':
+      return cap;
+    case 'bob':
+      return cap;
+    case 'waves':
+      return cap;
+    case 'locs':
+      return cap;
+    case 'braids':
+      return (
+        <g>
+          {cap}
+          <path
+            d="M56 44 Q80 34 104 44"
+            stroke={dark}
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </g>
+      );
+    case 'ponytail':
+      return (
+        <g>
+          {cap}
+          <path
+            d="M54 52 Q80 38 106 52"
+            stroke={dark}
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </g>
+      );
+    case 'afro':
+      return null;
+    case 'curls':
+      return (
+        <g fill={color}>
+          <circle cx="56" cy="42" r="12" />
+          <circle cx="72" cy="31" r="13" />
+          <circle cx="90" cy="31" r="13" />
+          <circle cx="105" cy="42" r="12" />
+          <circle cx="64" cy="33" r="10" fill={dark} />
+          <circle cx="98" cy="33" r="10" fill={dark} />
+        </g>
+      );
+    case 'coils':
+      return (
+        <g fill={color}>
+          {[
+            [56, 44],
+            [66, 34],
+            [80, 29],
+            [94, 34],
+            [104, 44],
+            [61, 36],
+            [73, 30],
+            [88, 30],
+            [100, 36],
+          ].map(([cx, cy], i) => (
+            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={i % 2 ? 6 : 7.5} />
+          ))}
+        </g>
+      );
+    case 'buns':
+      return (
+        <g>
+          {cap}
+          <circle cx="52" cy="26" r="11" fill={color} />
+          <circle cx="108" cy="26" r="11" fill={color} />
+          <circle cx="52" cy="26" r="5" fill={dark} />
+          <circle cx="108" cy="26" r="5" fill={dark} />
+        </g>
+      );
+    case 'spiky':
+      return (
+        <polygon
+          points="50,58 55,24 64,38 72,18 80,36 88,18 96,38 105,24 110,58"
+          fill={color}
+        />
+      );
+    case 'beanie':
+      // The knit takes its own colour; the hair underneath keeps the hair
+      // colour and still shows below the brim.
+      return (
+        <g>
+          <path
+            d="M48 62 C48 28 112 28 112 62 L112 66 Q80 74 48 66 Z"
+            fill={color}
+          />
+          <path
+            d="M46 54 C46 24 114 24 114 54 L114 58 L46 58 Z"
+            fill={beanieColor}
+          />
+          <rect
+            x="44"
+            y="54"
+            width="72"
+            height="10"
+            rx="5"
+            fill={shade(beanieColor, -0.18)}
+          />
+          <circle cx="80" cy="20" r="7" fill={shade(beanieColor, 0.25)} />
+        </g>
+      );
+    default:
+      return cap;
+  }
+};
+
+const eyeShape = (cx, shape, color) => {
+  const cy = 62;
+
+  switch (shape) {
+    case 'almond':
+      return (
+        <g>
+          <ellipse cx={cx} cy={cy} rx="7" ry="4.6" fill="#ffffff" />
+          <circle cx={cx} cy={cy} r="4" fill={color} />
+          <circle cx={cx} cy={cy} r="1.9" fill="#0f172a" />
+          <circle cx={cx - 1.6} cy={cy - 1.8} r="1.3" fill="#ffffff" />
+        </g>
+      );
+    case 'wide':
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r="7.6" fill="#ffffff" />
+          <circle cx={cx} cy={cy} r="5" fill={color} />
+          <circle cx={cx} cy={cy} r="2.4" fill="#0f172a" />
+          <circle cx={cx - 2} cy={cy - 2.4} r="1.7" fill="#ffffff" />
+        </g>
+      );
+    case 'sleepy':
+      return (
+        <g>
+          <path
+            d={`M${cx - 7} ${cy} A 7 6 0 0 1 ${cx + 7} ${cy} Z`}
+            fill="#ffffff"
+          />
+          <circle cx={cx} cy={cy - 1.4} r="3.4" fill={color} />
+          <path
+            d={`M${cx - 7.4} ${cy} A 7.4 7 0 0 1 ${cx + 7.4} ${cy}`}
+            stroke="#0f172a"
+            strokeWidth="1.8"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </g>
+      );
+    case 'sparkle':
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r="6.6" fill="#ffffff" />
+          <circle cx={cx} cy={cy} r="4.6" fill={color} />
+          <circle cx={cx} cy={cy} r="2.1" fill="#0f172a" />
+          <polygon
+            points={`${cx - 1.8},${cy - 6.4} ${cx - 0.5},${cy - 3.2} ${cx + 2.6},${cy - 2} ${cx - 0.5},${cy - 0.8} ${cx - 1.8},${cy + 2.4} ${cx - 3.1},${cy - 0.8} ${cx - 6.2},${cy - 2} ${cx - 3.1},${cy - 3.2}`}
+            fill="#ffffff"
+          />
+        </g>
+      );
+    default:
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r="6.2" fill="#ffffff" />
+          <circle cx={cx} cy={cy} r="4.2" fill={color} />
+          <circle cx={cx} cy={cy} r="2" fill="#0f172a" />
+          <circle cx={cx - 1.6} cy={cy - 2} r="1.4" fill="#ffffff" />
+        </g>
+      );
+  }
+};
+
+const browShape = (style, color) => {
+  if (style === 'none') return null;
+
+  const stroke = shade(color, -0.3);
+
+  if (style === 'bold') {
+    return (
+      <g fill={stroke}>
+        <rect x="59" y="46" width="17" height="4.6" rx="2.3" />
+        <rect x="84" y="46" width="17" height="4.6" rx="2.3" />
+      </g>
+    );
+  }
+
+  if (style === 'raised') {
+    return (
+      <g stroke={stroke} strokeWidth="3" fill="none" strokeLinecap="round">
+        <path d="M60 46 Q68 41 76 45" />
+        <path d="M84 48 Q92 44 100 48" />
+      </g>
+    );
+  }
+
+  return (
+    <g stroke={stroke} strokeWidth="2.6" fill="none" strokeLinecap="round">
+      <path d="M60 48 Q68 44 76 48" />
+      <path d="M84 48 Q92 44 100 48" />
+    </g>
+  );
+};
+
+const mouthShape = (expression) => {
+  const ink = '#7f1d1d';
+
+  switch (expression) {
+    case 'grin':
+      return (
+        <g>
+          <path
+            d="M68 76 Q80 90 92 76 Z"
+            fill={ink}
+            stroke="#0f172a"
+            strokeWidth="1.4"
+            strokeLinejoin="round"
+          />
+          <path d="M69 76.5 L91 76.5 L90 79 L70 79 Z" fill="#ffffff" />
+        </g>
+      );
+    case 'calm':
+      return (
+        <path
+          d="M72 78 L88 78"
+          stroke="#0f172a"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+      );
+    case 'determined':
+      return (
+        <g>
+          <path
+            d="M71 79 Q80 75 89 79"
+            stroke="#0f172a"
+            strokeWidth="2.4"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path
+            d="M74 83 Q80 85 86 83"
+            stroke="#0f172a"
+            strokeWidth="1.2"
+            fill="none"
+            opacity="0.4"
+          />
+        </g>
+      );
+    case 'surprised':
+      return (
+        <ellipse
+          cx="80"
+          cy="79"
+          rx="5.4"
+          ry="6.6"
+          fill={ink}
+          stroke="#0f172a"
+          strokeWidth="1.3"
+        />
+      );
+    case 'giggle':
+      return (
+        <g>
+          <path
+            d="M67 74 Q80 92 93 74 Z"
+            fill={ink}
+            stroke="#0f172a"
+            strokeWidth="1.4"
+            strokeLinejoin="round"
+          />
+          <ellipse cx="80" cy="85" rx="4" ry="2.6" fill="#f472b6" />
+        </g>
+      );
+    default:
+      return (
+        <path
+          d="M70 75 Q80 84 90 75"
+          stroke="#0f172a"
+          strokeWidth="2.4"
+          fill="none"
+          strokeLinecap="round"
+        />
+      );
+  }
+};
+
+const freckleDots = (kind, skinShadow) => {
+  if (kind === 'none') return null;
+
+  const cheekDots = [
+    [60, 70],
+    [64, 73],
+    [57, 74],
+    [100, 70],
+    [96, 73],
+    [103, 74],
+  ];
+  const noseDots = [
+    [74, 70],
+    [80, 72],
+    [86, 70],
+    [77, 67],
+    [83, 67],
+  ];
+
+  // Every option named, so the schema wiring test can see each one is handled.
+  const dots = {
+    cheeks: cheekDots,
+    nose: noseDots,
+    full: [...cheekDots, ...noseDots],
+  }[kind] ?? [...cheekDots, ...noseDots];
+
+  return (
+    <g fill={shade(skinShadow, -0.3)} opacity="0.85">
+      {dots.map(([cx, cy]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.3" />
+      ))}
+    </g>
+  );
+};
+
+const backItem = (kind, accent) => {
+  const deep = shade(accent, -0.25);
+
+  switch (kind) {
+    case 'cape':
+      // Takes the accent colour. It used to reuse the body colour, which made
+      // the cape vanish against the torso on every solid outfit.
+      return (
+        <g>
+          <path d="M60 98 L30 178 L80 166 L130 178 L100 98 Z" fill={accent} />
+          <path d="M80 100 L80 166" stroke={deep} strokeWidth="2" />
+          <path d="M60 98 L48 150" stroke={deep} strokeWidth="1.6" />
+          <path d="M100 98 L112 150" stroke={deep} strokeWidth="1.6" />
+        </g>
+      );
+    case 'wings':
+      return (
+        <g>
+          <path
+            d="M58 100 C22 82 12 118 26 142 C38 160 56 150 62 132 Z"
+            fill={accent}
+            opacity="0.92"
+          />
+          <path
+            d="M102 100 C138 82 148 118 134 142 C122 160 104 150 98 132 Z"
+            fill={accent}
+            opacity="0.92"
+          />
+          <g stroke={deep} strokeWidth="1.6" fill="none">
+            <path d="M56 106 C36 100 28 122 34 138" />
+            <path d="M104 106 C124 100 132 122 126 138" />
+          </g>
+        </g>
+      );
+    case 'backpack':
+      return (
+        <g>
+          <rect x="42" y="102" width="76" height="56" rx="14" fill={accent} />
+          <rect x="56" y="120" width="48" height="22" rx="7" fill={deep} />
+        </g>
+      );
+    case 'jetpack':
+      return (
+        <g>
+          <rect x="40" y="100" width="20" height="48" rx="10" fill={accent} />
+          <rect x="100" y="100" width="20" height="48" rx="10" fill={accent} />
+          <rect x="44" y="104" width="12" height="12" rx="6" fill={deep} />
+          <rect x="104" y="104" width="12" height="12" rx="6" fill={deep} />
+          <path d="M50 148 L44 170 L50 164 L56 170 Z" fill="#f97316" />
+          <path d="M110 148 L104 170 L110 164 L116 170 Z" fill="#f97316" />
+        </g>
+      );
+    default:
+      return null;
+  }
+};
+
+const headItem = (kind, accent) => {
+  const deep = shade(accent, -0.28);
+
+  switch (kind) {
+    case 'crown':
+      return (
+        <g>
+          <polygon
+            points="50,34 60,14 70,28 80,8 90,28 100,14 110,34"
+            fill="#eab308"
+          />
+          <rect x="49" y="32" width="62" height="9" rx="4" fill="#ca8a04" />
+          <circle cx="80" cy="36" r="3.4" fill={accent} />
+          <circle cx="62" cy="36" r="2.4" fill={deep} />
+          <circle cx="98" cy="36" r="2.4" fill={deep} />
+        </g>
+      );
+    case 'astronaut_helmet':
+      return (
+        <g>
+          <circle
+            cx="80"
+            cy="62"
+            r="41"
+            fill="#e0f2fe"
+            opacity="0.32"
+            stroke="#cbd5e1"
+            strokeWidth="3"
+          />
+          <path
+            d="M54 38 C62 28 98 28 106 38"
+            stroke="#ffffff"
+            strokeWidth="5"
+            fill="none"
+            strokeLinecap="round"
+            opacity="0.8"
+          />
+          <rect x="36" y="88" width="88" height="12" rx="6" fill="#94a3b8" />
+          <rect x="116" y="52" width="12" height="20" rx="4" fill={accent} />
+        </g>
+      );
+    case 'party_hat':
+      return (
+        <g>
+          <polygon points="80,2 62,40 98,40" fill={accent} />
+          <path
+            d="M68 30 L94 24 M65 36 L96 30"
+            stroke={deep}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+          <circle cx="80" cy="4" r="6" fill={deep} />
+        </g>
+      );
+    case 'headband':
+      return (
+        <g>
+          <rect x="46" y="38" width="68" height="9" rx="4.5" fill={accent} />
+          <polygon
+            points="110,26 114,36 124,37 116,43 119,53 110,47 101,53 104,43 96,37 106,36"
+            fill={deep}
+          />
+        </g>
+      );
+    case 'chef_hat':
+      return (
+        <g fill="#f8fafc">
+          <circle cx="58" cy="20" r="14" />
+          <circle cx="80" cy="12" r="16" />
+          <circle cx="102" cy="20" r="14" />
+          <rect x="54" y="24" width="52" height="18" rx="4" />
+          <rect x="52" y="36" width="56" height="9" rx="4" fill={accent} />
+        </g>
+      );
+    default:
+      return null;
+  }
+};
+
+const faceItem = (kind, accent) => {
+  switch (kind) {
+    case 'glasses':
+      return (
+        <g stroke="#0f172a" strokeWidth="2.6" fill="rgb(255 255 255 / 30%)">
+          <circle cx="66" cy="62" r="11" />
+          <circle cx="94" cy="62" r="11" />
+          <line x1="77" y1="62" x2="83" y2="62" />
+          <line x1="55" y1="60" x2="48" y2="58" />
+          <line x1="105" y1="60" x2="112" y2="58" />
+        </g>
+      );
+    case 'star_shades':
+      return (
+        <g>
+          <polygon
+            points="66,50 70,60 81,60 72,67 75,78 66,71 57,78 60,67 51,60 62,60"
+            fill="#0f172a"
+          />
+          <polygon
+            points="94,50 98,60 109,60 100,67 103,78 94,71 85,78 88,67 79,60 90,60"
+            fill="#0f172a"
+          />
+          <line
+            x1="78"
+            y1="61"
+            x2="82"
+            y2="61"
+            stroke="#0f172a"
+            strokeWidth="3"
+          />
+          <polygon points="63,58 66,64 69,58" fill={accent} />
+        </g>
+      );
+    case 'superhero_mask':
+      return (
+        <g>
+          <path
+            d="M48 54 Q80 62 112 54 Q116 74 96 74 Q80 66 64 74 Q44 74 48 54 Z"
+            fill={accent}
+          />
+          <circle cx="66" cy="62" r="5.4" fill="rgb(255 255 255 / 85%)" />
+          <circle cx="94" cy="62" r="5.4" fill="rgb(255 255 255 / 85%)" />
+        </g>
+      );
+    case 'eyepatch':
+      return (
+        <g>
+          <path
+            d="M46 50 Q80 58 114 50"
+            stroke="#1c1917"
+            strokeWidth="3"
+            fill="none"
+          />
+          <rect x="84" y="52" width="21" height="20" rx="5" fill="#1c1917" />
+          <circle cx="94.5" cy="62" r="2.4" fill={accent} />
+        </g>
+      );
+    case 'snorkel':
+      return (
+        <g>
+          <rect
+            x="52"
+            y="50"
+            width="56"
+            height="24"
+            rx="10"
+            fill="rgb(255 255 255 / 40%)"
+            stroke={accent}
+            strokeWidth="3"
+          />
+          <line
+            x1="80"
+            y1="50"
+            x2="80"
+            y2="74"
+            stroke={accent}
+            strokeWidth="2.4"
+          />
+          <path
+            d="M108 58 L120 58 L120 26"
+            stroke={accent}
+            strokeWidth="5"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </g>
+      );
+    default:
+      return null;
+  }
+};
+
+const outfitDetail = (style, outfit, accent, ink) => {
+  const fold = shade(outfit, -0.2);
+
+  switch (style) {
+    case 'hoodie':
+      return (
+        <g>
+          <rect x="64" y="122" width="32" height="18" rx="6" fill={fold} />
+          <path
+            d="M70 100 L74 116 M90 100 L86 116"
+            stroke={accent}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+        </g>
+      );
+    case 'dungarees':
+      return (
+        <g>
+          <rect x="62" y="110" width="36" height="34" rx="5" fill={accent} />
+          <path
+            d="M64 98 L68 112 M96 98 L92 112"
+            stroke={accent}
+            strokeWidth="5"
+            strokeLinecap="round"
+          />
+          <circle cx="66" cy="112" r="2.6" fill={fold} />
+          <circle cx="94" cy="112" r="2.6" fill={fold} />
+        </g>
+      );
+    case 'dress':
+      return (
+        <g>
+          <rect x="52" y="124" width="56" height="7" rx="3.5" fill={accent} />
+          <path
+            d="M44 157 Q80 167 116 157"
+            stroke={accent}
+            strokeWidth="5"
+            fill="none"
+          />
+        </g>
+      );
+    case 'hero_suit':
+      return (
+        <g>
+          <polygon
+            points="80,106 85,118 98,118 88,126 92,139 80,131 68,139 72,126 62,118 75,118"
+            fill={accent}
+          />
+          <rect x="54" y="142" width="52" height="8" rx="4" fill={accent} />
+        </g>
+      );
+    case 'space_suit':
+      return (
+        <g>
+          <rect x="54" y="94" width="52" height="9" rx="4.5" fill={accent} />
+          <rect x="66" y="112" width="28" height="20" rx="5" fill={fold} />
+          <circle cx="73" cy="119" r="2.6" fill={accent} />
+          <circle cx="81" cy="119" r="2.6" fill={ink} />
+          <circle cx="89" cy="119" r="2.6" fill={accent} />
+          <rect x="68" y="126" width="24" height="3" rx="1.5" fill={ink} />
+        </g>
+      );
+    case 'explorer':
+      return (
+        <g>
+          <path d="M80 96 L80 154" stroke={fold} strokeWidth="2.4" />
+          <rect x="58" y="122" width="16" height="14" rx="3" fill={accent} />
+          <rect x="86" y="122" width="16" height="14" rx="3" fill={accent} />
+          <rect x="52" y="140" width="56" height="7" rx="3.5" fill={accent} />
+        </g>
+      );
+    default:
+      return (
+        <g>
+          <path
+            d="M68 96 Q80 106 92 96"
+            stroke={accent}
+            strokeWidth="3.4"
+            fill="none"
+          />
+          <path
+            d="M80 118 L80 142"
+            stroke={ink}
+            strokeWidth="1.6"
+            opacity="0.2"
+          />
+        </g>
+      );
+  }
+};
+
+export const HeroPortrait = ({ avatar, label }) => {
+  const rawId = useId();
+  const uid = rawId.replace(/[^a-zA-Z0-9]/g, '');
+  const a = normalizeAvatar(avatar);
+
+  const skin = a.skin;
+  const skinShadow =
+    findByValue(SKIN_TONES, a.skin)?.shadow ?? shade(skin, -0.14);
+  const outfit = a.outfitColor;
+  const accent = a.outfitAccentColor;
+  const ink = contrastInk(outfit);
+  const scale = findById(BUILDS, a.build)?.scale ?? 1;
+  const torso = TORSO_PATHS[a.outfitStyle] ?? TORSO_PATHS.tee;
+
+  const clipId = `${uid}-torso`;
+  const patternId = `${uid}-pattern`;
+  const patterned = a.outfitPattern !== 'solid';
+
+  return (
+    <svg
+      viewBox="0 0 160 200"
+      className={styles.avatarSvg}
+      role="img"
+      aria-label={label}
+    >
+      <defs>
+        <clipPath id={clipId}>
+          <path d={torso} />
+        </clipPath>
+        {patterned && patternFill(patternId, accent, a.outfitPattern)}
+      </defs>
+
+      {/* Scaled about the feet so "Tall" grows upward rather than off-centre. */}
+      <g transform={`translate(80 196) scale(${scale}) translate(-80 -196)`}>
+        {backItem(a.backAccessory, accent)}
+        {hairBehind(a.hairStyle, a.hairColor)}
+
+        {a.outfitStyle === 'hoodie' && (
+          <path d="M48 96 C48 62 112 62 112 96 Z" fill={shade(outfit, -0.12)} />
+        )}
+
+        {/* Legs and shoes */}
+        <rect x="65" y="148" width="13" height="32" rx="6" fill={skinShadow} />
+        <rect x="82" y="148" width="13" height="32" rx="6" fill={skinShadow} />
+        <ellipse cx="70" cy="182" rx="12" ry="7" fill={accent} />
+        <ellipse cx="90" cy="182" rx="12" ry="7" fill={accent} />
+
+        {/* Torso */}
+        <path d={torso} fill={outfit} />
+        {patterned && (
+          <g clipPath={`url(#${clipId})`}>
+            <rect
+              x="0"
+              y="0"
+              width="160"
+              height="200"
+              fill={`url(#${patternId})`}
+              opacity="0.9"
+            />
+          </g>
+        )}
+        <g clipPath={`url(#${clipId})`}>
+          <path
+            d="M100 90 L124 200 L160 200 L160 90 Z"
+            fill={shade(outfit, -0.16)}
+            opacity="0.45"
+          />
+        </g>
+        {outfitDetail(a.outfitStyle, outfit, accent, ink)}
+
+        {/* Arms */}
+        <g fill={outfit}>
+          <path d="M57 100 L45 138 L55 141 L66 106 Z" />
+          <path d="M103 100 L115 138 L105 141 L94 106 Z" />
+        </g>
+        <circle cx="50" cy="143" r="7" fill={skin} />
+        <circle cx="110" cy="143" r="7" fill={skin} />
+
+        {/* Neck and head */}
+        <rect x="71" y="84" width="18" height="16" rx="5" fill={skinShadow} />
+        <ellipse cx="48" cy="64" rx="6" ry="8" fill={skinShadow} />
+        <ellipse cx="112" cy="64" rx="6" ry="8" fill={skinShadow} />
+        <circle cx="80" cy="60" r="32" fill={skin} />
+        <path
+          d="M80 92 A 32 32 0 0 0 112 60 L112 70 A 32 32 0 0 1 80 92 Z"
+          fill={skinShadow}
+          opacity="0.5"
+        />
+
+        {/* Face */}
+        {browShape(a.brows, a.hairColor)}
+        {eyeShape(66, a.eyeShape, a.eyeColor)}
+        {eyeShape(94, a.eyeShape, a.eyeColor)}
+        <path
+          d="M78 68 Q80 72 82 70"
+          stroke={shade(skinShadow, -0.2)}
+          strokeWidth="1.8"
+          fill="none"
+          strokeLinecap="round"
+        />
+        {mouthShape(a.expression)}
+        {freckleDots(a.freckles, skinShadow)}
+
+        {hairInFront(a.hairStyle, a.hairColor, a.beanieColor)}
+        {headItem(a.headAccessory, accent)}
+        {faceItem(a.faceAccessory, accent)}
+      </g>
+    </svg>
+  );
+};
+
+HeroPortrait.propTypes = {
+  avatar: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+};
+
+/* --------------------------------------------------------- companion art -- */
+
+const SPECIES_FEATURES = {
+  leo: { ears: 'round', mane: true },
+  penny: { ears: 'pointed' },
+  finley: { ears: 'pointed', snout: true },
+  luna: { ears: 'floppy', snout: true },
+  dexter: { ears: 'crest' },
+  carty: { ears: 'antenna', boxy: true },
+  sparky: { ears: 'horns' },
+};
+
+const POSE_TRANSFORM = {
+  sit: 'translate(0 0)',
+  stand: 'translate(0 -6)',
+  leap: 'rotate(-14 80 130) translate(0 -10)',
+  curl: 'translate(0 10) scale(1 0.86)',
+};
+
+const companionEars = (kind, fur, dark) => {
+  switch (kind) {
+    case 'pointed':
+      return (
+        <g fill={fur}>
+          <polygon points="56,70 60,40 78,60" />
+          <polygon points="104,70 100,40 82,60" />
+          <polygon points="62,64 64,50 73,61" fill={dark} />
+          <polygon points="98,64 96,50 87,61" fill={dark} />
+        </g>
+      );
+    case 'floppy':
+      return (
+        <g fill={dark}>
+          <ellipse
+            cx="50"
+            cy="82"
+            rx="11"
+            ry="20"
+            transform="rotate(12 50 82)"
+          />
+          <ellipse
+            cx="110"
+            cy="82"
+            rx="11"
+            ry="20"
+            transform="rotate(-12 110 82)"
+          />
+        </g>
+      );
+    case 'crest':
+      return (
+        <polygon
+          points="62,52 70,34 78,50 86,32 94,50 100,38 102,58"
+          fill={dark}
+        />
+      );
+    case 'antenna':
+      return (
+        <g>
+          <rect x="78" y="30" width="4" height="20" rx="2" fill={dark} />
+          <circle cx="80" cy="28" r="6" fill="#facc15" />
+        </g>
+      );
+    case 'horns':
+      return (
+        <g fill={dark}>
+          <path d="M58 58 Q50 36 66 42 Z" />
+          <path d="M102 58 Q110 36 94 42 Z" />
+        </g>
+      );
+    default:
+      return (
+        <g fill={fur}>
+          <circle cx="56" cy="58" r="12" />
+          <circle cx="104" cy="58" r="12" />
+          <circle cx="56" cy="58" r="6" fill={dark} />
+          <circle cx="104" cy="58" r="6" fill={dark} />
+        </g>
+      );
+  }
+};
+
+const collarShape = (kind, color, dark, ink) => {
+  switch (kind) {
+    case 'star_bandana':
+      return (
+        <g>
+          <path d="M56 112 L104 112 L80 142 Z" fill={color} />
+          <polygon
+            points="80,118 82.6,125 90,125 84,129.5 86,137 80,132.5 74,137 76,129.5 70,125 77.4,125"
+            fill={ink}
+          />
+        </g>
+      );
+    case 'golden_bell':
+      return (
+        <g>
+          <rect x="54" y="110" width="52" height="10" rx="5" fill={color} />
+          <circle cx="80" cy="126" r="9" fill="#facc15" />
+          <path
+            d="M74 126 L86 126"
+            stroke={shade('#facc15', -0.4)}
+            strokeWidth="2"
+          />
+        </g>
+      );
+    case 'explorer_scarf':
+      return (
+        <g>
+          <path
+            d="M52 108 Q80 124 108 108 L108 120 Q80 136 52 120 Z"
+            fill={color}
+          />
+          <path d="M100 118 L114 146 L102 148 L94 124 Z" fill={dark} />
+        </g>
+      );
+    case 'capelet':
+      return (
+        <g>
+          <path
+            d="M50 110 Q80 122 110 110 L118 156 Q80 166 42 156 Z"
+            fill={color}
+          />
+          <path d="M80 118 L80 162" stroke={dark} strokeWidth="2" />
+        </g>
+      );
+    case 'bowtie':
+      return (
+        <g>
+          <rect x="54" y="110" width="52" height="9" rx="4.5" fill={dark} />
+          <polygon points="80,116 62,106 62,128 80,118" fill={color} />
+          <polygon points="80,116 98,106 98,128 80,118" fill={color} />
+          <circle cx="80" cy="117" r="5" fill={dark} />
+        </g>
+      );
+    default:
+      return null;
+  }
+};
+
+export const CompanionPortrait = ({ companion, label }) => {
+  const c = normalizeCompanion(companion);
+  const fur = c.furColor;
+  const dark = shade(fur, -0.24);
+  const belly = shade(fur, 0.28);
+  const ink = contrastInk(c.collarColor);
+  const scale = findById(PET_SIZES, c.size)?.scale ?? 1;
+  const features = SPECIES_FEATURES[c.species] ?? SPECIES_FEATURES.leo;
+
+  return (
+    <svg
+      viewBox="0 0 160 200"
+      className={styles.avatarSvg}
+      role="img"
+      aria-label={label}
+    >
+      <g transform={`translate(80 190) scale(${scale}) translate(-80 -190)`}>
+        <g transform={POSE_TRANSFORM[c.pose] ?? POSE_TRANSFORM.sit}>
+          {/* Tail */}
+          <path
+            d="M108 160 Q140 156 132 122"
+            stroke={dark}
+            strokeWidth="13"
+            fill="none"
+            strokeLinecap="round"
+          />
+
+          {/* Body */}
+          <ellipse cx="80" cy="152" rx="36" ry="34" fill={fur} />
+          <ellipse cx="80" cy="160" rx="22" ry="22" fill={belly} />
+          {c.pose === 'leap' ? (
+            <g fill={dark}>
+              <rect
+                x="44"
+                y="158"
+                width="14"
+                height="30"
+                rx="7"
+                transform="rotate(-20 51 173)"
+              />
+              <rect
+                x="102"
+                y="158"
+                width="14"
+                height="30"
+                rx="7"
+                transform="rotate(20 109 173)"
+              />
+            </g>
+          ) : (
+            <g fill={dark}>
+              <ellipse cx="60" cy="182" rx="13" ry="8" />
+              <ellipse cx="100" cy="182" rx="13" ry="8" />
+            </g>
+          )}
+
+          {/* Mane sits behind the head for the lion archetype */}
+          {features.mane && <circle cx="80" cy="76" r="44" fill={dark} />}
+
+          {companionEars(features.ears, fur, dark)}
+
+          {features.boxy ? (
+            <rect x="46" y="44" width="68" height="64" rx="14" fill={fur} />
+          ) : (
+            <circle cx="80" cy="78" r="34" fill={fur} />
+          )}
+
+          {features.snout && (
+            <ellipse cx="80" cy="94" rx="20" ry="14" fill={belly} />
+          )}
+
+          {/* Face */}
+          <circle cx="68" cy="74" r="5" fill="#0f172a" />
+          <circle cx="92" cy="74" r="5" fill="#0f172a" />
+          <circle cx="66.4" cy="72" r="1.8" fill="#ffffff" />
+          <circle cx="90.4" cy="72" r="1.8" fill="#ffffff" />
+          <ellipse cx="80" cy="88" rx="5" ry="4" fill="#0f172a" />
+          <path
+            d="M70 96 Q80 104 90 96"
+            stroke="#0f172a"
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {features.ears === 'pointed' && (
+            <g stroke="#0f172a" strokeWidth="1.4" opacity="0.6">
+              <path d="M56 88 L44 84 M56 92 L44 94" />
+              <path d="M104 88 L116 84 M104 92 L116 94" />
+            </g>
+          )}
+
+          {collarShape(
+            c.collar,
+            c.collarColor,
+            shade(c.collarColor, -0.3),
+            ink
+          )}
+        </g>
+      </g>
+    </svg>
+  );
+};
+
+CompanionPortrait.propTypes = {
+  companion: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+};
+
+/* ------------------------------------------------------------ option row -- */
+
+/** One schema group, rendered with the shared control that matches its kind. */
+const renderGroup = (group, source, onChange) => {
+  const value = source[group.key];
+  const commit = (next) => onChange(group.key, next);
+
+  if (group.kind === 'swatch') {
+    return (
+      <SwatchRow
+        key={group.key}
+        label={group.label}
+        options={group.table}
+        value={value}
+        onChange={commit}
+        columns={6}
+      />
+    );
+  }
+
+  return (
+    <OptionPills
+      key={group.key}
+      label={group.label}
+      options={group.table}
+      value={value}
+      onChange={commit}
+    />
+  );
+};
+
+/* ---------------------------------------------------------------- editor -- */
 
 export function CharacterCreator({
   heroName = 'Noah',
@@ -154,64 +1383,97 @@ export function CharacterCreator({
   onSave = null,
 }) {
   const [activeTab, setActiveTab] = useState(initialTab); // 'hero' | 'companion'
+  const [announcement, setAnnouncement] = useState('');
+  const petNameId = useId();
+  const panelId = useId();
 
-  // Default values with fallback aliases
-  const currentSkin = avatar.skin || '#fbd38d';
-  const currentHairStyle = avatar.hairstyle || avatar.hairStyle || 'curls';
-  const currentHairColor = avatar.hairColor || avatar.hair || '#4a2c11';
-  const currentAccessory = avatar.accessory || 'cape';
-  const currentOutfit = avatar.outfitColor || avatar.outfit || '#2563eb';
+  const hero = useMemo(() => normalizeAvatar(avatar), [avatar]);
+  const pet = useMemo(() => normalizeCompanion(companion), [companion]);
+  const sheet = useMemo(() => describeCharacter(hero, pet), [hero, pet]);
 
-  const rawSpecies = companion.species || 'leo';
-  const petSpecies = SPECIES_ALIASES[rawSpecies] || rawSpecies;
-  const petName = companion.name || 'Leo';
-  const petFur = companion.furColor || '#ea580c';
-  const petCollar = companion.collar || 'star_bandana';
-  const petBadge = companion.badge || 'badge_hero';
+  const heroLabel = `Portrait of ${heroName}. ${[
+    'Skin',
+    'Hair',
+    'Eyes',
+    'Expression',
+    'Freckles',
+    'Outfit',
+    'Accessories',
+  ]
+    .map((key) => `${key}: ${sheet[key]}`)
+    .join('. ')}.`;
+
+  const companionLabel = `Portrait of ${pet.name}. ${[
+    'Companion Coat',
+    'Companion Collar',
+    'Companion Pose',
+  ]
+    .map((key) => `${key.replace('Companion ', '')}: ${sheet[key]}`)
+    .join('. ')}. Size: ${findById(PET_SIZES, pet.size)?.name ?? 'Regular'}.`;
 
   const activePetObj =
-    PET_SPECIES.find((p) => p.id === petSpecies) || PET_SPECIES[0];
+    PET_SPECIES.find((p) => p.id === pet.species) ?? PET_SPECIES[0];
   const activePetBadgeObj =
-    PET_BADGES.find((b) => b.id === petBadge) || PET_BADGES[0];
+    PET_BADGES.find((b) => b.id === pet.badge) ?? PET_BADGES[0];
 
-  const curPetIdx = PET_SPECIES.findIndex((p) => p.id === petSpecies);
+  const curPetIdx = PET_SPECIES.findIndex((p) => p.id === pet.species);
   const nextPetIdx = curPetIdx >= 0 ? (curPetIdx + 1) % PET_SPECIES.length : 0;
   const prevPetIdx =
     curPetIdx >= 0
       ? (curPetIdx - 1 + PET_SPECIES.length) % PET_SPECIES.length
       : 0;
-  const nextPetSpecies = PET_SPECIES[nextPetIdx];
-  const nextCompanionLabel = nextPetSpecies?.name.split(' ')[0] || 'Next';
+  const nextCompanionLabel =
+    PET_SPECIES[nextPetIdx]?.name.split(' ')[0] || 'Next';
+
+  const setHeroKey = (key, value) => onChangeAvatar({ ...hero, [key]: value });
+  const setPetKey = (key, value) => onChangeCompanion({ ...pet, [key]: value });
 
   const handleSelectSpecies = (specId) => {
     const knownDefaultNames = Object.values(DEFAULT_PET_NAMES);
     const shouldUpdateName =
-      !companion.name ||
-      knownDefaultNames.includes(companion.name) ||
-      companion.name === 'Leo';
-
-    const newName = shouldUpdateName
-      ? DEFAULT_PET_NAMES[specId] || specId
-      : companion.name;
+      !companion.name || knownDefaultNames.includes(companion.name);
 
     onChangeCompanion({
-      ...companion,
+      ...pet,
       species: specId,
-      name: newName,
+      name: shouldUpdateName ? (DEFAULT_PET_NAMES[specId] ?? specId) : pet.name,
     });
   };
 
-  const handleNextCompanion = () => {
-    handleSelectSpecies(PET_SPECIES[nextPetIdx].id);
+  const handleSurprise = () => {
+    if (activeTab === 'hero') {
+      onChangeAvatar(randomAvatar());
+      setAnnouncement('Hero randomized.');
+      return;
+    }
+    onChangeCompanion({ ...randomCompanion(pet.species), name: pet.name });
+    setAnnouncement(`${pet.name} randomized.`);
   };
 
-  const handlePrevCompanion = () => {
-    handleSelectSpecies(PET_SPECIES[prevPetIdx].id);
+  const handleReset = () => {
+    if (activeTab === 'hero') {
+      onChangeAvatar({ ...DEFAULT_AVATAR });
+      setAnnouncement('Hero reset to the default look.');
+      return;
+    }
+    onChangeCompanion({
+      ...DEFAULT_COMPANION,
+      species: pet.species,
+      name: pet.name,
+    });
+    setAnnouncement(`${pet.name} reset to the default look.`);
   };
+
+  const handlePreset = (preset) => {
+    onChangeAvatar({ ...DEFAULT_AVATAR, ...preset.avatar });
+    setActiveTab('hero');
+    setAnnouncement(`${preset.name} look applied.`);
+  };
+
+  const isHero = activeTab === 'hero';
 
   return (
     <div className={styles.creatorRoot}>
-      {/* Creator Tabs */}
       <div
         className={styles.tabBar}
         role="tablist"
@@ -220,8 +1482,11 @@ export function CharacterCreator({
         <button
           type="button"
           role="tab"
-          aria-selected={activeTab === 'hero'}
-          className={`${styles.tabBtn} ${activeTab === 'hero' ? styles.tabBtnActive : ''}`}
+          id={`${panelId}-hero-tab`}
+          aria-selected={isHero}
+          aria-controls={`${panelId}-hero`}
+          tabIndex={isHero ? 0 : -1}
+          className={`${styles.tabBtn} ${isHero ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('hero')}
         >
           <SparklesIcon size={14} />
@@ -230,8 +1495,11 @@ export function CharacterCreator({
         <button
           type="button"
           role="tab"
-          aria-selected={activeTab === 'companion'}
-          className={`${styles.tabBtn} ${activeTab === 'companion' ? styles.tabBtnActive : ''}`}
+          id={`${panelId}-companion-tab`}
+          aria-selected={!isHero}
+          aria-controls={`${panelId}-companion`}
+          tabIndex={isHero ? -1 : 0}
+          className={`${styles.tabBtn} ${!isHero ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('companion')}
         >
           <activePetObj.Svg size={15} />
@@ -239,288 +1507,171 @@ export function CharacterCreator({
         </button>
       </div>
 
+      <div className={styles.quickBar}>
+        <div className={styles.quickActions}>
+          <button
+            type="button"
+            className={styles.quickBtn}
+            onClick={handleSurprise}
+          >
+            <SparklesIcon size={14} />
+            <span>Surprise me</span>
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtn}
+            onClick={handleReset}
+          >
+            <RotateCcwIcon size={14} />
+            <span>Reset to default</span>
+          </button>
+        </div>
+
+        <div className={styles.presetRow}>
+          <span className={styles.presetLabel}>Starter looks</span>
+          {STARTER_PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              className={styles.presetBtn}
+              onClick={() => handlePreset(preset)}
+            >
+              {preset.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p className={styles.srOnly} role="status">
+        {announcement}
+      </p>
+
       <div className={styles.creatorLayout}>
-        {/* Left: Customization Controls */}
         <div className={styles.controlsCol}>
-          {activeTab === 'hero' && (
-            <div className={styles.panelSection}>
-              {/* Skin Tone Selector */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Skin Tone:</label>
-                <div className={styles.swatchGrid}>
-                  {SKIN_TONES.map((st) => (
-                    <button
-                      key={st.id}
-                      type="button"
-                      className={`${styles.swatchBtn} ${
-                        currentSkin === st.hex ? styles.swatchActive : ''
-                      }`}
-                      style={{ background: st.hex }}
-                      onClick={() =>
-                        onChangeAvatar({ ...avatar, skin: st.hex })
-                      }
-                      title={st.label}
-                      aria-label={`Select ${st.label} skin tone`}
-                    />
-                  ))}
-                </div>
-              </div>
+          <div
+            id={`${panelId}-hero`}
+            role="tabpanel"
+            aria-labelledby={`${panelId}-hero-tab`}
+            hidden={!isHero}
+            className={styles.panelSection}
+          >
+            {isHero &&
+              CHARACTER_GROUPS.map((group) =>
+                renderGroup(group, hero, setHeroKey)
+              )}
+          </div>
 
-              {/* Hair Style Selector */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Hair Style:</label>
-                <div className={styles.pillGrid}>
-                  {HAIR_STYLES.map((hs) => (
-                    <button
-                      key={hs.id}
-                      type="button"
-                      className={`${styles.pillBtn} ${
-                        currentHairStyle === hs.id ? styles.pillBtnActive : ''
-                      }`}
-                      onClick={() =>
-                        onChangeAvatar({
-                          ...avatar,
-                          hairStyle: hs.id,
-                          hairstyle: hs.id,
-                        })
-                      }
-                    >
-                      {hs.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Hair Color Selector */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Hair Color:</label>
-                <div className={styles.swatchGrid}>
-                  {HAIR_COLORS.map((hc) => (
-                    <button
-                      key={hc.id}
-                      type="button"
-                      className={`${styles.swatchBtn} ${
-                        currentHairColor === hc.hex ? styles.swatchActive : ''
-                      }`}
-                      style={{ background: hc.hex }}
-                      onClick={() =>
-                        onChangeAvatar({
-                          ...avatar,
-                          hair: hc.hex,
-                          hairColor: hc.hex,
-                        })
-                      }
-                      title={hc.label}
-                      aria-label={`Select ${hc.label} hair color`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Accessory & Headwear */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>
-                  Face & Character Accessory:
-                </label>
-                <div className={styles.pillGrid}>
-                  {ACCESSORIES.map((acc) => (
-                    <button
-                      key={acc.id}
-                      type="button"
-                      className={`${styles.pillBtn} ${
-                        currentAccessory === acc.id ? styles.pillBtnActive : ''
-                      }`}
-                      onClick={() =>
-                        onChangeAvatar({ ...avatar, accessory: acc.id })
-                      }
-                    >
-                      {acc.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Outfit Color */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>
-                  Outfit / Cape Color:
-                </label>
-                <div className={styles.swatchGrid}>
-                  {OUTFIT_COLORS.map((oc) => (
-                    <button
-                      key={oc.id}
-                      type="button"
-                      className={`${styles.swatchBtn} ${
-                        currentOutfit === oc.hex ? styles.swatchActive : ''
-                      }`}
-                      style={{ background: oc.hex }}
-                      onClick={() =>
-                        onChangeAvatar({
-                          ...avatar,
-                          outfit: oc.hex,
-                          outfitColor: oc.hex,
-                        })
-                      }
-                      title={oc.label}
-                      aria-label={`Select ${oc.label} outfit color`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'companion' && (
-            <div className={styles.panelSection}>
-              {/* Pet Name */}
-              <div className={styles.optionGroup}>
-                <label htmlFor="petNameInput" className={styles.groupLabel}>
-                  Companion Pet Name:
-                </label>
-                <input
-                  id="petNameInput"
-                  type="text"
-                  className={styles.petNameInput}
-                  value={petName}
-                  maxLength={18}
-                  onChange={(e) =>
-                    onChangeCompanion({ ...companion, name: e.target.value })
-                  }
-                  placeholder="e.g. Barnaby, Biscuit, Nova..."
-                />
-              </div>
-
-              {/* Companion Species */}
-              <div className={styles.optionGroup}>
-                <div className={styles.companionHeaderRow}>
-                  <label className={styles.groupLabel}>
-                    Companion Archetype:
+          <div
+            id={`${panelId}-companion`}
+            role="tabpanel"
+            aria-labelledby={`${panelId}-companion-tab`}
+            hidden={isHero}
+            className={styles.panelSection}
+          >
+            {!isHero && (
+              <>
+                <div className={styles.optionGroup}>
+                  <label htmlFor={petNameId} className={styles.groupLabel}>
+                    Companion Pet Name:
                   </label>
-                  <div className={styles.companionNav}>
-                    <button
-                      type="button"
-                      className={styles.cycleBtn}
-                      onClick={handlePrevCompanion}
-                      title="Previous companion"
-                      aria-label="Previous companion archetype"
-                    >
-                      ‹
-                    </button>
-                    <span className={styles.cycleCounter}>
-                      {curPetIdx >= 0 ? curPetIdx + 1 : 1} of{' '}
-                      {PET_SPECIES.length}
+                  <input
+                    id={petNameId}
+                    type="text"
+                    className={styles.petNameInput}
+                    value={pet.name}
+                    maxLength={18}
+                    onChange={(e) => setPetKey('name', e.target.value)}
+                    placeholder="e.g. Barnaby, Biscuit, Nova..."
+                  />
+                </div>
+
+                <div className={styles.optionGroup}>
+                  <div className={styles.companionHeaderRow}>
+                    <span className={styles.groupLabel}>
+                      Companion Archetype:
                     </span>
-                    <button
-                      type="button"
-                      className={styles.cycleBtn}
-                      onClick={handleNextCompanion}
-                      title={`Switch to next companion (${nextCompanionLabel})`}
-                      aria-label={`Switch to next companion (${nextCompanionLabel})`}
-                    >
-                      Next: {nextCompanionLabel} ›
-                    </button>
+                    <div className={styles.companionNav}>
+                      <button
+                        type="button"
+                        className={styles.cycleBtn}
+                        onClick={() =>
+                          handleSelectSpecies(PET_SPECIES[prevPetIdx].id)
+                        }
+                        aria-label="Previous companion archetype"
+                      >
+                        <span aria-hidden="true">&lsaquo;</span>
+                      </button>
+                      <span className={styles.cycleCounter}>
+                        {curPetIdx >= 0 ? curPetIdx + 1 : 1} of{' '}
+                        {PET_SPECIES.length}
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.cycleBtn}
+                        onClick={() =>
+                          handleSelectSpecies(PET_SPECIES[nextPetIdx].id)
+                        }
+                        aria-label={`Switch to next companion (${nextCompanionLabel})`}
+                      >
+                        Next: {nextCompanionLabel}{' '}
+                        <span aria-hidden="true">&rsaquo;</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className={styles.speciesGrid}>
+                    {PET_SPECIES.map((spec) => (
+                      <button
+                        key={spec.id}
+                        type="button"
+                        aria-pressed={pet.species === spec.id}
+                        className={`${styles.speciesCard} ${
+                          pet.species === spec.id
+                            ? styles.speciesCardActive
+                            : ''
+                        }`}
+                        onClick={() => handleSelectSpecies(spec.id)}
+                      >
+                        <spec.Svg size={24} />
+                        <span>{spec.name}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <div className={styles.speciesGrid}>
-                  {PET_SPECIES.map((spec) => (
-                    <button
-                      key={spec.id}
-                      type="button"
-                      className={`${styles.speciesCard} ${
-                        petSpecies === spec.id ? styles.speciesCardActive : ''
-                      }`}
-                      onClick={() => handleSelectSpecies(spec.id)}
-                    >
-                      <spec.Svg size={24} />
-                      <span>{spec.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              {/* Fur Palette */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Fur / Coat Color:</label>
-                <div className={styles.swatchGrid}>
-                  {[
-                    { hex: '#ea580c', label: 'Amber Red' },
-                    { hex: '#f59e0b', label: 'Golden Honey' },
-                    { hex: '#ffffff', label: 'Snow White' },
-                    { hex: '#292524', label: 'Midnight Black' },
-                    { hex: '#a855f7', label: 'Starlight Lavender' },
-                    { hex: '#10b981', label: 'Emerald Dragon' },
-                  ].map((f) => (
-                    <button
-                      key={f.hex}
-                      type="button"
-                      className={`${styles.swatchBtn} ${
-                        petFur === f.hex ? styles.swatchActive : ''
-                      }`}
-                      style={{ background: f.hex }}
-                      onClick={() =>
-                        onChangeCompanion({ ...companion, furColor: f.hex })
-                      }
-                      title={f.label}
-                      aria-label={`Select ${f.label} fur color`}
-                    />
-                  ))}
-                </div>
-              </div>
+                {COMPANION_GROUPS.map((group) =>
+                  renderGroup(group, pet, setPetKey)
+                )}
 
-              {/* Pet Collar / Wearable */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>Collar & Bandana:</label>
-                <div className={styles.pillGrid}>
-                  {PET_COLLARS.map((col) => (
-                    <button
-                      key={col.id}
-                      type="button"
-                      className={`${styles.pillBtn} ${
-                        petCollar === col.id ? styles.pillBtnActive : ''
-                      }`}
-                      onClick={() =>
-                        onChangeCompanion({ ...companion, collar: col.id })
-                      }
-                    >
-                      {col.label}
-                    </button>
-                  ))}
+                <div className={styles.optionGroup}>
+                  <span className={styles.groupLabel}>
+                    Companion Superpower Badge:
+                  </span>
+                  <div className={styles.badgeGrid}>
+                    {PET_BADGES.map((b) => (
+                      <button
+                        key={b.id}
+                        type="button"
+                        aria-pressed={pet.badge === b.id}
+                        className={`${styles.badgeBtn} ${
+                          pet.badge === b.id ? styles.badgeBtnActive : ''
+                        }`}
+                        onClick={() => setPetKey('badge', b.id)}
+                      >
+                        <b.Svg size={20} />
+                        <span>{b.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              {/* Pet Superpower Badge */}
-              <div className={styles.optionGroup}>
-                <label className={styles.groupLabel}>
-                  Companion Superpower Badge:
-                </label>
-                <div className={styles.badgeGrid}>
-                  {PET_BADGES.map((b) => (
-                    <button
-                      key={b.id}
-                      type="button"
-                      className={`${styles.badgeBtn} ${
-                        petBadge === b.id ? styles.badgeBtnActive : ''
-                      }`}
-                      onClick={() =>
-                        onChangeCompanion({ ...companion, badge: b.id })
-                      }
-                      title={b.label}
-                    >
-                      <b.Svg size={20} />
-                      <span>{b.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+              </>
+            )}
+          </div>
 
           {onSave && (
             <button
               type="button"
               className={styles.applyCreatorBtn}
-              onClick={onSave}
-              aria-label="Save customized characters"
+              onClick={() => onSave({ avatar: hero, companion: pet })}
             >
               <CheckCircleIcon size={16} />
               <span>Apply Custom Characters to Story</span>
@@ -528,165 +1679,21 @@ export function CharacterCreator({
           )}
         </div>
 
-        {/* Right: Live Interactive Vector Character Card Preview */}
         <div className={styles.previewCol}>
           <div className={styles.characterCard}>
             <div className={styles.cardHeader}>
               <span className={styles.cardTag}>Live Character Proof</span>
               <span className={styles.cardRoleBadge}>
-                {activeTab === 'hero' ? 'Starring Hero' : 'Trusty Companion'}
+                {isHero ? 'Starring Hero' : 'Trusty Companion'}
               </span>
             </div>
 
             <div className={styles.avatarStageWrap}>
-              {activeTab === 'hero' ? (
-                <svg
-                  width="130"
-                  height="160"
-                  viewBox="0 0 130 160"
-                  className={styles.avatarSvg}
-                  aria-hidden="true"
-                >
-                  {/* Cape behind */}
-                  {currentAccessory === 'cape' && (
-                    <path
-                      d="M65 80 L35 150 L65 140 L95 150 Z"
-                      fill={currentOutfit}
-                      opacity="0.85"
-                    />
-                  )}
-                  {/* Outfit body */}
-                  <rect
-                    x="45"
-                    y="75"
-                    width="40"
-                    height="50"
-                    rx="10"
-                    fill={currentOutfit}
-                  />
-                  {/* Neck */}
-                  <rect
-                    x="58"
-                    y="65"
-                    width="14"
-                    height="12"
-                    fill={currentSkin}
-                  />
-                  {/* Head */}
-                  <circle cx="65" cy="48" r="24" fill={currentSkin} />
-                  {/* Hair Style */}
-                  {currentHairStyle === 'crop' && (
-                    <path
-                      d="M41 45 C41 26 89 26 89 45 C85 32 75 28 65 28 C55 28 45 32 41 45 Z"
-                      fill={currentHairColor}
-                    />
-                  )}
-                  {currentHairStyle === 'curls' && (
-                    <g fill={currentHairColor}>
-                      <circle cx="45" cy="35" r="9" />
-                      <circle cx="65" cy="28" r="10" />
-                      <circle cx="85" cy="35" r="9" />
-                      <circle cx="53" cy="29" r="8" />
-                      <circle cx="77" cy="29" r="8" />
-                    </g>
-                  )}
-                  {currentHairStyle === 'waves' && (
-                    <path
-                      d="M41 46 C41 24 89 24 89 46 L91 75 C85 70 82 50 82 46 C75 32 55 32 48 46 C48 50 45 70 39 75 Z"
-                      fill={currentHairColor}
-                    />
-                  )}
-                  {currentHairStyle === 'braids' && (
-                    <g fill={currentHairColor}>
-                      <path d="M41 45 C41 26 89 26 89 45 Z" />
-                      <rect x="38" y="44" width="7" height="35" rx="3.5" />
-                      <rect x="85" y="44" width="7" height="35" rx="3.5" />
-                    </g>
-                  )}
-                  {currentHairStyle === 'ponytail' && (
-                    <g fill={currentHairColor}>
-                      <path d="M41 45 C41 26 89 26 89 45 Z" />
-                      <ellipse
-                        cx="88"
-                        cy="30"
-                        rx="14"
-                        ry="7"
-                        transform="rotate(35 88 30)"
-                      />
-                    </g>
-                  )}
-                  {currentHairStyle === 'spiky' && (
-                    <polygon
-                      points="41,45 45,20 53,30 65,15 77,30 85,20 89,45"
-                      fill={currentHairColor}
-                    />
-                  )}
-                  {currentHairStyle === 'beanie' && (
-                    <path
-                      d="M39 44 C39 25 91 25 91 44 L91 48 L39 48 Z"
-                      fill="#0284c7"
-                    />
-                  )}
-                  {/* Eyes */}
-                  <circle cx="57" cy="46" r="2.8" fill="#1e293b" />
-                  <circle cx="73" cy="46" r="2.8" fill="#1e293b" />
-                  <circle cx="58" cy="45" r="1" fill="#ffffff" />
-                  <circle cx="74" cy="45" r="1" fill="#ffffff" />
-                  {/* Smile */}
-                  <path
-                    d="M59 55 Q 65 61 71 55"
-                    stroke="#1e293b"
-                    strokeWidth="2"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                  {/* Glasses Accessory */}
-                  {currentAccessory === 'glasses' && (
-                    <g
-                      stroke="#0f172a"
-                      strokeWidth="2"
-                      fill="rgba(255,255,255,0.4)"
-                    >
-                      <circle cx="57" cy="46" r="6" />
-                      <circle cx="73" cy="46" r="6" />
-                      <line x1="63" y1="46" x2="67" y2="46" />
-                    </g>
-                  )}
-                  {/* Star Shades Accessory */}
-                  {currentAccessory === 'star_shades' && (
-                    <g fill="#f59e0b">
-                      <polygon points="57,40 59,44 63,44 60,47 61,51 57,48 53,51 54,47 51,44 55,44" />
-                      <polygon points="73,40 75,44 79,44 76,47 77,51 73,48 69,51 70,47 67,44 71,44" />
-                      <line
-                        x1="63"
-                        y1="45"
-                        x2="67"
-                        y2="45"
-                        stroke="#f59e0b"
-                        strokeWidth="2"
-                      />
-                    </g>
-                  )}
-                  {/* Superhero mask */}
-                  {currentAccessory === 'superhero_mask' && (
-                    <path
-                      d="M48 42 Q 65 48 82 42 Q 86 52 75 52 Q 65 48 55 52 Q 44 52 48 42 Z"
-                      fill="#dc2626"
-                    />
-                  )}
-                  {/* Sun Freckles */}
-                  {currentAccessory === 'freckles' && (
-                    <g fill="#92400e">
-                      <circle cx="53" cy="51" r="0.8" />
-                      <circle cx="55" cy="52" r="0.8" />
-                      <circle cx="75" cy="51" r="0.8" />
-                      <circle cx="77" cy="52" r="0.8" />
-                    </g>
-                  )}
-                </svg>
+              {isHero ? (
+                <HeroPortrait avatar={hero} label={heroLabel} />
               ) : (
                 <div className={styles.petPreviewWrap}>
-                  <activePetObj.Svg size={80} />
+                  <CompanionPortrait companion={pet} label={companionLabel} />
                   <div className={styles.petBadgePreview}>
                     <activePetBadgeObj.Svg size={28} />
                   </div>
@@ -696,14 +1703,26 @@ export function CharacterCreator({
 
             <div className={styles.cardFooterMeta}>
               <strong className={styles.previewName}>
-                {activeTab === 'hero' ? heroName : petName}
+                {isHero ? heroName : pet.name}
               </strong>
               <span className={styles.previewDesc}>
-                {activeTab === 'hero'
-                  ? `Customized Hero • ${currentHairStyle}`
-                  : `${activePetObj.name} with ${activePetBadgeObj.label}`}
+                {isHero
+                  ? sheet.Outfit
+                  : `${activePetObj.archetype} with ${activePetBadgeObj.label}`}
               </span>
             </div>
+
+            <dl className={styles.proofSheet}>
+              {(isHero
+                ? ['Skin', 'Hair', 'Eyes', 'Expression', 'Accessories']
+                : ['Companion Coat', 'Companion Collar', 'Companion Pose']
+              ).map((key) => (
+                <div key={key} className={styles.proofRow}>
+                  <dt>{key.replace('Companion ', '')}</dt>
+                  <dd>{sheet[key]}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </div>

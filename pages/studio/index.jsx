@@ -42,12 +42,33 @@ export default function StudioPage() {
   const { setMascot, speak } = useMascot();
   const [activeMode, setActiveMode] = useState('storybook');
 
+  const openPanel = router.query.panel === 'character' ? 'character' : null;
+
   // Sync mode with query param ?mode=
   useEffect(() => {
     if (router.query.mode && MODES.some((m) => m.id === router.query.mode)) {
       setActiveMode(router.query.mode);
     }
   }, [router.query.mode]);
+
+  // A deep link means "take me to the workbench". Switching the mode while
+  // leaving the reader parked on the hero, 1,500px above the studio, reads as
+  // the link having done nothing at all.
+  const hasDeepLink = Boolean(router.query.mode || router.query.panel);
+
+  useEffect(() => {
+    if (!hasDeepLink || !router.isReady) return undefined;
+
+    // One frame, so the newly selected workstation has mounted before we
+    // measure where to scroll to.
+    const raf = requestAnimationFrame(() => {
+      document
+        .getElementById('studio-workstations')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [hasDeepLink, router.isReady]);
 
   // Set mascot companion according to mode
   useEffect(() => {
@@ -203,11 +224,37 @@ export default function StudioPage() {
               </button>
             ))}
           </div>
+
+          {/* The character editor is the deepest thing in the suite and the
+              easiest to miss: storybook mode, step 4, the Avatar tab. Give it
+              its own door. */}
+          <Link
+            href="/studio?mode=storybook&panel=character"
+            className={styles.characterCallout}
+            scroll={false}
+          >
+            <span className={styles.characterCalloutBadge}>
+              Character &amp; Companion Creator
+            </span>
+            <span className={styles.characterCalloutBody}>
+              <strong>Design the hero and their sidekick</strong>
+              <span>
+                Skin, hair, eyes, expression, outfit and three accessory slots —
+                plus a companion with its own coat, collar, pose and name. Opens
+                straight into the editor.
+              </span>
+            </span>
+            <span className={styles.characterCalloutCta} aria-hidden="true">
+              Open editor
+            </span>
+          </Link>
         </section>
 
         {/* Active Studio Workshop */}
         <section className={styles.workshopStage}>
-          {activeMode === 'storybook' && <StorybookStudio />}
+          {activeMode === 'storybook' && (
+            <StorybookStudio openPanel={openPanel} />
+          )}
           {activeMode === 'poster' && <PosterStudio />}
           {activeMode === 'apparel' && <ApparelStudio />}
         </section>

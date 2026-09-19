@@ -1,4 +1,39 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createDesignId } from '../Components/Studio/core/designDoc';
+
+/** Half-extent of a stamp's artwork at scale 1, matching the selection box
+ *  CanvasEngine draws at `-24,-24,48,48`. */
+const STAMP_HALF_EXTENT = 24;
+
+/**
+ * Is the point inside the stamp's own box, accounting for its rotation?
+ *
+ * The previous test was `Math.hypot(...) <= 28 * scale` — a circle, which
+ * ignored rotation entirely and matched no stamp's actual artwork. Wide stamps
+ * (the speech bubble, the rainbow) were grabbable well outside their art and
+ * dead at their own corners. Invert the stamp's transform and test the point
+ * against an axis-aligned box in its local space instead.
+ *
+ * `flipX` is deliberately not applied: the box is centred and symmetric, so a
+ * horizontal flip cannot change whether a point falls inside it.
+ */
+const hitTestStamp = (sticker, x, y) => {
+  const scale = sticker.scale || 1;
+  const dx = x - sticker.x;
+  const dy = y - sticker.y;
+
+  const radians = ((sticker.rotation || 0) * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+
+  const localX = (dx * cos + dy * sin) / scale;
+  const localY = (-dx * sin + dy * cos) / scale;
+
+  return (
+    Math.abs(localX) <= STAMP_HALF_EXTENT &&
+    Math.abs(localY) <= STAMP_HALF_EXTENT
+  );
+};
 
 /**
  * useCanvasGestures
@@ -20,6 +55,7 @@ export function useCanvasGestures({
   const dragTargetRef = useRef(null);
   const hasMovedRef = useRef(false);
   const currentStickersRef = useRef(stickers);
+  const grabOffsetRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     currentStickersRef.current = stickers;
@@ -51,19 +87,23 @@ export function useCanvasGestures({
       // Check if clicked an existing sticker (from top of stack down)
       const clickedSticker = [...currentStickersRef.current]
         .reverse()
-        .find((s) => {
-          const dist = Math.hypot(s.x - x, y - s.y);
-          return dist <= 28 * (s.scale || 1);
-        });
+        .find((s) => hitTestStamp(s, x, y));
 
       if (clickedSticker) {
         isDraggingRef.current = true;
         dragTargetRef.current = clickedSticker.id;
+        // Keep the grab point under the cursor. Without this, grabbing a stamp
+        // anywhere but dead centre teleports it so its centre snaps to the
+        // pointer on the first move.
+        grabOffsetRef.current = {
+          x: clickedSticker.x - x,
+          y: clickedSticker.y - y,
+        };
         setActiveStickerId(clickedSticker.id);
       } else if (selectedSticker) {
         // Stamp new sticker - commits immediately
         const newSticker = {
-          id: `stamp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          id: createDesignId('stamp'),
           type: selectedSticker,
           x,
           y,
@@ -94,16 +134,22 @@ export function useCanvasGestures({
         if (e.cancelable && e.type && e.type.startsWith('touch')) {
           e.preventDefault();
         }
+        const { x: offsetX, y: offsetY } = grabOffsetRef.current;
         const updated = currentStickersRef.current.map((s) =>
-          s.id === dragTargetRef.current ? { ...s, x, y } : s
+          s.id === dragTargetRef.current
+            ? { ...s, x: x + offsetX, y: y + offsetY }
+            : s
         );
         currentStickersRef.current = updated;
         // Live coordinate update without committing intermediate frames to undo history stack
         onUpdateStickers(updated, { commit: false });
       } else {
-        const hover = currentStickersRef.current.find(
-          (s) => Math.hypot(s.x - x, s.y - y) <= 24
-        );
+        // Same test as the click path. It previously used a fixed radius of 24
+        // that ignored scale, so the hover cursor disagreed with what a click
+        // would actually pick up.
+        const hover = [...currentStickersRef.current]
+          .reverse()
+          .find((s) => hitTestStamp(s, x, y));
         setHoveredStickerId(hover ? hover.id : null);
       }
     },
@@ -118,6 +164,7 @@ export function useCanvasGestures({
     isDraggingRef.current = false;
     dragTargetRef.current = null;
     hasMovedRef.current = false;
+    grabOffsetRef.current = { x: 0, y: 0 };
   }, [onUpdateStickers]);
 
   return {

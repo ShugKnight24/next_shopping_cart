@@ -1,10 +1,38 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { trackAddToCart } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { useMascot } from '../../context/MascotProvider';
 import { CheckCircleIcon, CloseIcon, SparklesIcon } from '../Icons';
 import { useToast } from '../UI/Toast';
 import { CanvasEngine } from './CanvasEngine';
+import { DesignBar } from './core/DesignBar';
+import {
+  createDesignDoc,
+  createDesignId,
+  designToCartItem,
+  summarizeDesign,
+} from './core/designDoc';
+import { computePrice, formatPrice, modifierFor } from './core/pricing';
+import {
+  OptionCards,
+  OptionPills,
+  PricePanel,
+  QuantityStepper,
+  StudioSlider,
+  SwatchRow,
+} from './core/StudioControls';
+import {
+  useDesignHistory,
+  useUndoRedoShortcuts,
+} from './core/useDesignHistory';
+import { useDesignPersistence } from './core/useDesignPersistence';
 import styles from './PosterStudio.module.css';
 import { StickerBar } from './StickerBar';
 import { EyePreviewIcon } from './StudioSVGs';
@@ -13,26 +41,29 @@ const SIZES = [
   {
     id: '12x18',
     name: '12" × 18" Gallery Print',
-    basePrice: 29.99,
+    sub: 'Desk, shelf and gallery-wall scale',
+    price: 29.99,
     badge: 'Compact',
   },
   {
     id: '18x24',
     name: '18" × 24" Classic Exhibition',
-    basePrice: 44.99,
+    sub: 'Above a bed, sofa or console',
+    price: 44.99,
     badge: 'Most Popular',
   },
   {
     id: '24x36',
     name: '24" × 36" Statement Archival',
-    basePrice: 59.99,
+    sub: 'Single-piece focal wall',
+    price: 59.99,
     badge: 'Gallery Grand',
   },
 ];
 
 const ORIENTATIONS = [
-  { id: 'portrait', label: 'Vertical Portrait', ratio: '3:4' },
-  { id: 'landscape', label: 'Horizontal Landscape', ratio: '4:3' },
+  { id: 'portrait', name: 'Vertical Portrait', sub: '3:4' },
+  { id: 'landscape', name: 'Horizontal Landscape', sub: '4:3' },
 ];
 
 const PALETTES = [
@@ -44,26 +75,67 @@ const PALETTES = [
   { id: 'sunset', name: 'Pacific Sunset', preview: '#ea580c' },
 ];
 
+const INKS = [
+  { value: '#ffffff', name: 'Gallery White' },
+  { value: '#fdf6e3', name: 'Warm Ivory' },
+  { value: '#fcd34d', name: 'Champagne Gold' },
+  { value: '#bae6fd', name: 'Sky Mist' },
+  { value: '#fbcfe8', name: 'Soft Blush' },
+  { value: '#0f172a', name: 'Deep Ink' },
+];
+
 const FRAMES = [
   {
     id: 'oak',
     name: 'Solid Natural Oak',
-    priceDelta: 25,
-    badge: 'Best Seller',
+    sub: 'Best seller',
+    priceModifier: 25,
   },
-  { id: 'black', name: 'Matte Gallery Black', priceDelta: 20, badge: 'Modern' },
-  { id: 'white', name: 'Gallery Crisp White', priceDelta: 20, badge: 'Clean' },
+  {
+    id: 'black',
+    name: 'Matte Gallery Black',
+    sub: 'Modern',
+    priceModifier: 20,
+  },
+  { id: 'white', name: 'Gallery Crisp White', sub: 'Clean', priceModifier: 20 },
   {
     id: 'gold',
     name: 'Vintage Florentine Gold',
-    priceDelta: 30,
-    badge: 'Luxury',
+    sub: 'Luxury',
+    priceModifier: 30,
   },
   {
     id: 'none',
     name: 'Unframed Archival Print',
-    priceDelta: 0,
-    badge: 'Print Only',
+    sub: 'Print only',
+    priceModifier: 0,
+  },
+];
+
+const MATS = [
+  {
+    id: 'none',
+    name: 'No Mat Board',
+    sub: 'Full-bleed print',
+    priceModifier: 0,
+  },
+  {
+    id: 'white',
+    name: 'White Conservation Mat',
+    sub: '2 inch bright border',
+    priceModifier: 18,
+  },
+  {
+    id: 'offwhite',
+    name: 'Off-White Museum Mat',
+    sub: '2 inch warm border',
+    priceModifier: 18,
+  },
+  {
+    id: 'black',
+    name: 'Black Core Mat',
+    sub: 'Bevel-cut contrast edge',
+    priceModifier: 22,
   },
 ];
 
@@ -71,20 +143,20 @@ const PAPERS = [
   {
     id: 'cotton',
     name: '250gsm Archival Cotton Rag',
-    priceDelta: 0,
-    badge: 'Museum',
+    sub: 'Museum',
+    priceModifier: 0,
   },
   {
     id: 'canvas',
     name: 'Textured Stretched Canvas',
-    priceDelta: 15,
-    badge: 'Canvas',
+    sub: 'Canvas',
+    priceModifier: 15,
   },
   {
     id: 'luster',
     name: 'Ultra Semi-Gloss Luster',
-    priceDelta: 10,
-    badge: 'Vibrant',
+    sub: 'Vibrant',
+    priceModifier: 10,
   },
 ];
 
@@ -95,160 +167,335 @@ const FONTS = [
   { id: 'cursive', name: 'Artisan Script' },
 ];
 
+/** A preset is a shortcut through several controls, not a separate render path. */
+const LAYOUTS = [
+  {
+    id: 'centred',
+    name: 'Centred Classic',
+    sub: 'Stacked and symmetrical',
+    options: {
+      fontFamily: 'serif',
+      headlineScale: 1,
+      letterSpacing: 4,
+      textColor: '#ffffff',
+    },
+  },
+  {
+    id: 'editorial',
+    name: 'Editorial Left',
+    sub: 'Masthead and rule',
+    options: {
+      fontFamily: 'sans',
+      headlineScale: 0.9,
+      letterSpacing: 2,
+      textColor: '#fdf6e3',
+    },
+  },
+  {
+    id: 'block',
+    name: 'Poster Block',
+    sub: 'Oversized display type',
+    options: {
+      fontFamily: 'display',
+      headlineScale: 1.35,
+      letterSpacing: 0,
+      textColor: '#ffffff',
+    },
+  },
+  {
+    id: 'minimal',
+    name: 'Minimal Corner',
+    sub: 'Small type, wide air',
+    options: {
+      fontFamily: 'sans',
+      headlineScale: 0.75,
+      letterSpacing: 10,
+      textColor: '#0f172a',
+      artStyle: 'minimal',
+      mat: 'white',
+    },
+  },
+];
+
+const PER_STAMP_PRICE = 3.5;
+const FREE_STAMPS = 3;
+
+/** Fallback-thumbnail fills. Data, not theme — the canvas snapshot is preferred. */
+const FRAME_FILLS = {
+  oak: '#d4a373',
+  black: '#1e293b',
+  white: '#f8fafc',
+  gold: '#d97706',
+};
+const MAT_FILLS = {
+  white: '#ffffff',
+  offwhite: '#f5efe6',
+  black: '#111827',
+};
+
+const DEFAULTS = {
+  size: '18x24',
+  orientation: 'portrait',
+  layout: 'centred',
+  headline: 'REACH FOR THE STARS',
+  subquote: 'Dream bigger, explore further, and shine bright.',
+  caption: '',
+  artStyle: 'cosmic',
+  frame: 'oak',
+  mat: 'none',
+  paper: 'cotton',
+  fontFamily: 'sans',
+  textColor: '#ffffff',
+  headlineScale: 1,
+  letterSpacing: 4,
+  bubbleText: 'Adventure time!',
+  quantity: 1,
+  showBleed: false,
+};
+
+const nameOf = (table, id, fallback = '—') =>
+  table.find((entry) => entry.id === id)?.name ?? fallback;
+
+/** What the shopper saw, in the words they saw it — cart line and order sheet. */
+const LABELS = {
+  headline: 'Headline',
+  subquote: 'Sub-quote',
+  caption: 'Caption',
+  size: { label: 'Size', format: (v) => nameOf(SIZES, v) },
+  orientation: { label: 'Orientation', format: (v) => nameOf(ORIENTATIONS, v) },
+  layout: { label: 'Layout', format: (v) => nameOf(LAYOUTS, v) },
+  artStyle: { label: 'Palette', format: (v) => nameOf(PALETTES, v) },
+  frame: { label: 'Frame', format: (v) => nameOf(FRAMES, v) },
+  mat: { label: 'Mount', format: (v) => nameOf(MATS, v) },
+  paper: { label: 'Paper', format: (v) => nameOf(PAPERS, v) },
+  fontFamily: { label: 'Typography', format: (v) => nameOf(FONTS, v) },
+  textColor: {
+    label: 'Headline ink',
+    format: (v) => INKS.find((i) => i.value === v)?.name ?? v,
+  },
+  headlineScale: {
+    label: 'Headline scale',
+    format: (v) => `${Math.round(v * 100)}%`,
+  },
+  letterSpacing: { label: 'Letter spacing', format: (v) => `${v}px` },
+};
+
 export function PosterStudio() {
   const { dispatch, setIsCartOpen } = useContext(CartContext);
   const { speak } = useMascot();
   const { showToast } = useToast();
 
-  const [size, setSize] = useState('18x24');
-  const [orientation, setOrientation] = useState('portrait');
-  const [headline, setHeadline] = useState('REACH FOR THE STARS');
-  const [subquote, setSubquote] = useState(
-    'Dream bigger, explore further, and shine bright.'
-  );
-  const [artStyle, setArtStyle] = useState('cosmic');
-  const [frame, setFrame] = useState('oak');
-  const [paper, setPaper] = useState('cotton');
-  const [fontFamily, setFontFamily] = useState('sans');
-  const [showBleed, setShowBleed] = useState(false);
-  const [isPreviewProofOpen, setIsPreviewProofOpen] = useState(false);
-
-  // Sticker & Undo/Redo Layering State
+  const [options, setOptions] = useState(DEFAULTS);
   const [selectedSticker, setSelectedSticker] = useState(null);
-  const [stickers, setStickers] = useState([]);
-  const [history, setHistory] = useState([[]]);
-  const [historyIndex, setHistoryIndex] = useState(0);
+  const [isPreviewProofOpen, setIsPreviewProofOpen] = useState(false);
+  const [proofImage, setProofImage] = useState(null);
+  const [announcement, setAnnouncement] = useState('');
 
-  const activeSizeObj = SIZES.find((s) => s.id === size) || SIZES[1];
-  const activeFrameObj = FRAMES.find((f) => f.id === frame) || FRAMES[0];
-  const activePaperObj = PAPERS.find((p) => p.id === paper) || PAPERS[0];
-  const totalPrice =
-    activeSizeObj.basePrice +
-    activeFrameObj.priceDelta +
-    activePaperObj.priceDelta;
+  const canvasRef = useRef(null);
+  const announceTimer = useRef(null);
 
-  // Canvas dynamic dimensions based on orientation
+  const history = useDesignHistory([], { limit: 60 });
+  useUndoRedoShortcuts({ undo: history.undo, redo: history.redo });
+
+  const stickers = history.present;
+
+  const {
+    headline,
+    subquote,
+    caption,
+    artStyle,
+    frame,
+    mat,
+    paper,
+    fontFamily,
+    textColor,
+    headlineScale,
+    letterSpacing,
+    orientation,
+    layout,
+    bubbleText,
+    quantity,
+    showBleed,
+    size,
+  } = options;
+
+  const setOption = useCallback(
+    (key, value) => setOptions((prev) => ({ ...prev, [key]: value })),
+    []
+  );
+
+  const applyLayout = useCallback(
+    (id) =>
+      setOptions((prev) => ({
+        ...prev,
+        ...(LAYOUTS.find((l) => l.id === id)?.options ?? {}),
+        layout: id,
+      })),
+    []
+  );
+
+  const announce = useCallback((message) => {
+    setAnnouncement(message);
+    clearTimeout(announceTimer.current);
+    announceTimer.current = setTimeout(() => setAnnouncement(''), 4000);
+  }, []);
+
+  useEffect(() => () => clearTimeout(announceTimer.current), []);
+
+  /* ------------------------------------------------------ design document -- */
+
+  const doc = useMemo(
+    () => createDesignDoc({ mode: 'poster', options, layers: stickers }),
+    [options, stickers]
+  );
+
+  const persistence = useDesignPersistence({ mode: 'poster', doc });
+  const { sharedDoc, acknowledgeShared } = persistence;
+
+  const { reset: resetHistory } = history;
+
+  const applyDoc = useCallback(
+    (incoming) => {
+      setOptions({ ...DEFAULTS, ...(incoming?.options ?? {}) });
+      resetHistory(Array.isArray(incoming?.layers) ? incoming.layers : []);
+    },
+    [resetHistory]
+  );
+
+  const resetToDefaults = useCallback(() => {
+    setOptions(DEFAULTS);
+    resetHistory([]);
+    setSelectedSticker(null);
+  }, [resetHistory]);
+
+  // A `?d=…` link has to open the design it encodes, not the default poster.
+  useEffect(() => {
+    if (!sharedDoc) return;
+    applyDoc(sharedDoc);
+    acknowledgeShared();
+  }, [sharedDoc, applyDoc, acknowledgeShared]);
+
+  /* ---------------------------------------------------------------- price -- */
+
+  const activeSize = SIZES.find((s) => s.id === size) ?? SIZES[1];
+  const activeFrame = FRAMES.find((f) => f.id === frame) ?? FRAMES[0];
+  const activeMat = MATS.find((m) => m.id === mat) ?? MATS[0];
+  const activePaper = PAPERS.find((p) => p.id === paper) ?? PAPERS[0];
+  const activePalette = PALETTES.find((p) => p.id === artStyle) ?? PALETTES[0];
+
+  const price = useMemo(
+    () =>
+      computePrice({
+        base: activeSize.price,
+        baseLabel: activeSize.name,
+        modifiers: [
+          modifierFor(activeFrame, 'Frame'),
+          modifierFor(activeMat, 'Mount'),
+          modifierFor(activePaper, 'Paper'),
+        ].filter(Boolean),
+        layerCount: stickers.length,
+        perLayer: PER_STAMP_PRICE,
+        freeLayers: FREE_STAMPS,
+        quantity,
+      }),
+    [activeSize, activeFrame, activeMat, activePaper, stickers.length, quantity]
+  );
+
+  /* --------------------------------------------------------------- canvas -- */
+
   const canvasWidth = orientation === 'landscape' ? 560 : 440;
   const canvasHeight = orientation === 'landscape' ? 420 : 540;
 
-  // History tracking
-  const handleUpdateStickers = useCallback(
-    (newStickers, { commit = true } = {}) => {
-      setStickers(newStickers);
-      if (commit) {
-        setHistory((hPrev) => {
-          const sliced = hPrev.slice(0, historyIndex + 1);
-          return [...sliced, newStickers];
-        });
-        setHistoryIndex((idx) => idx + 1);
-      }
-    },
-    [historyIndex]
+  const canvasConfig = useMemo(
+    () => ({
+      headline,
+      subquote,
+      caption,
+      artStyle,
+      frame,
+      mat,
+      paper,
+      orientation,
+      layout,
+      fontFamily,
+      textColor,
+      headlineScale,
+      letterSpacing,
+      showBleed,
+    }),
+    [
+      headline,
+      subquote,
+      caption,
+      artStyle,
+      frame,
+      mat,
+      paper,
+      orientation,
+      layout,
+      fontFamily,
+      textColor,
+      headlineScale,
+      letterSpacing,
+      showBleed,
+    ]
   );
 
-  const handleUndo = useCallback(() => {
-    if (historyIndex > 0) {
-      const prev = history[historyIndex - 1];
-      setHistoryIndex((idx) => idx - 1);
-      setStickers(prev);
+  /** The real artwork, for the cart line and saved-design thumbnails. */
+  const snapshot = useCallback(() => {
+    try {
+      return canvasRef.current?.toDataURL('image/png') ?? null;
+    } catch {
+      // Canvas is unavailable (jsdom) or tainted — callers fall back.
+      return null;
     }
-  }, [historyIndex, history]);
-
-  const handleRedo = useCallback(() => {
-    if (historyIndex < history.length - 1) {
-      const next = history[historyIndex + 1];
-      setHistoryIndex((idx) => idx + 1);
-      setStickers(next);
-    }
-  }, [historyIndex, history]);
-
-  // Keyboard shortcut listener for Undo / Redo
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        if (e.shiftKey) {
-          handleRedo();
-        } else {
-          handleUndo();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo]);
+  }, []);
 
   const handleDropStickerToCenter = (type) => {
-    const dropX = canvasWidth / 2;
-    const dropY = canvasHeight / 2;
-    const newSticker = {
-      id: `stamp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      type,
-      x: dropX,
-      y: dropY,
-      scale: 1.1,
-      rotation: 0,
-      flipX: false,
-    };
-    handleUpdateStickers([...stickers, newSticker]);
+    history.update([
+      ...stickers,
+      {
+        id: createDesignId('stamp'),
+        type,
+        x: canvasWidth / 2,
+        y: canvasHeight / 2,
+        scale: 1.1,
+        rotation: 0,
+        flipX: false,
+        text: type === 'bubble' ? bubbleText : undefined,
+      },
+    ]);
+    announce('Stamp added to the centre of the poster.');
+  };
+
+  const openProof = () => {
+    setProofImage(snapshot());
+    setIsPreviewProofOpen(true);
   };
 
   const handleAddToCart = () => {
-    const customItemId = `CUSTOM-POSTER-${Date.now()}`;
-    const frameColor =
-      frame === 'oak'
-        ? '#d4a373'
-        : frame === 'black'
-          ? '#1e293b'
-          : frame === 'gold'
-            ? '#d97706'
-            : '#f8fafc';
-    const customPosterSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
-      <rect width="160" height="160" fill="#f8fafc" rx="8"/>
-      <rect x="14" y="14" width="132" height="132" fill="${frameColor}" rx="4"/>
-      <rect x="22" y="22" width="116" height="116" fill="#ffffff"/>
-      <rect x="30" y="30" width="100" height="100" fill="#0f172a"/>
-      <circle cx="80" cy="70" r="22" fill="rgba(255,255,255,0.2)"/>
-      <text x="80" y="112" font-family="sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#ffffff">${(headline || 'POSTER').slice(0, 16).toUpperCase()}</text>
-    </svg>`;
-    const thumbnailDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(customPosterSvg)}`;
-
-    const customPosterItem = {
-      itemid: customItemId,
+    const customPosterItem = designToCartItem({
+      doc,
+      itemid: createDesignId('CUSTOM-POSTER'),
       productName: `Custom Poster: "${headline}"`,
       manufacturer: 'Cart Gallery Press',
-      price: totalPrice,
-      image: thumbnailDataUrl,
-      isCustom: true,
-      customMode: 'poster',
-      quantity: 1,
-      available: 99,
-      customAttributes: {
-        Headline: headline,
-        Size: activeSizeObj.name,
-        Orientation:
-          orientation === 'landscape'
-            ? 'Landscape (Horizontal)'
-            : 'Portrait (Vertical)',
-        Palette: artStyle.toUpperCase(),
-        Frame: activeFrameObj.name,
-        Paper: activePaperObj.name,
-        Font: fontFamily.toUpperCase(),
-        Stamps: `${stickers.length} Custom Emblems`,
-      },
-    };
+      price: price.unit,
+      image: snapshot() ?? fallbackThumbnail(options, activePalette),
+      quantity,
+      customAttributes: summarizeDesign(doc, LABELS),
+    });
 
     dispatch({
       type: 'ADD_CUSTOM_ITEM',
       payload: { customItem: customPosterItem },
     });
 
-    trackAddToCart(customPosterItem, 1);
+    trackAddToCart(customPosterItem, quantity);
     showToast(`Custom poster "${headline}" added to your bag!`, 'success');
+    announce(`Added to bag — ${formatPrice(price.subtotal)}.`);
     setIsCartOpen(true);
     speak(
-      `Splendid taste! Your ${activeSizeObj.name} framed print "${headline}" will look sensational on the wall!`,
+      `Splendid taste! Your ${activeSize.name} print "${headline}" will look sensational on the wall!`,
       'celebrating'
     );
   };
@@ -267,7 +514,7 @@ export function PosterStudio() {
               <button
                 type="button"
                 className={styles.proofPreviewBtn}
-                onClick={() => setIsPreviewProofOpen(true)}
+                onClick={openProof}
                 title="View Gallery Proof"
                 aria-label="View Gallery Proof"
               >
@@ -277,7 +524,8 @@ export function PosterStudio() {
               <button
                 type="button"
                 className={`${styles.bleedBtn} ${showBleed ? styles.bleedBtnActive : ''}`}
-                onClick={() => setShowBleed((b) => !b)}
+                onClick={() => setOption('showBleed', !showBleed)}
+                aria-pressed={showBleed}
                 title="Toggle Print Bleed Guides"
               >
                 <span>Bleed Guides</span>
@@ -285,37 +533,53 @@ export function PosterStudio() {
             </div>
           </div>
 
+          <DesignBar
+            persistence={persistence}
+            modeLabel="poster"
+            onRestore={applyDoc}
+            onLoad={applyDoc}
+            onReset={resetToDefaults}
+            thumbnailFor={snapshot}
+            summaryFor={() => summarizeDesign(doc, LABELS)}
+          />
+
           <div className={styles.canvasContainer}>
             <CanvasEngine
+              canvasRef={canvasRef}
               width={canvasWidth}
               height={canvasHeight}
               mode="poster"
-              config={{
-                headline,
-                subquote,
-                artStyle,
-                frame,
-                fontFamily,
-                showBleed,
-              }}
+              config={canvasConfig}
+              // The cart thumbnail is snapshotted from this canvas, so the
+              // diagonal PROOF ribbon must not be baked into it.
+              exportOptions={{ watermark: false }}
               selectedSticker={selectedSticker}
               stickers={stickers}
-              onUpdateStickers={handleUpdateStickers}
+              onUpdateStickers={history.update}
             />
           </div>
+
+          <p className={styles.liveStatus} role="status">
+            {announcement}
+          </p>
 
           {/* Sticker Tray with Undo / Redo */}
           <div className={styles.stickerBarWrapper}>
             <StickerBar
               selectedSticker={selectedSticker}
               onSelectSticker={setSelectedSticker}
-              onClearStickers={() => handleUpdateStickers([])}
+              onClearStickers={() => {
+                history.update([]);
+                announce('All stamps cleared.');
+              }}
               stickersCount={stickers.length}
               onAddStickerToCenter={handleDropStickerToCenter}
-              onUndo={handleUndo}
-              onRedo={handleRedo}
-              canUndo={historyIndex > 0}
-              canRedo={historyIndex < history.length - 1}
+              bubbleText={bubbleText}
+              onChangeBubbleText={(value) => setOption('bubbleText', value)}
+              onUndo={history.undo}
+              onRedo={history.redo}
+              canUndo={history.canUndo}
+              canRedo={history.canRedo}
             />
           </div>
         </div>
@@ -327,50 +591,29 @@ export function PosterStudio() {
             <p>Giclée pigment print on archival museum-grade fine art stock.</p>
           </div>
 
-          {/* Size Selector */}
-          <div className={styles.fieldGroup}>
-            <label>Print Dimensions & Format:</label>
-            <div className={styles.sizeGrid}>
-              {SIZES.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`${styles.sizeCard} ${size === s.id ? styles.sizeCardActive : ''}`}
-                  onClick={() => setSize(s.id)}
-                >
-                  <div className={styles.sizeTop}>
-                    <span className={styles.sizeName}>{s.name}</span>
-                    <span className={styles.sizeBadge}>{s.badge}</span>
-                  </div>
-                  <span className={styles.sizePrice}>
-                    ${s.basePrice.toFixed(2)}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <OptionCards
+            label="Print Dimensions & Format"
+            options={SIZES}
+            value={size}
+            onChange={(value) => setOption('size', value)}
+            columns={3}
+          />
 
-          {/* Orientation Selector */}
-          <div className={styles.fieldGroup}>
-            <label>Display Orientation:</label>
-            <div className={styles.orientationList}>
-              {ORIENTATIONS.map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  className={`${styles.orientationBtn} ${
-                    orientation === o.id ? styles.orientationBtnActive : ''
-                  }`}
-                  onClick={() => setOrientation(o.id)}
-                >
-                  <span>{o.label}</span>
-                  <span className={styles.ratioPill}>{o.ratio}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <OptionPills
+            label="Display Orientation"
+            options={ORIENTATIONS}
+            value={orientation}
+            onChange={(value) => setOption('orientation', value)}
+          />
 
-          {/* Headline & Subquote */}
+          <OptionPills
+            label="Layout Preset"
+            hint="Sets typography and ink in one move"
+            options={LAYOUTS}
+            value={layout}
+            onChange={applyLayout}
+          />
+
           <div className={styles.fieldGroup}>
             <label htmlFor="posterHeadline">Poster Headline:</label>
             <input
@@ -378,7 +621,7 @@ export function PosterStudio() {
               type="text"
               value={headline}
               maxLength={36}
-              onChange={(e) => setHeadline(e.target.value)}
+              onChange={(e) => setOption('headline', e.target.value)}
               placeholder="e.g. REACH FOR THE STARS"
               className={styles.textInput}
             />
@@ -391,105 +634,125 @@ export function PosterStudio() {
               type="text"
               value={subquote}
               maxLength={80}
-              onChange={(e) => setSubquote(e.target.value)}
+              onChange={(e) => setOption('subquote', e.target.value)}
               placeholder="e.g. Dream bigger, explore further..."
               className={styles.textInput}
             />
           </div>
 
-          {/* Typography Style */}
           <div className={styles.fieldGroup}>
-            <label>Typography Style:</label>
-            <div className={styles.fontList}>
-              {FONTS.map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  className={`${styles.fontBtn} ${fontFamily === f.id ? styles.fontBtnActive : ''}`}
-                  onClick={() => setFontFamily(f.id)}
-                >
-                  {f.name}
-                </button>
-              ))}
+            <label htmlFor="posterCaption">Caption or Credit Line:</label>
+            <input
+              id="posterCaption"
+              type="text"
+              value={caption}
+              maxLength={48}
+              onChange={(e) => setOption('caption', e.target.value)}
+              placeholder="e.g. For Maya — Spring 2026"
+              className={styles.textInput}
+            />
+            <p className={styles.fieldHint}>
+              Printed small beneath the sub-quote. Leave blank to omit it.
+            </p>
+          </div>
+
+          <OptionPills
+            label="Typography Style"
+            options={FONTS}
+            value={fontFamily}
+            onChange={(value) => setOption('fontFamily', value)}
+          />
+
+          <StudioSlider
+            label="Headline scale"
+            value={headlineScale}
+            onChange={(value) => setOption('headlineScale', value)}
+            min={0.6}
+            max={1.6}
+            step={0.05}
+            format={(v) => `${Math.round(v * 100)}%`}
+          />
+
+          <StudioSlider
+            label="Letter spacing"
+            value={letterSpacing}
+            onChange={(value) => setOption('letterSpacing', value)}
+            min={0}
+            max={14}
+            step={1}
+            format={(v) => `${v}px`}
+          />
+
+          <SwatchRow
+            label="Color Palette"
+            hint={activePalette.name}
+            options={PALETTES.map((p) => ({ value: p.preview, name: p.name }))}
+            value={activePalette.preview}
+            onChange={(preview) =>
+              setOption(
+                'artStyle',
+                PALETTES.find((p) => p.preview === preview)?.id ?? 'cosmic'
+              )
+            }
+            columns={6}
+          />
+
+          <SwatchRow
+            label="Headline Ink"
+            hint={INKS.find((i) => i.value === textColor)?.name ?? 'Custom'}
+            options={INKS}
+            value={textColor}
+            onChange={(value) => setOption('textColor', value)}
+            columns={6}
+          />
+
+          <div className={styles.fieldGroup}>
+            <label htmlFor="posterInk">Custom Ink Color:</label>
+            <div className={styles.inkRow}>
+              <input
+                id="posterInk"
+                type="color"
+                className={styles.inkInput}
+                value={textColor}
+                onChange={(e) => setOption('textColor', e.target.value)}
+              />
+              <code className={styles.inkValue}>{textColor.toUpperCase()}</code>
             </div>
           </div>
 
-          {/* Color Palette */}
-          <div className={styles.fieldGroup}>
-            <label>Color Palette:</label>
-            <div className={styles.paletteList}>
-              {PALETTES.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  className={`${styles.paletteBtn} ${
-                    artStyle === p.id ? styles.paletteBtnActive : ''
-                  }`}
-                  onClick={() => setArtStyle(p.id)}
-                >
-                  <span
-                    className={styles.paletteColorSwatch}
-                    style={{ background: p.preview }}
-                  />
-                  <span>{p.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <OptionPills
+            label="Museum Framing Option"
+            options={FRAMES}
+            value={frame}
+            onChange={(value) => setOption('frame', value)}
+          />
 
-          {/* Museum Framing Option */}
-          <div className={styles.fieldGroup}>
-            <label>Museum Framing Option:</label>
-            <div className={styles.frameList}>
-              {FRAMES.map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  className={`${styles.frameCard} ${
-                    frame === f.id ? styles.frameCardActive : ''
-                  }`}
-                  onClick={() => setFrame(f.id)}
-                >
-                  <div className={styles.frameTop}>
-                    <span className={styles.frameName}>{f.name}</span>
-                    <span className={styles.frameBadge}>{f.badge}</span>
-                  </div>
-                  <span className={styles.framePrice}>
-                    {f.priceDelta === 0
-                      ? 'Included'
-                      : `+ $${f.priceDelta.toFixed(2)}`}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <OptionPills
+            label="Mat & Mount"
+            hint="Conservation board around the print"
+            options={MATS}
+            value={mat}
+            onChange={(value) => setOption('mat', value)}
+          />
 
-          {/* Paper Finish Option */}
-          <div className={styles.fieldGroup}>
-            <label>Fine Art Paper Stock:</label>
-            <div className={styles.paperList}>
-              {PAPERS.map((pap) => (
-                <button
-                  key={pap.id}
-                  type="button"
-                  className={`${styles.paperCard} ${
-                    paper === pap.id ? styles.paperCardActive : ''
-                  }`}
-                  onClick={() => setPaper(pap.id)}
-                >
-                  <div className={styles.frameTop}>
-                    <span className={styles.frameName}>{pap.name}</span>
-                    <span className={styles.frameBadge}>{pap.badge}</span>
-                  </div>
-                  <span className={styles.framePrice}>
-                    {pap.priceDelta === 0
-                      ? 'Included'
-                      : `+ $${pap.priceDelta.toFixed(2)}`}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <OptionPills
+            label="Fine Art Paper Stock"
+            options={PAPERS}
+            value={paper}
+            onChange={(value) => setOption('paper', value)}
+          />
+
+          <QuantityStepper
+            value={quantity}
+            onChange={(value) => setOption('quantity', value)}
+          />
+
+          <PricePanel
+            price={price}
+            note={`First ${FREE_STAMPS} stamps are included; each further stamp is ${formatPrice(
+              PER_STAMP_PRICE
+            )}.`}
+          />
 
           <div className={styles.guaranteeBox}>
             <CheckCircleIcon size={18} />
@@ -502,9 +765,11 @@ export function PosterStudio() {
             type="button"
             className={styles.addToCartBtn}
             onClick={handleAddToCart}
-            aria-label="Add Framed Poster to Bag"
+            aria-label={`Add Framed Poster to Bag — ${formatPrice(price.subtotal)}`}
           >
-            <span>Add Custom Framed Poster • ${totalPrice.toFixed(2)}</span>
+            <span>
+              Add Custom Framed Poster • {formatPrice(price.subtotal)}
+            </span>
           </button>
         </div>
       </div>
@@ -536,7 +801,7 @@ export function PosterStudio() {
               <div className={styles.proofSpecsRow}>
                 <div className={styles.proofSpecItem}>
                   <span>Size:</span>
-                  <strong>{activeSizeObj.name}</strong>
+                  <strong>{activeSize.name}</strong>
                 </div>
                 <div className={styles.proofSpecItem}>
                   <span>Orientation:</span>
@@ -544,30 +809,41 @@ export function PosterStudio() {
                 </div>
                 <div className={styles.proofSpecItem}>
                   <span>Frame:</span>
-                  <strong>{activeFrameObj.name}</strong>
+                  <strong>{activeFrame.name}</strong>
+                </div>
+                <div className={styles.proofSpecItem}>
+                  <span>Mount:</span>
+                  <strong>{activeMat.name}</strong>
                 </div>
                 <div className={styles.proofSpecItem}>
                   <span>Paper:</span>
-                  <strong>{activePaperObj.name}</strong>
+                  <strong>{activePaper.name}</strong>
                 </div>
               </div>
 
+              {/* A proof is a still of the artwork. The previous build mounted a
+                  second live engine here, which animated and ate gestures it had
+                  nowhere to send. */}
               <div className={styles.proofCanvasWrap}>
-                <CanvasEngine
-                  width={orientation === 'landscape' ? 480 : 360}
-                  height={orientation === 'landscape' ? 360 : 450}
-                  mode="poster"
-                  config={{
-                    headline,
-                    subquote,
-                    artStyle,
-                    frame,
-                    fontFamily,
-                    showBleed: false,
-                  }}
-                  selectedSticker={null}
-                  stickers={stickers}
-                />
+                {proofImage ? (
+                  <img
+                    src={proofImage}
+                    alt={`Gallery proof of the poster "${headline}"`}
+                    className={styles.proofImage}
+                  />
+                ) : (
+                  <div className={styles.proofStill} aria-hidden="true">
+                    <CanvasEngine
+                      width={orientation === 'landscape' ? 480 : 360}
+                      height={orientation === 'landscape' ? 360 : 450}
+                      mode="poster"
+                      config={{ ...canvasConfig, showBleed: false }}
+                      selectedSticker={null}
+                      stickers={stickers}
+                      isAnimated={false}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className={styles.proofModalFooter}>
@@ -590,3 +866,41 @@ export function PosterStudio() {
     </div>
   );
 }
+
+/**
+ * Last-resort cart thumbnail when the canvas cannot be snapshotted. It honours
+ * the chosen palette, frame (including unframed) and mat rather than drawing a
+ * fixed navy panel in a white frame the shopper never picked.
+ */
+function fallbackThumbnail(opts, palette) {
+  const frameFill = FRAME_FILLS[opts.frame];
+  const matFill = MAT_FILLS[opts.mat];
+  const inset = frameFill ? 14 : 0;
+  const artInset = inset + (matFill ? 16 : 6);
+  const artSize = 160 - artInset * 2;
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+      <rect width="160" height="160" fill="#f1f5f9" rx="8"/>
+      ${frameFill ? `<rect x="${inset}" y="${inset}" width="${160 - inset * 2}" height="${160 - inset * 2}" fill="${frameFill}" rx="4"/>` : ''}
+      ${matFill ? `<rect x="${inset + 6}" y="${inset + 6}" width="${160 - (inset + 6) * 2}" height="${160 - (inset + 6) * 2}" fill="${matFill}"/>` : ''}
+      <rect x="${artInset}" y="${artInset}" width="${artSize}" height="${artSize}" fill="${palette.preview}"/>
+      <text x="80" y="${artInset + artSize - 14}" font-family="sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="${opts.textColor}">${escapeXml(
+        (opts.headline || 'POSTER').slice(0, 16).toUpperCase()
+      )}</text>
+    </svg>`;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+const escapeXml = (value) =>
+  value.replace(
+    /[<>&"']/g,
+    (char) =>
+      ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&apos;',
+      })[char]
+  );

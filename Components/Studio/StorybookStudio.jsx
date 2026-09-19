@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { trackAddToCart } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import { useMascot } from '../../context/MascotProvider';
@@ -18,6 +19,15 @@ import {
 import { useToast } from '../UI/Toast';
 import { CanvasEngine } from './CanvasEngine';
 import { CharacterCreator } from './CharacterCreator';
+import {
+  DEFAULT_AVATAR,
+  DEFAULT_COMPANION,
+  describeCharacter,
+} from './core/characterSchema';
+import {
+  useDesignHistory,
+  useUndoRedoShortcuts,
+} from './core/useDesignHistory';
 import {
   SCENE_ENVIRONMENTS,
   TIME_OF_DAY_OPTIONS,
@@ -374,7 +384,7 @@ const SPREAD_TEMPLATES = [
   },
 ];
 
-export function StorybookStudio() {
+export function StorybookStudio({ openPanel = null }) {
   const { dispatch, setIsCartOpen } = useContext(CartContext);
   const { speak, setMascot } = useMascot();
   const { showToast } = useToast();
@@ -389,7 +399,6 @@ export function StorybookStudio() {
   const [activePage, setActivePage] = useState(0);
   const [selectedEdition, setSelectedEdition] = useState('hardcover');
   const [selectedSticker, setSelectedSticker] = useState(null);
-  const [stickers, setStickers] = useState([]);
   const [isWidescreen, setIsWidescreen] = useState(false);
   const [bubbleText, setBubbleText] = useState('Adventure time!');
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
@@ -473,27 +482,13 @@ export function StorybookStudio() {
     },
   ]);
 
-  // History stack for Undo / Redo
-  const [history, setHistory] = useState([[]]);
-  const [historyIndex, setHistoryIndex] = useState(0);
-
-  const handleUpdateStickers = useCallback(
-    (newStickersOrFn, { commit = true } = {}) => {
-      const next =
-        typeof newStickersOrFn === 'function'
-          ? newStickersOrFn(stickers)
-          : newStickersOrFn;
-      setStickers(next);
-      if (commit) {
-        setHistory((hPrev) => {
-          const sliced = hPrev.slice(0, historyIndex + 1);
-          return [...sliced, next];
-        });
-        setHistoryIndex((idx) => idx + 1);
-      }
-    },
-    [stickers, historyIndex]
-  );
+  // Undo / redo. The hand-rolled stack this replaces sliced `history` with a
+  // closure-captured `historyIndex` while advancing the index functionally, so
+  // two edits in one tick branched from a stale cursor — and it was never
+  // trimmed, keeping every intermediate drag frame alive for the session.
+  const history = useDesignHistory([], { limit: 60 });
+  const stickers = history.present;
+  const handleUpdateStickers = history.update;
 
   const activeLayer =
     stickers.find((s) => s.id === selectedLayerId) ||
@@ -550,38 +545,10 @@ export function StorybookStudio() {
     [activeLayer, stickers, handleUpdateStickers]
   );
 
-  const handleUndo = useCallback(() => {
-    if (historyIndex > 0) {
-      const prev = history[historyIndex - 1];
-      setHistoryIndex((idx) => idx - 1);
-      setStickers(prev);
-    }
-  }, [historyIndex, history]);
+  const handleUndo = history.undo;
+  const handleRedo = history.redo;
 
-  const handleRedo = useCallback(() => {
-    if (historyIndex < history.length - 1) {
-      const next = history[historyIndex + 1];
-      setHistoryIndex((idx) => idx + 1);
-      setStickers(next);
-    }
-  }, [historyIndex, history]);
-
-  // Keyboard shortcut listener for Undo / Redo
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        if (e.shiftKey) {
-          handleRedo();
-        } else {
-          handleUndo();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo]);
+  useUndoRedoShortcuts({ undo: history.undo, redo: history.redo });
 
   // Drop sticker directly onto page center
   const handleDropStickerToCenter = (type) => {
@@ -604,6 +571,24 @@ export function StorybookStudio() {
 
   // Deep Customization States
   const [step4Tab, setStep4Tab] = useState('prose'); // 'prose' | 'avatar' | 'typography' | 'stamps'
+
+  // `?panel=character` deep-links into the character editor, which otherwise
+  // sits three levels in (storybook mode, step 4, the Avatar tab) with nothing
+  // on the page announcing that it exists.
+  //
+  // This cannot be done with a lazy `useState` initialiser: in the pages router
+  // `router.query` is empty on the first render, so `openPanel` only becomes
+  // 'character' once the router is ready. Fired once, and only to move the
+  // wizard — it never discards work the reader has already done.
+  const hasJumpedToPanel = useRef(false);
+
+  useEffect(() => {
+    if (openPanel !== 'character' || hasJumpedToPanel.current) return;
+    hasJumpedToPanel.current = true;
+
+    setCurrentStep(4);
+    setStep4Tab('avatar');
+  }, [openPanel]);
   const [selectedChapterEdit, setSelectedChapterEdit] = useState(1);
   const [chapterProse, setChapterProse] = useState({
     1: {
@@ -638,25 +623,8 @@ export function StorybookStudio() {
     },
   });
 
-  const [avatar, setAvatar] = useState({
-    skin: '#fbd38d',
-    hair: '#4a2c11',
-    hairColor: '#4a2c11',
-    hairstyle: 'curls',
-    hairStyle: 'curls',
-    outfit: '#2563eb',
-    outfitColor: '#2563eb',
-    accessory: 'cape',
-    eyeColor: '#2563eb',
-  });
-
-  const [companion, setCompanion] = useState({
-    species: 'leo',
-    name: 'Leo',
-    furColor: '#ea580c',
-    collar: 'star_bandana',
-    badge: 'badge_hero',
-  });
+  const [avatar, setAvatar] = useState({ ...DEFAULT_AVATAR });
+  const [companion, setCompanion] = useState({ ...DEFAULT_COMPANION });
 
   const [mascotCoStar, setMascotCoStar] = useState('leo');
 
@@ -667,6 +635,15 @@ export function StorybookStudio() {
       setMascot(newComp.species);
     }
   };
+
+  /** The creator edits live, so "apply" is a confirmation, not a commit. */
+  const handleApplyCharacters = ({ companion: nextCompanion }) => {
+    showToast(
+      `${childName || 'Your hero'} and ${nextCompanion.name} are locked into the story.`,
+      'success'
+    );
+  };
+
   const [fontFamily, setFontFamily] = useState('serif');
   const [textColor, setTextColor] = useState('#0f172a');
   const [showBleed, setShowBleed] = useState(false);
@@ -811,7 +788,9 @@ export function StorybookStudio() {
         Age: ageGroup,
         CoStar: coStarNames[mascotCoStar] || 'Leo The Lion',
         Font: fontFamily.toUpperCase(),
-        Avatar: `${avatar.accessory !== 'none' ? avatar.accessory : 'Classic'} (${avatar.outfit})`,
+        // The whole character sheet, so the printer reads the same options the
+        // shopper picked rather than a single accessory id.
+        ...describeCharacter(avatar, companion),
         Binding: activeEditionObj.name,
         Stickers: `${stickers.length} Custom Stamps`,
       },
@@ -1186,8 +1165,8 @@ export function StorybookStudio() {
             onChangeBubbleText={setBubbleText}
             onUndo={handleUndo}
             onRedo={handleRedo}
-            canUndo={historyIndex > 0}
-            canRedo={historyIndex < history.length - 1}
+            canUndo={history.canUndo}
+            canRedo={history.canRedo}
           />
         </div>
 
@@ -1784,6 +1763,7 @@ export function StorybookStudio() {
                         companion={companion}
                         onChangeCompanion={handleCompanionChange}
                         initialTab="companion"
+                        onSave={handleApplyCharacters}
                       />
                     </div>
                   )}
@@ -2400,7 +2380,7 @@ export function StorybookStudio() {
                   type="button"
                   className={styles.fsBarBtn}
                   onClick={handleUndo}
-                  disabled={historyIndex <= 0}
+                  disabled={!history.canUndo}
                   title="Undo (Cmd+Z)"
                   aria-label="Undo canvas change in fullscreen"
                 >
@@ -2411,7 +2391,7 @@ export function StorybookStudio() {
                   type="button"
                   className={styles.fsBarBtn}
                   onClick={handleRedo}
-                  disabled={historyIndex >= history.length - 1}
+                  disabled={!history.canRedo}
                   title="Redo (Cmd+Shift+Z)"
                   aria-label="Redo canvas change in fullscreen"
                 >
@@ -2622,8 +2602,8 @@ export function StorybookStudio() {
                       onChangeBubbleText={setBubbleText}
                       onUndo={handleUndo}
                       onRedo={handleRedo}
-                      canUndo={historyIndex > 0}
-                      canRedo={historyIndex < history.length - 1}
+                      canUndo={history.canUndo}
+                      canRedo={history.canRedo}
                     />
                   </div>
                 )}
@@ -2641,6 +2621,7 @@ export function StorybookStudio() {
                       companion={companion}
                       onChangeCompanion={handleCompanionChange}
                       initialTab="hero"
+                      onSave={handleApplyCharacters}
                     />
                   </div>
                 )}
@@ -2881,3 +2862,7 @@ export function StorybookStudio() {
     </div>
   );
 }
+
+StorybookStudio.propTypes = {
+  openPanel: PropTypes.oneOf(['character']),
+};

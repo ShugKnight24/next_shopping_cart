@@ -22,6 +22,11 @@
   touch-action: none;
 }
 
+.interactiveCanvas:focus-visible {
+  outline: 3px solid var(--color-primary-accent);
+  outline-offset: 3px;
+}
+
 .cursorMove {
   cursor: grab;
 }
@@ -89,6 +94,12 @@
   transform: translateY(-1px);
 }
 
+.toolBtn:focus-visible,
+.proofExportBtn:focus-visible {
+  outline: 2px solid var(--color-surface);
+  outline-offset: 2px;
+}
+
 .deleteBtn {
   background: rgba(239, 68, 68, 0.25);
   border-color: rgba(239, 68, 68, 0.45);
@@ -127,8 +138,24 @@
 }
 
 .proofExportBtn:hover {
-  background: #2563eb;
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  background: var(--color-primary);
+  border-color: var(--color-primary-accent);
+  box-shadow: var(--shadow-glow);
   transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layerToolbar {
+    animation: none;
+  }
+
+  .toolBtn,
+  .proofExportBtn {
+    transition: none;
+  }
+
+  .toolBtn:hover,
+  .proofExportBtn:hover {
+    transform: none;
+  }
 }

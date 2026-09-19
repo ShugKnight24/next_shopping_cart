@@ -1,10 +1,52 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useCanvasGestures } from '../../hooks/useCanvasGestures';
 import styles from './CanvasEngine.module.css';
+import {
+  contrastInk,
+  normalizeAvatar,
+  normalizeCompanion,
+  shade,
+  SPECIES_ALIASES,
+} from './core/characterSchema';
+import { drawCompanion, drawHero } from './drawCharacter';
 import { getDefaultSceneForTheme } from './sceneEnvironments';
 import { drawEnvironmentScene } from './sceneRenderer';
 import { DuplicateIcon, FlipHorizontalIcon, TrashIcon } from './StudioSVGs';
+
+/** One map, three modes. It used to be declared separately in each branch. */
+const FONT_FAMILIES = {
+  serif: "'Cinzel', 'Playfair Display', Georgia, serif",
+  sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  display: "'Impact', 'Trebuchet MS', sans-serif",
+  cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
+};
+
+/** Catalog names, used only when the companion carries no name of its own. */
+const CO_STAR_NAMES = {
+  finley: 'Finley The Starlight Fox',
+  luna: 'Luna The Cosmic Shepherd',
+  leo: 'Leo The Story Lion',
+  penny: 'Princess Penny',
+  dexter: 'Dexter The Dino Explorer',
+  carty: 'Carty The Courier',
+  sparky: 'Sparky The Sneaker Hound',
+};
+
+/** Youth sizing translated into a believable garment scale on the proof. */
+const APPAREL_SIZE_SCALE = {
+  'Youth XS': 0.86,
+  'Youth S': 0.93,
+  'Youth M': 1,
+  'Youth L': 1.07,
+  'Youth XL': 1.14,
+};
+
+/** Selection chrome geometry, shared by the painter and the hit test. */
+const GRIP_HALF = 24;
+const GRIP_SIZE = 3.5;
+const KNOB_OFFSET = -34;
+const KNOB_RADIUS = 5;
 
 /**
  * Anti-Theft Dual-Side Security Watermarks
@@ -139,9 +181,29 @@ export function CanvasEngine({
   onCanvasClick = null,
   className = '',
   isAnimated = true,
+  canvasRef: forwardedCanvasRef = null,
+  exportOptions = null,
 }) {
   const canvasRef = useRef(null);
   const timeRef = useRef(0);
+  // Grip/knob drag state lives in a ref: it changes every pointer frame and
+  // must not re-render the component.
+  const transformDragRef = useRef(null);
+  // Reused across frames so the render loop stays allocation-free.
+  const heroOptsRef = useRef({ x: 0, y: 0 });
+  const companionOptsRef = useRef({ x: 0, y: 0 });
+
+  const watermark = exportOptions?.watermark ?? true;
+
+  // Studios need the real element for toDataURL thumbnails, but the internal
+  // ref must keep working for the render loop and the gesture hook.
+  const attachCanvas = useCallback(
+    (node) => {
+      canvasRef.current = node;
+      if (forwardedCanvasRef) forwardedCanvasRef.current = node;
+    },
+    [forwardedCanvasRef]
+  );
 
   // Gesture handling for mouse and touch interactions
   const {
@@ -156,6 +218,27 @@ export function CanvasEngine({
     onUpdateStickers,
     onCanvasClick,
   });
+
+  // Normalized once per config change rather than once per animation frame —
+  // `normalizeAvatar`/`normalizeCompanion` allocate, and this runs inside rAF.
+  const heroAvatar = useMemo(
+    () => normalizeAvatar(config.avatar),
+    [config.avatar]
+  );
+
+  const heroCompanion = useMemo(() => {
+    const source = config.companion;
+    const resolved = normalizeCompanion(source);
+    if (!source?.species && config.mascotCoStar) {
+      resolved.species =
+        SPECIES_ALIASES[config.mascotCoStar] ?? config.mascotCoStar;
+    }
+    if (!source?.name) {
+      const catalog = CO_STAR_NAMES[resolved.species] ?? CO_STAR_NAMES.leo;
+      resolved.name = catalog.split(' ')[0];
+    }
+    return resolved;
+  }, [config.companion, config.mascotCoStar]);
 
   // Draw sticker vector primitives on Canvas 2D
   const drawSticker = useCallback((ctx, sticker, isSelected = false) => {
@@ -1346,27 +1429,34 @@ export function CanvasEngine({
       ctx.strokeRect(-24, -24, 48, 48);
       if (ctx.setLineDash) ctx.setLineDash([]);
 
-      // Corner anchor grips
+      // Corner resize grips — draggable, see `hitTransformHandle`.
       ctx.fillStyle = '#ffffff';
       ctx.strokeStyle = '#2563eb';
       ctx.lineWidth = 1.5;
-      [
-        [-24, -24],
-        [24, -24],
-        [24, 24],
-        [-24, 24],
-      ].forEach(([cx, cy]) => {
-        ctx.fillRect(cx - 3, cy - 3, 6, 6);
-        ctx.strokeRect(cx - 3, cy - 3, 6, 6);
-      });
+      for (let i = 0; i < 4; i += 1) {
+        const cx = i === 0 || i === 3 ? -GRIP_HALF : GRIP_HALF;
+        const cy = i < 2 ? -GRIP_HALF : GRIP_HALF;
+        ctx.fillRect(
+          cx - GRIP_SIZE,
+          cy - GRIP_SIZE,
+          GRIP_SIZE * 2,
+          GRIP_SIZE * 2
+        );
+        ctx.strokeRect(
+          cx - GRIP_SIZE,
+          cy - GRIP_SIZE,
+          GRIP_SIZE * 2,
+          GRIP_SIZE * 2
+        );
+      }
 
-      // Rotation stem & anchor
+      // Rotation stem & knob — draggable.
       ctx.beginPath();
-      ctx.moveTo(0, -24);
-      ctx.lineTo(0, -34);
+      ctx.moveTo(0, -GRIP_HALF);
+      ctx.lineTo(0, KNOB_OFFSET);
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(0, -34, 4, 0, Math.PI * 2);
+      ctx.arc(0, KNOB_OFFSET, KNOB_RADIUS, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
     }
@@ -1403,38 +1493,19 @@ export function CanvasEngine({
           fontFamily = 'serif',
           textColor = '#334155',
           chapterProse = {},
-          avatar = {
-            skin: '#fbd38d',
-            hair: '#4a2c11',
-            outfit: '#2563eb',
-            accessory: 'cape',
-          },
-          mascotCoStar = 'leo',
           showBleed = false,
         } = config;
         const activeSceneId = sceneId || getDefaultSceneForTheme(theme);
+        const avatar = heroAvatar;
+        const companion = heroCompanion;
 
-        // Font Family mapping
-        const fontFamilies = {
-          serif: "'Cinzel', 'Playfair Display', Georgia, serif",
-          sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          display: "'Impact', 'Trebuchet MS', sans-serif",
-          cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
-        };
-        const activeFont = fontFamilies[fontFamily] || fontFamilies.serif;
+        const activeFont = FONT_FAMILIES[fontFamily] || FONT_FAMILIES.serif;
 
-        // Mascot co-star name lookup
-        const coStarNames = {
-          finley: 'Finley The Starlight Fox',
-          luna: 'Luna The Cosmic Shepherd',
-          leo: 'Leo The Story Lion',
-          penny: 'Princess Penny',
-          dexter: 'Dexter The Dino Explorer',
-          carty: 'Carty The Courier',
-          sparky: 'Sparky The Sneaker Hound',
-        };
+        // A shopper-supplied companion name wins over the catalog title.
         const coStarLabel =
-          coStarNames[mascotCoStar] || 'Finley The Starlight Fox';
+          config.companion?.name ||
+          CO_STAR_NAMES[companion.species] ||
+          CO_STAR_NAMES.leo;
 
         // Book Outer Hardcover Spread
         const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -1925,584 +1996,17 @@ export function CanvasEngine({
           ctx.ellipse(coStarX, coStarY + 22, 18, 5, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Optional Cape behind
-          if (avatar.accessory === 'cape') {
-            ctx.fillStyle = '#ef4444';
-            ctx.beginPath();
-            ctx.moveTo(heroX - 8, heroY - 10);
-            ctx.lineTo(heroX - 24, heroY + 28);
-            ctx.lineTo(heroX, heroY + 22);
-            ctx.lineTo(heroX + 10, heroY - 10);
-            ctx.closePath();
-            ctx.fill();
-          }
+          // Hero and companion come from `drawCharacter`, which is the only
+          // renderer that honours every option in `core/characterSchema`.
+          const heroOpts = heroOptsRef.current;
+          heroOpts.x = heroX;
+          heroOpts.y = heroY;
+          drawHero(ctx, avatar, heroOpts);
 
-          // Body / Outfit
-          ctx.fillStyle = avatar.outfit || '#2563eb';
-          ctx.beginPath();
-          ctx.roundRect(heroX - 12, heroY - 10, 24, 30, 6);
-          ctx.fill();
-
-          // Head
-          ctx.fillStyle = avatar.skin || '#fbd38d';
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 22, 14, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Hair Styles
-          ctx.fillStyle = avatar.hair || '#4a2c11';
-          const hairStyle = avatar.hairStyle || 'curls';
-          if (hairStyle === 'crop') {
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 25, 14, Math.PI, 0, false);
-            ctx.fill();
-          } else if (hairStyle === 'curls') {
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-            ctx.fill();
-            for (let i = -12; i <= 12; i += 6) {
-              ctx.beginPath();
-              ctx.arc(heroX + i, heroY - 28, 4.5, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          } else if (hairStyle === 'waves') {
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.rect(heroX - 14, heroY - 25, 5, 20);
-            ctx.rect(heroX + 9, heroY - 25, 5, 20);
-            ctx.fill();
-          } else if (hairStyle === 'braids') {
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-            ctx.fill();
-            ctx.beginPath();
-            if (ctx.roundRect) {
-              ctx.roundRect(heroX - 14, heroY - 24, 4.5, 22, 2);
-              ctx.roundRect(heroX + 9.5, heroY - 24, 4.5, 22, 2);
-            } else {
-              ctx.rect(heroX - 14, heroY - 24, 4.5, 22);
-              ctx.rect(heroX + 9.5, heroY - 24, 4.5, 22);
-            }
-            ctx.fill();
-          } else if (hairStyle === 'ponytail') {
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(heroX + 15, heroY - 30, 8, 4, 0.6, 0, Math.PI * 2);
-            ctx.fill();
-          } else if (hairStyle === 'spiky') {
-            ctx.beginPath();
-            ctx.moveTo(heroX - 14, heroY - 24);
-            ctx.lineTo(heroX - 10, heroY - 36);
-            ctx.lineTo(heroX - 4, heroY - 28);
-            ctx.lineTo(heroX, heroY - 38);
-            ctx.lineTo(heroX + 5, heroY - 28);
-            ctx.lineTo(heroX + 10, heroY - 35);
-            ctx.lineTo(heroX + 14, heroY - 24);
-            ctx.closePath();
-            ctx.fill();
-          } else if (hairStyle === 'beanie') {
-            ctx.fillStyle = '#0284c7';
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 24, 15, Math.PI, 0, false);
-            ctx.fill();
-            ctx.fillRect(heroX - 15, heroY - 25, 30, 4);
-          } else {
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 26, 14, Math.PI, 0, false);
-            ctx.fill();
-          }
-
-          // Eyes & Smile
-          ctx.fillStyle = '#1e293b';
-          ctx.beginPath();
-          ctx.arc(heroX - 4, heroY - 22, 1.8, 0, Math.PI * 2);
-          ctx.arc(heroX + 4, heroY - 22, 1.8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#1e293b';
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.arc(heroX, heroY - 18, 4, 0.1 * Math.PI, 0.9 * Math.PI, false);
-          ctx.stroke();
-
-          // Accessories & Face Details
-          if (avatar.accessory === 'astronaut_helmet') {
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.arc(heroX, heroY - 22, 17, 0, Math.PI * 2);
-            ctx.stroke();
-          } else if (avatar.accessory === 'crown') {
-            ctx.fillStyle = '#fbbf24';
-            ctx.beginPath();
-            ctx.moveTo(heroX - 10, heroY - 36);
-            ctx.lineTo(heroX - 6, -30 + heroY);
-            ctx.lineTo(heroX, heroY - 38);
-            ctx.lineTo(heroX + 6, -30 + heroY);
-            ctx.lineTo(heroX + 10, heroY - 36);
-            ctx.lineTo(heroX + 8, heroY - 28);
-            ctx.lineTo(heroX - 8, heroY - 28);
-            ctx.closePath();
-            ctx.fill();
-          } else if (avatar.accessory === 'glasses') {
-            ctx.strokeStyle = '#0f172a';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-            ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(heroX - 1, heroY - 22);
-            ctx.lineTo(heroX + 1, heroY - 22);
-            ctx.stroke();
-          } else if (avatar.accessory === 'star_shades') {
-            ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            ctx.arc(heroX - 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-            ctx.arc(heroX + 4.5, heroY - 22, 3.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#d97706';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(heroX - 1, heroY - 22);
-            ctx.lineTo(heroX + 1, heroY - 22);
-            ctx.stroke();
-          } else if (avatar.accessory === 'superhero_mask') {
-            ctx.fillStyle = '#dc2626';
-            ctx.beginPath();
-            if (ctx.roundRect)
-              ctx.roundRect(heroX - 10, heroY - 25, 20, 6.5, 3);
-            else ctx.rect(heroX - 10, heroY - 25, 20, 6.5);
-            ctx.fill();
-          } else if (avatar.accessory === 'freckles') {
-            ctx.fillStyle = '#92400e';
-            [
-              [heroX - 7, heroY - 19],
-              [heroX - 5, heroY - 18],
-              [heroX + 5, heroY - 18],
-              [heroX + 7, heroY - 19],
-            ].forEach(([fx, fy]) => {
-              ctx.fillRect(fx, fy, 1.2, 1.2);
-            });
-          }
-
-          // DRAW MASCOT CO-STAR (Right character on illustration stage)
-          if (mascotCoStar === 'finley') {
-            // Finley The Starlight Fox (The Little Prince homage)
-            // Bushy fox tail curving up with snowy white tip
-            ctx.fillStyle = '#ea580c';
-            ctx.beginPath();
-            ctx.moveTo(coStarX - 10, coStarY + 14);
-            ctx.quadraticCurveTo(
-              coStarX - 32,
-              coStarY + 12,
-              coStarX - 28,
-              coStarY - 8
-            );
-            ctx.quadraticCurveTo(
-              coStarX - 20,
-              coStarY + 2,
-              coStarX - 8,
-              coStarY + 8
-            );
-            ctx.closePath();
-            ctx.fill();
-            // Snowy white tail tip
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.moveTo(coStarX - 28, coStarY - 8);
-            ctx.quadraticCurveTo(
-              coStarX - 32,
-              coStarY + 2,
-              coStarX - 24,
-              coStarY - 2
-            );
-            ctx.closePath();
-            ctx.fill();
-
-            // Amber body
-            ctx.fillStyle = '#f97316';
-            ctx.beginPath();
-            if (ctx.roundRect)
-              ctx.roundRect(coStarX - 12, coStarY - 8, 24, 30, 8);
-            else ctx.rect(coStarX - 12, coStarY - 8, 24, 30);
-            ctx.fill();
-
-            // Cream chest ruff
-            ctx.fillStyle = '#fff7ed';
-            ctx.beginPath();
-            ctx.ellipse(coStarX, coStarY + 6, 7, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Pointed Desert Fox Ears
-            ctx.fillStyle = '#c2410c';
-            ctx.beginPath();
-            ctx.moveTo(coStarX - 14, coStarY - 20);
-            ctx.lineTo(coStarX - 18, coStarY - 36);
-            ctx.lineTo(coStarX - 4, coStarY - 24);
-            ctx.closePath();
-            ctx.fill();
-            ctx.fillStyle = '#ffedd5';
-            ctx.beginPath();
-            ctx.moveTo(coStarX - 13, coStarY - 22);
-            ctx.lineTo(coStarX - 16, coStarY - 33);
-            ctx.lineTo(coStarX - 6, coStarY - 24);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.fillStyle = '#c2410c';
-            ctx.beginPath();
-            ctx.moveTo(coStarX + 14, coStarY - 20);
-            ctx.lineTo(coStarX + 18, coStarY - 36);
-            ctx.lineTo(coStarX + 4, coStarY - 24);
-            ctx.closePath();
-            ctx.fill();
-            ctx.fillStyle = '#ffedd5';
-            ctx.beginPath();
-            ctx.moveTo(coStarX + 13, coStarY - 22);
-            ctx.lineTo(coStarX + 16, coStarY - 33);
-            ctx.lineTo(coStarX + 6, coStarY - 24);
-            ctx.closePath();
-            ctx.fill();
-
-            // Fox Head
-            ctx.fillStyle = '#f97316';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 20, 13, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Cream Cheeks
-            ctx.fillStyle = '#fff7ed';
-            ctx.beginPath();
-            ctx.ellipse(coStarX, coStarY - 17, 9, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Inquisitive Soulful Amber Eyes
-            ctx.fillStyle = '#431407';
-            ctx.beginPath();
-            ctx.arc(coStarX - 4, coStarY - 21, 1.8, 0, Math.PI * 2);
-            ctx.arc(coStarX + 4, coStarY - 21, 1.8, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#fbbf24';
-            ctx.beginPath();
-            ctx.arc(coStarX - 4, coStarY - 21, 0.8, 0, Math.PI * 2);
-            ctx.arc(coStarX + 4, coStarY - 21, 0.8, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Button nose
-            ctx.fillStyle = '#1c1917';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 16, 1.6, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Flowing Celestial Scarf (The Little Prince homage)
-            ctx.fillStyle = '#38bdf8';
-            ctx.beginPath();
-            if (ctx.roundRect)
-              ctx.roundRect(coStarX - 10, coStarY - 10, 20, 6, 3);
-            else ctx.rect(coStarX - 10, coStarY - 10, 20, 6);
-            ctx.fill();
-            // Scarf fluttering tails
-            ctx.beginPath();
-            ctx.moveTo(coStarX + 8, coStarY - 8);
-            ctx.quadraticCurveTo(
-              coStarX + 22,
-              coStarY - 4,
-              coStarX + 26,
-              coStarY + 12
-            );
-            ctx.lineTo(coStarX + 18, coStarY + 8);
-            ctx.closePath();
-            ctx.fill();
-            // Gold star on scarf
-            ctx.fillStyle = '#fbbf24';
-            ctx.beginPath();
-            ctx.arc(coStarX + 18, coStarY + 4, 2, 0, Math.PI * 2);
-            ctx.fill();
-          } else if (mascotCoStar === 'luna') {
-            // Luna The Cosmic Anatolian Shepherd in Spacesuit
-            // Curled Tail in Spacesuit
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.arc(
-              coStarX - 16,
-              coStarY + 12,
-              10,
-              0.2 * Math.PI,
-              1.4 * Math.PI
-            );
-            ctx.stroke();
-            ctx.fillStyle = '#fbbf24';
-            ctx.beginPath();
-            ctx.arc(coStarX - 22, coStarY + 4, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // White Spacesuit Body
-            ctx.fillStyle = '#f8fafc';
-            ctx.beginPath();
-            ctx.roundRect(coStarX - 14, coStarY - 8, 28, 30, 8);
-            ctx.fill();
-            ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-
-            // Navy Spacesuit Collar
-            ctx.fillStyle = '#1e293b';
-            ctx.beginPath();
-            ctx.roundRect(coStarX - 12, coStarY - 12, 24, 6, 2);
-            ctx.fill();
-
-            // Gold Name Patch: "LUNA"
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(coStarX - 10, coStarY + 6, 20, 8);
-            ctx.strokeStyle = '#fbbf24';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(coStarX - 10, coStarY + 6, 20, 8);
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = 'bold 6px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('LUNA', coStarX, coStarY + 12.5);
-
-            // Anatolian Folded Drop Ears
-            ctx.fillStyle = '#713f12';
-            ctx.beginPath();
-            ctx.moveTo(coStarX - 12, coStarY - 26);
-            ctx.lineTo(coStarX - 18, coStarY - 14);
-            ctx.lineTo(coStarX - 8, coStarY - 18);
-            ctx.closePath();
-            ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(coStarX + 12, coStarY - 26);
-            ctx.lineTo(coStarX + 18, coStarY - 14);
-            ctx.lineTo(coStarX + 8, coStarY - 18);
-            ctx.closePath();
-            ctx.fill();
-
-            // Golden Fawn Head
-            ctx.fillStyle = '#e5a95d';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 22, 14, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Anatolian Black Mask
-            ctx.fillStyle = '#1c1917';
-            ctx.beginPath();
-            ctx.ellipse(coStarX, coStarY - 18, 9, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Soulful Eyes
-            ctx.fillStyle = '#fbbf24';
-            ctx.beginPath();
-            ctx.arc(coStarX - 4, coStarY - 23, 1.8, 0, Math.PI * 2);
-            ctx.arc(coStarX + 4, coStarY - 23, 1.8, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#0f172a';
-            ctx.beginPath();
-            ctx.arc(coStarX - 4, coStarY - 23, 1, 0, Math.PI * 2);
-            ctx.arc(coStarX + 4, coStarY - 23, 1, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Nose Leather
-            ctx.fillStyle = '#09090b';
-            ctx.beginPath();
-            ctx.ellipse(coStarX, coStarY - 17, 3, 2, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Signature Pink Nose Blaze
-            ctx.fillStyle = '#fca5a5';
-            ctx.beginPath();
-            ctx.ellipse(coStarX, coStarY - 18.5, 2, 0.8, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Spacesuit Visor Ring
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 22, 17, 0, Math.PI * 2);
-            ctx.stroke();
-          } else if (mascotCoStar === 'penny') {
-            // Princess Penny
-            ctx.fillStyle = '#ec4899';
-            ctx.beginPath();
-            ctx.moveTo(coStarX, coStarY - 10);
-            ctx.lineTo(coStarX - 16, coStarY + 22);
-            ctx.lineTo(coStarX + 16, coStarY + 22);
-            ctx.closePath();
-            ctx.fill();
-            // Head
-            ctx.fillStyle = '#fde047';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 22, 12, 0, Math.PI * 2);
-            ctx.fill();
-            // Tiara
-            ctx.fillStyle = '#fbbf24';
-            ctx.fillRect(coStarX - 8, coStarY - 32, 16, 4);
-            // Wand
-            ctx.strokeStyle = '#fbbf24';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(coStarX + 10, coStarY - 5);
-            ctx.lineTo(coStarX + 20, coStarY - 22);
-            ctx.stroke();
-          } else if (mascotCoStar === 'dexter') {
-            // Dexter The Dino Explorer - High Quality Illustration
-            // Curved Dino Tail with Back Spikes
-            ctx.fillStyle = '#059669';
-            ctx.beginPath();
-            ctx.moveTo(coStarX + 8, coStarY + 16);
-            ctx.quadraticCurveTo(
-              coStarX + 28,
-              coStarY + 14,
-              coStarX + 32,
-              coStarY - 4
-            );
-            ctx.lineTo(coStarX + 16, coStarY + 22);
-            ctx.closePath();
-            ctx.fill();
-
-            // Amber Back Spikes
-            ctx.fillStyle = '#f59e0b';
-            [
-              [coStarX + 6, coStarY - 4],
-              [coStarX + 12, coStarY + 4],
-              [coStarX + 20, coStarY + 8],
-              [coStarX + 27, coStarY + 4],
-            ].forEach(([sx, sy]) => {
-              ctx.beginPath();
-              ctx.moveTo(sx - 3, sy);
-              ctx.lineTo(sx, sy - 6);
-              ctx.lineTo(sx + 3, sy);
-              ctx.closePath();
-              ctx.fill();
-            });
-
-            // Emerald Dino Body
-            ctx.fillStyle = '#10b981';
-            ctx.beginPath();
-            ctx.roundRect(coStarX - 16, coStarY - 8, 30, 32, 10);
-            ctx.fill();
-
-            // Mint Belly Patch
-            ctx.fillStyle = '#6ee7b7';
-            ctx.beginPath();
-            ctx.ellipse(coStarX - 4, coStarY + 10, 8, 12, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Dino Head & Snout
-            ctx.fillStyle = '#10b981';
-            ctx.beginPath();
-            ctx.ellipse(
-              coStarX - 4,
-              coStarY - 20,
-              15,
-              12,
-              -0.1,
-              0,
-              Math.PI * 2
-            );
-            ctx.fill();
-
-            // Snout
-            ctx.fillStyle = '#34d399';
-            ctx.beginPath();
-            ctx.ellipse(coStarX - 12, coStarY - 17, 8, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Friendly Smile with Teeth
-            ctx.strokeStyle = '#064e3b';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(
-              coStarX - 10,
-              coStarY - 16,
-              5,
-              0.1 * Math.PI,
-              0.8 * Math.PI
-            );
-            ctx.stroke();
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.moveTo(coStarX - 12, coStarY - 14);
-            ctx.lineTo(coStarX - 10, coStarY - 11);
-            ctx.lineTo(coStarX - 8, coStarY - 14);
-            ctx.closePath();
-            ctx.fill();
-
-            // Curious Eye
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(coStarX - 2, coStarY - 23, 4.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#064e3b';
-            ctx.beginPath();
-            ctx.arc(coStarX - 2, coStarY - 23, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(coStarX - 3, coStarY - 24, 1, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Safari Explorer Hat
-            ctx.fillStyle = '#d97706';
-            ctx.beginPath();
-            ctx.ellipse(coStarX - 4, coStarY - 30, 18, 4, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(coStarX - 4, coStarY - 30, 10, Math.PI, 0, false);
-            ctx.fill();
-            // Compass Badge on Hat
-            ctx.fillStyle = '#38bdf8';
-            ctx.beginPath();
-            ctx.arc(coStarX - 4, coStarY - 33, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-          } else if (mascotCoStar === 'carty') {
-            // Carty Courier
-            ctx.fillStyle = '#94a3b8';
-            ctx.beginPath();
-            ctx.roundRect(coStarX - 14, coStarY - 12, 28, 28, 6);
-            ctx.fill();
-            // Cyan visor
-            ctx.fillStyle = '#06b6d4';
-            ctx.fillRect(coStarX - 10, coStarY - 6, 20, 6);
-            // Antenna
-            ctx.strokeStyle = '#f59e0b';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(coStarX, coStarY - 12);
-            ctx.lineTo(coStarX, coStarY - 24);
-            ctx.stroke();
-            ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 24, 3, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            // Leo Lion Cub
-            ctx.fillStyle = '#f59e0b';
-            // Mane
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 14, 18, 0, Math.PI * 2);
-            ctx.fill();
-            // Head
-            ctx.fillStyle = '#fcd34d';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 14, 12, 0, Math.PI * 2);
-            ctx.fill();
-            // Ears
-            ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            ctx.arc(coStarX - 10, coStarY - 24, 5, 0, Math.PI * 2);
-            ctx.arc(coStarX + 10, coStarY - 24, 5, 0, Math.PI * 2);
-            ctx.fill();
-            // Smile
-            ctx.fillStyle = '#1e293b';
-            ctx.beginPath();
-            ctx.arc(coStarX, coStarY - 12, 2, 0, Math.PI * 2);
-            ctx.fill();
-          }
+          const companionOpts = companionOptsRef.current;
+          companionOpts.x = coStarX;
+          companionOpts.y = coStarY;
+          drawCompanion(ctx, companion, companionOpts);
 
           // Stage Title Banner
           ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
@@ -2573,16 +2077,12 @@ export function CanvasEngine({
           frame = 'oak',
           fontFamily = 'sans',
           textColor = '#ffffff',
+          paper = 'cotton',
+          orientation = '',
           showBleed = false,
         } = config;
 
-        const fontFamilies = {
-          serif: "'Cinzel', 'Playfair Display', Georgia, serif",
-          sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          display: "'Impact', 'Trebuchet MS', sans-serif",
-          cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
-        };
-        const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
+        const activeFont = FONT_FAMILIES[fontFamily] || FONT_FAMILIES.sans;
 
         // Outer Frame
         const frameColor =
@@ -2660,8 +2160,11 @@ export function CanvasEngine({
         ctx.fillStyle = artGrad;
         ctx.fillRect(artInset, artInset, artW, artH);
 
-        // Sun / Orb Graphic
-        const isLandscape = width > height;
+        // Sun / Orb Graphic. Orientation is a shopper choice, not something to
+        // infer from the canvas box — a portrait proof can be wider than tall.
+        const isLandscape = orientation
+          ? orientation === 'landscape'
+          : width > height;
         const orbY = isLandscape ? artInset + artH * 0.38 : artInset + 80;
         const orbRadius = isLandscape ? 40 : 50;
         ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
@@ -2669,9 +2172,67 @@ export function CanvasEngine({
         ctx.arc(width / 2, orbY, orbRadius, 0, Math.PI * 2);
         ctx.fill();
 
+        // Paper stock: each option has to be visible on the proof, or the
+        // upcharge for canvas and luster is selling nothing.
+        ctx.save();
+        ctx.beginPath();
+        if (ctx.rect) ctx.rect(artInset, artInset, artW, artH);
+        if (ctx.clip) ctx.clip();
+        if (paper === 'canvas') {
+          ctx.fillStyle = 'rgba(120, 90, 60, 0.10)';
+          ctx.fillRect(artInset, artInset, artW, artH);
+          // Woven cross-hatch, one path so the hot loop stays cheap.
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.10)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (let gx = artInset; gx < artInset + artW; gx += 5) {
+            ctx.moveTo(gx, artInset);
+            ctx.lineTo(gx, artInset + artH);
+          }
+          for (let gy = artInset; gy < artInset + artH; gy += 5) {
+            ctx.moveTo(artInset, gy);
+            ctx.lineTo(artInset + artW, gy);
+          }
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(15, 23, 42, 0.10)';
+          ctx.beginPath();
+          for (let gx = artInset + 2; gx < artInset + artW; gx += 5) {
+            ctx.moveTo(gx, artInset);
+            ctx.lineTo(gx, artInset + artH);
+          }
+          ctx.stroke();
+        } else if (paper === 'luster') {
+          const sheen = ctx.createLinearGradient(
+            artInset,
+            artInset,
+            artInset + artW,
+            artInset + artH
+          );
+          sheen.addColorStop(0, 'rgba(255, 255, 255, 0.24)');
+          sheen.addColorStop(0.42, 'rgba(255, 255, 255, 0.04)');
+          sheen.addColorStop(0.58, 'rgba(255, 255, 255, 0.18)');
+          sheen.addColorStop(1, 'rgba(15, 23, 42, 0.16)');
+          ctx.fillStyle = sheen;
+          ctx.fillRect(artInset, artInset, artW, artH);
+        } else {
+          // Cotton rag: matte, warm, no specular.
+          ctx.fillStyle = 'rgba(252, 243, 226, 0.14)';
+          ctx.fillRect(artInset, artInset, artW, artH);
+          ctx.strokeStyle = 'rgba(120, 113, 108, 0.07)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (let gy = artInset + 3; gy < artInset + artH; gy += 9) {
+            ctx.moveTo(artInset, gy);
+            ctx.lineTo(artInset + artW, gy);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+
         // Poster Typography
         const isMinimal = artStyle === 'minimal';
-        ctx.fillStyle = isMinimal ? '#0f172a' : textColor || '#ffffff';
+        const ink = isMinimal ? '#0f172a' : textColor || '#ffffff';
+        ctx.fillStyle = ink;
         const headlineSize = isLandscape ? 20 : 24;
         ctx.font = `bold ${headlineSize}px ${activeFont}`;
         ctx.textAlign = 'center';
@@ -2680,15 +2241,20 @@ export function CanvasEngine({
           : artInset + artH - 70;
         ctx.fillText(headline.toUpperCase(), width / 2, headlineY);
 
-        ctx.fillStyle = isMinimal ? '#475569' : 'rgba(255, 255, 255, 0.85)';
+        // Sub-copy and footer derive from the chosen ink rather than assuming
+        // white, so `textColor` is honoured across the whole block.
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = isMinimal ? '#475569' : ink;
         ctx.font = `12px ${activeFont}`;
         const subquoteY = isLandscape
           ? artInset + artH - 34
           : artInset + artH - 42;
         ctx.fillText(subquote, width / 2, subquoteY);
 
+        ctx.globalAlpha = 0.6;
         ctx.font = '10px sans-serif';
-        ctx.fillStyle = isMinimal ? '#94a3b8' : 'rgba(255, 255, 255, 0.6)';
+        ctx.fillStyle = isMinimal ? '#94a3b8' : ink;
         const footerY = isLandscape
           ? artInset + artH - 16
           : artInset + artH - 22;
@@ -2697,6 +2263,7 @@ export function CanvasEngine({
           width / 2,
           footerY
         );
+        ctx.restore();
 
         if (showBleed) {
           ctx.save();
@@ -2717,15 +2284,18 @@ export function CanvasEngine({
           monogram = 'NOAH',
           placement = 'chest',
           fontFamily = 'sans',
+          size = 'Youth M',
+          accentColor = '#f8fafc',
+          textScale = 1,
+          showBleed = false,
         } = config;
 
-        const fontFamilies = {
-          serif: "'Cinzel', 'Playfair Display', Georgia, serif",
-          sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          display: "'Impact', 'Trebuchet MS', sans-serif",
-          cursive: "'Brush Script MT', 'Comic Sans MS', cursive",
-        };
-        const activeFont = fontFamilies[fontFamily] || fontFamilies.sans;
+        const activeFont = FONT_FAMILIES[fontFamily] || FONT_FAMILIES.sans;
+        const garmentScale = APPAREL_SIZE_SCALE[size] ?? 1;
+        const stitch = contrastInk(color);
+        const shadowColor = shade(color, -0.3);
+        const isBack = placement === 'back';
+        const cx = width / 2;
 
         ctx.fillStyle = '#f8fafc';
         ctx.fillRect(0, 0, width, height);
@@ -2733,154 +2303,339 @@ export function CanvasEngine({
         // Garment Shadow
         ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
         ctx.beginPath();
-        ctx.ellipse(width / 2, height - 40, 110, 16, 0, 0, Math.PI * 2);
+        ctx.ellipse(cx, height - 40, 110 * garmentScale, 16, 0, 0, Math.PI * 2);
         ctx.fill();
 
+        // Youth sizing scales the whole silhouette about the canvas centre, so
+        // every landmark below keeps its original coordinates.
+        ctx.save();
+        ctx.translate(cx, height / 2);
+        ctx.scale(garmentScale, garmentScale);
+        ctx.translate(-cx, -height / 2);
+
         if (garment === 'hoodie' || garment === 'tee') {
-          ctx.fillStyle = color;
-          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-          ctx.lineWidth = 2;
-
-          ctx.beginPath();
-          ctx.moveTo(width / 2 - 34, 70);
-          ctx.quadraticCurveTo(width / 2, 85, width / 2 + 34, 70);
-          ctx.lineTo(width / 2 + 100, 110);
-          ctx.lineTo(width / 2 + 135, 175);
-          ctx.lineTo(width / 2 + 95, 195);
-          ctx.lineTo(width / 2 + 75, 150);
-          ctx.lineTo(width / 2 + 70, height - 70);
-          ctx.lineTo(width / 2 - 70, height - 70);
-          ctx.lineTo(width / 2 - 75, 150);
-          ctx.lineTo(width / 2 - 95, 195);
-          ctx.lineTo(width / 2 - 135, 175);
-          ctx.lineTo(width / 2 - 100, 110);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-          ctx.beginPath();
-          ctx.ellipse(width / 2, 70, 34, 12, 0, 0, Math.PI);
-          ctx.fill();
-
-          // Embroidery Position according to placement zone
-          let embroiderX = width / 2;
-          let embroiderY = 170;
-          let fontSize = 18;
-          if (placement === 'pocket') {
-            embroiderX = width / 2 - 36;
-            embroiderY = 145;
-            fontSize = 13;
-          } else if (placement === 'back') {
-            embroiderY = 180;
-            fontSize = 22;
-          }
-
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `bold ${fontSize}px ${activeFont}`;
-          ctx.textAlign = 'center';
-          ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
-
-          ctx.font = '9px sans-serif';
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-          ctx.fillText('AUTHENTIC EMBROIDERY', embroiderX, embroiderY + 16);
-        } else if (garment === 'jacket') {
-          // Varsity Bomber Jacket
-          // Contrast sleeves
-          ctx.fillStyle = '#e2e8f0';
-          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-          ctx.lineWidth = 2;
-
-          ctx.beginPath();
-          ctx.moveTo(width / 2 - 34, 70);
-          ctx.lineTo(width / 2 + 34, 70);
-          ctx.lineTo(width / 2 + 100, 110);
-          ctx.lineTo(width / 2 + 135, 185);
-          ctx.lineTo(width / 2 + 95, 200);
-          ctx.lineTo(width / 2 + 75, 150);
-          ctx.lineTo(width / 2 - 75, 150);
-          ctx.lineTo(width / 2 - 95, 200);
-          ctx.lineTo(width / 2 - 135, 185);
-          ctx.lineTo(width / 2 - 100, 110);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-
-          // Jacket Body
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.moveTo(width / 2 - 36, 75);
-          ctx.lineTo(width / 2 + 36, 75);
-          ctx.lineTo(width / 2 + 70, 140);
-          ctx.lineTo(width / 2 + 66, height - 70);
-          ctx.lineTo(width / 2 - 66, height - 70);
-          ctx.lineTo(width / 2 - 70, 140);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-
-          // Striped Ribbed Collar
-          ctx.fillStyle = '#0f172a';
-          ctx.beginPath();
-          ctx.ellipse(width / 2, 75, 36, 12, 0, 0, Math.PI);
-          ctx.fill();
-
-          // Snap Placket Center Line
-          ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(width / 2, 85);
-          ctx.lineTo(width / 2, height - 72);
-          ctx.stroke();
-
-          // Snaps
-          for (let snapY = 100; snapY <= height - 85; snapY += 28) {
-            ctx.fillStyle = '#f8fafc';
+          if (garment === 'hoodie' && isBack) {
+            // Back view: the hood reads as a solid lump above the yoke.
+            ctx.fillStyle = shadowColor;
             ctx.beginPath();
-            ctx.arc(width / 2, snapY, 4, 0, Math.PI * 2);
+            ctx.ellipse(cx, 66, 44, 26, 0, Math.PI, 0, true);
             ctx.fill();
           }
 
-          // Varsity Monogram
-          let embroiderX = width / 2 - 34;
-          let embroiderY = 135;
-          let fontSize = 14;
-          if (placement === 'chest') {
-            embroiderX = width / 2 - 32;
-          }
-
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `bold ${fontSize}px ${activeFont}`;
-          ctx.textAlign = 'center';
-          ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
-        } else {
-          // Kicks Silhouette
           ctx.fillStyle = color;
           ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
           ctx.lineWidth = 2;
 
           ctx.beginPath();
-          ctx.moveTo(width / 2 - 110, height / 2 + 10);
-          ctx.lineTo(width / 2 - 110, height / 2 - 40);
-          ctx.lineTo(width / 2 - 20, height / 2 - 45);
-          ctx.lineTo(width / 2 + 30, height / 2 - 10);
-          ctx.lineTo(width / 2 + 110, height / 2 + 15);
-          ctx.lineTo(width / 2 + 115, height / 2 + 45);
-          ctx.lineTo(width / 2 - 110, height / 2 + 45);
+          if (isBack) {
+            // A back neckline is shallow and rides high.
+            ctx.moveTo(cx - 34, 72);
+            ctx.quadraticCurveTo(cx, 78, cx + 34, 72);
+          } else {
+            ctx.moveTo(cx - 34, 70);
+            ctx.quadraticCurveTo(cx, 85, cx + 34, 70);
+          }
+          ctx.lineTo(cx + 100, 110);
+          ctx.lineTo(cx + 135, 175);
+          ctx.lineTo(cx + 95, 195);
+          ctx.lineTo(cx + 75, 150);
+          ctx.lineTo(cx + 70, height - 70);
+          ctx.lineTo(cx - 70, height - 70);
+          ctx.lineTo(cx - 75, 150);
+          ctx.lineTo(cx - 95, 195);
+          ctx.lineTo(cx - 135, 175);
+          ctx.lineTo(cx - 100, 110);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
+          // Collar ribbing
+          ctx.fillStyle = accentColor;
+          ctx.beginPath();
+          if (isBack) {
+            ctx.ellipse(cx, 72, 34, 6, 0, 0, Math.PI);
+          } else {
+            ctx.ellipse(cx, 70, 34, 12, 0, 0, Math.PI);
+          }
+          ctx.fill();
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+          ctx.beginPath();
+          ctx.ellipse(cx, isBack ? 72 : 70, 30, isBack ? 4 : 9, 0, 0, Math.PI);
+          ctx.fill();
+
+          // Cuffs and hem take the accent colour.
+          ctx.fillStyle = accentColor;
+          ctx.beginPath();
+          ctx.moveTo(cx + 135, 175);
+          ctx.lineTo(cx + 95, 195);
+          ctx.lineTo(cx + 90, 183);
+          ctx.lineTo(cx + 130, 163);
+          ctx.closePath();
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(cx - 135, 175);
+          ctx.lineTo(cx - 95, 195);
+          ctx.lineTo(cx - 90, 183);
+          ctx.lineTo(cx - 130, 163);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillRect(cx - 70, height - 82, 140, 12);
+
+          ctx.strokeStyle = shadowColor;
+          ctx.lineWidth = 1.5;
+          if (isBack) {
+            // Centre-back seam plus the shoulder yoke — the back's tell.
+            ctx.beginPath();
+            ctx.moveTo(cx, 80);
+            ctx.lineTo(cx, height - 82);
+            ctx.moveTo(cx - 92, 104);
+            ctx.quadraticCurveTo(cx, 124, cx + 92, 104);
+            ctx.stroke();
+          } else {
+            ctx.beginPath();
+            ctx.moveTo(cx - 74, 120);
+            ctx.lineTo(cx - 70, height - 82);
+            ctx.moveTo(cx + 74, 120);
+            ctx.lineTo(cx + 70, height - 82);
+            ctx.stroke();
+
+            if (garment === 'hoodie') {
+              // Kangaroo pocket + drawstrings, front only.
+              ctx.fillStyle = shadowColor;
+              ctx.beginPath();
+              if (ctx.roundRect) {
+                ctx.roundRect(cx - 52, height - 152, 104, 52, 10);
+              } else {
+                ctx.rect(cx - 52, height - 152, 104, 52);
+              }
+              ctx.fill();
+              ctx.strokeStyle = accentColor;
+              ctx.lineWidth = 2.5;
+              ctx.beginPath();
+              ctx.moveTo(cx - 12, 82);
+              ctx.lineTo(cx - 16, 124);
+              ctx.moveTo(cx + 12, 82);
+              ctx.lineTo(cx + 16, 124);
+              ctx.stroke();
+            }
+          }
+
+          // Embroidery placement zones
+          let embroiderX = cx;
+          let embroiderY = 170;
+          let fontSize = 18;
+          if (placement === 'pocket') {
+            embroiderX = cx - 46;
+            embroiderY = 132;
+            fontSize = 12;
+          } else if (isBack) {
+            embroiderY = 190;
+            fontSize = 26;
+          }
+
+          ctx.fillStyle = stitch;
+          ctx.font = `bold ${fontSize * textScale}px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
+
+          ctx.font = `${9 * textScale}px sans-serif`;
+          ctx.globalAlpha = 0.75;
+          ctx.fillText('AUTHENTIC EMBROIDERY', embroiderX, embroiderY + 16);
+          ctx.globalAlpha = 1;
+
+          // Woven size tag
+          ctx.fillStyle = '#f8fafc';
+          if (isBack) {
+            ctx.fillRect(cx - 18, 84, 36, 14);
+            ctx.fillStyle = '#334155';
+            ctx.font = 'bold 8px sans-serif';
+            ctx.fillText(size.replace('Youth ', 'Y'), cx, 94);
+          } else {
+            ctx.fillRect(cx - 88, height - 96, 36, 14);
+            ctx.fillStyle = '#334155';
+            ctx.font = 'bold 8px sans-serif';
+            ctx.fillText(size.replace('Youth ', 'Y'), cx - 70, height - 86);
+          }
+        } else if (garment === 'jacket') {
+          // Varsity Bomber Jacket
+          ctx.fillStyle = accentColor;
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+          ctx.moveTo(cx - 34, 70);
+          ctx.lineTo(cx + 34, 70);
+          ctx.lineTo(cx + 100, 110);
+          ctx.lineTo(cx + 135, 185);
+          ctx.lineTo(cx + 95, 200);
+          ctx.lineTo(cx + 75, 150);
+          ctx.lineTo(cx - 75, 150);
+          ctx.lineTo(cx - 95, 200);
+          ctx.lineTo(cx - 135, 185);
+          ctx.lineTo(cx - 100, 110);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(cx - 36, 75);
+          ctx.lineTo(cx + 36, 75);
+          ctx.lineTo(cx + 70, 140);
+          ctx.lineTo(cx + 66, height - 70);
+          ctx.lineTo(cx - 66, height - 70);
+          ctx.lineTo(cx - 70, 140);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Striped ribbed collar, cuffs and hem
+          ctx.fillStyle = accentColor;
+          ctx.beginPath();
+          ctx.ellipse(cx, 75, 36, 12, 0, 0, Math.PI);
+          ctx.fill();
+          ctx.fillRect(cx - 66, height - 82, 132, 12);
+          ctx.fillStyle = shadowColor;
+          ctx.fillRect(cx - 66, height - 78, 132, 4);
+
+          if (!isBack) {
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(cx, 85);
+            ctx.lineTo(cx, height - 72);
+            ctx.stroke();
+
+            for (let snapY = 100; snapY <= height - 85; snapY += 28) {
+              ctx.fillStyle = accentColor;
+              ctx.beginPath();
+              ctx.arc(cx, snapY, 4, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          } else {
+            ctx.strokeStyle = shadowColor;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(cx - 62, 104);
+            ctx.quadraticCurveTo(cx, 122, cx + 62, 104);
+            ctx.stroke();
+          }
+
+          // Varsity Monogram honours all three placements.
+          let embroiderX = cx;
+          let embroiderY = 200;
+          let fontSize = 28;
+          if (placement === 'chest') {
+            embroiderX = cx - 30;
+            embroiderY = 128;
+            fontSize = 16;
+          } else if (placement === 'pocket') {
+            embroiderX = cx - 40;
+            embroiderY = 118;
+            fontSize = 11;
+          }
+
+          ctx.fillStyle = stitch;
+          ctx.font = `bold ${fontSize * textScale}px ${activeFont}`;
+          ctx.textAlign = 'center';
+          ctx.fillText(monogram.toUpperCase(), embroiderX, embroiderY);
+
+          ctx.fillStyle = '#f8fafc';
+          ctx.fillRect(cx + 34, height - 96, 34, 14);
+          ctx.fillStyle = '#334155';
+          ctx.font = 'bold 8px sans-serif';
+          ctx.fillText(size.replace('Youth ', 'Y'), cx + 51, height - 86);
+        } else {
+          // Kicks Silhouette
+          const midY = height / 2;
+          ctx.fillStyle = color;
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+          ctx.moveTo(cx - 110, midY + 10);
+          ctx.lineTo(cx - 110, midY - 40);
+          ctx.lineTo(cx - 20, midY - 45);
+          ctx.lineTo(cx + 30, midY - 10);
+          ctx.lineTo(cx + 110, midY + 15);
+          ctx.lineTo(cx + 115, midY + 45);
+          ctx.lineTo(cx - 110, midY + 45);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Heel tab and toe cap in the accent colour
+          ctx.fillStyle = accentColor;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(cx - 116, midY - 44, 22, 34, 6);
+          else ctx.rect(cx - 116, midY - 44, 22, 34);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(cx + 92, midY + 20, 30, 22, -0.18, Math.PI, 0);
+          ctx.fill();
+
+          // Laces
+          ctx.strokeStyle = accentColor;
+          ctx.lineWidth = 3;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          for (let i = 0; i < 4; i += 1) {
+            const lx = cx - 60 + i * 24;
+            ctx.moveTo(lx, midY - 36 + i * 6);
+            ctx.lineTo(lx + 20, midY - 22 + i * 6);
+            ctx.moveTo(lx + 20, midY - 36 + i * 6);
+            ctx.lineTo(lx, midY - 22 + i * 6);
+          }
+          ctx.stroke();
+          ctx.lineCap = 'butt';
+
           // White Midsole
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(width / 2 - 115, height / 2 + 35, 235, 22);
+          ctx.fillRect(cx - 115, midY + 35, 235, 22);
           ctx.strokeStyle = '#cbd5e1';
-          ctx.strokeRect(width / 2 - 115, height / 2 + 35, 235, 22);
+          ctx.lineWidth = 2;
+          ctx.strokeRect(cx - 115, midY + 35, 235, 22);
 
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `bold 14px ${activeFont}`;
+          // Placement is real on kicks too: side panel or heel tab.
           ctx.textAlign = 'center';
-          ctx.fillText(monogram.toUpperCase(), width / 2 - 65, height / 2 - 15);
+          if (isBack) {
+            ctx.save();
+            ctx.translate(cx - 105, midY - 27);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillStyle = contrastInk(accentColor);
+            ctx.font = `bold ${10 * textScale}px ${activeFont}`;
+            ctx.fillText(monogram.toUpperCase().slice(0, 8), 0, 0);
+            ctx.restore();
+          } else {
+            ctx.fillStyle = stitch;
+            ctx.font = `bold ${14 * textScale}px ${activeFont}`;
+            ctx.fillText(monogram.toUpperCase(), cx - 45, midY - 12);
+          }
+
+          ctx.fillStyle = '#334155';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.fillText(size.replace('Youth ', 'Y'), cx + 96, midY + 50);
+        }
+
+        ctx.restore();
+
+        // Apparel gets the same bleed guide the poster already had.
+        if (showBleed) {
+          ctx.save();
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 1;
+          if (ctx.setLineDash) ctx.setLineDash([4, 4]);
+          ctx.strokeRect(6, 6, width - 12, height - 12);
+          ctx.strokeStyle = '#10b981';
+          ctx.strokeRect(20, 20, width - 40, height - 40);
+          if (ctx.setLineDash) ctx.setLineDash([]);
+          ctx.fillStyle = '#ef4444';
+          ctx.font = 'bold 8px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText('[---] BLEED MARGIN', 10, 16);
+          ctx.fillStyle = '#10b981';
+          ctx.fillText('PRINTABLE GARMENT ZONE', 24, 30);
+          ctx.restore();
         }
       }
 
@@ -2889,10 +2644,25 @@ export function CanvasEngine({
         drawSticker(ctx, s, s.id === activeStickerId);
       });
 
-      // Anti-Theft Dual-Side Security Watermarks (prevents upscaling & unauthorized copying)
-      drawDualWatermarks(ctx, width, height, mode, config?.activePage ?? 0);
+      // Anti-theft watermarks belong on the downloadable proof, but they poison
+      // a cart or saved-design thumbnail with a diagonal PROOF ribbon — so the
+      // caller opts out via `exportOptions`.
+      if (watermark) {
+        drawDualWatermarks(ctx, width, height, mode, config?.activePage ?? 0);
+      }
     },
-    [width, height, mode, config, stickers, activeStickerId, drawSticker]
+    [
+      width,
+      height,
+      mode,
+      config,
+      stickers,
+      activeStickerId,
+      drawSticker,
+      watermark,
+      heroAvatar,
+      heroCompanion,
+    ]
   );
 
   useEffect(() => {
@@ -3008,6 +2778,25 @@ export function CanvasEngine({
     setActiveStickerId(null);
   }, [activeStickerId, stickers, onUpdateStickers, setActiveStickerId]);
 
+  const handleNudgeActive = useCallback(
+    (dx, dy) => {
+      if (!activeStickerId) return;
+      onUpdateStickers(
+        stickers.map((s) =>
+          s.id === activeStickerId
+            ? {
+                ...s,
+                x: Math.max(0, Math.min(width, s.x + dx)),
+                y: Math.max(0, Math.min(height, s.y + dy)),
+              }
+            : s
+        ),
+        { commit: true }
+      );
+    },
+    [activeStickerId, stickers, onUpdateStickers, width, height]
+  );
+
   // Keyboard accessibility & hotkeys for selected stamp
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -3026,6 +2815,18 @@ export function CanvasEngine({
       } else if (e.key === ']') {
         e.preventDefault();
         handleLayerActive(1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handleNudgeActive(e.shiftKey ? -10 : -1, 0);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNudgeActive(e.shiftKey ? 10 : 1, 0);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        handleNudgeActive(0, e.shiftKey ? -10 : -1);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        handleNudgeActive(0, e.shiftKey ? 10 : 1);
       }
     };
 
@@ -3035,8 +2836,189 @@ export function CanvasEngine({
     activeStickerId,
     handleDeleteActive,
     handleLayerActive,
+    handleNudgeActive,
     setActiveStickerId,
   ]);
+
+  /* ---- Direct manipulation from the selection chrome ------------------- */
+
+  const pointFromEvent = useCallback((e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches?.[0];
+    const clientX = touch ? touch.clientX : e.clientX;
+    const clientY = touch ? touch.clientY : e.clientY;
+    if (clientX === undefined || clientY === undefined) return null;
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }, []);
+
+  /**
+   * The grips and the rotation knob used to be decoration. Hit-testing them
+   * means undoing the sticker's own transform: translate, then rotate, then
+   * scale (with `flipX` mirroring the x axis).
+   */
+  const hitTransformHandle = useCallback((sticker, x, y) => {
+    const scale = sticker.scale || 1;
+    const rad = ((sticker.rotation || 0) * Math.PI) / 180;
+    const dx = x - sticker.x;
+    const dy = y - sticker.y;
+    const lx = (dx * Math.cos(rad) + dy * Math.sin(rad)) / scale;
+    const ly = (-dx * Math.sin(rad) + dy * Math.cos(rad)) / scale;
+    const px = sticker.flipX ? -lx : lx;
+    const tol = 8 / scale;
+
+    if (Math.hypot(px, ly - KNOB_OFFSET) <= KNOB_RADIUS + tol) return 'rotate';
+    for (let i = 0; i < 4; i += 1) {
+      const gx = i === 0 || i === 3 ? -GRIP_HALF : GRIP_HALF;
+      const gy = i < 2 ? -GRIP_HALF : GRIP_HALF;
+      if (
+        Math.abs(px - gx) <= GRIP_SIZE + tol &&
+        Math.abs(ly - gy) <= GRIP_SIZE + tol
+      ) {
+        return 'resize';
+      }
+    }
+    return null;
+  }, []);
+
+  const beginTransformDrag = useCallback(
+    (e) => {
+      if (!activeStickerId) return false;
+      const point = pointFromEvent(e);
+      if (!point) return false;
+      const sticker = stickers.find((s) => s.id === activeStickerId);
+      if (!sticker) return false;
+      const handle = hitTransformHandle(sticker, point.x, point.y);
+      if (!handle) return false;
+
+      transformDragRef.current = {
+        handle,
+        id: sticker.id,
+        startScale: sticker.scale || 1,
+        startRotation: sticker.rotation || 0,
+        startDist: Math.hypot(point.x - sticker.x, point.y - sticker.y) || 1,
+        startAngle: Math.atan2(point.y - sticker.y, point.x - sticker.x),
+        latest: null,
+      };
+      return true;
+    },
+    [activeStickerId, stickers, pointFromEvent, hitTransformHandle]
+  );
+
+  const updateTransformDrag = useCallback(
+    (e) => {
+      const drag = transformDragRef.current;
+      if (!drag) return false;
+      const point = pointFromEvent(e);
+      if (!point) return true;
+      const sticker = stickers.find((s) => s.id === drag.id);
+      if (!sticker) return true;
+
+      let patchScale = sticker.scale || 1;
+      let patchRotation = sticker.rotation || 0;
+
+      if (drag.handle === 'resize') {
+        const dist = Math.hypot(point.x - sticker.x, point.y - sticker.y);
+        patchScale = Math.max(
+          0.4,
+          Math.min(3, (drag.startScale * dist) / drag.startDist)
+        );
+      } else {
+        const angle = Math.atan2(point.y - sticker.y, point.x - sticker.x);
+        patchRotation =
+          (drag.startRotation +
+            ((angle - drag.startAngle) * 180) / Math.PI +
+            360) %
+          360;
+      }
+
+      const updated = stickers.map((s) =>
+        s.id === drag.id
+          ? { ...s, scale: patchScale, rotation: patchRotation }
+          : s
+      );
+      drag.latest = updated;
+      // Intermediate frames stay out of undo history, same as a position drag.
+      onUpdateStickers(updated, { commit: false });
+      return true;
+    },
+    [stickers, pointFromEvent, onUpdateStickers]
+  );
+
+  const endTransformDrag = useCallback(() => {
+    const drag = transformDragRef.current;
+    if (!drag) return false;
+    transformDragRef.current = null;
+    if (drag.latest) onUpdateStickers(drag.latest, { commit: true });
+    return true;
+  }, [onUpdateStickers]);
+
+  const canvasHandlers = useMemo(
+    () => ({
+      onMouseDown: (e) => {
+        if (beginTransformDrag(e)) return;
+        gestureHandlers.onMouseDown(e);
+      },
+      onMouseMove: (e) => {
+        if (updateTransformDrag(e)) return;
+        gestureHandlers.onMouseMove(e);
+      },
+      onMouseUp: (e) => {
+        if (endTransformDrag()) return;
+        gestureHandlers.onMouseUp(e);
+      },
+      onMouseLeave: (e) => {
+        if (endTransformDrag()) return;
+        gestureHandlers.onMouseLeave(e);
+      },
+      onTouchStart: (e) => {
+        if (beginTransformDrag(e)) return;
+        gestureHandlers.onTouchStart(e);
+      },
+      onTouchMove: (e) => {
+        if (updateTransformDrag(e)) return;
+        gestureHandlers.onTouchMove(e);
+      },
+      onTouchEnd: (e) => {
+        if (endTransformDrag()) return;
+        gestureHandlers.onTouchEnd(e);
+      },
+      onTouchCancel: (e) => {
+        if (endTransformDrag()) return;
+        gestureHandlers.onTouchCancel(e);
+      },
+    }),
+    [gestureHandlers, beginTransformDrag, updateTransformDrag, endTransformDrag]
+  );
+
+  const stampCount = stickers.length;
+  const canvasLabel = useMemo(() => {
+    const stamps = `${stampCount} decorative ${
+      stampCount === 1 ? 'stamp' : 'stamps'
+    } placed`;
+
+    if (mode === 'poster') {
+      return `Poster proof preview. Headline "${config.headline ?? ''}", ${
+        config.artStyle ?? 'cosmic'
+      } artwork, ${config.frame ?? 'oak'} frame, ${
+        config.paper ?? 'cotton'
+      } paper, ${config.orientation ?? 'portrait'} orientation. ${stamps}.`;
+    }
+    if (mode === 'apparel') {
+      return `Apparel proof preview. ${config.garment ?? 'hoodie'} in size ${
+        config.size ?? 'Youth M'
+      }, monogram "${config.monogram ?? ''}" at ${
+        config.placement ?? 'chest'
+      } placement. ${stamps}.`;
+    }
+    const page = config.activePage ?? 0;
+    return `Storybook proof preview. ${
+      page === 0 ? 'Cover' : `Spread ${page}`
+    } for ${config.childName ?? 'your hero'} with ${heroCompanion.name}, ${
+      config.theme ?? 'space'
+    } theme. ${stamps}.`;
+  }, [mode, config, heroCompanion, stampCount]);
 
   // High-Res Proof Download
   const handleDownloadProof = () => {
@@ -3055,9 +3037,12 @@ export function CanvasEngine({
   return (
     <div className={`${styles.canvasWrapper} ${className}`}>
       <canvas
-        ref={canvasRef}
+        ref={attachCanvas}
         style={{ width: `${width}px`, height: `${height}px` }}
-        {...gestureHandlers}
+        role="img"
+        aria-label={canvasLabel}
+        tabIndex={0}
+        {...canvasHandlers}
         className={`${styles.interactiveCanvas} ${
           hoveredStickerId
             ? styles.cursorMove
@@ -3200,4 +3185,7 @@ CanvasEngine.propTypes = {
   onUpdateStickers: PropTypes.func,
   onCanvasClick: PropTypes.func,
   className: PropTypes.string,
+  isAnimated: PropTypes.bool,
+  canvasRef: PropTypes.shape({ current: PropTypes.any }),
+  exportOptions: PropTypes.shape({ watermark: PropTypes.bool }),
 };

@@ -1,0 +1,348 @@
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  background: var(--color-surface-muted);
+}
+
+/* ---------------------------------------------------------- restore row -- */
+
+.restoreRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-gold);
+  border-radius: 10px;
+  background: var(--color-gold-light);
+}
+
+.restoreText {
+  font-size: 0.8rem;
+  color: var(--color-text-primary);
+}
+
+.restoreActions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.restorePrimary,
+.restoreGhost {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.restorePrimary {
+  border: 0;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+}
+
+.restoreGhost {
+  border: 1.5px solid var(--color-border-dark);
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.restorePrimary:focus-visible,
+.restoreGhost:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------- action row -- */
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.actionGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.action,
+.actionGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.72rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.action {
+  border: 1.5px solid var(--color-border-default);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.action:hover {
+  border-color: var(--color-text-secondary);
+  background: var(--color-surface-elevated);
+}
+
+.actionGhost {
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.actionGhost:hover {
+  color: var(--color-error);
+  border-color: var(--color-error-light);
+}
+
+.action:focus-visible,
+.actionGhost:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: 2px;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.status {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-success-dark);
+  min-height: 1rem;
+}
+
+/* ---------------------------------------------------------- name form -- */
+
+.nameForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nameLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.nameInput {
+  padding: 0.42rem 0.6rem;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 0.78rem;
+  min-width: 190px;
+}
+
+.nameInput:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: 1px;
+}
+
+.nameSubmit {
+  padding: 0.44rem 0.8rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nameCancel {
+  padding: 0.44rem 0.6rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nameSubmit:focus-visible,
+.nameCancel:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------ share fallback -- */
+
+.shareFallback {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.74rem;
+  color: var(--color-text-secondary);
+}
+
+.shareFallback input {
+  padding: 0.42rem 0.6rem;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 0.74rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.shareError {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-error-dark);
+}
+
+/* -------------------------------------------------------------- shelf -- */
+
+.shelf {
+  border-top: 1px solid var(--color-border-light);
+  padding-top: 0.7rem;
+}
+
+.shelfEmpty {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.shelfList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.5rem;
+}
+
+.shelfItem {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 10px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.shelfOpen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.shelfOpen:hover {
+  background: var(--color-surface-muted);
+}
+
+.shelfOpen:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: -3px;
+}
+
+.shelfThumb,
+.shelfThumbFallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 7px;
+  object-fit: cover;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.shelfMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.shelfName {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shelfWhen {
+  font-size: 0.66rem;
+  color: var(--color-text-muted);
+}
+
+.shelfDelete {
+  width: 30px;
+  border: 0;
+  border-left: 1px solid var(--color-border-light);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.shelfDelete:hover {
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+}
+
+.shelfDelete:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: -3px;
+}
+
+@media (max-width: 640px) {
+  .actionRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .actionGhost {
+    transition: none;
+  }
+}
