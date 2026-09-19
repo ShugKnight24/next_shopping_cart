@@ -1,8 +1,8 @@
 /**
  * The single source of truth for what a hero and a companion can look like.
  *
- * Both renderers — the live SVG portrait in `CharacterCreator` and the canvas
- * hero drawn by `CanvasEngine` — read their values from here. That is the point:
+ * Both renderers — the SVG portraits in `CharacterPortraits` and the canvas
+ * hero drawn by `drawCharacter` — read their values from here. That is the point:
  * the previous split let the picker offer five collars, six coat colours, a pet
  * name and five badges that no renderer ever read, so a shopper could spend two
  * minutes dressing a companion and receive none of it on the printed page.

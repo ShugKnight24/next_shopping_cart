@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { HeroAnimationSwitcher } from '../Components/Hero/HeroAnimationSwitcher';
 import {
   CATEGORY_DEFINITIONS,
   CategoryFilterTabs,
 } from '../Components/Products/CategoryFilterTabs';
 import { ProductCard } from '../Components/Products/ProductCard';
 import { Badge } from '../Components/UI/Badge';
-import { HeroAnimationSwitcher } from '../Components/Hero/HeroAnimationSwitcher';
 import { CartContext } from '../context/CartProvider';
 import products from '../data/products.json';
 
@@ -199,7 +199,8 @@ describe('Product Card & Category Tabs Tests', () => {
       products.forEach((product) => {
         if (product.image.startsWith('/')) {
           expect(
-            product.image.startsWith('/images/') || product.image.startsWith('/static/')
+            product.image.startsWith('/images/') ||
+              product.image.startsWith('/static/')
           ).toBe(true);
           const fs = require('fs');
           const path = require('path');
@@ -234,7 +235,10 @@ describe('Product Card & Category Tabs Tests', () => {
         const { container } = render(<Badge type={type} showIcon={true} />);
         expect(container.textContent).not.toMatch(emojiRegex);
         const svg = container.querySelector('svg');
-        expect(svg, `Badge ${type} is missing an SVG component icon`).toBeInTheDocument();
+        expect(
+          svg,
+          `Badge ${type} is missing an SVG component icon`
+        ).toBeInTheDocument();
       });
     });
 

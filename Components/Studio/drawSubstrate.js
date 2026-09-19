@@ -43,7 +43,7 @@ const COMPANION_OPTS = { x: 0, y: 0 };
 
 /**
  * Geometry of the poster's mat and art window. The workbench needs it to place
- * layers inside the print area; `CanvasEngine` needs it to sit its headline
+ * layers inside the print area; the workbench needs it to sit its headline
  * block in the same spot it always has.
  */
 export function posterArtRect(width, height, config = {}) {
@@ -520,7 +520,7 @@ export function drawApparelTag(ctx, { width, height, config = {} }) {
  * The embroidered monogram that used to sit inside the garment branches.
  *
  * It is NOT part of the substrate — the workbench renders it as a text layer
- * instead — but `CanvasEngine` still needs it to paint the legacy studios
+ * instead. Kept because the two-phase split needs it to paint the garment
  * unchanged, so it ships here rather than being rewritten at the call site.
  * Drawn in the same garment-scaled space as the silhouette.
  */

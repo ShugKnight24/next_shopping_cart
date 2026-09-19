@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { applyTemplate, SLOT_ROLES } from '../Components/Studio/workbench/layerModel';
+import {
+  applyTemplate,
+  SLOT_ROLES,
+} from '../Components/Studio/workbench/layerModel';
 import { STYLE_PRESETS } from '../Components/Studio/workbench/stylePresets';
 import { TEMPLATES_BY_MODE } from '../Components/Studio/workbench/templates';
 
@@ -91,17 +94,20 @@ describe.each(MODES)('%s style presets', (mode) => {
     expect(presets.length).toBeGreaterThanOrEqual(6);
   });
 
-  it.each(presets.map((p) => [p.id, p]))('%s restyles purely', (_id, preset) => {
-    const input = sample();
-    const frozen = JSON.stringify(input);
+  it.each(presets.map((p) => [p.id, p]))(
+    '%s restyles purely',
+    (_id, preset) => {
+      const input = sample();
+      const frozen = JSON.stringify(input);
 
-    const output = preset.apply(input);
+      const output = preset.apply(input);
 
-    expect(Array.isArray(output)).toBe(true);
-    expect(output).toHaveLength(input.length);
-    // Pure: the caller's array must come back untouched.
-    expect(JSON.stringify(input)).toBe(frozen);
-  });
+      expect(Array.isArray(output)).toBe(true);
+      expect(output).toHaveLength(input.length);
+      // Pure: the caller's array must come back untouched.
+      expect(JSON.stringify(input)).toBe(frozen);
+    }
+  );
 
   it.each(presets.map((p) => [p.id, p]))(
     '%s restyles without moving anything',

@@ -56,7 +56,7 @@ export const STAMP_IDS = [
 
 /**
  * Grouping for the workbench asset browser. Membership mirrors the catalog in
- * `StickerBar` so the two browsers never disagree about where a stamp lives.
+ * the workbench asset browser so categories stay stable as stamps are added.
  */
 export const STAMP_CATEGORIES = [
   {

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createDesignId } from '../Components/Studio/core/designDoc';
 
-/** Half-extent of a stamp's artwork at scale 1, matching the selection box
- *  CanvasEngine draws at `-24,-24,48,48`. */
+/** Half-extent of a stamp's artwork at scale 1, matching the 48x48 design box
+ *  `drawStamp` renders into. */
 const STAMP_HALF_EXTENT = 24;
 
 /**

@@ -71,6 +71,13 @@ export const encodeDesign = (doc) => {
         m: doc.mode,
         o: doc.options,
         l: (doc.layers ?? []).map(packLayer),
+        // `meta` carries the preview handoff: a template id plus the slot text
+        // the visitor typed, so the designer can rebuild the stack instead of
+        // the link having to carry every seeded layer.
+        ...(doc.meta?.template ? { tpl: doc.meta.template } : {}),
+        ...(doc.meta?.slots && Object.keys(doc.meta.slots).length
+          ? { s: doc.meta.slots }
+          : {}),
       })
     );
   } catch {
@@ -87,6 +94,7 @@ export const decodeDesign = (encoded) => {
       mode: raw.m,
       options: raw.o,
       layers: (raw.l ?? []).map(unpackLayer),
+      meta: { template: raw.tpl ?? null, slots: raw.s ?? null },
     });
   } catch {
     return null;

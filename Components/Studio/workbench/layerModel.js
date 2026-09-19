@@ -71,7 +71,7 @@ export const createShapeLayer = (overrides = {}) => ({
   ...overrides,
 });
 
-/** `art` is one of the hand-drawn vector stamps in CanvasEngine's drawSticker. */
+/** `art` is one of the hand-drawn vector stamps in `drawStamp`. */
 export const createArtLayer = (overrides = {}) => ({
   ...BASE,
   id: uid('art'),

@@ -61,7 +61,7 @@ export const useDesignHistory = (
     });
   }, []);
 
-  /** What `CanvasEngine` calls: `(layers, { commit })`. */
+  /** The shape a canvas editor calls: `(layers, { commit })`. */
   const update = useCallback(
     (next, { commit: shouldCommit = true } = {}) =>
       shouldCommit ? commit(next) : preview(next),

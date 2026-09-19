@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useCallback, useMemo, useState } from 'react';
 import { CanvasViewport } from './CanvasViewport';
 import { Inspector } from './Inspector';
+import { applyTemplate } from './layerModel';
 import { LayerPanel } from './LayerPanel';
 import { paintLayers } from './renderLayers';
 import { STYLE_PRESETS } from './stylePresets';
@@ -77,6 +78,33 @@ export const WorkbenchRoute = ({
     }
   }, [artboard, drawSubstrate, options, workbench.layers]);
 
+  /**
+   * A design handed off from the marketing preview arrives as a template id
+   * plus the slot text the visitor typed, rather than a full layer stack — see
+   * StudioPreview. Rebuild it here so it lands as real template layers and
+   * template swapping keeps working.
+   */
+  const rebuildFromTemplate = useCallback(
+    (doc) => {
+      if (!doc?.meta?.template) return doc;
+
+      const template = (TEMPLATES_BY_MODE[templateMode] ?? []).find(
+        (candidate) => candidate.id === doc.meta.template
+      );
+      if (!template) return doc;
+
+      const slots = doc.meta.slots ?? {};
+      const layers = applyTemplate(template, doc.layers ?? []).map((layer) =>
+        layer.slotRole && slots[layer.slotRole]
+          ? { ...layer, text: slots[layer.slotRole] }
+          : layer
+      );
+
+      return { ...doc, layers };
+    },
+    [templateMode]
+  );
+
   const design = useWorkbenchDesign({
     product,
     options,
@@ -84,6 +112,7 @@ export const WorkbenchRoute = ({
     workbench,
     snapshot,
     summarize,
+    transformIncoming: rebuildFromTemplate,
   });
 
   const setOption = useCallback(

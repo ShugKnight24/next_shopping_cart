@@ -30,6 +30,7 @@ export const useWorkbenchDesign = ({
   workbench,
   snapshot,
   summarize,
+  transformIncoming = null,
 }) => {
   const { dispatch, setIsCartOpen } = useContext(CartContext);
   const [quantity, setQuantity] = useState(1);
@@ -62,10 +63,15 @@ export const useWorkbenchDesign = ({
   const applyDoc = useCallback(
     (incoming) => {
       if (!incoming) return;
-      setOptions({ ...product.defaults, ...incoming.options });
-      workbench.resetLayers(incoming.layers ?? []);
+
+      // A preview handoff arrives as a template reference; the route knows how
+      // to turn that back into layers.
+      const doc = transformIncoming ? transformIncoming(incoming) : incoming;
+
+      setOptions({ ...product.defaults, ...doc.options });
+      workbench.resetLayers(doc.layers ?? []);
     },
-    [product.defaults, setOptions, workbench]
+    [product.defaults, setOptions, workbench, transformIncoming]
   );
 
   // A `?d=` link should open the design it points at, once.

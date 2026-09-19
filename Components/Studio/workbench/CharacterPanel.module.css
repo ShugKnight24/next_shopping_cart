@@ -1,0 +1,140 @@
+/* The cast panel. Tokens come from theme.module.css. */
+
+/* ----------------------------------------------------------------- tabs -- */
+
+/* Sunken track, raised selection — the same read as the segmented control, one
+   size up, because this switches the whole panel rather than one value. */
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+}
+
+.tab {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 30px;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wb-text-dim);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.tab:hover {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: -1px;
+}
+
+.tabActive,
+.tabActive:hover {
+  background: var(--wb-accent-soft);
+  color: var(--wb-accent);
+  box-shadow: inset 0 0 0 1px var(--wb-accent-line);
+}
+
+/* -------------------------------------------------------------- portrait -- */
+
+.stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 190px;
+  padding: 0.75rem 0.75rem 0;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: var(--wb-radius-lg);
+  /* The portraits are drawn with dark outlines for a printed page; on near-black
+     every contour they have disappears. Same reasoning as the stamp tiles. */
+  background: var(--wb-text);
+  overflow: hidden;
+}
+
+.stage svg {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: -0.35rem 0 0;
+  min-width: 0;
+}
+
+.captionName {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--wb-text);
+}
+
+.captionMeta {
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--wb-text-faint);
+}
+
+/* ------------------------------------------------------------- actions -- */
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+/* WorkbenchButton is inline-flex and content-width by default; here it owns
+   its cell. */
+.actions > button {
+  width: 100%;
+  justify-content: center;
+}
+
+/* -------------------------------------------------------------- panels -- */
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* A hidden tabpanel must stay out of the flow; `display: flex` would otherwise
+   beat the `hidden` attribute's UA rule. */
+.fields[hidden] {
+  display: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

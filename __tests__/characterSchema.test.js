@@ -38,15 +38,15 @@ const read = (...parts) => readFileSync(join(root, ...parts), 'utf8');
  * way once — five collars, six coat colours, five badges and the companion's
  * name were all selectable and none of them reached the printed page.
  *
- * There are two renderers, and an option must be honoured by both: the inline
- * SVG portrait in `CharacterCreator`, and the canvas art in `drawCharacter`.
+ * There are two renderers, and an option must be honoured by both: the SVG
+ * portraits in `CharacterPortraits`, and the canvas art in `drawCharacter`.
  * Checking that each option's id appears as a literal in both sources is crude,
  * but it catches the exact regression: adding a table entry and wiring only one
  * side, or neither.
  */
 const RENDERERS = [
   ['drawCharacter.js', read('drawCharacter.js')],
-  ['CharacterCreator.jsx', read('CharacterCreator.jsx')],
+  ['CharacterPortraits.jsx', read('CharacterPortraits.jsx')],
 ];
 
 /**

@@ -4,7 +4,7 @@
  * Lifted out of `CanvasEngine` because a 560-line inline block is exactly why
  * half of `core/characterSchema.js` was pickable but invisible: nobody could
  * find the branch to extend. Every option table in the schema is honoured here,
- * and `CharacterCreator`'s SVG portrait is the other renderer of the same data.
+ * and `CharacterPortraits` is the other renderer of the same data.
  *
  * Both entry points draw in a local coordinate space whose origin is the
  * character's standing point, so the caller only supplies `x`/`y`.

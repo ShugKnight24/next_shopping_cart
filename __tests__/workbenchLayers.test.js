@@ -163,7 +163,10 @@ describe('applyTemplate', () => {
 
   it('keeps layers the shopper added themselves', () => {
     const seeded = applyTemplate(templateA, []);
-    const withOwn = [...seeded, createLayer('art', { id: 'mine', art: 'star' })];
+    const withOwn = [
+      ...seeded,
+      createLayer('art', { id: 'mine', art: 'star' }),
+    ];
 
     const swapped = applyTemplate(templateB, withOwn);
     expect(swapped.some((l) => l.id === 'mine')).toBe(true);
@@ -187,6 +190,8 @@ describe('applyTemplate', () => {
   });
 
   it('marks seeded layers with their provenance', () => {
-    expect(applyTemplate(templateA, []).every((l) => l.fromTemplate)).toBe(true);
+    expect(applyTemplate(templateA, []).every((l) => l.fromTemplate)).toBe(
+      true
+    );
   });
 });

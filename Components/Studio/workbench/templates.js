@@ -27,7 +27,7 @@
  *
  * Font family ids match the studios: sans | serif | display | cursive (the book
  * studio only offers sans | serif | cursive, so book templates stay off display).
- * Art ids are the stamps in `drawStamp` / `StickerBar`.
+ * Art ids are the stamps in `drawStamp`.
  */
 
 export { STYLE_PRESETS } from './stylePresets';

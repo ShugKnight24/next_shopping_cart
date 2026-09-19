@@ -14,10 +14,12 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
   - _Musical Instruments_ (Gibson, Fender Custom Shop, Martin, Nord, Yamaha)
   - _Strength & Fitness_ (Rogue, Eleiko, Bowflex)
   - _Audio & Tech_ (Sony, Sennheiser, Apple Vision Pro, Teenage Engineering)
-- **Interactive Custom Creation Studio Suite (`/studio`)**:
-  - _Personalized Children's Storybooks_: Child name personalization, 6 theme templates, dedication certificate, prose editor, physical flipbook reader proof, and an interactive **Character & Trusty Companion Creator** (6 skin tones, 7 procedural hairstyles, accessories, 7 mascot co-stars, coat colors, and superpower badges).
-  - _Framed Wall Art Poster Studio_: Multi-size selection (12×18, 18×24, 24×36), dual orientations (Vertical Portrait & Horizontal Landscape), museum framing (Solid Oak, Black, White, Vintage Gold), archival paper stocks, undo/redo history stack, and Archival Gallery Proof verification modal.
-  - _Kids' Custom Apparel & Kicks_: Organic hoodies, graphic tees, varsity bomber jackets, and canvas kicks with youth sizing (XS-XL), placement zones (Chest, Pocket, Back), Japanese satin stitch embroidery, and interactive sizing chart.
+- **Full-Screen Design Workbench (`/studio/book`, `/studio/poster`, `/studio/apparel`)**: Three dedicated editors on a shared layer engine — dark tool chrome, a zoomable and pannable artboard, drag/resize/rotate with snap guides, an ordered layer stack, undo/redo, autosave, `?d=` share links, and a live 300 DPI print spec.
+  - _Templates & Styles_: 30 templates (12 poster, 10 apparel, 8 book) across categories, each rendered as a real miniature of its own composition, plus 21 style presets that restyle palette, typeface and ink without moving anything. Switching templates carries your typed copy across by slot role.
+  - _Personalized Children's Storybooks_: Scene environments, time of day and weather, plus a **Character & Companion Creator** driven by one schema — 12 skin tones, 12 hairstyles, eye shape and colour, brows, expressions, freckles, three independent accessory slots, 7 outfit styles with patterns, and a companion with its own coat, collar, pose, size and name. Every option is honoured by both the SVG portrait and the printed canvas, enforced by a test.
+  - _Framed Wall Art Posters_: Sizes (12×18, 18×24, 24×36), both orientations, museum framing, mats, archival paper stocks, and custom ink.
+  - _Kids' Custom Apparel & Kicks_: Hoodies, tees, varsity jackets and canvas kicks with youth sizing, accent trim, placement zones and embroidery finishes.
+- **Try-It Previews (`/studio`)**: Each product gets a live, deliberately shallow preview on the marketing page. Whatever a visitor makes there is encoded into the workbench's share link, so "Continue in the full designer" resumes exactly what is on screen.
 - **Social Media Creation Studio (`/studio/social`)**: Multi-layer vector canvas editor with drag-and-drop, Figma-style selection bounding box, layer stack, property inspector, and 1-click catalog import.
 - **Modern Brand Identity & 3-Variant Logo System (`/brand`)**:
   - Three distinct, bespoke vector marks: _Geometric Monogram_ (precision dual-arc interlock in gold & navy), _Minimalist Continuous Line & Starlight_ (aerodynamic continuous stroke with radiant 8-point starlight jewel), and _Archival Heritage Crest_ (hexagonal luxury heraldic shield with star compass).
@@ -43,7 +45,7 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
 | **Styling**               | Native CSS Modules + Design Tokens (`tokens.css`)                                                |
 | **Icons**                 | Custom Scalable Vector SVGs with zero emoji dependencies (`Components/Icons/`, `StudioSVGs.jsx`) |
 | **Analytics & Telemetry** | GA4 Enhanced Ecommerce (`gtag.js`), Next.js Web Vitals, Custom Bot Scorer                        |
-| **Testing**               | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (129 tests across 16 suites)   |
+| **Testing**               | Vitest 5 + `@testing-library/react` + `@testing-library/jest-dom` (351 tests across 23 suites)   |
 | **Code Quality**          | ESLint 9 (Flat Config) + Prettier                                                                |
 
 ---
@@ -101,7 +103,7 @@ npm run dev        # Launch development server on localhost:3000
 npm run build      # Create optimized production build (pre-renders 50 SSG routes)
 npm run start      # Start Next.js production server
 npm run lint       # Run ESLint across all codebase files (0 errors, 0 warnings)
-npm test           # Run Vitest test suite once across all 16 test files (129 tests)
+npm test           # Run Vitest test suite once across all 23 test files (351 tests)
 npm run test:watch # Run Vitest in interactive watch mode
 ```
 
