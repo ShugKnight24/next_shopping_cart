@@ -1,6 +1,14 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useMascot } from '../../context/MascotProvider';
 import products from '../../data/products.json';
 import {
@@ -13,16 +21,34 @@ import {
   SparklesIcon,
 } from '../Icons';
 import { useToast } from '../UI/Toast';
+import { DesignBar } from './core/DesignBar';
+import { createDesignDoc, summarizeDesign } from './core/designDoc';
+import { OptionPills, StudioSlider, SwatchRow } from './core/StudioControls';
+import {
+  useDesignHistory,
+  useUndoRedoShortcuts,
+} from './core/useDesignHistory';
+import { useDesignPersistence } from './core/useDesignPersistence';
 import styles from './SocialStudio.module.css';
 
-export const PLATFORMS = [
+/* ------------------------------------------------------------- formats -- */
+
+/**
+ * `width`/`height` are design units — the coordinate space every layer lives
+ * in. `exportWidth` is the real pixel width of the downloaded PNG; the height
+ * is derived so the export is the design aspect exactly, and the shopper-facing
+ * label is derived from both. Previously the label advertised a resolution the
+ * file never had.
+ */
+const PLATFORM_SPECS = [
   {
     id: 'flyer_print',
     name: 'Promotional Flier',
     aspect: '3:4',
     width: 420,
     height: 560,
-    label: 'Flyer Poster (1200×1600)',
+    exportWidth: 1200,
+    labelPrefix: 'Flyer Poster',
   },
   {
     id: 'instagram_post',
@@ -30,7 +56,8 @@ export const PLATFORMS = [
     aspect: '1:1',
     width: 440,
     height: 440,
-    label: 'Feed Post (1080×1080)',
+    exportWidth: 1080,
+    labelPrefix: 'Feed Post',
   },
   {
     id: 'instagram_story',
@@ -38,15 +65,17 @@ export const PLATFORMS = [
     aspect: '9:16',
     width: 315,
     height: 560,
-    label: 'Vertical Reel (1080×1920)',
+    exportWidth: 1080,
+    labelPrefix: 'Vertical Reel',
   },
   {
     id: 'twitter_x',
     name: 'Twitter / X Banner',
     aspect: '16:9',
-    width: 520,
-    height: 292,
-    label: 'Landscape Feed (1200×675)',
+    width: 528,
+    height: 297,
+    exportWidth: 1200,
+    labelPrefix: 'Landscape Feed',
   },
   {
     id: 'pinterest_pin',
@@ -54,9 +83,21 @@ export const PLATFORMS = [
     aspect: '2:3',
     width: 360,
     height: 540,
-    label: 'Product Pin (1000×1500)',
+    exportWidth: 1000,
+    labelPrefix: 'Product Pin',
   },
 ];
+
+export const PLATFORMS = PLATFORM_SPECS.map((spec) => {
+  const exportHeight = Math.round(
+    (spec.exportWidth * spec.height) / spec.width
+  );
+  return {
+    ...spec,
+    exportHeight,
+    label: `${spec.labelPrefix} (${spec.exportWidth}×${exportHeight})`,
+  };
+});
 
 export const TEMPLATES = [
   {
@@ -113,17 +154,220 @@ export const COLOR_THEMES = [
   },
 ];
 
-function generateStarterLayers(templateId, platformId, product, colorTheme) {
+/**
+ * Canvas typefaces.
+ *
+ * The previous stacks led with 'Cinzel', 'Playfair Display', 'Impact' and
+ * 'Brush Script MT' while nothing ever loaded a webfont, so every one of them
+ * silently fell back to the generic family and the picker promised a look it
+ * could not deliver. This component cannot add a `<link>` to the document head
+ * of the app shell, so the stacks below are deliberately built from faces that
+ * ship with macOS/Windows/Android plus a generic family that always resolves,
+ * and the labels describe what actually renders.
+ */
+const FONT_OPTIONS = [
+  {
+    id: 'sans',
+    name: 'System Sans',
+    stack:
+      "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  },
+  {
+    id: 'serif',
+    name: 'Georgia Serif',
+    stack: "Georgia, 'Times New Roman', Times, serif",
+  },
+  {
+    id: 'display',
+    name: 'Heavy Display',
+    stack:
+      "Impact, Haettenschweiler, 'Arial Narrow Bold', 'Arial Black', sans-serif",
+  },
+  {
+    id: 'script',
+    name: 'Casual Script',
+    stack: "'Brush Script MT', 'Segoe Script', 'Snell Roundhand', cursive",
+  },
+  {
+    id: 'mono',
+    name: 'Utility Mono',
+    stack: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+  },
+];
+
+const FONT_STACKS = Object.fromEntries(
+  FONT_OPTIONS.map((f) => [f.id, f.stack])
+);
+
+const WEIGHT_OPTIONS = [
+  { id: '400', name: 'Regular' },
+  { id: '600', name: 'Medium' },
+  { id: '700', name: 'Bold' },
+  { id: '800', name: 'Black' },
+];
+
+const ALIGN_OPTIONS = [
+  { id: 'left', name: 'Left' },
+  { id: 'center', name: 'Center' },
+  { id: 'right', name: 'Right' },
+];
+
+/** `badgeStyle` used to be written in six places and read in none. */
+const BADGE_STYLES = [
+  { id: 'solid', name: 'Solid' },
+  { id: 'outline', name: 'Outline' },
+  { id: 'ticket', name: 'Ticket' },
+  { id: 'tag', name: 'Tag' },
+];
+
+const LEGACY_BADGE_STYLES = {
+  vip: 'solid',
+  limited: 'tag',
+  discount: 'ticket',
+};
+
+const resolveBadgeStyle = (value) =>
+  LEGACY_BADGE_STYLES[value] ?? (value || 'solid');
+
+/* ----------------------------------------------------------- colour math -- */
+
+const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+
+const hexToRgb = (hex) => {
+  const raw = String(hex || '').replace('#', '');
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw.padEnd(6, '0').slice(0, 6);
+  return [
+    parseInt(full.slice(0, 2), 16) || 0,
+    parseInt(full.slice(2, 4), 16) || 0,
+    parseInt(full.slice(4, 6), 16) || 0,
+  ];
+};
+
+const rgbToHex = ([r, g, b]) =>
+  `#${[r, g, b]
+    .map((c) => clamp(Math.round(c), 0, 255).toString(16).padStart(2, '0'))
+    .join('')}`;
+
+const mixHex = (a, b, t) => {
+  const [r1, g1, b1] = hexToRgb(a);
+  const [r2, g2, b2] = hexToRgb(b);
+  return rgbToHex([r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t]);
+};
+
+const shadeHex = (hex, amount) =>
+  mixHex(hex, amount < 0 ? '#000000' : '#ffffff', Math.abs(amount));
+
+const luminance = (hex) => {
+  const [r, g, b] = hexToRgb(hex).map((c) => c / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+/** Text that sits on top of the accent colour. */
+const readableInk = (hex) => (luminance(hex) > 0.55 ? '#0f172a' : '#ffffff');
+
+const HEX_PATTERN = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+/** `input[type=color]` cannot represent `rgba(…)` and silently shows black. */
+const asHexInput = (value, fallback) =>
+  HEX_PATTERN.test(value ?? '') ? value : fallback;
+
+/**
+ * One palette derived from one theme. The canvas background used to come from a
+ * hardcoded gradient table that disagreed with the swatch the shopper picked;
+ * every colour the composition uses now comes from here.
+ */
+const themePalette = (theme) => {
+  const base = theme ?? COLOR_THEMES[0];
+  const isLight = luminance(base.bg) > 0.5;
+  const text = isLight ? '#0f172a' : '#ffffff';
+
+  return {
+    id: base.id,
+    isLight,
+    accent: base.accent,
+    ink: readableInk(base.accent),
+    bg: base.bg,
+    bgEdge: isLight
+      ? mixHex(base.bg, base.accent, 0.09)
+      : shadeHex(mixHex(base.bg, base.accent, 0.28), -0.42),
+    text,
+    subtext: mixHex(text, base.bg, 0.42),
+    panel: isLight ? '#ffffff' : mixHex(base.bg, '#ffffff', 0.12),
+    panelStroke: isLight
+      ? mixHex(base.bg, '#000000', 0.18)
+      : mixHex(base.bg, '#ffffff', 0.28),
+    glow: `${base.accent}22`,
+    grain: isLight ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.05)',
+  };
+};
+
+/**
+ * Re-tint without re-seeding. A layer records *which* palette slot each of its
+ * colours came from; changing the palette re-resolves those slots and leaves
+ * everything the shopper positioned, typed or hand-coloured alone. (Setting a
+ * colour by hand clears its role, so a manual override survives a theme swap.)
+ */
+const TINT_ROLES = [
+  ['color', 'colorRole'],
+  ['fill', 'fillRole'],
+  ['bg', 'bgRole'],
+  ['stroke', 'strokeRole'],
+];
+
+const retintLayers = (layers, palette) =>
+  layers.map((layer) => {
+    let next = layer;
+    TINT_ROLES.forEach(([key, roleKey]) => {
+      const role = layer[roleKey];
+      const resolved = role ? palette[role] : undefined;
+      if (resolved && resolved !== next[key]) {
+        next = next === layer ? { ...layer } : next;
+        next[key] = resolved;
+      }
+    });
+    return next;
+  });
+
+/* ---------------------------------------------------------------- layers -- */
+
+const productImageSrc = (product) =>
+  product?.image || product?.images?.[0] || null;
+
+const layerId = (prefix) =>
+  `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+
+function generateStarterLayers(templateId, platformId, product, palette) {
   const platform = PLATFORMS.find((p) => p.id === platformId) || PLATFORMS[0];
-  const width = platform.width;
-  const height = platform.height;
-  const isLight = colorTheme?.id === 'luxe_cream';
-  const textColor = isLight ? '#0f172a' : '#ffffff';
-  const subtextColor = isLight ? '#475569' : '#94a3b8';
-  const accentColor = colorTheme?.accent || '#f59e0b';
+  const { width, height } = platform;
+
   const prodName = (product?.productName || 'ICONIC PRODUCT').toUpperCase();
-  const prodPrice = `$${product?.price || 120}`;
+  const prodPrice = `$${product?.price ?? 120}`;
   const prodBrand = (product?.manufacturer || 'CART COMMERCE').toUpperCase();
+  const imageSrc = productImageSrc(product);
+
+  const productLayer = (overrides) => ({
+    id: 'product-card',
+    name: 'Product Hero Showcase',
+    type: 'product',
+    productTitle: prodName,
+    productPrice: prodPrice,
+    productCategory: product?.category || 'Curated Goods',
+    imageSrc,
+    borderRadius: 12,
+    fill: palette.panel,
+    fillRole: 'panel',
+    stroke: palette.panelStroke,
+    strokeRole: 'panelStroke',
+    opacity: 1,
+    visible: true,
+    ...overrides,
+  });
 
   switch (templateId) {
     case 'hype_drop':
@@ -135,9 +379,11 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           shapeType: 'rect',
           x: width / 2,
           y: 18,
-          width: width,
+          width,
           height: 16,
-          fill: accentColor,
+          fill: palette.accent,
+          fillRole: 'accent',
+          borderRadius: 0,
           opacity: 0.9,
           visible: true,
         },
@@ -145,14 +391,19 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           id: 'badge-drop',
           name: 'Drop Badge',
           type: 'badge',
-          badgeStyle: 'limited',
+          badgeStyle: 'tag',
           text: 'LIMITED DROP • 2026 ARCHIVE',
+          fontSize: 10,
+          fontWeight: 800,
           x: width / 2,
           y: 48,
-          width: 170,
+          width: 190,
           height: 24,
-          color: '#020617',
-          bg: accentColor,
+          color: palette.ink,
+          colorRole: 'ink',
+          bg: palette.accent,
+          bgRole: 'accent',
+          opacity: 1,
           visible: true,
         },
         {
@@ -162,27 +413,25 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: `${prodName} ARCHIVE`,
           fontFamily: 'display',
           fontSize: Math.min(24, Math.floor(width / 16)),
-          color: textColor,
+          fontWeight: 800,
+          color: palette.text,
+          colorRole: 'text',
           x: width / 2,
-          y: 88,
+          y: 92,
           width: width - 40,
-          height: 34,
+          height: 40,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
-        {
-          id: 'product-card',
+        productLayer({
           name: 'Product Hero Showcase',
-          type: 'product',
-          productTitle: prodName,
-          productPrice: prodPrice,
           productCategory: product?.category || 'Streetwear & Kicks',
           x: width / 2,
-          y: height * 0.44,
-          width: Math.min(width - 80, 220),
-          height: 120,
-          visible: true,
-        },
+          y: height * 0.46,
+          width: Math.min(width - 48, 260),
+          height: 148,
+        }),
         {
           id: 'subtext',
           name: 'Description Copy',
@@ -190,26 +439,34 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: 'Verified deadstock. Vault-grade priority shipping included.',
           fontFamily: 'sans',
           fontSize: 12,
-          color: subtextColor,
+          fontWeight: 600,
+          color: palette.subtext,
+          colorRole: 'subtext',
           x: width / 2,
-          y: height - 82,
+          y: height - 84,
           width: width - 60,
-          height: 20,
+          height: 32,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
         {
           id: 'price-tag',
           name: 'Price & CTA Badge',
           type: 'badge',
-          badgeStyle: 'vip',
+          badgeStyle: 'solid',
           text: `COP NOW — ${prodPrice}`,
+          fontSize: 12,
+          fontWeight: 800,
           x: width / 2,
           y: height - 44,
-          width: 160,
+          width: 170,
           height: 32,
-          color: '#020617',
-          bg: accentColor,
+          color: palette.ink,
+          colorRole: 'ink',
+          bg: palette.accent,
+          bgRole: 'accent',
+          opacity: 1,
           visible: true,
         },
       ];
@@ -222,11 +479,12 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           type: 'shape',
           shapeType: 'starburst',
           text: '50% OFF',
-          x: width - 50,
-          y: 50,
-          width: 64,
-          height: 64,
+          x: width - 54,
+          y: 54,
+          width: 72,
+          height: 72,
           fill: '#ef4444',
+          opacity: 1,
           visible: true,
         },
         {
@@ -236,53 +494,57 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: `${prodName} FLASH SALE`,
           fontFamily: 'display',
           fontSize: 24,
-          color: textColor,
+          fontWeight: 800,
+          color: palette.text,
+          colorRole: 'text',
           x: width / 2,
-          y: 52,
-          width: width - 120,
-          height: 36,
+          y: 56,
+          width: width - 130,
+          height: 44,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
-        {
-          id: 'product-card',
+        productLayer({
           name: 'Product Stage',
-          type: 'product',
-          productTitle: prodName,
-          productPrice: prodPrice,
           productCategory: product?.category || 'Special Edition',
           x: width / 2,
-          y: height * 0.42,
-          width: Math.min(width - 80, 220),
-          height: 120,
-          visible: true,
-        },
+          y: height * 0.44,
+          width: Math.min(width - 48, 260),
+          height: 148,
+        }),
         {
           id: 'coupon-pill',
           name: 'Coupon Code Pill',
           type: 'badge',
-          badgeStyle: 'discount',
+          badgeStyle: 'ticket',
           text: 'CODE: FLASH2026 • 24H ONLY',
+          fontSize: 10,
+          fontWeight: 700,
           x: width / 2,
           y: height - 76,
-          width: 180,
+          width: 194,
           height: 26,
           color: '#0f172a',
           bg: '#ffffff',
+          opacity: 1,
           visible: true,
         },
         {
           id: 'cta-pill',
           name: 'Call to Action Button',
           type: 'badge',
-          badgeStyle: 'vip',
+          badgeStyle: 'solid',
           text: `CLAIM FOR ${prodPrice}`,
+          fontSize: 12,
+          fontWeight: 800,
           x: width / 2,
           y: height - 38,
-          width: 170,
+          width: 180,
           height: 30,
           color: '#ffffff',
           bg: '#ef4444',
+          opacity: 1,
           visible: true,
         },
       ];
@@ -296,27 +558,25 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: '★★★★★ VERIFIED 5.0 RATING',
           fontFamily: 'sans',
           fontSize: 11,
-          color: '#fbbf24',
+          fontWeight: 700,
+          color: palette.accent,
+          colorRole: 'accent',
           x: width / 2,
           y: 40,
-          width: 190,
+          width: width - 60,
           height: 20,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
-        {
-          id: 'product-card',
+        productLayer({
           name: 'Product Card',
-          type: 'product',
-          productTitle: prodName,
-          productPrice: prodPrice,
           productCategory: product?.category || 'Customer Favorite',
           x: width / 2,
-          y: height * 0.36,
-          width: Math.min(width - 90, 200),
-          height: 110,
-          visible: true,
-        },
+          y: height * 0.38,
+          width: Math.min(width - 56, 250),
+          height: 140,
+        }),
         {
           id: 'quote-card',
           name: 'Customer Endorsement Box',
@@ -325,11 +585,14 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           x: width / 2,
           y: height - 78,
           width: width - 50,
-          height: 84,
-          fill: isLight ? '#ffffff' : 'rgba(255, 255, 255, 0.07)',
-          stroke: isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.15)',
+          height: 92,
+          fill: palette.panel,
+          fillRole: 'panel',
+          stroke: palette.panelStroke,
+          strokeRole: 'panelStroke',
           strokeWidth: 1,
-          borderRadius: 8,
+          borderRadius: 10,
+          opacity: 1,
           visible: true,
         },
         {
@@ -339,12 +602,15 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: `"${prodName} IS UNMATCHED"`,
           fontFamily: 'serif',
           fontSize: 15,
-          color: textColor,
+          fontWeight: 700,
+          color: palette.text,
+          colorRole: 'text',
           x: width / 2,
-          y: height - 98,
-          width: width - 70,
-          height: 20,
+          y: height - 100,
+          width: width - 74,
+          height: 22,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
         {
@@ -354,12 +620,15 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: '"The build quality is beyond expectations. Shipping was lightning fast!"',
           fontFamily: 'serif',
           fontSize: 11,
-          color: subtextColor,
+          fontWeight: 400,
+          color: palette.subtext,
+          colorRole: 'subtext',
           x: width / 2,
-          y: height - 76,
-          width: width - 70,
-          height: 24,
+          y: height - 74,
+          width: width - 74,
+          height: 30,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
         {
@@ -368,13 +637,16 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           type: 'text',
           text: 'Verified Vault Collector • 2026',
           fontFamily: 'sans',
-          fontSize: 9.5,
-          color: accentColor,
+          fontSize: 10,
+          fontWeight: 700,
+          color: palette.accent,
+          colorRole: 'accent',
           x: width / 2,
-          y: height - 52,
-          width: width - 70,
+          y: height - 50,
+          width: width - 74,
           height: 16,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
       ];
@@ -391,8 +663,10 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           y: height / 2,
           width: width - 36,
           height: height - 36,
-          stroke: accentColor,
+          stroke: palette.accent,
+          strokeRole: 'accent',
           strokeWidth: 1.5,
+          opacity: 1,
           visible: true,
         },
         {
@@ -402,12 +676,15 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: `${prodBrand} • DROP 2026`,
           fontFamily: 'sans',
           fontSize: 10,
-          color: accentColor,
+          fontWeight: 700,
+          color: palette.accent,
+          colorRole: 'accent',
           x: width / 2,
           y: 42,
           width: width - 80,
           height: 18,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
         {
@@ -417,36 +694,37 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           shapeType: 'circle',
           x: width / 2,
           y: height * 0.42,
-          width: width * 0.65,
-          height: width * 0.65,
-          fill: 'rgba(245, 158, 11, 0.12)',
+          width: width * 0.68,
+          height: width * 0.68,
+          fill: palette.glow,
+          fillRole: 'glow',
+          opacity: 1,
           visible: true,
         },
-        {
-          id: 'product-card',
-          name: 'Product Hero Showcase',
-          type: 'product',
-          productTitle: prodName,
-          productPrice: prodPrice,
+        productLayer({
           productCategory: product?.category || 'Luxury Goods',
           x: width / 2,
           y: height * 0.42,
-          width: Math.min(width - 80, 210),
-          height: 110,
-          visible: true,
-        },
+          width: Math.min(width - 56, 250),
+          height: 140,
+        }),
         {
           id: 'badge-pill',
           name: 'Crest Badge',
           type: 'badge',
-          badgeStyle: 'vip',
+          badgeStyle: 'solid',
           text: 'AUTHENTIC DROP',
+          fontSize: 10,
+          fontWeight: 800,
           x: width / 2,
-          y: height * 0.42 + 68,
-          width: 120,
+          y: height * 0.42 + 88,
+          width: 130,
           height: 22,
-          color: '#0f172a',
-          bg: accentColor,
+          color: palette.ink,
+          colorRole: 'ink',
+          bg: palette.accent,
+          bgRole: 'accent',
+          opacity: 1,
           visible: true,
         },
         {
@@ -456,12 +734,15 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: `${prodName} ARCHIVE`,
           fontFamily: 'serif',
           fontSize: 20,
-          color: textColor,
+          fontWeight: 700,
+          color: palette.text,
+          colorRole: 'text',
           x: width / 2,
-          y: height - 88,
+          y: height - 90,
           width: width - 60,
-          height: 26,
+          height: 30,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
         {
@@ -471,12 +752,15 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: 'Crafted with premium materials. Available in limited quantities.',
           fontFamily: 'sans',
           fontSize: 11,
-          color: subtextColor,
+          fontWeight: 400,
+          color: palette.subtext,
+          colorRole: 'subtext',
           x: width / 2,
-          y: height - 66,
+          y: height - 64,
           width: width - 80,
-          height: 20,
+          height: 28,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
         {
@@ -486,25 +770,538 @@ function generateStarterLayers(templateId, platformId, product, colorTheme) {
           text: `${prodPrice}  |  OFFICIAL DROP`,
           fontFamily: 'sans',
           fontSize: 14,
-          color: accentColor,
+          fontWeight: 700,
+          color: palette.accent,
+          colorRole: 'accent',
           x: width / 2,
-          y: height - 42,
-          width: 180,
+          y: height - 40,
+          width: 200,
           height: 22,
           align: 'center',
+          opacity: 1,
           visible: true,
         },
       ];
   }
 }
 
+/* -------------------------------------------------------------- painting -- */
+
+/** Every rounded-rect path starts here, so `fill()` can never inherit a path. */
+const pathRoundRect = (ctx, x, y, w, h, r) => {
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(x, y, w, h, Math.max(0, Math.min(r, w / 2, h / 2)));
+  } else {
+    ctx.rect(x, y, w, h);
+  }
+};
+
+const measureWidth = (ctx, text) =>
+  typeof ctx.measureText === 'function'
+    ? (ctx.measureText(text)?.width ?? 0)
+    : 0;
+
+/**
+ * Greedy word wrap to `maxWidth`. Falls back to the raw paragraphs when the
+ * context cannot measure (headless/test canvases) rather than dropping copy.
+ */
+function wrapText(ctx, text, maxWidth) {
+  const source = String(text ?? '');
+  if (!source) return [];
+
+  const paragraphs = source.split('\n');
+  if (typeof ctx.measureText !== 'function' || !(maxWidth > 0)) {
+    return paragraphs;
+  }
+
+  const lines = [];
+  paragraphs.forEach((paragraph) => {
+    const words = paragraph.split(/\s+/).filter(Boolean);
+    if (!words.length) {
+      lines.push('');
+      return;
+    }
+
+    let line = words[0];
+    for (let i = 1; i < words.length; i += 1) {
+      const candidate = `${line} ${words[i]}`;
+      if (measureWidth(ctx, candidate) <= maxWidth) line = candidate;
+      else {
+        lines.push(line);
+        line = words[i];
+      }
+    }
+    lines.push(line);
+  });
+
+  return lines;
+}
+
+const clampLines = (lines, max) =>
+  lines.length <= max
+    ? lines
+    : [...lines.slice(0, max - 1), `${lines[max - 1].trim()}…`];
+
+function drawShapeLayer(ctx, layer, palette) {
+  const lw = layer.width || 120;
+  const lh = layer.height || 40;
+  const x0 = layer.x - lw / 2;
+  const y0 = layer.y - lh / 2;
+  const hasStroke = layer.stroke && layer.stroke !== 'transparent';
+
+  ctx.fillStyle = layer.fill || palette.glow;
+  ctx.strokeStyle = layer.stroke || 'transparent';
+  ctx.lineWidth = layer.strokeWidth || 1;
+
+  if (layer.shapeType === 'border') {
+    ctx.strokeRect(x0, y0, lw, lh);
+    return;
+  }
+
+  if (layer.shapeType === 'circle') {
+    ctx.beginPath();
+    ctx.arc(layer.x, layer.y, lw / 2, 0, Math.PI * 2);
+    ctx.fill();
+    if (hasStroke) ctx.stroke();
+    return;
+  }
+
+  if (layer.shapeType === 'starburst') {
+    const points = 12;
+    const outerR = lw / 2;
+    const innerR = outerR * 0.72;
+    ctx.beginPath();
+    for (let p = 0; p < points * 2; p += 1) {
+      const r = p % 2 === 0 ? outerR : innerR;
+      const angle = (p * Math.PI) / points;
+      const px = layer.x + Math.cos(angle) * r;
+      const py = layer.y + Math.sin(angle) * r;
+      if (p === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+
+    if (layer.text) {
+      ctx.fillStyle = layer.color || '#ffffff';
+      ctx.font = `800 ${layer.fontSize || 11}px ${FONT_STACKS.sans}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(layer.text, layer.x, layer.y);
+    }
+    return;
+  }
+
+  pathRoundRect(ctx, x0, y0, lw, lh, layer.borderRadius ?? 6);
+  ctx.fill();
+  if (hasStroke) ctx.stroke();
+}
+
+function drawProductLayer(ctx, layer, { palette, imageFor }) {
+  const lw = layer.width || 220;
+  const lh = layer.height || 140;
+  const x0 = layer.x - lw / 2;
+  const y0 = layer.y - lh / 2;
+  const radius = layer.borderRadius ?? 12;
+
+  ctx.fillStyle = layer.fill || palette.panel;
+  ctx.strokeStyle = layer.stroke || palette.panelStroke;
+  ctx.lineWidth = layer.strokeWidth || 1;
+  pathRoundRect(ctx, x0, y0, lw, lh, radius);
+  ctx.fill();
+  ctx.stroke();
+
+  const pad = Math.max(8, Math.round(lh * 0.08));
+  const stacked = lw < lh * 1.5;
+  const media = stacked
+    ? { x: x0 + pad, y: y0 + pad, w: lw - pad * 2, h: lh * 0.5 }
+    : {
+        x: x0 + pad,
+        y: y0 + pad,
+        w: Math.min(lh - pad * 2, lw * 0.44),
+        h: lh - pad * 2,
+      };
+
+  const image = imageFor?.(layer.imageSrc);
+  ctx.save();
+  pathRoundRect(
+    ctx,
+    media.x,
+    media.y,
+    media.w,
+    media.h,
+    Math.max(0, radius - 4)
+  );
+  if (typeof ctx.clip === 'function') ctx.clip();
+
+  if (image && typeof ctx.drawImage === 'function') {
+    const iw = image.naturalWidth || image.width || media.w;
+    const ih = image.naturalHeight || image.height || media.h;
+    const scale = Math.max(media.w / iw, media.h / ih);
+    const dw = iw * scale;
+    const dh = ih * scale;
+    ctx.drawImage(
+      image,
+      media.x + (media.w - dw) / 2,
+      media.y + (media.h - dh) / 2,
+      dw,
+      dh
+    );
+  } else {
+    // No artwork yet (still loading, blocked, or the product has none) — a
+    // legible monogram plate beats an empty hole in the composition.
+    ctx.fillStyle = palette.isLight
+      ? 'rgba(15, 23, 42, 0.06)'
+      : 'rgba(255, 255, 255, 0.08)';
+    ctx.fill();
+    ctx.fillStyle = palette.accent;
+    ctx.font = `800 ${Math.round(Math.min(media.w, media.h) * 0.4)}px ${FONT_STACKS.display}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(
+      String(layer.productTitle || 'P')
+        .trim()
+        .slice(0, 2)
+        .toUpperCase(),
+      media.x + media.w / 2,
+      media.y + media.h / 2
+    );
+  }
+  ctx.restore();
+
+  const textX = stacked ? layer.x : media.x + media.w + pad;
+  const textW = stacked ? lw - pad * 2 : x0 + lw - pad - textX;
+  const align = stacked ? 'center' : 'left';
+  const anchorX = stacked ? layer.x : textX;
+  const base = clamp(Math.round(lh * 0.11), 9, 16);
+
+  ctx.textAlign = align;
+  ctx.textBaseline = 'middle';
+
+  const top = stacked ? media.y + media.h + pad : y0 + pad;
+  const bottom = y0 + lh - pad;
+
+  ctx.fillStyle = palette.subtext;
+  ctx.font = `700 ${Math.round(base * 0.68)}px ${FONT_STACKS.sans}`;
+  ctx.fillText(
+    String(layer.productCategory || 'CURATED DROP').toUpperCase(),
+    anchorX,
+    top + base * 0.4
+  );
+
+  ctx.fillStyle = palette.text;
+  ctx.font = `700 ${base}px ${FONT_STACKS.sans}`;
+  const titleLines = clampLines(
+    wrapText(ctx, layer.productTitle || 'PRODUCT', textW),
+    2
+  );
+  titleLines.forEach((line, i) => {
+    ctx.fillText(line, anchorX, top + base * 1.6 + i * base * 1.2);
+  });
+
+  ctx.fillStyle = palette.accent;
+  ctx.font = `800 ${Math.round(base * 1.15)}px ${FONT_STACKS.sans}`;
+  ctx.fillText(layer.productPrice || '$120', anchorX, bottom - base * 0.5);
+}
+
+function drawBadgeLayer(ctx, layer, palette) {
+  const lw = layer.width || 150;
+  const lh = layer.height || 28;
+  const x0 = layer.x - lw / 2;
+  const y0 = layer.y - lh / 2;
+  const style = resolveBadgeStyle(layer.badgeStyle);
+  const radius = layer.borderRadius ?? lh / 2;
+  const bg = layer.bg || palette.accent;
+  const fg = layer.color || palette.ink;
+
+  if (style === 'outline') {
+    ctx.strokeStyle = bg;
+    ctx.lineWidth = layer.strokeWidth || 1.5;
+    pathRoundRect(ctx, x0, y0, lw, lh, radius);
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = bg;
+    pathRoundRect(ctx, x0, y0, lw, lh, radius);
+    ctx.fill();
+
+    if (style === 'ticket') {
+      ctx.strokeStyle = fg;
+      ctx.lineWidth = 1;
+      if (typeof ctx.setLineDash === 'function') ctx.setLineDash([3, 3]);
+      pathRoundRect(
+        ctx,
+        x0 + 3,
+        y0 + 3,
+        lw - 6,
+        lh - 6,
+        Math.max(0, radius - 3)
+      );
+      ctx.stroke();
+      if (typeof ctx.setLineDash === 'function') ctx.setLineDash([]);
+    }
+
+    if (style === 'tag') {
+      ctx.fillStyle = fg;
+      ctx.beginPath();
+      ctx.arc(x0 + lh * 0.45, layer.y, Math.max(2, lh * 0.12), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  const inset = style === 'tag' ? lh * 0.9 : Math.max(8, lh * 0.4);
+  ctx.fillStyle = style === 'outline' ? bg : fg;
+  ctx.font = `${layer.fontWeight ?? 700} ${layer.fontSize || 10}px ${
+    FONT_STACKS[layer.fontFamily] ?? FONT_STACKS.sans
+  }`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const lines = clampLines(wrapText(ctx, layer.text ?? '', lw - inset - 8), 2);
+  const lineHeight = (layer.fontSize || 10) * 1.18;
+  const startY = layer.y - ((lines.length - 1) * lineHeight) / 2;
+  const centreX = style === 'tag' ? layer.x + lh * 0.25 : layer.x;
+  lines.forEach((line, i) =>
+    ctx.fillText(line, centreX, startY + i * lineHeight)
+  );
+}
+
+function drawTextLayer(ctx, layer, { palette, height }) {
+  const lw = layer.width || 120;
+  const size = layer.fontSize || 18;
+  const weight = layer.fontWeight ?? 700;
+
+  ctx.font = `${weight} ${size}px ${
+    FONT_STACKS[layer.fontFamily] ?? FONT_STACKS.sans
+  }`;
+  ctx.fillStyle = layer.color || palette.text;
+  ctx.textAlign = layer.align || 'center';
+  ctx.textBaseline = 'middle';
+
+  const lines = wrapText(ctx, layer.text ?? '', lw);
+  if (!lines.length) return;
+
+  const lineHeight = size * 1.24;
+  const startY = layer.y - ((lines.length - 1) * lineHeight) / 2;
+  const drawX =
+    layer.align === 'left'
+      ? layer.x - lw / 2
+      : layer.align === 'right'
+        ? layer.x + lw / 2
+        : layer.x;
+
+  // Clipped on the horizontal only: copy is wrapped to the layer's width, but
+  // silently swallowing a line that needs one more row is worse than letting
+  // the block grow past its box.
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(layer.x - lw / 2 - 1, 0, lw + 2, height);
+  if (typeof ctx.clip === 'function') ctx.clip();
+
+  const outlined = layer.stroke && (layer.strokeWidth ?? 0) > 0;
+  if (outlined) {
+    ctx.strokeStyle = layer.stroke;
+    ctx.lineWidth = layer.strokeWidth;
+    ctx.lineJoin = 'round';
+  }
+
+  lines.forEach((line, i) => {
+    const y = startY + i * lineHeight;
+    if (outlined && typeof ctx.strokeText === 'function') {
+      ctx.strokeText(line, drawX, y);
+    }
+    ctx.fillText(line, drawX, y);
+  });
+
+  ctx.restore();
+}
+
+/**
+ * Paints one composition into any 2D context already scaled to `width`/`height`
+ * design units — the on-screen canvas and the full-resolution export share it,
+ * so what the shopper sees is exactly what downloads.
+ */
+function paintComposition(ctx, options) {
+  const { width, height, palette, layers, imageFor, selection, guides } =
+    options;
+
+  ctx.clearRect(0, 0, width, height);
+
+  const bg = ctx.createLinearGradient(0, 0, width, height);
+  bg.addColorStop(0, palette.bg);
+  bg.addColorStop(1, palette.bgEdge);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = palette.grain;
+  for (let gx = 20; gx < width; gx += 40) {
+    for (let gy = 20; gy < height; gy += 40) {
+      ctx.beginPath();
+      ctx.arc(gx, gy, 1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  layers.forEach((layer) => {
+    if (layer.visible === false) return;
+
+    ctx.save();
+    ctx.globalAlpha = clamp(layer.opacity ?? 1, 0, 1);
+
+    if (layer.type === 'shape') drawShapeLayer(ctx, layer, palette);
+    else if (layer.type === 'product')
+      drawProductLayer(ctx, layer, { palette, imageFor });
+    else if (layer.type === 'badge') drawBadgeLayer(ctx, layer, palette);
+    else drawTextLayer(ctx, layer, { palette, height });
+
+    ctx.restore();
+  });
+
+  if (guides?.v || guides?.h) {
+    ctx.save();
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 1;
+    if (typeof ctx.setLineDash === 'function') ctx.setLineDash([5, 4]);
+    if (guides.v) {
+      ctx.beginPath();
+      ctx.moveTo(width / 2, 0);
+      ctx.lineTo(width / 2, height);
+      ctx.stroke();
+    }
+    if (guides.h) {
+      ctx.beginPath();
+      ctx.moveTo(0, height / 2);
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+    }
+    if (typeof ctx.setLineDash === 'function') ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  if (!selection || selection.visible === false) return;
+
+  ctx.save();
+  const sw = selection.width || 120;
+  const sh = selection.height || 40;
+  const sx = selection.x;
+  const sy = selection.y;
+
+  ctx.strokeStyle = '#2563eb';
+  ctx.lineWidth = 1.5;
+  if (typeof ctx.setLineDash === 'function') ctx.setLineDash([4, 3]);
+  ctx.strokeRect(sx - sw / 2, sy - sh / 2, sw, sh);
+  if (typeof ctx.setLineDash === 'function') ctx.setLineDash([]);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeStyle = '#2563eb';
+  [
+    [sx - sw / 2, sy - sh / 2],
+    [sx + sw / 2, sy - sh / 2],
+    [sx + sw / 2, sy + sh / 2],
+    [sx - sw / 2, sy + sh / 2],
+  ].forEach(([cx, cy]) => {
+    ctx.fillRect(cx - 3.5, cy - 3.5, 7, 7);
+    ctx.strokeRect(cx - 3.5, cy - 3.5, 7, 7);
+  });
+
+  const labelText = `${selection.name ?? 'Layer'} (${Math.round(sw)}×${Math.round(sh)}px)`;
+  ctx.font = `700 9px ${FONT_STACKS.sans}`;
+  const labelWidth = measureWidth(ctx, labelText) || 90;
+  ctx.fillStyle = '#2563eb';
+  pathRoundRect(ctx, sx - sw / 2, sy - sh / 2 - 18, labelWidth + 12, 16, 4);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(labelText, sx - sw / 2 + 6, sy - sh / 2 - 10);
+
+  ctx.restore();
+}
+
+/* ----------------------------------------------------------------- misc -- */
+
+const DESIGN_LABELS = {
+  platform: {
+    label: 'Format',
+    format: (v) => PLATFORMS.find((p) => p.id === v)?.label ?? v,
+  },
+  template: {
+    label: 'Template',
+    format: (v) => TEMPLATES.find((t) => t.id === v)?.name ?? v,
+  },
+  colorTheme: {
+    label: 'Palette',
+    format: (v) => COLOR_THEMES.find((c) => c.id === v)?.name ?? v,
+  },
+  productId: {
+    label: 'Featured product',
+    format: (v) => products.find((p) => p.itemid === v)?.productName ?? v,
+  },
+};
+
+const DEFAULT_HASHTAGS =
+  'streetwear drops grails curated limitededition design';
+
+const buildCaption = (headline, product) =>
+  [
+    headline,
+    '',
+    product?.shortDescription ||
+      product?.description ||
+      'Exclusive drop available now at Cart Commerce.',
+    '',
+    `Shop the collection: https://cartcommerce.shop/products/${product?.itemid ?? ''}`,
+  ].join('\n');
+
+const formatHashtags = (raw) =>
+  String(raw ?? '')
+    .split(/[\s,#]+/)
+    .filter(Boolean)
+    .map((tag) => `#${tag}`)
+    .join(' ');
+
+function EyeOffIcon({ size = 14 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M6.61 6.61A18.15 18.15 0 0 0 1 12s4 8 11 8a9.12 9.12 0 0 0 5.39-1.61" />
+      <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  );
+}
+
+EyeOffIcon.propTypes = { size: PropTypes.number };
+
+const NUDGE_KEYS = {
+  ArrowLeft: [-1, 0],
+  ArrowRight: [1, 0],
+  ArrowUp: [0, -1],
+  ArrowDown: [0, 1],
+};
+
+const SNAP_TOLERANCE = 6;
+
+/* ================================================================ studio == */
+
 export function SocialStudio() {
   const { setMascot, speak } = useMascot();
   const { showToast } = useToast();
 
-  const canvasRef = useRef(null);
+  const fieldId = useId();
+  const id = (suffix) => `${fieldId}-${suffix}`;
 
-  // Studio Mode & Selection
+  const [canvasEl, setCanvasEl] = useState(null);
+
   const [selectedPlatform, setSelectedPlatform] = useState('flyer_print');
   const [selectedTemplate, setSelectedTemplate] = useState('minimal_luxury');
   const [selectedColorTheme, setSelectedColorTheme] = useState('obsidian');
@@ -512,15 +1309,21 @@ export function SocialStudio() {
     products[0]?.itemid || 'SM57'
   );
   const [showPhoneMockup, setShowPhoneMockup] = useState(false);
-  const [activeTab, setActiveTab] = useState('catalog'); // 'catalog' | 'inspector' | 'layers'
+  const [activeTab, setActiveTab] = useState('catalog');
 
-  // Multi-Layer State
-  const [layers, setLayers] = useState([]);
   const [selectedLayerId, setSelectedLayerId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [guides, setGuides] = useState({ v: false, h: false });
+  const [announcement, setAnnouncement] = useState('');
 
-  // Selected Catalog Product
+  const [captionDraft, setCaptionDraft] = useState(null);
+  const [hashtags, setHashtags] = useState(DEFAULT_HASHTAGS);
+
+  const history = useDesignHistory([], { limit: 80 });
+  const { present: layers, commit, preview, reset, undo, redo } = history;
+
+  useUndoRedoShortcuts({ undo, redo });
+
   const activeProduct = useMemo(
     () =>
       products.find((p) => p.itemid === selectedProductId) || products[0] || {},
@@ -532,574 +1335,779 @@ export function SocialStudio() {
   const activeColorThemeObj =
     COLOR_THEMES.find((c) => c.id === selectedColorTheme) || COLOR_THEMES[0];
 
-  // Initialize or re-seed layers when template or platform changes
-  useEffect(() => {
-    const initialLayers = generateStarterLayers(
-      selectedTemplate,
-      selectedPlatform,
-      activeProduct,
-      activeColorThemeObj
-    );
-    setLayers(initialLayers);
-    setSelectedLayerId(initialLayers[2]?.id || initialLayers[0]?.id || null);
-  }, [selectedTemplate, selectedPlatform, activeColorThemeObj]); // eslint-disable-line react-hooks/exhaustive-deps
+  const palette = useMemo(
+    () => themePalette(activeColorThemeObj),
+    [activeColorThemeObj]
+  );
 
-  // Set mascot companion to Sparky (Hype Streetwear Hound)
-  useEffect(() => {
-    setMascot('sparky');
-    speak(
-      'Welcome to the Figma-Grade Designer Studio! Select any element right on the canvas, drag it to compose your flyer, or remix the layers!',
-      'happy'
-    );
-  }, [setMascot, speak]);
-
-  // Selected Layer Lookup
   const selectedLayer = useMemo(
     () => layers.find((l) => l.id === selectedLayerId) || null,
     [layers, selectedLayerId]
   );
 
-  // Headline sync for test contract
-  const headline = useMemo(() => {
-    const hlLayer = layers.find((l) => l.id === 'headline');
-    return (
-      hlLayer?.text ||
-      (activeProduct.productName
-        ? `${activeProduct.productName.toUpperCase()} ARCHIVE`
-        : 'EXCLUSIVE DROP')
-    );
-  }, [layers, activeProduct]);
+  const layersRef = useRef(layers);
+  layersRef.current = layers;
 
-  // Handle product selection change
-  const handleSelectProduct = (e) => {
-    const id = e.target.value;
-    setSelectedProductId(id);
-    const prod = products.find((p) => p.itemid === id);
-    if (prod) {
-      setLayers((prevLayers) =>
-        prevLayers.map((l) => {
-          if (l.type === 'product') {
-            return {
-              ...l,
-              productTitle: (prod.productName || 'PRODUCT').toUpperCase(),
-              productPrice: `$${prod.price || 99}`,
-              productCategory: prod.category || 'Curated Goods',
-            };
-          }
-          if (l.id === 'headline') {
-            return {
-              ...l,
-              text: `${prod.productName.toUpperCase()} ARCHIVE`,
-            };
-          }
-          if (
-            l.id === 'price-tag' ||
-            l.id === 'price-cta' ||
-            l.id === 'cta-pill'
-          ) {
-            return {
-              ...l,
-              text: l.text.includes('COP NOW')
-                ? `COP NOW — $${prod.price}`
-                : `$${prod.price}  |  OFFICIAL DROP`,
-            };
-          }
-          return l;
-        })
-      );
-      speak(
-        `Imported "${prod.productName}" into your flyer design! Ready to fly!`,
-        'guiding'
-      );
-    }
-  };
+  const paletteRef = useRef(palette);
+  paletteRef.current = palette;
 
-  // Canvas Hit Testing for click-to-select and drag
-  const getCanvasCoords = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = activePlatformObj.width / rect.width;
-    const scaleY = activePlatformObj.height / rect.height;
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
+  const productRef = useRef(activeProduct);
+  productRef.current = activeProduct;
+
+  /* -------------------------------------------------------- announcements */
+
+  const announceTimer = useRef(null);
+  const announce = useCallback((message) => {
+    setAnnouncement(message);
+    clearTimeout(announceTimer.current);
+    announceTimer.current = setTimeout(() => setAnnouncement(''), 5000);
+  }, []);
+
+  useEffect(() => () => clearTimeout(announceTimer.current), []);
+
+  /* --------------------------------------------------------- product art  */
+
+  const imageCache = useRef(new Map());
+  // Read, not discarded: an async image decode must land in the paint effect's
+  // dependency list, or the re-render it triggers finds every dep unchanged and
+  // the decoded product shot never reaches the canvas.
+  const [imageRevision, setImageRevision] = useState(0);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
     };
+  }, []);
+
+  const imageFor = useCallback((src) => {
+    if (!src || typeof window === 'undefined' || typeof Image === 'undefined') {
+      return null;
+    }
+
+    const cached = imageCache.current.get(src);
+    if (cached) return cached.status === 'ready' ? cached.image : null;
+
+    const image = new Image();
+    const entry = { status: 'loading', image };
+    imageCache.current.set(src, entry);
+
+    const settle = (status) => () => {
+      entry.status = status;
+      // A repaint is the only way an async decode reaches the canvas.
+      if (isMounted.current) setImageRevision((n) => n + 1);
+    };
+    image.onload = settle('ready');
+    image.onerror = settle('error');
+    image.crossOrigin = 'anonymous';
+    image.src = src;
+
+    return null;
+  }, []);
+
+  /* ------------------------------------------------------------- seeding  */
+
+  const seedSignature = useRef(null);
+  const themeSignature = useRef(selectedColorTheme);
+
+  useEffect(() => {
+    const signature = `${selectedTemplate}|${selectedPlatform}`;
+    if (seedSignature.current === signature) return;
+
+    const isFirstSeed = seedSignature.current === null;
+    seedSignature.current = signature;
+
+    const seeded = generateStarterLayers(
+      selectedTemplate,
+      selectedPlatform,
+      productRef.current,
+      paletteRef.current
+    );
+
+    if (isFirstSeed) reset(seeded);
+    else commit(seeded);
+
+    setSelectedLayerId(
+      seeded.find((l) => l.id === 'headline')?.id ?? seeded[0]?.id ?? null
+    );
+  }, [selectedTemplate, selectedPlatform, reset, commit]);
+
+  /**
+   * A palette change re-tints; it must never re-seed. The old effect listed the
+   * theme object in its deps and threw away everything the shopper had done.
+   */
+  useEffect(() => {
+    if (themeSignature.current === selectedColorTheme) return;
+    themeSignature.current = selectedColorTheme;
+    commit((prev) => retintLayers(prev, paletteRef.current));
+  }, [selectedColorTheme, commit]);
+
+  useEffect(() => {
+    setMascot('sparky');
+    speak(
+      'Welcome to the post designer. Pick a template, drag anything on the canvas, and undo is always one step away.',
+      'happy'
+    );
+  }, [setMascot, speak]);
+
+  /* -------------------------------------------------------------- caption */
+
+  const headlineLayer = layers.find((l) => l.id === 'headline') ?? null;
+  const headline =
+    headlineLayer?.text ??
+    (activeProduct.productName
+      ? `${activeProduct.productName.toUpperCase()} ARCHIVE`
+      : 'EXCLUSIVE DROP');
+
+  const caption = captionDraft ?? buildCaption(headline, activeProduct);
+
+  /* ------------------------------------------------------------ the doc   */
+
+  const doc = useMemo(
+    () =>
+      createDesignDoc({
+        mode: 'social',
+        options: {
+          platform: selectedPlatform,
+          template: selectedTemplate,
+          colorTheme: selectedColorTheme,
+          productId: selectedProductId,
+          caption,
+          hashtags,
+        },
+        layers,
+      }),
+    [
+      selectedPlatform,
+      selectedTemplate,
+      selectedColorTheme,
+      selectedProductId,
+      caption,
+      hashtags,
+      layers,
+    ]
+  );
+
+  const persistence = useDesignPersistence({ mode: 'social', doc });
+
+  const applyDoc = useCallback(
+    (incoming) => {
+      if (!incoming) return;
+      const options = incoming.options ?? {};
+
+      if (options.platform) setSelectedPlatform(options.platform);
+      if (options.template) setSelectedTemplate(options.template);
+      if (options.colorTheme) setSelectedColorTheme(options.colorTheme);
+      if (options.productId) setSelectedProductId(options.productId);
+      setCaptionDraft(options.caption ?? null);
+      setHashtags(options.hashtags ?? DEFAULT_HASHTAGS);
+
+      // Pin the seed/tint guards to the incoming design so the effects above
+      // see "already applied" instead of regenerating over the top of it.
+      seedSignature.current = `${options.template ?? selectedTemplate}|${
+        options.platform ?? selectedPlatform
+      }`;
+      themeSignature.current = options.colorTheme ?? selectedColorTheme;
+
+      const restored = incoming.layers ?? [];
+      reset(restored);
+      setSelectedLayerId(
+        restored.find((l) => l.id === 'headline')?.id ?? restored[0]?.id ?? null
+      );
+    },
+    [reset, selectedTemplate, selectedPlatform, selectedColorTheme]
+  );
+
+  const { sharedDoc, acknowledgeShared } = persistence;
+  useEffect(() => {
+    if (!sharedDoc) return;
+    applyDoc(sharedDoc);
+    acknowledgeShared();
+    announce('Opened a shared design from the link.');
+  }, [sharedDoc, acknowledgeShared, applyDoc, announce]);
+
+  /* ---------------------------------------------------------- layer edits */
+
+  const updateLayer = useCallback(
+    (targetId, updates) => {
+      if (!targetId) return;
+      commit((prev) =>
+        prev.map((l) => (l.id === targetId ? { ...l, ...updates } : l))
+      );
+    },
+    [commit]
+  );
+
+  const updateSelectedLayer = useCallback(
+    (updates) => updateLayer(selectedLayerId, updates),
+    [updateLayer, selectedLayerId]
+  );
+
+  /** A hand-picked colour outranks the palette, so drop its tint role. */
+  const setLayerColor = useCallback(
+    (key, value) =>
+      updateSelectedLayer({ [key]: value, [`${key}Role`]: undefined }),
+    [updateSelectedLayer]
+  );
+
+  const moveLayer = useCallback(
+    (targetId, direction) =>
+      commit((prev) => {
+        const index = prev.findIndex((l) => l.id === targetId);
+        if (index === -1) return prev;
+        const nextIndex = direction === 'up' ? index + 1 : index - 1;
+        if (nextIndex < 0 || nextIndex >= prev.length) return prev;
+        const copy = [...prev];
+        const [moved] = copy.splice(index, 1);
+        copy.splice(nextIndex, 0, moved);
+        return copy;
+      }),
+    [commit]
+  );
+
+  const toggleLayerVisibility = useCallback(
+    (targetId) =>
+      commit((prev) =>
+        prev.map((l) =>
+          l.id === targetId ? { ...l, visible: l.visible === false } : l
+        )
+      ),
+    [commit]
+  );
+
+  const deleteLayer = useCallback(
+    (targetId) => {
+      const name =
+        layersRef.current.find((l) => l.id === targetId)?.name ?? 'Layer';
+      commit((prev) => prev.filter((l) => l.id !== targetId));
+      setSelectedLayerId((current) => (current === targetId ? null : current));
+      showToast('Layer deleted from canvas', 'info');
+      announce(`${name} deleted.`);
+    },
+    [commit, showToast, announce]
+  );
+
+  const duplicateLayer = useCallback(
+    (targetId) => {
+      const original = layersRef.current.find((l) => l.id === targetId);
+      if (!original) return;
+
+      const copy = {
+        ...original,
+        id: layerId('copy'),
+        name: `${original.name} (Copy)`,
+        x: original.x + 16,
+        y: original.y + 16,
+      };
+      commit((prev) => [...prev, copy]);
+      setSelectedLayerId(copy.id);
+      showToast('Layer duplicated', 'success');
+      announce(`${original.name} duplicated.`);
+    },
+    [commit, showToast, announce]
+  );
+
+  const addLayer = useCallback(
+    (layer, message) => {
+      commit((prev) => [...prev, layer]);
+      setSelectedLayerId(layer.id);
+      setActiveTab('inspector');
+      showToast(message, 'success');
+      announce(`${layer.name} added. ${message}`);
+    },
+    [commit, showToast, announce]
+  );
+
+  const addTextLayer = (preset = 'headline') => {
+    const { width, height } = activePlatformObj;
+    addLayer(
+      {
+        id: layerId('text'),
+        name: preset === 'headline' ? 'Custom Headline' : 'Custom Copy',
+        type: 'text',
+        text:
+          preset === 'headline'
+            ? 'NEW COLLECTION 2026'
+            : 'Exclusive craft for modern collectors.',
+        fontFamily: preset === 'headline' ? 'display' : 'sans',
+        fontSize: preset === 'headline' ? 22 : 13,
+        fontWeight: preset === 'headline' ? 800 : 400,
+        color: palette.text,
+        colorRole: 'text',
+        x: width / 2,
+        y: height / 2,
+        width: width - 80,
+        height: 36,
+        align: 'center',
+        opacity: 1,
+        visible: true,
+      },
+      'Added new text layer'
+    );
   };
 
-  const handleCanvasMouseDown = (e) => {
-    const { x, y } = getCanvasCoords(e);
+  const addBadgeLayer = (badgeType = '50') => {
+    const { width, height } = activePlatformObj;
+    addLayer(
+      {
+        id: layerId('badge'),
+        name: badgeType === '50' ? '50% OFF Badge' : 'VIP Access Pass',
+        type: 'badge',
+        badgeStyle: 'solid',
+        text: badgeType === '50' ? '50% OFF FLASH' : 'VIP ALL-ACCESS',
+        fontSize: 11,
+        fontWeight: 800,
+        x: width / 2,
+        y: height / 2,
+        width: 160,
+        height: 28,
+        color: palette.ink,
+        colorRole: 'ink',
+        bg: palette.accent,
+        bgRole: 'accent',
+        opacity: 1,
+        visible: true,
+      },
+      'Added promo badge layer'
+    );
+  };
 
-    // Search from top layer to bottom layer
-    for (let i = layers.length - 1; i >= 0; i--) {
-      const layer = layers[i];
-      if (!layer.visible) continue;
+  const addShapeLayer = () => {
+    const { width, height } = activePlatformObj;
+    addLayer(
+      {
+        id: layerId('shape'),
+        name: 'Card Container Box',
+        type: 'shape',
+        shapeType: 'card',
+        x: width / 2,
+        y: height / 2,
+        width: width - 80,
+        height: 100,
+        fill: palette.panel,
+        fillRole: 'panel',
+        stroke: palette.accent,
+        strokeRole: 'accent',
+        strokeWidth: 1.5,
+        borderRadius: 12,
+        opacity: 1,
+        visible: true,
+      },
+      'Added shape container layer'
+    );
+  };
 
+  const alignLayer = (alignType) => {
+    if (!selectedLayer) return;
+    const { width, height } = activePlatformObj;
+    const half = (selectedLayer.width || 120) / 2;
+
+    const x =
+      alignType === 'left'
+        ? half + 20
+        : alignType === 'right'
+          ? width - half - 20
+          : alignType === 'center'
+            ? width / 2
+            : selectedLayer.x;
+    const y = alignType === 'middle' ? height / 2 : selectedLayer.y;
+
+    updateSelectedLayer({ x, y });
+    announce(`${selectedLayer.name} aligned ${alignType}.`);
+  };
+
+  const setHeadlineText = (text) =>
+    commit((prev) => {
+      if (prev.some((l) => l.id === 'headline')) {
+        return prev.map((l) => (l.id === 'headline' ? { ...l, text } : l));
+      }
+      // The headline layer can be deleted; typing here brings it back rather
+      // than leaving a frozen controlled input behind.
+      const { width, height } = activePlatformObj;
+      return [
+        ...prev,
+        {
+          id: 'headline',
+          name: 'Main Headline',
+          type: 'text',
+          text,
+          fontFamily: 'serif',
+          fontSize: 20,
+          fontWeight: 700,
+          color: paletteRef.current.text,
+          colorRole: 'text',
+          x: width / 2,
+          y: height - 90,
+          width: width - 60,
+          height: 30,
+          align: 'center',
+          opacity: 1,
+          visible: true,
+        },
+      ];
+    });
+
+  /* -------------------------------------------------------- catalog import */
+
+  const handleSelectProduct = (event) => {
+    const nextId = event.target.value;
+    setSelectedProductId(nextId);
+
+    const prod = products.find((p) => p.itemid === nextId);
+    if (!prod) return;
+
+    const name = (prod.productName || 'PRODUCT').toUpperCase();
+    const price = `$${prod.price ?? 99}`;
+
+    commit((prev) =>
+      prev.map((l) => {
+        if (l.type === 'product') {
+          return {
+            ...l,
+            productTitle: name,
+            productPrice: price,
+            productCategory: prod.category || 'Curated Goods',
+            imageSrc: productImageSrc(prod),
+          };
+        }
+        if (l.id === 'headline') return { ...l, text: `${name} ARCHIVE` };
+
+        // Rewrite only the price token, so a "CLAIM FOR $x" pill stays a claim
+        // pill instead of being clobbered into "$x | OFFICIAL DROP".
+        if (['price-tag', 'price-cta', 'cta-pill'].includes(l.id)) {
+          const rewritten = String(l.text ?? '').replace(/\$[\d.,]+/, price);
+          return {
+            ...l,
+            text: rewritten.includes('$') ? rewritten : `${l.text} ${price}`,
+          };
+        }
+        return l;
+      })
+    );
+
+    setCaptionDraft(null);
+    speak(`Imported "${prod.productName}" into your design.`, 'guiding');
+    announce(`${prod.productName} imported from the catalog.`);
+  };
+
+  /* ---------------------------------------------------------------- canvas */
+
+  const toDesignCoords = useCallback(
+    (event) => {
+      if (!canvasEl) return { x: 0, y: 0 };
+      const rect = canvasEl.getBoundingClientRect();
+      if (!rect.width || !rect.height) return { x: 0, y: 0 };
+      return {
+        x: ((event.clientX - rect.left) * activePlatformObj.width) / rect.width,
+        y:
+          ((event.clientY - rect.top) * activePlatformObj.height) / rect.height,
+      };
+    },
+    [canvasEl, activePlatformObj]
+  );
+
+  const dragState = useRef(null);
+
+  const hitTest = (x, y) => {
+    for (let i = layersRef.current.length - 1; i >= 0; i -= 1) {
+      const layer = layersRef.current[i];
+      if (layer.visible === false) continue;
       const halfW = (layer.width || 120) / 2;
       const halfH = (layer.height || 40) / 2;
-
       if (
         x >= layer.x - halfW &&
         x <= layer.x + halfW &&
         y >= layer.y - halfH &&
         y <= layer.y + halfH
       ) {
-        setSelectedLayerId(layer.id);
-        setIsDragging(true);
-        setDragOffset({
-          x: x - layer.x,
-          y: y - layer.y,
-        });
-        return;
+        return layer;
+      }
+    }
+    return null;
+  };
+
+  const endDrag = useCallback(() => {
+    const state = dragState.current;
+    dragState.current = null;
+    setIsDragging(false);
+    setGuides({ v: false, h: false });
+    if (!state) return;
+
+    const final = layersRef.current;
+    if (final === state.origin) return;
+
+    // Drag frames are previews, which overwrite the present entry. Put the
+    // pre-drag stack back first so undo returns where the drag started.
+    preview(state.origin);
+    commit(final);
+  }, [preview, commit]);
+
+  useEffect(() => {
+    if (!isDragging || typeof window === 'undefined') return undefined;
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+    return () => {
+      window.removeEventListener('pointerup', endDrag);
+      window.removeEventListener('pointercancel', endDrag);
+    };
+  }, [isDragging, endDrag]);
+
+  const handlePointerDown = (event) => {
+    const { x, y } = toDesignCoords(event);
+    const hit = hitTest(x, y);
+
+    if (!hit) {
+      setSelectedLayerId(null);
+      return;
+    }
+
+    event.currentTarget.focus?.();
+    if (typeof event.currentTarget.setPointerCapture === 'function') {
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      } catch {
+        /* capture is a nicety; the window listener still ends the drag */
       }
     }
 
-    // Deselect if clicked outside all layers
-    setSelectedLayerId(null);
+    setSelectedLayerId(hit.id);
+    setIsDragging(true);
+    dragState.current = {
+      id: hit.id,
+      offsetX: x - hit.x,
+      offsetY: y - hit.y,
+      origin: layersRef.current,
+    };
   };
 
-  const handleCanvasMouseMove = (e) => {
-    if (!isDragging || !selectedLayerId) return;
-    const { x, y } = getCanvasCoords(e);
+  const handlePointerMove = (event) => {
+    const state = dragState.current;
+    if (!state) return;
 
-    setLayers((prev) =>
-      prev.map((l) => {
-        if (l.id === selectedLayerId) {
-          return {
-            ...l,
-            x: Math.round(x - dragOffset.x),
-            y: Math.round(y - dragOffset.y),
-          };
-        }
-        return l;
-      })
+    const { x, y } = toDesignCoords(event);
+    const { width, height } = activePlatformObj;
+
+    const rawX = x - state.offsetX;
+    const rawY = y - state.offsetY;
+    const snapV = Math.abs(rawX - width / 2) <= SNAP_TOLERANCE;
+    const snapH = Math.abs(rawY - height / 2) <= SNAP_TOLERANCE;
+
+    setGuides((prev) =>
+      prev.v === snapV && prev.h === snapH ? prev : { v: snapV, h: snapH }
+    );
+
+    const nextX = snapV ? width / 2 : Math.round(rawX);
+    const nextY = snapH ? height / 2 : Math.round(rawY);
+
+    preview((prev) =>
+      prev.map((l) => (l.id === state.id ? { ...l, x: nextX, y: nextY } : l))
     );
   };
 
-  const handleCanvasMouseUp = () => {
-    setIsDragging(false);
+  const cycleSelection = (delta) => {
+    if (!layers.length) return false;
+    const index = layers.findIndex((l) => l.id === selectedLayerId);
+    const next =
+      index === -1 ? (delta > 0 ? 0 : layers.length - 1) : index + delta;
+    // Let focus leave the canvas at either end rather than trapping Tab.
+    if (next < 0 || next >= layers.length) return false;
+    setSelectedLayerId(layers[next].id);
+    return true;
   };
 
-  // Layer manipulation helpers
-  const updateSelectedLayer = (updates) => {
-    if (!selectedLayerId) return;
-    setLayers((prev) =>
-      prev.map((l) => (l.id === selectedLayerId ? { ...l, ...updates } : l))
-    );
-  };
+  const handleCanvasKeyDown = (event) => {
+    if (event.key === 'Tab') {
+      if (cycleSelection(event.shiftKey ? -1 : 1)) event.preventDefault();
+      return;
+    }
 
-  const moveLayer = (id, direction) => {
-    setLayers((prev) => {
-      const index = prev.findIndex((l) => l.id === id);
-      if (index === -1) return prev;
-      const newIndex = direction === 'up' ? index + 1 : index - 1;
-      if (newIndex < 0 || newIndex >= prev.length) return prev;
-      const copy = [...prev];
-      const [moved] = copy.splice(index, 1);
-      copy.splice(newIndex, 0, moved);
-      return copy;
-    });
-  };
+    if (event.key === 'Escape') {
+      setSelectedLayerId(null);
+      return;
+    }
 
-  const toggleLayerVisibility = (id) => {
-    setLayers((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l))
-    );
-  };
-
-  const deleteLayer = (id) => {
-    setLayers((prev) => prev.filter((l) => l.id !== id));
-    if (selectedLayerId === id) setSelectedLayerId(null);
-    showToast('Layer deleted from canvas', 'info');
-  };
-
-  const duplicateLayer = (id) => {
-    const original = layers.find((l) => l.id === id);
-    if (!original) return;
-    const newLayer = {
-      ...original,
-      id: `${original.id}-copy-${Date.now()}`,
-      name: `${original.name} (Copy)`,
-      x: original.x + 16,
-      y: original.y + 16,
-    };
-    setLayers((prev) => [...prev, newLayer]);
-    setSelectedLayerId(newLayer.id);
-    showToast('Layer duplicated', 'success');
-  };
-
-  const addTextLayer = (preset = 'headline') => {
-    const { width, height } = activePlatformObj;
-    const newId = `text-${Date.now()}`;
-    const newLayer = {
-      id: newId,
-      name: preset === 'headline' ? 'Custom Headline' : 'Custom Copy',
-      type: 'text',
-      text:
-        preset === 'headline'
-          ? 'NEW COLLECTION 2026'
-          : 'Exclusive craft for modern collectors.',
-      fontFamily: preset === 'headline' ? 'display' : 'sans',
-      fontSize: preset === 'headline' ? 22 : 13,
-      color: activeColorThemeObj.id === 'luxe_cream' ? '#0f172a' : '#ffffff',
-      x: width / 2,
-      y: height / 2,
-      width: width - 80,
-      height: 32,
-      align: 'center',
-      visible: true,
-    };
-    setLayers((prev) => [...prev, newLayer]);
-    setSelectedLayerId(newId);
-    showToast('Added new text layer', 'success');
-  };
-
-  const addBadgeLayer = (badgeType = '50') => {
-    const { width, height } = activePlatformObj;
-    const newId = `badge-${Date.now()}`;
-    const newLayer = {
-      id: newId,
-      name: badgeType === '50' ? '50% OFF Badge' : 'VIP Access Pass',
-      type: 'badge',
-      badgeStyle: 'vip',
-      text: badgeType === '50' ? '50% OFF FLASH' : 'VIP ALL-ACCESS',
-      x: width / 2,
-      y: height / 2,
-      width: 150,
-      height: 28,
-      color: '#020617',
-      bg: activeColorThemeObj.accent,
-      visible: true,
-    };
-    setLayers((prev) => [...prev, newLayer]);
-    setSelectedLayerId(newId);
-    showToast('Added promo badge layer', 'success');
-  };
-
-  const addShapeLayer = () => {
-    const { width, height } = activePlatformObj;
-    const newId = `shape-${Date.now()}`;
-    const newLayer = {
-      id: newId,
-      name: 'Card Container Box',
-      type: 'shape',
-      shapeType: 'card',
-      x: width / 2,
-      y: height / 2,
-      width: width - 80,
-      height: 100,
-      fill:
-        activeColorThemeObj.id === 'luxe_cream'
-          ? '#ffffff'
-          : 'rgba(255, 255, 255, 0.08)',
-      stroke: activeColorThemeObj.accent,
-      strokeWidth: 1.5,
-      borderRadius: 12,
-      visible: true,
-    };
-    setLayers((prev) => [...prev, newLayer]);
-    setSelectedLayerId(newId);
-    showToast('Added shape container layer', 'success');
-  };
-
-  const alignLayer = (alignType) => {
     if (!selectedLayer) return;
-    const { width, height } = activePlatformObj;
-    let newX = selectedLayer.x;
-    let newY = selectedLayer.y;
 
-    if (alignType === 'left') newX = (selectedLayer.width || 120) / 2 + 20;
-    if (alignType === 'center') newX = width / 2;
-    if (alignType === 'right')
-      newX = width - (selectedLayer.width || 120) / 2 - 20;
-    if (alignType === 'middle') newY = height / 2;
+    const nudge = NUDGE_KEYS[event.key];
+    if (nudge) {
+      event.preventDefault();
+      const step = event.shiftKey ? 10 : 1;
+      updateSelectedLayer({
+        x: Math.round(selectedLayer.x + nudge[0] * step),
+        y: Math.round(selectedLayer.y + nudge[1] * step),
+      });
+      return;
+    }
 
-    updateSelectedLayer({ x: newX, y: newY });
-    showToast(`Aligned layer ${alignType}`, 'info');
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      event.preventDefault();
+      deleteLayer(selectedLayer.id);
+      return;
+    }
+
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'd') {
+      event.preventDefault();
+      duplicateLayer(selectedLayer.id);
+      return;
+    }
+
+    if (event.key === ']' || event.key === '[') {
+      event.preventDefault();
+      moveLayer(selectedLayer.id, event.key === ']' ? 'up' : 'down');
+    }
   };
 
-  // Main Canvas Rendering Routine
-  const renderSocialCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+  /* -------------------------------------------------------------- painting */
+
+  useEffect(() => {
+    if (!canvasEl) return;
+    const ctx = canvasEl.getContext('2d');
     if (!ctx) return;
 
     const { width, height } = activePlatformObj;
     const dpr =
       typeof window !== 'undefined' ? window.devicePixelRatio || 2 : 2;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+
+    canvasEl.width = Math.round(width * dpr);
+    canvasEl.height = Math.round(height * dpr);
+    // Width only — the stylesheet leaves `height: auto`, so the element keeps
+    // the bitmap's aspect ratio when `max-width` shrinks it on a narrow screen.
+    canvasEl.style.width = `${width}px`;
+
+    ctx.setTransform?.(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
 
-    ctx.clearRect(0, 0, width, height);
-
-    const isLight = activeColorThemeObj.id === 'luxe_cream';
-
-    // 1. Background Fill / Mesh Gradient
-    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-    if (selectedColorTheme === 'cyber_volt') {
-      bgGrad.addColorStop(0, '#020617');
-      bgGrad.addColorStop(1, '#052e16');
-    } else if (selectedColorTheme === 'crimson_drop') {
-      bgGrad.addColorStop(0, '#0f0204');
-      bgGrad.addColorStop(1, '#450a0a');
-    } else if (selectedColorTheme === 'electric_blue') {
-      bgGrad.addColorStop(0, '#020617');
-      bgGrad.addColorStop(1, '#082f49');
-    } else if (isLight) {
-      bgGrad.addColorStop(0, '#fdfbf7');
-      bgGrad.addColorStop(1, '#f1f5f9');
-    } else {
-      bgGrad.addColorStop(0, '#090d16');
-      bgGrad.addColorStop(1, '#0f172a');
-    }
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, width, height);
-
-    // Subtle darkroom grid/starlight
-    ctx.fillStyle = isLight
-      ? 'rgba(0, 0, 0, 0.03)'
-      : 'rgba(255, 255, 255, 0.04)';
-    for (let gx = 20; gx < width; gx += 40) {
-      for (let gy = 20; gy < height; gy += 40) {
-        ctx.beginPath();
-        ctx.arc(gx, gy, 1, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // 2. Render Layers in Order
-    layers.forEach((layer) => {
-      if (!layer.visible) return;
-
-      ctx.save();
-      const lx = layer.x;
-      const ly = layer.y;
-      const lw = layer.width || 120;
-      const lh = layer.height || 40;
-
-      if (layer.type === 'shape') {
-        ctx.fillStyle = layer.fill || 'rgba(255, 255, 255, 0.1)';
-        ctx.strokeStyle = layer.stroke || 'transparent';
-        ctx.lineWidth = layer.strokeWidth || 1;
-        if (layer.opacity !== undefined) ctx.globalAlpha = layer.opacity;
-
-        if (layer.shapeType === 'border') {
-          ctx.strokeRect(lx - lw / 2, ly - lh / 2, lw, lh);
-        } else if (layer.shapeType === 'circle') {
-          ctx.beginPath();
-          ctx.arc(lx, ly, lw / 2, 0, Math.PI * 2);
-          ctx.fill();
-          if (layer.stroke && layer.stroke !== 'transparent') ctx.stroke();
-        } else if (layer.shapeType === 'starburst') {
-          const points = 12;
-          const outerR = lw / 2;
-          const innerR = outerR * 0.72;
-          ctx.beginPath();
-          for (let p = 0; p < points * 2; p++) {
-            const r = p % 2 === 0 ? outerR : innerR;
-            const angle = (p * Math.PI) / points;
-            const px = lx + Math.cos(angle) * r;
-            const py = ly + Math.sin(angle) * r;
-            if (p === 0) ctx.moveTo(px, py);
-            else ctx.lineTo(px, py);
-          }
-          ctx.closePath();
-          ctx.fill();
-
-          if (layer.text) {
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(layer.text, lx, ly);
-          }
-        } else {
-          ctx.beginPath();
-          if (ctx.roundRect) {
-            ctx.roundRect(
-              lx - lw / 2,
-              ly - lh / 2,
-              lw,
-              lh,
-              layer.borderRadius || 6
-            );
-          } else {
-            ctx.rect(lx - lw / 2, ly - lh / 2, lw, lh);
-          }
-          ctx.fill();
-          if (layer.stroke && layer.stroke !== 'transparent') ctx.stroke();
-        }
-      } else if (layer.type === 'product') {
-        const cardW = lw;
-        const cardH = lh;
-        ctx.fillStyle = isLight ? '#ffffff' : '#1e293b';
-        ctx.strokeStyle = isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.15)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        if (ctx.roundRect) {
-          ctx.roundRect(lx - cardW / 2, ly - cardH / 2, cardW, cardH, 12);
-        } else {
-          ctx.rect(lx - cardW / 2, ly - cardH / 2, cardW, cardH);
-        }
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = isLight ? '#64748b' : '#94a3b8';
-        ctx.font = 'bold 9px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(
-          (layer.productCategory || 'CURATED DROP').toUpperCase(),
-          lx,
-          ly - cardH / 2 + 18
-        );
-
-        ctx.fillStyle = isLight ? '#0f172a' : '#f8fafc';
-        ctx.font = 'bold 14px sans-serif';
-        ctx.fillText((layer.productTitle || 'PRODUCT').slice(0, 20), lx, ly);
-
-        ctx.fillStyle = activeColorThemeObj.accent;
-        ctx.font = 'bold 15px sans-serif';
-        ctx.fillText(layer.productPrice || '$120', lx, ly + cardH / 2 - 16);
-      } else if (layer.type === 'badge') {
-        ctx.fillStyle = layer.bg || activeColorThemeObj.accent;
-        ctx.beginPath();
-        if (ctx.roundRect) {
-          ctx.roundRect(lx - lw / 2, ly - lh / 2, lw, lh, lh / 2);
-        } else {
-          ctx.rect(lx - lw / 2, ly - lh / 2, lw, lh);
-        }
-        ctx.fill();
-
-        ctx.fillStyle = layer.color || '#0f172a';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText((layer.text || '').toUpperCase(), lx, ly);
-      } else {
-        const fontFam =
-          layer.fontFamily === 'serif'
-            ? "'Cinzel', 'Playfair Display', Georgia, serif"
-            : layer.fontFamily === 'display'
-              ? "'Impact', 'Trebuchet MS', sans-serif"
-              : layer.fontFamily === 'script'
-                ? "'Brush Script MT', cursive"
-                : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-
-        ctx.font = `bold ${layer.fontSize || 18}px ${fontFam}`;
-        ctx.fillStyle = layer.color || (isLight ? '#0f172a' : '#ffffff');
-        ctx.textAlign = layer.align || 'center';
-        ctx.textBaseline = 'middle';
-
-        const drawX =
-          layer.align === 'left'
-            ? lx - lw / 2
-            : layer.align === 'right'
-              ? lx + lw / 2
-              : lx;
-        ctx.fillText(layer.text || '', drawX, ly);
-      }
-
-      ctx.restore();
+    paintComposition(ctx, {
+      width,
+      height,
+      palette,
+      layers,
+      imageFor,
+      selection: selectedLayer,
+      guides,
     });
-
-    // 3. Selection Bounding Box (Figma Style)
-    if (selectedLayer && selectedLayer.visible) {
-      ctx.save();
-      const sx = selectedLayer.x;
-      const sy = selectedLayer.y;
-      const sw = selectedLayer.width || 120;
-      const sh = selectedLayer.height || 40;
-
-      ctx.strokeStyle = '#2563eb';
-      ctx.lineWidth = 1.5;
-      if (ctx.setLineDash) ctx.setLineDash([4, 3]);
-      ctx.strokeRect(sx - sw / 2, sy - sh / 2, sw, sh);
-      if (ctx.setLineDash) ctx.setLineDash([]);
-
-      // 4 Corner Anchors
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#2563eb';
-      ctx.lineWidth = 1.5;
-      [
-        [sx - sw / 2, sy - sh / 2],
-        [sx + sw / 2, sy - sh / 2],
-        [sx + sw / 2, sy + sh / 2],
-        [sx - sw / 2, sy + sh / 2],
-      ].forEach(([cx, cy]) => {
-        ctx.fillRect(cx - 3.5, cy - 3.5, 7, 7);
-        ctx.strokeRect(cx - 3.5, cy - 3.5, 7, 7);
-      });
-
-      // Dimension & Layer Tooltip Badge
-      ctx.fillStyle = '#2563eb';
-      const labelText = `${selectedLayer.name} (${Math.round(sw)}×${Math.round(sh)}px)`;
-      ctx.font = 'bold 9px system-ui, sans-serif';
-      const textW = ctx.measureText ? ctx.measureText(labelText).width : 80;
-      if (ctx.roundRect) {
-        ctx.roundRect(sx - sw / 2, sy - sh / 2 - 18, textW + 12, 16, 4);
-      } else {
-        ctx.fillRect(sx - sw / 2, sy - sh / 2 - 18, textW + 12, 16);
-      }
-      ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(labelText, sx - sw / 2 + 6, sy - sh / 2 - 10);
-
-      ctx.restore();
-    }
+    // `canvasEl` is a state-backed callback ref, so toggling the phone mockup
+    // remounts the element and re-runs this effect. Sharing a plain ref between
+    // the two branches used to leave the new canvas blank.
   }, [
+    canvasEl,
     activePlatformObj,
-    activeColorThemeObj,
-    selectedColorTheme,
+    palette,
     layers,
     selectedLayer,
+    guides,
+    imageFor,
+    imageRevision,
   ]);
 
-  useEffect(() => {
-    renderSocialCanvas();
-  }, [renderSocialCanvas]);
+  /* -------------------------------------------------------------- exports */
 
-  // Download High-Res PNG
+  const renderToDataUrl = useCallback(
+    ({ full = true } = {}) => {
+      if (typeof document === 'undefined') return null;
+      const { width, height, exportWidth, exportHeight } = activePlatformObj;
+      const target = document.createElement('canvas');
+      target.width = full ? exportWidth : width;
+      target.height = full ? exportHeight : height;
+
+      const ctx = target.getContext('2d');
+      if (!ctx) return null;
+
+      if (full) ctx.scale(exportWidth / width, exportHeight / height);
+      paintComposition(ctx, {
+        width,
+        height,
+        palette,
+        layers: layersRef.current,
+        imageFor,
+        selection: null,
+        guides: null,
+      });
+
+      return target.toDataURL('image/png');
+    },
+    [activePlatformObj, palette, imageFor]
+  );
+
   const handleDownload = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const { exportWidth, exportHeight } = activePlatformObj;
     try {
-      const dataUrl = canvas.toDataURL('image/png');
+      const dataUrl = renderToDataUrl({ full: true });
+      if (!dataUrl) throw new Error('no-canvas');
+
       const link = document.createElement('a');
       link.download = `cart-flyer-${selectedPlatform}-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
+
       showToast(
-        'High-resolution graphic flyer exported successfully!',
+        `Exported a ${exportWidth}×${exportHeight} PNG to your downloads`,
         'success'
       );
-      speak(
-        'Boom! Your high-res social flyer is downloaded and ready to blow up the feed!',
-        'celebrating'
-      );
+      announce(`Export complete — ${exportWidth} by ${exportHeight} pixels.`);
+      speak('Your post is exported at full resolution.', 'celebrating');
     } catch {
       showToast('Image export simulated in test environment', 'info');
+      announce('Export is unavailable in this environment.');
     }
   };
 
-  // Copy Marketing Caption
   const handleCopyCaption = () => {
-    const captionText = `${headline}\n\n${activeProduct.shortDescription || activeProduct.description || 'Exclusive drop available now at Cart Commerce.'}\n\nShop the collection: https://cartcommerce.shop/products/${activeProduct.itemid}\n\n#streetwear #drops #grails #curated #limitededition #design`;
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(captionText);
-      showToast(
-        'Marketing caption and hashtags copied to clipboard!',
-        'success'
-      );
-      speak(
-        'Caption and hashtags copied! Ready to paste straight into your social campaign!',
-        'happy'
-      );
+    const tags = formatHashtags(hashtags);
+    const text = tags ? `${caption}\n\n${tags}` : caption;
+
+    if (!navigator?.clipboard?.writeText) {
+      showToast('Clipboard is unavailable in this browser', 'info');
+      return;
     }
+
+    navigator.clipboard.writeText(text);
+    showToast('Marketing caption and hashtags copied to clipboard!', 'success');
+    announce('Caption copied to the clipboard.');
+    speak('Caption and hashtags copied.', 'happy');
   };
+
+  const thumbnailFor = useCallback(() => {
+    try {
+      return renderToDataUrl({ full: false });
+    } catch {
+      return null;
+    }
+  }, [renderToDataUrl]);
+
+  const resetToDefaults = useCallback(() => {
+    seedSignature.current = null;
+    themeSignature.current = 'obsidian';
+    setSelectedPlatform('flyer_print');
+    setSelectedTemplate('minimal_luxury');
+    setSelectedColorTheme('obsidian');
+    setSelectedProductId(products[0]?.itemid || 'SM57');
+    setCaptionDraft(null);
+    setHashtags(DEFAULT_HASHTAGS);
+
+    const seeded = generateStarterLayers(
+      'minimal_luxury',
+      'flyer_print',
+      products[0],
+      themePalette(COLOR_THEMES[0])
+    );
+    seedSignature.current = 'minimal_luxury|flyer_print';
+    reset(seeded);
+    setSelectedLayerId(seeded.find((l) => l.id === 'headline')?.id ?? null);
+    announce('Canvas reset to the starter design.');
+  }, [reset, announce]);
+
+  /* ------------------------------------------------------------------ ui  */
+
+  const tabs = [
+    { id: 'inspector', label: 'Properties' },
+    { id: 'layers', label: `Layers (${layers.length})` },
+    { id: 'catalog', label: 'Catalog & Presets' },
+  ];
+
+  const isTextish =
+    selectedLayer?.type === 'text' || selectedLayer?.type === 'badge';
+  const fillValue = selectedLayer?.fill ?? selectedLayer?.bg ?? palette.accent;
 
   return (
     <>
@@ -1109,12 +2117,11 @@ export function SocialStudio() {
         </title>
         <meta
           name="description"
-          content="Figma-grade graphic design studio for e-commerce store owners. Build, customize, and compose promotional fliers, Instagram posts, TikTok reels, and banners."
+          content="Multi-layer graphic design studio for e-commerce store owners. Build, customize, and compose promotional fliers, Instagram posts, TikTok reels, and banners."
         />
       </Head>
 
       <div className={styles.studioContainer}>
-        {/* Studio Top Header */}
         <header className={styles.studioHeader}>
           <div className={styles.headerLeft}>
             <Link href="/" className={styles.backLink}>
@@ -1125,20 +2132,21 @@ export function SocialStudio() {
               <h1 className={styles.studioTitle}>
                 Social Media Creation Studio
               </h1>
-              <span className={styles.editionPill}>FIGMA-LITE WORKBENCH</span>
+              <span className={styles.editionPill}>Multi-layer workbench</span>
             </div>
             <p className={styles.studioSubtitle}>
-              <span>Store Owner & Creator Workshop</span> • Interactive
-              Multi-Layer Canvas Engine
+              <span>Store Owner &amp; Creator Workshop</span> — compose, save
+              and share campaign-ready posts
             </p>
           </div>
 
           <div className={styles.headerActions}>
             <button
               type="button"
-              className={`${styles.mockupToggle} ${showPhoneMockup ? styles.mockupToggleActive : ''}`}
+              className={`${styles.ghostAction} ${showPhoneMockup ? styles.ghostActionOn : ''}`}
               onClick={() => setShowPhoneMockup((prev) => !prev)}
               aria-label="Toggle smartphone mockup preview"
+              aria-pressed={showPhoneMockup}
             >
               <EyeIcon size={16} />
               <span>
@@ -1147,7 +2155,7 @@ export function SocialStudio() {
             </button>
             <button
               type="button"
-              className={styles.copyCaptionBtn}
+              className={styles.ghostAction}
               onClick={handleCopyCaption}
               aria-label="Copy post caption to clipboard"
             >
@@ -1156,97 +2164,116 @@ export function SocialStudio() {
             </button>
             <button
               type="button"
-              className={styles.downloadBtn}
+              className={styles.primaryAction}
               onClick={handleDownload}
               aria-label="Download social post PNG"
             >
               <SparklesIcon size={16} />
-              <span>Export Flyer PNG</span>
+              <span>Export PNG</span>
             </button>
           </div>
         </header>
 
-        {/* Designer Quick Tools Bar */}
         <div className={styles.toolbarStrip}>
-          <div className={styles.toolGroup}>
-            <span className={styles.toolLabel}>Add Elements:</span>
+          <div className={styles.toolGroup} role="group" aria-label="History">
+            <button
+              type="button"
+              className={styles.toolBtn}
+              onClick={undo}
+              disabled={!history.canUndo}
+              aria-label="Undo last canvas change"
+            >
+              <RotateCcwIcon size={13} />
+              <span>Undo</span>
+            </button>
+            <button
+              type="button"
+              className={styles.toolBtn}
+              onClick={redo}
+              disabled={!history.canRedo}
+              aria-label="Redo last undone canvas change"
+            >
+              <span className={styles.mirrored}>
+                <RotateCcwIcon size={13} />
+              </span>
+              <span>Redo</span>
+            </button>
+          </div>
+
+          <div className={styles.toolDivider} aria-hidden="true" />
+
+          <div
+            className={styles.toolGroup}
+            role="group"
+            aria-label="Add elements"
+          >
+            <span className={styles.toolLabel}>Add</span>
             <button
               type="button"
               className={styles.toolBtn}
               onClick={() => addTextLayer('headline')}
-              aria-label="Add Text Layer"
+              aria-label="Add text layer"
             >
-              <span>+ Text</span>
+              Text
             </button>
             <button
               type="button"
               className={styles.toolBtn}
               onClick={() => addBadgeLayer('50')}
-              aria-label="Add Promo Badge"
+              aria-label="Add promo badge layer"
             >
-              <span>+ Promo Badge</span>
+              Promo badge
             </button>
             <button
               type="button"
               className={styles.toolBtn}
-              onClick={() => addShapeLayer()}
-              aria-label="Add Container Box"
+              onClick={addShapeLayer}
+              aria-label="Add container card layer"
             >
-              <span>+ Card Box</span>
+              Card box
             </button>
           </div>
 
-          <div className={styles.toolDivider} />
+          <div className={styles.toolDivider} aria-hidden="true" />
 
-          <div className={styles.toolGroup}>
-            <span className={styles.toolLabel}>Align:</span>
-            <button
-              type="button"
-              className={styles.toolBtnSmall}
-              onClick={() => alignLayer('left')}
-              disabled={!selectedLayer}
-              title="Align Left"
-            >
-              Left
-            </button>
-            <button
-              type="button"
-              className={styles.toolBtnSmall}
-              onClick={() => alignLayer('center')}
-              disabled={!selectedLayer}
-              title="Center Horizontally"
-            >
-              Center
-            </button>
-            <button
-              type="button"
-              className={styles.toolBtnSmall}
-              onClick={() => alignLayer('right')}
-              disabled={!selectedLayer}
-              title="Align Right"
-            >
-              Right
-            </button>
-            <button
-              type="button"
-              className={styles.toolBtnSmall}
-              onClick={() => alignLayer('middle')}
-              disabled={!selectedLayer}
-              title="Center Vertically"
-            >
-              Middle
-            </button>
+          <div
+            className={styles.toolGroup}
+            role="group"
+            aria-label="Align selected layer"
+          >
+            <span className={styles.toolLabel}>Align</span>
+            {[
+              ['left', 'Align selected layer to the left'],
+              ['center', 'Center selected layer horizontally'],
+              ['right', 'Align selected layer to the right'],
+              ['middle', 'Center selected layer vertically'],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                className={styles.toolBtnSmall}
+                onClick={() => alignLayer(key)}
+                disabled={!selectedLayer}
+                aria-label={label}
+              >
+                {key[0].toUpperCase() + key.slice(1)}
+              </button>
+            ))}
           </div>
 
-          <div className={styles.toolDivider} />
+          <div className={styles.toolDivider} aria-hidden="true" />
 
-          <div className={styles.toolGroup}>
+          <div
+            className={styles.toolGroup}
+            role="group"
+            aria-label="Selected layer actions"
+          >
             <button
               type="button"
               className={styles.toolBtnSmall}
               onClick={() => selectedLayer && duplicateLayer(selectedLayer.id)}
               disabled={!selectedLayer}
-              title="Duplicate Layer"
+              aria-label="Duplicate selected layer"
             >
               Duplicate
             </button>
@@ -1255,106 +2282,136 @@ export function SocialStudio() {
               className={`${styles.toolBtnSmall} ${styles.toolBtnDanger}`}
               onClick={() => selectedLayer && deleteLayer(selectedLayer.id)}
               disabled={!selectedLayer}
-              title="Delete Layer"
+              aria-label="Delete selected layer"
             >
               Delete
             </button>
           </div>
         </div>
 
-        {/* Workbench Grid */}
+        <p className={styles.srOnly} role="status" aria-live="polite">
+          {announcement}
+        </p>
+
         <div className={styles.workbench}>
-          {/* Left Column: Canvas Viewport */}
           <div className={styles.canvasStage}>
+            <DesignBar
+              persistence={persistence}
+              modeLabel="social post"
+              onRestore={applyDoc}
+              onLoad={applyDoc}
+              onReset={resetToDefaults}
+              thumbnailFor={thumbnailFor}
+              summaryFor={() => summarizeDesign(doc, DESIGN_LABELS)}
+            />
+
             <div className={styles.canvasHeaderBar}>
               <div className={styles.canvasFormatInfo}>
                 <strong>{activePlatformObj.name}</strong>
                 <span>{activePlatformObj.label}</span>
               </div>
-              <div className={styles.dragHint}>
-                <span>Click & drag elements on canvas to arrange</span>
-              </div>
+              <p className={styles.dragHint}>
+                Drag on the canvas, or focus it and use arrow keys (Shift for
+                10px). Tab cycles layers.
+              </p>
             </div>
 
-            {/* Interactive Canvas or Mockup View */}
             <div className={styles.canvasWrapper}>
               {showPhoneMockup ? (
                 <div className={styles.smartphoneBezel}>
-                  <div className={styles.phoneSpeaker} />
-                  <div className={styles.phoneCamera} />
+                  <div className={styles.phoneSpeaker} aria-hidden="true" />
+                  <div className={styles.phoneCamera} aria-hidden="true" />
                   <div className={styles.phoneStatusBar}>
                     <span>9:41</span>
                   </div>
                   <div className={styles.phoneScreen}>
                     <canvas
-                      ref={canvasRef}
+                      ref={setCanvasEl}
                       className={styles.graphicCanvas}
-                      onMouseDown={handleCanvasMouseDown}
-                      onMouseMove={handleCanvasMouseMove}
-                      onMouseUp={handleCanvasMouseUp}
-                    />
+                      tabIndex={0}
+                      role="application"
+                      aria-label={canvasLabel(layers, selectedLayer)}
+                      onPointerDown={handlePointerDown}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={endDrag}
+                      onPointerCancel={endDrag}
+                      onKeyDown={handleCanvasKeyDown}
+                    >
+                      Interactive post canvas. Use the Layers and Properties
+                      panels to edit the composition.
+                    </canvas>
                   </div>
-                  <div className={styles.phoneHomeBar} />
+                  <div className={styles.phoneHomeBar} aria-hidden="true" />
                 </div>
               ) : (
                 <div className={styles.standaloneCanvasCard}>
                   <canvas
-                    ref={canvasRef}
+                    ref={setCanvasEl}
                     className={`${styles.graphicCanvas} ${isDragging ? styles.canvasDragging : ''}`}
-                    onMouseDown={handleCanvasMouseDown}
-                    onMouseMove={handleCanvasMouseMove}
-                    onMouseUp={handleCanvasMouseUp}
-                  />
+                    tabIndex={0}
+                    role="application"
+                    aria-label={canvasLabel(layers, selectedLayer)}
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={endDrag}
+                    onPointerCancel={endDrag}
+                    onKeyDown={handleCanvasKeyDown}
+                  >
+                    Interactive post canvas. Use the Layers and Properties
+                    panels to edit the composition.
+                  </canvas>
                 </div>
               )}
             </div>
 
-            {/* Bottom Status Proof Footnote */}
-            <div className={styles.resolutionNotice}>
+            <p className={styles.resolutionNotice}>
               <CheckCircleIcon size={16} />
               <span>
-                300-DPI Print Ready Proof • Multi-layer vector composite engine
-                with 2× retina scale
+                Exports a {activePlatformObj.exportWidth}×
+                {activePlatformObj.exportHeight} PNG — the full advertised
+                resolution, rendered fresh rather than upscaled from the
+                preview.
               </span>
-            </div>
+            </p>
           </div>
 
-          {/* Right Column: Photoshop Layers & Figma Inspector */}
           <div className={styles.inspectorSidebar}>
-            {/* Sidebar Tab Switcher */}
-            <div className={styles.sidebarTabs}>
-              <button
-                type="button"
-                className={`${styles.sidebarTab} ${activeTab === 'inspector' ? styles.sidebarTabActive : ''}`}
-                onClick={() => setActiveTab('inspector')}
-              >
-                Properties
-              </button>
-              <button
-                type="button"
-                className={`${styles.sidebarTab} ${activeTab === 'layers' ? styles.sidebarTabActive : ''}`}
-                onClick={() => setActiveTab('layers')}
-              >
-                Layers ({layers.length})
-              </button>
-              <button
-                type="button"
-                className={`${styles.sidebarTab} ${activeTab === 'catalog' ? styles.sidebarTabActive : ''}`}
-                onClick={() => setActiveTab('catalog')}
-              >
-                Catalog & Presets
-              </button>
+            <div
+              className={styles.sidebarTabs}
+              role="tablist"
+              aria-label="Studio panels"
+            >
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  id={id(`tab-${tab.id}`)}
+                  aria-selected={activeTab === tab.id}
+                  aria-controls={id(`panel-${tab.id}`)}
+                  tabIndex={activeTab === tab.id ? 0 : -1}
+                  className={`${styles.sidebarTab} ${activeTab === tab.id ? styles.sidebarTabActive : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
-            {/* TAB 1: PROPERTIES INSPECTOR (FIGMA STYLE) */}
             {activeTab === 'inspector' && (
-              <div className={styles.tabContent}>
+              <div
+                className={styles.tabContent}
+                role="tabpanel"
+                id={id('panel-inspector')}
+                aria-labelledby={id('tab-inspector')}
+                tabIndex={0}
+              >
                 {selectedLayer ? (
                   <div className={styles.inspectorPane}>
                     <div className={styles.selectedLayerHeader}>
                       <div>
                         <span className={styles.layerTypePill}>
-                          {selectedLayer.type.toUpperCase()}
+                          {selectedLayer.type}
                         </span>
                         <h3 className={styles.selectedLayerTitle}>
                           {selectedLayer.name}
@@ -1364,257 +2421,237 @@ export function SocialStudio() {
                         type="button"
                         className={styles.deselectBtn}
                         onClick={() => setSelectedLayerId(null)}
-                        title="Deselect"
+                        aria-label="Deselect this layer"
                       >
                         <CloseIcon size={14} />
                       </button>
                     </div>
 
-                    {/* Transform Coordinates */}
-                    <div className={styles.propGroup}>
-                      <span className={styles.propGroupTitle}>
-                        Transform & Position
-                      </span>
+                    <section className={styles.propGroup}>
+                      <h4 className={styles.propGroupTitle}>
+                        Transform &amp; position
+                      </h4>
                       <div className={styles.coordGrid}>
-                        <div className={styles.coordItem}>
-                          <label>X (px):</label>
-                          <input
-                            type="number"
-                            value={selectedLayer.x}
-                            onChange={(e) =>
-                              updateSelectedLayer({ x: Number(e.target.value) })
-                            }
-                          />
-                        </div>
-                        <div className={styles.coordItem}>
-                          <label>Y (px):</label>
-                          <input
-                            type="number"
-                            value={selectedLayer.y}
-                            onChange={(e) =>
-                              updateSelectedLayer({ y: Number(e.target.value) })
-                            }
-                          />
-                        </div>
-                        <div className={styles.coordItem}>
-                          <label>Width:</label>
-                          <input
-                            type="number"
-                            value={selectedLayer.width || 120}
-                            onChange={(e) =>
-                              updateSelectedLayer({
-                                width: Number(e.target.value),
-                              })
-                            }
-                          />
-                        </div>
-                        <div className={styles.coordItem}>
-                          <label>Height:</label>
-                          <input
-                            type="number"
-                            value={selectedLayer.height || 36}
-                            onChange={(e) =>
-                              updateSelectedLayer({
-                                height: Number(e.target.value),
-                              })
-                            }
-                          />
-                        </div>
+                        {[
+                          ['x', 'X (px)', selectedLayer.x],
+                          ['y', 'Y (px)', selectedLayer.y],
+                          ['width', 'Width', selectedLayer.width ?? 120],
+                          ['height', 'Height', selectedLayer.height ?? 36],
+                        ].map(([key, label, value]) => (
+                          <div key={key} className={styles.coordItem}>
+                            <label htmlFor={id(`coord-${key}`)}>{label}</label>
+                            <input
+                              id={id(`coord-${key}`)}
+                              type="number"
+                              value={Math.round(value)}
+                              onChange={(e) =>
+                                updateSelectedLayer({
+                                  [key]: Number(e.target.value),
+                                })
+                              }
+                            />
+                          </div>
+                        ))}
                       </div>
-                    </div>
 
-                    {/* Typography Settings (If text or badge) */}
-                    {(selectedLayer.type === 'text' ||
-                      selectedLayer.type === 'badge') && (
-                      <div className={styles.propGroup}>
-                        <span className={styles.propGroupTitle}>
-                          Typography & Text
-                        </span>
+                      <StudioSlider
+                        label="Layer opacity"
+                        value={Math.round((selectedLayer.opacity ?? 1) * 100)}
+                        onChange={(v) =>
+                          updateSelectedLayer({ opacity: v / 100 })
+                        }
+                        min={0}
+                        max={100}
+                        format={(v) => `${v}%`}
+                      />
+                    </section>
+
+                    {isTextish && (
+                      <section className={styles.propGroup}>
+                        <h4 className={styles.propGroupTitle}>
+                          Typography &amp; text
+                        </h4>
+
                         <div className={styles.fieldItem}>
-                          <label htmlFor="inspectorTextInput">Content:</label>
-                          <input
-                            id="inspectorTextInput"
-                            type="text"
+                          <label htmlFor={id('text-content')}>Content:</label>
+                          <textarea
+                            id={id('text-content')}
+                            rows={2}
                             value={selectedLayer.text || ''}
                             onChange={(e) =>
                               updateSelectedLayer({ text: e.target.value })
                             }
                             className={styles.inputField}
                           />
+                          <p className={styles.fieldHint}>
+                            Copy wraps to the layer width. Casing is yours —
+                            nothing is force-uppercased on the canvas.
+                          </p>
                         </div>
 
-                        <div className={styles.fieldRow}>
-                          <div className={styles.fieldHalf}>
-                            <label>Font Family:</label>
-                            <select
-                              value={selectedLayer.fontFamily || 'sans'}
-                              onChange={(e) =>
-                                updateSelectedLayer({
-                                  fontFamily: e.target.value,
-                                })
-                              }
-                              className={styles.selectField}
-                            >
-                              <option value="sans">Modern Sans</option>
-                              <option value="serif">Classic Serif</option>
-                              <option value="display">Bold Impact</option>
-                              <option value="script">Artisan Script</option>
-                            </select>
-                          </div>
-
-                          <div className={styles.fieldHalf}>
-                            <label>
-                              Font Size ({selectedLayer.fontSize || 16}px):
-                            </label>
-                            <input
-                              type="range"
-                              min={9}
-                              max={48}
-                              value={selectedLayer.fontSize || 16}
-                              onChange={(e) =>
-                                updateSelectedLayer({
-                                  fontSize: Number(e.target.value),
-                                })
-                              }
-                            />
-                          </div>
+                        <div className={styles.fieldItem}>
+                          <label htmlFor={id('font-family')}>
+                            Font family:
+                          </label>
+                          <select
+                            id={id('font-family')}
+                            value={selectedLayer.fontFamily || 'sans'}
+                            onChange={(e) =>
+                              updateSelectedLayer({
+                                fontFamily: e.target.value,
+                              })
+                            }
+                            className={styles.selectField}
+                          >
+                            {FONT_OPTIONS.map((font) => (
+                              <option key={font.id} value={font.id}>
+                                {font.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
 
-                        <div className={styles.fieldRow}>
-                          <div className={styles.fieldHalf}>
-                            <label>Text Color:</label>
-                            <div className={styles.colorPickerRow}>
-                              <input
-                                type="color"
-                                value={selectedLayer.color || '#ffffff'}
-                                onChange={(e) =>
-                                  updateSelectedLayer({ color: e.target.value })
-                                }
-                                className={styles.colorInput}
-                              />
-                              <span className={styles.colorHexText}>
-                                {selectedLayer.color || '#ffffff'}
-                              </span>
-                            </div>
-                          </div>
+                        <OptionPills
+                          label="Font weight"
+                          options={WEIGHT_OPTIONS}
+                          value={String(selectedLayer.fontWeight ?? 700)}
+                          onChange={(v) =>
+                            updateSelectedLayer({ fontWeight: Number(v) })
+                          }
+                        />
 
-                          <div className={styles.fieldHalf}>
-                            <label>Alignment:</label>
-                            <div className={styles.alignToggleGroup}>
-                              <button
-                                type="button"
-                                className={
-                                  selectedLayer.align === 'left'
-                                    ? styles.alignBtnActive
-                                    : styles.alignBtn
-                                }
-                                onClick={() =>
-                                  updateSelectedLayer({ align: 'left' })
-                                }
-                              >
-                                L
-                              </button>
-                              <button
-                                type="button"
-                                className={
-                                  selectedLayer.align === 'center'
-                                    ? styles.alignBtnActive
-                                    : styles.alignBtn
-                                }
-                                onClick={() =>
-                                  updateSelectedLayer({ align: 'center' })
-                                }
-                              >
-                                C
-                              </button>
-                              <button
-                                type="button"
-                                className={
-                                  selectedLayer.align === 'right'
-                                    ? styles.alignBtnActive
-                                    : styles.alignBtn
-                                }
-                                onClick={() =>
-                                  updateSelectedLayer({ align: 'right' })
-                                }
-                              >
-                                R
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                        <StudioSlider
+                          label="Font size"
+                          value={selectedLayer.fontSize || 16}
+                          onChange={(v) => updateSelectedLayer({ fontSize: v })}
+                          min={8}
+                          max={64}
+                          format={(v) => `${v}px`}
+                        />
+
+                        <OptionPills
+                          label="Alignment"
+                          options={ALIGN_OPTIONS}
+                          value={selectedLayer.align || 'center'}
+                          onChange={(v) => updateSelectedLayer({ align: v })}
+                        />
+
+                        <ColorField
+                          id={id('text-color')}
+                          label="Text colour"
+                          value={selectedLayer.color ?? palette.text}
+                          fallback={palette.text}
+                          onChange={(v) => setLayerColor('color', v)}
+                        />
+                      </section>
                     )}
 
-                    {/* Shape / Badge Appearance */}
                     {(selectedLayer.type === 'shape' ||
-                      selectedLayer.type === 'badge') && (
-                      <div className={styles.propGroup}>
-                        <span className={styles.propGroupTitle}>
-                          Appearance & Fill
-                        </span>
-                        <div className={styles.fieldRow}>
-                          <div className={styles.fieldHalf}>
-                            <label>Fill Color:</label>
-                            <div className={styles.colorPickerRow}>
-                              <input
-                                type="color"
-                                value={
-                                  selectedLayer.fill ||
-                                  selectedLayer.bg ||
-                                  '#f59e0b'
-                                }
-                                onChange={(e) =>
-                                  updateSelectedLayer({
-                                    fill: e.target.value,
-                                    bg: e.target.value,
-                                  })
-                                }
-                                className={styles.colorInput}
-                              />
-                              <span className={styles.colorHexText}>
-                                {selectedLayer.fill ||
-                                  selectedLayer.bg ||
-                                  '#f59e0b'}
-                              </span>
-                            </div>
-                          </div>
+                      selectedLayer.type === 'badge' ||
+                      selectedLayer.type === 'product') && (
+                      <section className={styles.propGroup}>
+                        <h4 className={styles.propGroupTitle}>
+                          Appearance &amp; fill
+                        </h4>
 
-                          <div className={styles.fieldHalf}>
-                            <label>Border Radius:</label>
-                            <input
-                              type="range"
-                              min={0}
-                              max={32}
-                              value={selectedLayer.borderRadius || 6}
-                              onChange={(e) =>
-                                updateSelectedLayer({
-                                  borderRadius: Number(e.target.value),
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
+                        {selectedLayer.type === 'badge' && (
+                          <OptionPills
+                            label="Badge style"
+                            options={BADGE_STYLES}
+                            value={resolveBadgeStyle(selectedLayer.badgeStyle)}
+                            onChange={(v) =>
+                              updateSelectedLayer({ badgeStyle: v })
+                            }
+                          />
+                        )}
+
+                        <ColorField
+                          id={id('fill-color')}
+                          label="Fill colour"
+                          value={fillValue}
+                          fallback={palette.accent}
+                          onChange={(v) => {
+                            updateSelectedLayer({
+                              fill: v,
+                              bg: v,
+                              fillRole: undefined,
+                              bgRole: undefined,
+                            });
+                          }}
+                        />
+
+                        <StudioSlider
+                          label="Corner radius"
+                          value={
+                            selectedLayer.borderRadius ??
+                            (selectedLayer.type === 'badge'
+                              ? Math.round((selectedLayer.height ?? 28) / 2)
+                              : 6)
+                          }
+                          onChange={(v) =>
+                            updateSelectedLayer({ borderRadius: v })
+                          }
+                          min={0}
+                          max={40}
+                          format={(v) => `${v}px`}
+                        />
+                      </section>
                     )}
+
+                    <section className={styles.propGroup}>
+                      <h4 className={styles.propGroupTitle}>Stroke</h4>
+                      <ColorField
+                        id={id('stroke-color')}
+                        label="Stroke colour"
+                        value={selectedLayer.stroke ?? palette.accent}
+                        fallback={palette.accent}
+                        onChange={(v) => setLayerColor('stroke', v)}
+                      />
+                      <StudioSlider
+                        label="Stroke width"
+                        value={selectedLayer.strokeWidth ?? 0}
+                        onChange={(v) =>
+                          updateSelectedLayer({ strokeWidth: v })
+                        }
+                        min={0}
+                        max={12}
+                        step={0.5}
+                        format={(v) => (v ? `${v}px` : 'None')}
+                      />
+                    </section>
                   </div>
                 ) : (
                   <div className={styles.emptyInspector}>
-                    <p>No element selected on canvas.</p>
-                    <span>
-                      Click any text, badge, or card on the canvas to inspect
-                      and edit properties!
+                    <span className={styles.emptyGlyph} aria-hidden="true">
+                      <SparklesIcon size={24} />
                     </span>
+                    <p>Nothing selected yet</p>
+                    <span>
+                      Click any text, badge or card on the canvas — or focus the
+                      canvas and press Tab — to edit its properties here.
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.emptyAction}
+                      onClick={() => setActiveTab('layers')}
+                    >
+                      Browse the layer stack
+                    </button>
                   </div>
                 )}
               </div>
             )}
 
-            {/* TAB 2: LAYERS STACK (PHOTOSHOP STYLE) */}
             {activeTab === 'layers' && (
-              <div className={styles.tabContent}>
+              <div
+                className={styles.tabContent}
+                role="tabpanel"
+                id={id('panel-layers')}
+                aria-labelledby={id('tab-layers')}
+                tabIndex={0}
+              >
                 <div className={styles.layersHeader}>
-                  <span>Layers (Top to Bottom)</span>
+                  <h3>Layers (top to bottom)</h3>
                   <button
                     type="button"
                     className={styles.resetBtn}
@@ -1623,9 +2660,10 @@ export function SocialStudio() {
                         selectedTemplate,
                         selectedPlatform,
                         activeProduct,
-                        activeColorThemeObj
+                        palette
                       );
-                      setLayers(fresh);
+                      commit(fresh);
+                      announce('Layers reset to the starter template.');
                       showToast('Reset layers to starter template', 'info');
                     }}
                   >
@@ -1634,80 +2672,103 @@ export function SocialStudio() {
                   </button>
                 </div>
 
-                <div className={styles.layersList}>
-                  {layers.map((l, index) => (
-                    <div
-                      key={l.id}
-                      className={`${styles.layerItem} ${
-                        selectedLayerId === l.id ? styles.layerItemActive : ''
-                      } ${!l.visible ? styles.layerItemHidden : ''}`}
-                      onClick={() => setSelectedLayerId(l.id)}
-                    >
-                      <button
-                        type="button"
-                        className={styles.layerEyeBtn}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleLayerVisibility(l.id);
-                        }}
-                        title={l.visible ? 'Hide layer' : 'Show layer'}
-                      >
-                        <EyeIcon size={14} />
-                      </button>
+                {layers.length === 0 ? (
+                  <p className={styles.layersEmpty}>
+                    This canvas is empty. Add a text, badge or card layer from
+                    the toolbar to begin.
+                  </p>
+                ) : (
+                  <ul className={styles.layersList}>
+                    {layers
+                      .map((layer, index) => ({ layer, index }))
+                      .reverse()
+                      .map(({ layer, index }) => (
+                        <li
+                          key={layer.id}
+                          className={`${styles.layerItem} ${
+                            selectedLayerId === layer.id
+                              ? styles.layerItemActive
+                              : ''
+                          } ${layer.visible === false ? styles.layerItemHidden : ''}`}
+                        >
+                          <button
+                            type="button"
+                            className={styles.layerEyeBtn}
+                            onClick={() => toggleLayerVisibility(layer.id)}
+                            aria-label={
+                              layer.visible === false
+                                ? `Show ${layer.name}`
+                                : `Hide ${layer.name}`
+                            }
+                            aria-pressed={layer.visible !== false}
+                          >
+                            {layer.visible === false ? (
+                              <EyeOffIcon size={14} />
+                            ) : (
+                              <EyeIcon size={14} />
+                            )}
+                          </button>
 
-                      <div className={styles.layerInfo}>
-                        <span className={styles.layerBadgeType}>
-                          {l.type.toUpperCase()}
-                        </span>
-                        <strong className={styles.layerItemName}>
-                          {l.name}
-                        </strong>
-                      </div>
+                          <button
+                            type="button"
+                            className={styles.layerSelectBtn}
+                            onClick={() => setSelectedLayerId(layer.id)}
+                            aria-pressed={selectedLayerId === layer.id}
+                          >
+                            <span className={styles.layerBadgeType}>
+                              {layer.type}
+                            </span>
+                            <span className={styles.layerItemName}>
+                              {layer.name}
+                            </span>
+                          </button>
 
-                      <div
-                        className={styles.layerControls}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          type="button"
-                          className={styles.layerOrderBtn}
-                          disabled={index === layers.length - 1}
-                          onClick={() => moveLayer(l.id, 'up')}
-                          title="Move layer up"
-                        >
-                          ▲
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.layerOrderBtn}
-                          disabled={index === 0}
-                          onClick={() => moveLayer(l.id, 'down')}
-                          title="Move layer down"
-                        >
-                          ▼
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.layerDeleteBtn}
-                          onClick={() => deleteLayer(l.id)}
-                          title="Delete layer"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                          <span className={styles.layerControls}>
+                            <button
+                              type="button"
+                              className={styles.layerOrderBtn}
+                              disabled={index === layers.length - 1}
+                              onClick={() => moveLayer(layer.id, 'up')}
+                              aria-label={`Move ${layer.name} forward`}
+                            >
+                              <span aria-hidden="true">▲</span>
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.layerOrderBtn}
+                              disabled={index === 0}
+                              onClick={() => moveLayer(layer.id, 'down')}
+                              aria-label={`Move ${layer.name} backward`}
+                            >
+                              <span aria-hidden="true">▼</span>
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.layerDeleteBtn}
+                              onClick={() => deleteLayer(layer.id)}
+                              aria-label={`Delete ${layer.name}`}
+                            >
+                              <span aria-hidden="true">✕</span>
+                            </button>
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                )}
               </div>
             )}
 
-            {/* TAB 3: CATALOG & PRESETS */}
             {activeTab === 'catalog' && (
-              <div className={styles.tabContent}>
-                {/* 1. Target Platform Preset */}
+              <div
+                className={styles.tabContent}
+                role="tabpanel"
+                id={id('panel-catalog')}
+                aria-labelledby={id('tab-catalog')}
+                tabIndex={0}
+              >
                 <section className={styles.sidebarSection}>
                   <h2 className={styles.sidebarHeading}>
-                    1. Flier & Platform Format
+                    1. Flier &amp; platform format
                   </h2>
                   <div className={styles.platformGrid}>
                     {PLATFORMS.map((p) => (
@@ -1719,6 +2780,7 @@ export function SocialStudio() {
                             ? styles.platformCardActive
                             : ''
                         }`}
+                        aria-pressed={selectedPlatform === p.id}
                         onClick={() => setSelectedPlatform(p.id)}
                       >
                         <strong>{p.name}</strong>
@@ -1728,12 +2790,11 @@ export function SocialStudio() {
                   </div>
                 </section>
 
-                {/* 2. 1-Click Product Catalog Selector */}
                 <section className={styles.sidebarSection}>
                   <h2 className={styles.sidebarHeading}>
-                    2. Import from Store Catalog
+                    2. Import from store catalog
                   </h2>
-                  <div className={styles.productSelectBox}>
+                  <div className={styles.fieldItem}>
                     <label htmlFor="productCatalogSelect">
                       Choose Catalog Product:
                     </label>
@@ -1741,7 +2802,7 @@ export function SocialStudio() {
                       id="productCatalogSelect"
                       value={selectedProductId}
                       onChange={handleSelectProduct}
-                      className={styles.productSelectDropdown}
+                      className={styles.selectField}
                     >
                       {products.map((p) => (
                         <option key={p.itemid} value={p.itemid}>
@@ -1749,13 +2810,16 @@ export function SocialStudio() {
                         </option>
                       ))}
                     </select>
+                    <p className={styles.fieldHint}>
+                      Pulls the product artwork, title, category and price
+                      straight into the composition.
+                    </p>
                   </div>
                 </section>
 
-                {/* 3. Designer Template Selection */}
                 <section className={styles.sidebarSection}>
                   <h2 className={styles.sidebarHeading}>
-                    3. Designer Starter Template
+                    3. Designer starter template
                   </h2>
                   <div className={styles.templateGrid}>
                     {TEMPLATES.map((t) => (
@@ -1767,53 +2831,45 @@ export function SocialStudio() {
                             ? styles.templateCardActive
                             : ''
                         }`}
+                        aria-pressed={selectedTemplate === t.id}
                         onClick={() => setSelectedTemplate(t.id)}
                       >
-                        <div className={styles.templateCardTop}>
+                        <span className={styles.templateCardTop}>
                           <span className={styles.templateName}>{t.name}</span>
                           <span className={styles.templateBadge}>
                             {t.badge}
                           </span>
-                        </div>
-                        <p className={styles.templateDesc}>{t.desc}</p>
+                        </span>
+                        <span className={styles.templateDesc}>{t.desc}</span>
                       </button>
                     ))}
                   </div>
                 </section>
 
-                {/* 4. Color Palette */}
                 <section className={styles.sidebarSection}>
-                  <h2 className={styles.sidebarHeading}>
-                    4. Color Palette & Mood
-                  </h2>
-                  <div className={styles.paletteRow}>
-                    {COLOR_THEMES.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        className={`${styles.paletteBtn} ${
-                          selectedColorTheme === c.id
-                            ? styles.paletteBtnActive
-                            : ''
-                        }`}
-                        style={{ backgroundColor: c.bg, borderColor: c.accent }}
-                        onClick={() => setSelectedColorTheme(c.id)}
-                        title={c.name}
-                        aria-label={`Select ${c.name} color palette`}
-                      >
-                        <span
-                          className={styles.swatchAccentDot}
-                          style={{ backgroundColor: c.accent }}
-                        />
-                      </button>
-                    ))}
-                  </div>
+                  <SwatchRow
+                    label="4. Colour palette & mood"
+                    hint="Re-tints the design; your edits stay put"
+                    options={COLOR_THEMES.map((c) => ({
+                      value: c.bg,
+                      name: c.name,
+                    }))}
+                    value={activeColorThemeObj.bg}
+                    onChange={(bg) =>
+                      setSelectedColorTheme(
+                        COLOR_THEMES.find((c) => c.bg === bg)?.id ?? 'obsidian'
+                      )
+                    }
+                    columns={5}
+                  />
                 </section>
 
-                {/* 5. Direct Headline Input for test compatibility */}
+                {/* The quick headline field is the studio's documented entry
+                    point for the post's main line — it writes through to the
+                    `headline` layer and recreates it if it was deleted. */}
                 <section className={styles.sidebarSection}>
                   <h2 className={styles.sidebarHeading}>
-                    5. Quick Headline Sync
+                    5. Quick headline sync
                   </h2>
                   <div className={styles.fieldItem}>
                     <label htmlFor="postHeadlineInput">Headline:</label>
@@ -1821,18 +2877,47 @@ export function SocialStudio() {
                       id="postHeadlineInput"
                       type="text"
                       value={headline}
-                      maxLength={40}
-                      onChange={(e) => {
-                        const newText = e.target.value;
-                        setLayers((prev) =>
-                          prev.map((l) =>
-                            l.id === 'headline' ? { ...l, text: newText } : l
-                          )
-                        );
-                      }}
+                      maxLength={60}
+                      onChange={(e) => setHeadlineText(e.target.value)}
                       className={styles.inputField}
                     />
                   </div>
+                </section>
+
+                <section className={styles.sidebarSection}>
+                  <h2 className={styles.sidebarHeading}>6. Caption composer</h2>
+                  <div className={styles.fieldItem}>
+                    <label htmlFor={id('caption')}>Post caption:</label>
+                    <textarea
+                      id={id('caption')}
+                      rows={6}
+                      value={caption}
+                      onChange={(e) => setCaptionDraft(e.target.value)}
+                      className={styles.inputField}
+                    />
+                  </div>
+                  <div className={styles.fieldItem}>
+                    <label htmlFor={id('hashtags')}>
+                      Hashtags (space separated):
+                    </label>
+                    <input
+                      id={id('hashtags')}
+                      type="text"
+                      value={hashtags}
+                      onChange={(e) => setHashtags(e.target.value)}
+                      className={styles.inputField}
+                    />
+                    <p className={styles.fieldHint}>
+                      {formatHashtags(hashtags)}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.secondaryAction}
+                    onClick={() => setCaptionDraft(null)}
+                  >
+                    Regenerate from product
+                  </button>
                 </section>
               </div>
             )}
@@ -1841,4 +2926,60 @@ export function SocialStudio() {
       </div>
     </>
   );
+}
+
+/* ------------------------------------------------------------ subviews -- */
+
+/**
+ * `input[type=color]` cannot hold `rgba(…)`, and several seeded layers do. The
+ * swatch shows the nearest hex it can represent while the text field keeps the
+ * authored value editable, so a translucent fill is no longer silently black.
+ */
+function ColorField({ id: fieldId, label, value, fallback, onChange }) {
+  const hex = asHexInput(value, fallback);
+  const isHex = HEX_PATTERN.test(value ?? '');
+
+  return (
+    <div className={styles.fieldItem}>
+      <label htmlFor={fieldId}>{label}:</label>
+      <div className={styles.colorPickerRow}>
+        <input
+          id={fieldId}
+          type="color"
+          value={hex}
+          onChange={(e) => onChange(e.target.value)}
+          className={styles.colorInput}
+        />
+        <input
+          type="text"
+          className={styles.colorHexInput}
+          value={value ?? ''}
+          onChange={(e) => onChange(e.target.value)}
+          aria-label={`${label} value`}
+          spellCheck={false}
+        />
+      </div>
+      {!isHex && (
+        <p className={styles.fieldHint}>
+          Translucent value — the swatch shows the closest solid colour.
+        </p>
+      )}
+    </div>
+  );
+}
+
+ColorField.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  fallback: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+function canvasLabel(layers, selectedLayer) {
+  const count = layers.length;
+  const selection = selectedLayer
+    ? `${selectedLayer.name} selected at ${Math.round(selectedLayer.x)}, ${Math.round(selectedLayer.y)}`
+    : 'no layer selected';
+  return `Post composition canvas, ${count} layer${count === 1 ? '' : 's'}, ${selection}. Tab cycles layers, arrow keys move the selection, Shift with an arrow moves ten pixels.`;
 }

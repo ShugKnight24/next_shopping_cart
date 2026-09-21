@@ -387,3 +387,216 @@
   line-height: 1.45;
   margin: 0;
 }
+
+/* --------------------------------------------- full-screen workbench launcher -- */
+
+.launcherSection {
+  padding: 3.5rem 1.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.launcherGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.launcherCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 1.4rem 1.3rem;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 16px;
+  background: var(--color-surface);
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.launcherCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-text-primary);
+  box-shadow: 0 14px 34px rgb(15 23 42 / 12%);
+}
+
+.launcherCard:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: 3px;
+}
+
+.launcherBadge {
+  align-self: flex-start;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-gold-light);
+  color: var(--color-neutral-900);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.launcherTitle {
+  margin: 0.25rem 0 0;
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.launcherDesc {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.launcherFeatures {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.launcherFeatures li {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.launcherFeatures li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-gold);
+}
+
+.launcherCta {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launcherCard {
+    transition: none;
+  }
+
+  .launcherCard:hover {
+    transform: none;
+  }
+}
+
+/* ----------------------------------------------------------- try-it previews -- */
+
+.previewSection {
+  padding: 3.5rem 1.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.previewStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ------------------------------------------------------- bespoke capabilities -- */
+
+.bespokeSection {
+  padding: 3.5rem 1.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bespokeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.bespokeCard {
+  padding: 1.5rem 1.35rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+
+.bespokeStep {
+  display: inline-block;
+  margin-bottom: 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-gold);
+}
+
+.bespokeTitle {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+.bespokeDesc {
+  margin: 0;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.bespokeActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.bespokeAction {
+  padding: 0.75rem 1.3rem;
+  border: 1.5px solid var(--color-border-dark);
+  border-radius: 10px;
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.bespokeAction:hover {
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+}
+
+.bespokeAction:focus-visible {
+  outline: 3px solid var(--color-blue-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bespokeAction {
+    transition: none;
+  }
+}

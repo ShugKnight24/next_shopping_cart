@@ -1,0 +1,596 @@
+/* Workbench control primitives. Tokens come from theme.module.css. */
+
+/* A single place for the input metrics so every control lines up on the same
+   baseline grid no matter which primitive drew it. */
+.stack {
+  --wb-control-height: 30px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.groupLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--wb-text-faint);
+}
+
+.gridTwo {
+  --wb-control-height: 30px;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 0.75rem;
+}
+
+/* ----------------------------------------------------------------- rows -- */
+
+.row {
+  --wb-control-height: 30px;
+
+  display: grid;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  min-width: 0;
+}
+
+.row_split {
+  /* The label column is fixed so a dozen rows share one left edge — a ragged
+     edge is what makes an inspector feel like a form. Wide enough for the
+     longest label the product panels use ("Environment", "Accent trim"):
+     at 68px they truncated to "Environm...", which reads cheap. */
+  grid-template-columns: minmax(0, 92px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.row_stack,
+.row_full {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.rowLabelCell {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.rowLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--wb-text-dim);
+  user-select: none;
+}
+
+/* `full` hides the label visually but must not remove it from the a11y tree —
+   the segmented group is named by it. */
+.row_full > .rowLabelCell {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.rowLabelText {
+  /* Wrap onto a second line rather than clipping. A label truncated to
+     "Environm..." names nothing, and the inspector has vertical room to spare
+     where it has no horizontal room at all. */
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.rowHint {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--wb-text-faint);
+}
+
+.rowControl {
+  min-width: 0;
+}
+
+/* Scrubbable numeric label: the cursor is the whole affordance, so it has to
+   be unmistakable before the pointer goes down. */
+.scrubLabel {
+  cursor: ew-resize;
+  touch-action: none;
+  transition: color 0.14s ease;
+}
+
+.scrubLabel:hover,
+.scrubbing {
+  color: var(--wb-accent);
+}
+
+/* --------------------------------------------------------------- inputs -- */
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  min-width: 0;
+  height: var(--wb-control-height);
+  padding: 0 0.55rem;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.4;
+  transition:
+    border-color 0.14s ease,
+    background 0.14s ease;
+}
+
+.input {
+  font-variant-numeric: tabular-nums;
+}
+
+.input:hover:not(:disabled),
+.textarea:hover:not(:disabled),
+.select:hover:not(:disabled) {
+  border-color: var(--wb-text-faint);
+}
+
+.input:focus-visible,
+.textarea:focus-visible,
+.select:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 1px;
+  border-color: transparent;
+  background: var(--wb-bg);
+}
+
+.input:disabled,
+.textarea:disabled,
+.select:disabled {
+  color: var(--wb-text-faint);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--wb-text-faint);
+}
+
+.textarea {
+  height: auto;
+  min-height: 72px;
+  padding: 0.45rem 0.55rem;
+  resize: vertical;
+  font-variant-numeric: normal;
+}
+
+.numberWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.suffix {
+  position: absolute;
+  right: 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--wb-text-faint);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------- select -- */
+
+.selectWrap {
+  position: relative;
+  display: block;
+}
+
+.select {
+  appearance: none;
+  padding-right: 1.75rem;
+  cursor: pointer;
+}
+
+.selectChevron {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: flex;
+  transform: translateY(-50%);
+  color: var(--wb-text-faint);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------- colour -- */
+
+.colorWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.colorWell {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--wb-control-height);
+  height: var(--wb-control-height);
+  border: 1px solid var(--wb-border-strong);
+  border-radius: var(--wb-radius);
+  background: var(--wb-field-swatch, var(--wb-chrome-sunken));
+  overflow: hidden;
+  transition: border-color 0.14s ease;
+}
+
+.colorWell:hover {
+  border-color: var(--wb-text-faint);
+}
+
+/* "Not set" reads as a hatch, never as black — a black well would claim the
+   layer has a colour it does not have. */
+.colorWellUnset {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--wb-chrome-sunken) 0 4px,
+    var(--wb-border-strong) 4px 8px
+  );
+}
+
+/* The native picker fills the well and is the click target; the well is only
+   the paint. Opacity rather than display so it stays focusable. */
+.colorPicker {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.colorPicker:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--wb-accent);
+  outline-offset: -2px;
+}
+
+.colorText {
+  text-transform: lowercase;
+}
+
+.colorClear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--wb-control-height);
+  height: var(--wb-control-height);
+  border: 1px solid transparent;
+  border-radius: var(--wb-radius);
+  background: transparent;
+  color: var(--wb-text-faint);
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.colorClear:hover:not(:disabled) {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.colorClear:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 1px;
+}
+
+.colorClear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------- slider -- */
+
+.sliderWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.slider {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--wb-border-strong);
+}
+
+.slider::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--wb-border-strong);
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wb-accent);
+  transition: transform 0.12s ease;
+}
+
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wb-accent);
+}
+
+.slider:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+.slider:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 3px;
+  border-radius: var(--wb-radius);
+}
+
+.slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sliderValue {
+  min-width: 3.1rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 5px;
+  background: var(--wb-chrome-sunken);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--wb-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------ segmented -- */
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+}
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: calc(var(--wb-control-height) - 6px);
+  padding: 0 0.4rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--wb-text-dim);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.segment:hover:not(:disabled) {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: -1px;
+}
+
+.segment:disabled {
+  color: var(--wb-text-faint);
+  cursor: not-allowed;
+}
+
+.segmentActive {
+  background: var(--wb-accent-soft);
+  color: var(--wb-accent);
+  box-shadow: inset 0 0 0 1px var(--wb-accent-line);
+}
+
+.segmentActive:hover:not(:disabled) {
+  background: var(--wb-accent-soft);
+  color: var(--wb-accent);
+}
+
+/* ------------------------------------------------------------- swatches -- */
+
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-swatch-columns, 8), minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.swatch {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 6px;
+  background: var(--wb-field-swatch, var(--wb-chrome-sunken));
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.swatch:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 45%);
+}
+
+.swatch:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+/* The ring sits outside the swatch so it never recolours the sample. */
+.swatchActive {
+  box-shadow:
+    0 0 0 2px var(--wb-chrome),
+    0 0 0 4px var(--wb-accent);
+}
+
+/* --------------------------------------------------------------- toggle -- */
+
+.toggleRow {
+  --wb-control-height: 30px;
+
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: var(--wb-control-height);
+}
+
+.toggleLabelCell {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.toggleLabel {
+  min-width: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--wb-text-dim);
+  cursor: pointer;
+}
+
+.toggleInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggleTrack {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 18px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--wb-border-strong);
+  transition: background 0.16s ease;
+}
+
+.toggleThumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--wb-text-dim);
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease;
+}
+
+.toggleInput:checked + .toggleTrack {
+  background: var(--wb-accent-soft);
+}
+
+.toggleInput:checked + .toggleTrack .toggleThumb {
+  transform: translateX(16px);
+  background: var(--wb-accent);
+}
+
+.toggleInput:focus-visible + .toggleTrack {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+.toggleInput:disabled + .toggleTrack {
+  opacity: 0.5;
+}
+
+.toggleLabelCell:hover + .toggleInput + .toggleTrack {
+  background: var(--wb-text-faint);
+}
+
+/* --------------------------------------------------------------- shared -- */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .textarea,
+  .select,
+  .segment,
+  .swatch,
+  .toggleTrack,
+  .toggleThumb,
+  .scrubLabel,
+  .colorClear {
+    transition: none;
+  }
+
+  .swatch:hover {
+    transform: none;
+  }
+}

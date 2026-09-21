@@ -1,0 +1,16 @@
+/* The only rules the two portraits need, copied across from the retired
+   `CharacterCreator.module.css`. */
+
+.avatarSvg {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  display: block;
+  transition: transform var(--transition-smooth);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatarSvg {
+    transition: none;
+  }
+}

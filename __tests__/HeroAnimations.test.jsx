@@ -31,7 +31,9 @@ describe('Hero Animations & Interactive Switcher', () => {
   describe('VaultAnimation', () => {
     it('renders the 2D vector vault showcase and levitating items', () => {
       render(<VaultAnimation />);
-      expect(screen.getByLabelText(/Luxury vault showcase animation/i)).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(/Luxury vault showcase animation/i)
+      ).toBeInTheDocument();
       expect(screen.getByText(/AIR JORDAN 1/i)).toBeInTheDocument();
       expect(screen.getByText(/BLACK LOTUS/i)).toBeInTheDocument();
       expect(screen.getByText(/FENDER '60S STRAT/i)).toBeInTheDocument();
@@ -50,9 +52,7 @@ describe('Hero Animations & Interactive Switcher', () => {
         screen.getByText("Air Jordan 1 'Lost & Found'")
       ).toBeInTheDocument();
       expect(screen.getByText(/Black Lotus Alpha 9.5/i)).toBeInTheDocument();
-      expect(
-        screen.getByText(/Rogue Ohio Cerakote Bar/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Rogue Ohio Cerakote Bar/i)).toBeInTheDocument();
 
       // Mouse move triggers tilt without errors
       const viewport = screen.getByRole('region');
@@ -74,9 +74,9 @@ describe('Hero Animations & Interactive Switcher', () => {
   describe('Hero Component Integration', () => {
     it('mounts full Hero section and allows switching modes dynamically', () => {
       render(<Hero />);
-      expect(
-        screen.getByRole('heading', { level: 1 })
-      ).toHaveTextContent(/Shop Smarter/i);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        /Shop Smarter/i
+      );
 
       // Initially on track
       expect(screen.getByText('CHECKOUT')).toBeInTheDocument();

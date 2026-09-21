@@ -1,0 +1,318 @@
+/* Workbench chrome. Tokens come from theme.module.css via .workbench. */
+
+.shell {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: var(--wb-topbar) 1fr var(--wb-statusbar);
+  background: var(--wb-bg);
+  color: var(--wb-text);
+  font-family: var(--wb-font-ui);
+  /* The frame owns the viewport; panels scroll, the page never does. */
+  overflow: hidden;
+  z-index: 40;
+}
+
+/* ------------------------------------------------------------- top bar -- */
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.75rem 0 0.5rem;
+  background: var(--wb-chrome);
+  border-bottom: 1px solid var(--wb-border);
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.6rem 0.4rem 0.4rem;
+  border-radius: var(--wb-radius);
+  color: var(--wb-text-dim);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.backLink:hover {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.backLink:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 1px;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--wb-border-strong);
+}
+
+.titleBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: var(--wb-text);
+  white-space: nowrap;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--wb-text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------- buttons -- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 32px;
+  padding: 0 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--wb-radius);
+  background: transparent;
+  color: var(--wb-text-dim);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease,
+    border-color 0.14s ease;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--wb-chrome-raised);
+  color: var(--wb-text);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 1px;
+}
+
+.button:disabled {
+  color: var(--wb-text-faint);
+  cursor: not-allowed;
+}
+
+.button_subtle {
+  border-color: var(--wb-border-strong);
+  color: var(--wb-text);
+}
+
+.button_primary {
+  background: var(--wb-accent);
+  color: #1a1206;
+}
+
+.button_primary:hover:not(:disabled) {
+  background: var(--wb-accent-hover);
+  color: #1a1206;
+}
+
+.button_danger {
+  color: var(--wb-danger);
+}
+
+.button_danger:hover:not(:disabled) {
+  background: rgb(242 87 76 / 14%);
+  color: var(--wb-danger);
+}
+
+/* ---------------------------------------------------------------- body -- */
+
+.body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 0;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: var(--wb-rail);
+  padding: 0.5rem 0;
+  background: var(--wb-chrome);
+  border-right: 1px solid var(--wb-border);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.field {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: var(--wb-field);
+  /* A faint dot grid reads as "infinite canvas" without competing with art. */
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(255 255 255 / 5%) 1px,
+    transparent 0
+  );
+  background-size: 22px 22px;
+  overflow: hidden;
+}
+
+.inspector {
+  display: flex;
+  flex-direction: column;
+  width: var(--wb-inspector);
+  background: var(--wb-chrome);
+  border-left: 1px solid var(--wb-border);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.inspector::-webkit-scrollbar {
+  width: 10px;
+}
+
+.inspector::-webkit-scrollbar-thumb {
+  background: var(--wb-border-strong);
+  border: 3px solid var(--wb-chrome);
+  border-radius: 999px;
+}
+
+/* ----------------------------------------------------------- sections -- */
+
+.section {
+  border-bottom: 1px solid var(--wb-border);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem 0.5rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wb-text-faint);
+}
+
+.sectionBody {
+  padding: 0 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* --------------------------------------------------------- status bar -- */
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0 0.9rem;
+  background: var(--wb-chrome);
+  border-top: 1px solid var(--wb-border);
+  font-size: 0.74rem;
+  color: var(--wb-text-dim);
+}
+
+.statusItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.statusLabel {
+  color: var(--wb-text-faint);
+}
+
+.statusValue {
+  color: var(--wb-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------- responsive -- */
+
+/* Below this the three-column frame stops being usable. Collapse the rail to a
+   horizontal strip and drop the inspector under the canvas. */
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow-y: auto;
+  }
+
+  .rail {
+    flex-direction: row;
+    width: auto;
+    height: 52px;
+    padding: 0 0.5rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--wb-border);
+    overflow-x: auto;
+  }
+
+  .field {
+    min-height: 46vh;
+  }
+
+  .inspector {
+    width: auto;
+    max-height: none;
+    border-left: 0;
+    border-top: 1px solid var(--wb-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backLink,
+  .button {
+    transition: none;
+  }
+}

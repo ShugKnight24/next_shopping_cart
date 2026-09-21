@@ -1,0 +1,313 @@
+/* The layer stack. Tokens come from theme.module.css. */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* --------------------------------------------------------------- header -- */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem 0.55rem;
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wb-text-faint);
+}
+
+.headerCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----------------------------------------------------------------- list -- */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0 0.5rem 0.5rem;
+  list-style: none;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  /* One fluid name column and two fixed toggles: the eye and the lock hold the
+     same x-position down the whole stack, which is what lets the eye be
+     scanned as a column rather than hunted per row. */
+  grid-template-columns: minmax(0, 1fr) 26px 26px;
+  align-items: center;
+  gap: 1px;
+  border-radius: var(--wb-radius);
+  transition: background 0.12s ease;
+}
+
+.row:hover {
+  background: var(--wb-chrome-raised);
+}
+
+.rowSelected,
+.rowSelected:hover {
+  background: var(--wb-selection-soft);
+}
+
+/* Accent edge on the selected row, inset from the panel padding so it lines up
+   with the tool rail's marker. */
+.rowSelected::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: -0.5rem;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--wb-accent);
+}
+
+.rowHidden .name,
+.rowHidden .meta,
+.rowHidden .glyph {
+  opacity: 0.45;
+}
+
+/* ------------------------------------------------------------ select row -- */
+
+.select {
+  display: grid;
+  grid-template-columns: 10px 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 0.3rem 0 0.35rem;
+  border: 0;
+  border-radius: var(--wb-radius);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: -2px;
+}
+
+.grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--wb-text-faint);
+  opacity: 0;
+  cursor: grab;
+  transition: opacity 0.12s ease;
+}
+
+.row:hover .grip,
+.rowSelected .grip {
+  opacity: 1;
+}
+
+.glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text-dim);
+}
+
+.rowSelected .glyph {
+  color: var(--wb-text);
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--wb-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  overflow: hidden;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  color: var(--wb-text-faint);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Template-seeded layers are worth marking: they are the ones a template swap
+   will refill, and the ones whose text carries across. */
+.slotTag {
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 4px;
+  color: var(--wb-text-faint);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.renameInput {
+  grid-column: 1;
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  margin: 6px 0 6px 0.35rem;
+  padding: 0 0.45rem;
+  border: 1px solid var(--wb-accent);
+  border-radius: 6px;
+  background: var(--wb-bg);
+  color: var(--wb-text);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.renameInput:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 1px;
+}
+
+/* -------------------------------------------------------- row toggles -- */
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wb-text-faint);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+/* Off-state toggles fade in on hover; an *engaged* toggle is always visible,
+   because "this layer is hidden" has to be legible without pointing at it. */
+.row:hover .iconButton,
+.rowSelected .iconButton,
+.iconButton:focus-visible,
+.iconButtonOn {
+  opacity: 1;
+}
+
+.iconButton:hover {
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: -1px;
+}
+
+.iconButtonOn {
+  color: var(--wb-accent);
+}
+
+/* ---------------------------------------------------------------- empty -- */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0 1rem 1.1rem;
+  padding: 1.1rem 1rem;
+  border: 1px dashed var(--wb-border-strong);
+  border-radius: var(--wb-radius-lg);
+  background: var(--wb-chrome-sunken);
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--wb-text);
+}
+
+.emptyBody {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: var(--wb-text-dim);
+}
+
+/* ---------------------------------------------------------------- hints -- */
+
+.hintBar {
+  margin: 0;
+  padding: 0.55rem 1rem 0.9rem;
+  border-top: 1px solid var(--wb-border);
+  font-size: 0.72rem;
+  color: var(--wb-text-faint);
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  padding: 0 0.25rem;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 4px;
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text-dim);
+  font-family: var(--wb-font-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .grip,
+  .iconButton {
+    transition: none;
+  }
+}

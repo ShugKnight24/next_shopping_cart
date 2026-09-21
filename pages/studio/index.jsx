@@ -1,76 +1,112 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   BoxIcon,
   ShieldCheckIcon,
   SparklesIcon,
   TruckIcon,
 } from '../../Components/Icons';
-import { ApparelStudio } from '../../Components/Studio/ApparelStudio';
-import { PosterStudio } from '../../Components/Studio/PosterStudio';
-import { StorybookStudio } from '../../Components/Studio/StorybookStudio';
+import { PREVIEWS } from '../../Components/Studio/preview/previewConfigs';
+import { StudioPreview } from '../../Components/Studio/preview/StudioPreview';
 import { StudioHeroAnimated } from '../../Components/Studio/StudioHeroAnimated';
 import { KidsStudioVideoTour } from '../../Components/Video/KidsStudioVideoTour';
 import { useMascot } from '../../context/MascotProvider';
 import styles from '../../styles/pages/Studio.module.css';
 
-const MODES = [
+const BESPOKE_CAPABILITIES = [
   {
-    id: 'storybook',
-    title: "Children's Storybooks",
-    badge: 'Kids Favorite',
-    desc: 'Personalized hardcover heirloom books starring your child',
+    step: '01',
+    title: 'Start from a layout, or a blank artboard',
+    desc: 'Thirty templates across the three products, grouped by category. Swap between them freely — the words you have already typed carry across.',
   },
   {
-    id: 'poster',
-    title: 'Framed Art Posters',
-    badge: 'Gallery Archival',
-    desc: 'Custom museum-grade giclée typography & illustrations',
+    step: '02',
+    title: 'Restyle without relaying out',
+    desc: 'Twenty-one style presets change palette, typeface and ink across the whole piece at once, leaving every element exactly where you put it.',
   },
   {
-    id: 'apparel',
-    title: "Kids' Apparel & Kicks",
-    badge: 'Craft Workshop',
-    desc: 'Organic cotton hoodies, tees & embroidered canvas kicks',
+    step: '03',
+    title: 'Move, resize and stack anything',
+    desc: 'Text, shapes and artwork are real layers. Drag them, rotate them, reorder them, lock the ones you are happy with.',
+  },
+  {
+    step: '04',
+    title: 'Proof it like a printer would',
+    desc: 'Zoom to the stitch, snap to the centre line, read the live 300 DPI spec, and export the proof before anything goes to press.',
   },
 ];
+
+const WORKBENCHES = [
+  {
+    href: '/studio/book',
+    badge: 'Kids Favorite',
+    title: 'Storybook Designer',
+    desc: 'Personalized hardcover heirloom books starring your child.',
+    features: [
+      '8 cover and spread templates',
+      'Scene environments',
+      'Character creator',
+    ],
+  },
+  {
+    href: '/studio/poster',
+    badge: 'Gallery Archival',
+    title: 'Poster Designer',
+    desc: 'Museum-grade giclee prints, framed and ready to hang.',
+    features: [
+      '12 layouts, 7 styles',
+      'Frames, mats and paper stocks',
+      'Live 300 DPI proof',
+    ],
+  },
+  {
+    href: '/studio/apparel',
+    badge: 'Craft Workshop',
+    title: 'Apparel Designer',
+    desc: 'Hoodies, tees, varsity jackets and canvas kicks.',
+    features: [
+      '10 layouts, 7 styles',
+      'Colourways and accent trim',
+      'Embroidery finishes',
+    ],
+  },
+];
+
+/** Legacy deep links from before the workbenches existed. */
+const LEGACY_MODE_ROUTES = {
+  storybook: '/studio/book',
+  poster: '/studio/poster',
+  apparel: '/studio/apparel',
+};
 
 export default function StudioPage() {
   const router = useRouter();
   const { setMascot, speak } = useMascot();
-  const [activeMode, setActiveMode] = useState('storybook');
 
-  // Sync mode with query param ?mode=
+  // `?mode=` and `?panel=character` used to select an in-page workstation.
+  // Those editors are previews now, so the old links forward to the designer
+  // they were really asking for rather than silently doing nothing.
   useEffect(() => {
-    if (router.query.mode && MODES.some((m) => m.id === router.query.mode)) {
-      setActiveMode(router.query.mode);
-    }
-  }, [router.query.mode]);
+    if (!router.isReady) return;
 
-  // Set mascot companion according to mode
+    if (router.query.panel === 'character') {
+      router.replace('/studio/book');
+      return;
+    }
+
+    const route = LEGACY_MODE_ROUTES[router.query.mode];
+    if (route) router.replace(route);
+  }, [router]);
+
   useEffect(() => {
-    if (activeMode === 'storybook') {
-      setMascot('leo');
-      speak(
-        "Welcome to the Storybook Studio! I'm Leo, your creative imagination guide. Let's make an incredible book!",
-        'happy'
-      );
-    } else {
-      speak(
-        `Welcome to the Custom ${
-          activeMode === 'poster' ? 'Poster' : 'Apparel'
-        } Studio! Let's craft something unforgettable.`,
-        'idle'
-      );
-    }
-  }, [activeMode, setMascot, speak]);
-
-  const handleModeChange = (modeId) => {
-    setActiveMode(modeId);
-    router.replace(`/studio?mode=${modeId}`, undefined, { shallow: true });
-  };
+    setMascot('leo');
+    speak(
+      "Welcome to the Custom Creation Studio! I'm Leo. Try a preview below, then open the full designer when you are ready.",
+      'happy'
+    );
+  }, [setMascot, speak]);
 
   return (
     <>
@@ -165,51 +201,119 @@ export default function StudioPage() {
           </div>
         </section>
 
-        {/* Studio Mode Selector */}
+        {/* Full-screen workbench launcher. These are the real editors; the
+            in-page workstations below are the previous generation and are kept
+            only until their tests are migrated. */}
         <section
-          id="studio-workstations"
-          className={styles.modeSection}
-          aria-label="Creation Mode Selection"
+          className={styles.launcherSection}
+          aria-label="Design workbenches"
         >
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionEyebrow}>
-              Choose Your Workstation
-            </span>
-            <h2 className={styles.sectionTitle}>
-              Curated Custom Creation Suites
-            </h2>
+            <span className={styles.sectionEyebrow}>Design Workbenches</span>
+            <h2 className={styles.sectionTitle}>Open a Full Design Studio</h2>
             <p className={styles.sectionSubtitle}>
-              Select your product medium to enter the dedicated interactive
-              builder with real-time canvas proofing.
+              Layers, templates, styles and live print proofing on a full-screen
+              canvas. Your work autosaves and every design gets a share link.
             </p>
           </div>
 
-          <div className={styles.modeGrid}>
-            {MODES.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                className={`${styles.modeTab} ${
-                  activeMode === m.id ? styles.modeTabActive : ''
-                }`}
-                onClick={() => handleModeChange(m.id)}
+          <div className={styles.launcherGrid}>
+            {WORKBENCHES.map((bench) => (
+              <Link
+                key={bench.href}
+                href={bench.href}
+                className={styles.launcherCard}
               >
-                <div className={styles.modeTabTop}>
-                  <span className={styles.modeBadge}>{m.badge}</span>
-                  {activeMode === m.id && <span className={styles.activeDot} />}
-                </div>
-                <h2 className={styles.modeTitle}>{m.title}</h2>
-                <p className={styles.modeDesc}>{m.desc}</p>
-              </button>
+                <span className={styles.launcherBadge}>{bench.badge}</span>
+                <h3 className={styles.launcherTitle}>{bench.title}</h3>
+                <p className={styles.launcherDesc}>{bench.desc}</p>
+                <ul className={styles.launcherFeatures}>
+                  {bench.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+                <span className={styles.launcherCta}>Open designer</span>
+              </Link>
             ))}
           </div>
         </section>
 
-        {/* Active Studio Workshop */}
-        <section className={styles.workshopStage}>
-          {activeMode === 'storybook' && <StorybookStudio />}
-          {activeMode === 'poster' && <PosterStudio />}
-          {activeMode === 'apparel' && <ApparelStudio />}
+        {/* Try-it previews. Deliberately shallow: enough to prove the product
+            is customizable, with the full designer one click away carrying the
+            visitor's work with it. */}
+        <section
+          id="studio-workstations"
+          className={styles.previewSection}
+          aria-label="Try the studios"
+        >
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>Try It Here</span>
+            <h2 className={styles.sectionTitle}>
+              A Taste of Each Creation Suite
+            </h2>
+            <p className={styles.sectionSubtitle}>
+              Change a few things and watch the proof update. When you want
+              layers, templates and full print control, open the bespoke
+              designer — whatever you have made comes with you.
+            </p>
+          </div>
+
+          <div className={styles.previewStack}>
+            {PREVIEWS.map((preview) => (
+              <StudioPreview
+                key={preview.id}
+                product={preview.product}
+                templateMode={preview.templateMode}
+                drawSubstrate={preview.drawSubstrate}
+                starterTemplateId={preview.starterTemplateId}
+                fields={preview.fields}
+                eyebrow={preview.eyebrow}
+                headline={preview.headline}
+                blurb={preview.blurb}
+                upsell={preview.upsell}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* What the bespoke experience adds over the preview. */}
+        <section
+          className={styles.bespokeSection}
+          aria-label="The bespoke designer"
+        >
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>The Bespoke Studio</span>
+            <h2 className={styles.sectionTitle}>
+              Where a Keepsake Becomes Yours
+            </h2>
+            <p className={styles.sectionSubtitle}>
+              The previews above change a handful of options. The full designer
+              is a real canvas — every element is yours to move, restyle and
+              stack.
+            </p>
+          </div>
+
+          <div className={styles.bespokeGrid}>
+            {BESPOKE_CAPABILITIES.map((capability) => (
+              <article key={capability.title} className={styles.bespokeCard}>
+                <span className={styles.bespokeStep}>{capability.step}</span>
+                <h3 className={styles.bespokeTitle}>{capability.title}</h3>
+                <p className={styles.bespokeDesc}>{capability.desc}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className={styles.bespokeActions}>
+            {WORKBENCHES.map((bench) => (
+              <Link
+                key={bench.href}
+                href={bench.href}
+                className={styles.bespokeAction}
+              >
+                {bench.title}
+              </Link>
+            ))}
+          </div>
         </section>
 
         {/* Heirloom Craftsmanship & Quality Standards Grid */}

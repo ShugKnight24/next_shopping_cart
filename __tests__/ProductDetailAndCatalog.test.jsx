@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { CatalogToolbar } from '../Components/Products/CatalogToolbar';
 import { Product3DStudio } from '../Components/Products/Product3DStudio';
@@ -6,7 +6,11 @@ import { ProductTabs } from '../Components/Products/ProductTabs';
 import { StickyBuyBar } from '../Components/Products/StickyBuyBar';
 import { TrustBadges } from '../Components/Products/TrustBadges';
 import { ToastProvider } from '../Components/UI/Toast';
-import { getAllProducts, getProductById, getRelatedProducts } from '../utils/productCatalog';
+import {
+  getAllProducts,
+  getProductById,
+  getRelatedProducts,
+} from '../utils/productCatalog';
 
 const mockProduct = {
   itemid: 'JORDAN-1-LOST-FOUND',
@@ -21,8 +25,20 @@ const mockProduct = {
   badges: ['bestseller', 'sale'],
   rating: { average: 4.9, count: 48 },
   variants: [
-    { id: 'v1', name: 'US 9.0', priceModifier: 0, available: true, value: '#ef4444' },
-    { id: 'v2', name: 'US 10.0', priceModifier: 25, available: true, value: '#1e3a5f' },
+    {
+      id: 'v1',
+      name: 'US 9.0',
+      priceModifier: 0,
+      available: true,
+      value: '#ef4444',
+    },
+    {
+      id: 'v2',
+      name: 'US 10.0',
+      priceModifier: 25,
+      available: true,
+      value: '#1e3a5f',
+    },
   ],
   specifications: {
     Colorway: 'Varsity Red / Black / Sail / Muslin',
@@ -75,7 +91,9 @@ describe('Product Catalog Unification', () => {
   it('retrieves related products for recommendations', () => {
     const related = getRelatedProducts(mockProduct, 3);
     expect(related.length).toBe(3);
-    expect(related.find((r) => r.itemid === mockProduct.itemid)).toBeUndefined();
+    expect(
+      related.find((r) => r.itemid === mockProduct.itemid)
+    ).toBeUndefined();
   });
 });
 
@@ -103,8 +121,12 @@ describe('Product3DStudio', () => {
     const explodedBtn = screen.getByLabelText('Toggle exploded view');
     fireEvent.click(explodedBtn);
 
-    expect(screen.getByText(/Layer 1: Performance Outer Shell/i)).toBeInTheDocument();
-    expect(screen.getByText(/Layer 2: Responsive Cushioning Matrix/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Layer 1: Performance Outer Shell/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Layer 2: Responsive Cushioning Matrix/i)
+    ).toBeInTheDocument();
   });
 
   it('opens and closes tech hotspot callout card', () => {
@@ -118,7 +140,9 @@ describe('Product3DStudio', () => {
 
     const closeBtn = screen.getByLabelText('Close hotspot info');
     fireEvent.click(closeBtn);
-    expect(screen.queryByLabelText('Close hotspot info')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Close hotspot info')
+    ).not.toBeInTheDocument();
   });
 });
 
@@ -150,7 +174,9 @@ describe('CatalogToolbar', () => {
     );
 
     expect(screen.getByTestId('catalog-toolbar')).toBeInTheDocument();
-    expect(screen.getByText(/Showing/i)).toHaveTextContent('Showing 15 of 31 products');
+    expect(screen.getByText(/Showing/i)).toHaveTextContent(
+      'Showing 15 of 31 products'
+    );
 
     fireEvent.click(screen.getByText('In Stock Only'));
     expect(onToggleInStock).toHaveBeenCalledTimes(1);
@@ -178,21 +204,31 @@ describe('ProductTabs', () => {
     );
 
     expect(screen.getByTestId('product-tabs')).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Overview & Highlights/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Specifications/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Shipping & Guarantees/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Overview & Highlights/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Specifications/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /Shipping & Guarantees/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Reviews/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /FAQs/i })).toBeInTheDocument();
 
     // Switch to Specs tab
     fireEvent.click(screen.getByRole('tab', { name: /Specifications/i }));
     expect(screen.getByText('Colorway')).toBeInTheDocument();
-    expect(screen.getByText('Varsity Red / Black / Sail / Muslin')).toBeInTheDocument();
+    expect(
+      screen.getByText('Varsity Red / Black / Sail / Muslin')
+    ).toBeInTheDocument();
 
     // Switch to FAQs tab and toggle accordion
     fireEvent.click(screen.getByRole('tab', { name: /FAQs/i }));
     expect(screen.getByText('How do Jordan 1s fit?')).toBeInTheDocument();
-    expect(screen.getByText('Fits true to standard Nike sizing.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Fits true to standard Nike sizing.')
+    ).toBeInTheDocument();
   });
 });
 

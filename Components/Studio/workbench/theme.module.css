@@ -1,0 +1,54 @@
+/**
+ * Dark workbench theme.
+ *
+ * Scoped to `.workbench` rather than :root so the rest of the app keeps its
+ * light theme and its own tokens. Everything inside the shell inherits these.
+ *
+ * The palette is deliberately low-chroma and close in value: four near-blacks
+ * separated by a few percent lightness. That is what makes the artboard — the
+ * only saturated thing on screen — read as the subject. Brand gold is the
+ * single accent, so selection, active tools and focus all agree.
+ */
+
+.workbench {
+  --wb-bg: #0a0c11;
+  --wb-chrome: #121620;
+  --wb-chrome-raised: #1a1f2b;
+  --wb-chrome-sunken: #0d1017;
+  --wb-field: #0f1218;
+
+  --wb-border: rgb(255 255 255 / 7%);
+  --wb-border-strong: rgb(255 255 255 / 14%);
+
+  --wb-text: #e9ecf3;
+  --wb-text-dim: #98a1b5;
+  --wb-text-faint: #646d80;
+
+  --wb-accent: #e8b44c;
+  --wb-accent-hover: #f3c76a;
+  --wb-accent-soft: rgb(232 180 76 / 16%);
+  --wb-accent-line: rgb(232 180 76 / 55%);
+
+  --wb-selection: #57a8ff;
+  --wb-selection-soft: rgb(87 168 255 / 18%);
+  --wb-guide: #ff4d8d;
+
+  --wb-danger: #f2574c;
+  --wb-success: #3ecf8e;
+
+  --wb-radius: 8px;
+  --wb-radius-lg: 12px;
+
+  --wb-rail: 56px;
+  --wb-inspector: 320px;
+  --wb-topbar: 52px;
+  --wb-statusbar: 34px;
+
+  --wb-shadow-panel: 0 18px 48px rgb(0 0 0 / 45%);
+  --wb-shadow-artboard:
+    0 2px 6px rgb(0 0 0 / 40%), 0 24px 60px rgb(0 0 0 / 55%);
+
+  --wb-font-ui:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --wb-font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}

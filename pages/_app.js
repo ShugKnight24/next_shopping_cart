@@ -66,12 +66,20 @@ function MyApp({ Component, pageProps }) {
           <ModalProvider>
             <CartProvider>
               <MascotProvider>
-                <Layout>
-                  <HoneypotField />
+                {/* Full-bleed pages own the whole viewport: the workbench
+                    editors are apps, and the storefront nav, promo bar, mascot
+                    and heatmap HUD would float over their chrome. They still
+                    sit inside the providers so the cart keeps working. */}
+                {Component.fullBleed ? (
                   <Component {...pageProps} />
-                  <MascotCompanion />
-                  <AdminHeatmapHUD />
-                </Layout>
+                ) : (
+                  <Layout>
+                    <HoneypotField />
+                    <Component {...pageProps} />
+                    <MascotCompanion />
+                    <AdminHeatmapHUD />
+                  </Layout>
+                )}
               </MascotProvider>
             </CartProvider>
           </ModalProvider>
