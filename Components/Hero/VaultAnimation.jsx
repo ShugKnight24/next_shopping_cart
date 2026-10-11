@@ -1,299 +1,470 @@
-import { useEffect, useState } from 'react';
-import styles from './Hero.module.css';
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
+import { CardSlabArt, GuitarArt, SneakerArt, useSvgIds } from './heroArt';
+import styles from './VaultAnimation.module.css';
 
 /**
- * VaultAnimation
+ * Private Vault: a lit display vault. The round door swings open on a real
+ * 3D hinge, a scan line authenticates the piece inside and a gold seal is
+ * pressed on. Each cycle reveals the next curated piece from the catalogue.
  *
- * 2D vector animation in the matching luxury commerce style.
- * Features an animated iris security vault, laser scanning beams,
- * and levitating holographic luxury items (Sneaker, MTG Card, Guitar, Barbell).
+ * The door, scan and seal are HTML layers animated with transform/opacity.
+ * The next piece is swapped in on the door animation's iteration event, so
+ * the swap always happens while the door is shut.
  */
+
+const PIECES = [
+  {
+    id: 'one-ring',
+    name: 'The One Ring',
+    edition: 'Magic: The Gathering · Serialized 001/001',
+    price: '$2,000,000',
+    serial: 'CC-VLT-0001',
+    proof: ['Serial 001/001 verified', 'Graded & sealed'],
+    Art: CardSlabArt,
+    artProps: {
+      art: 'ring',
+      cardName: 'THE ONE RING',
+      setName: 'SERIAL 001/001',
+      grade: '10',
+    },
+    box: [-34, -80, 68, 86],
+    h: 0.6,
+  },
+  {
+    id: 'black-lotus',
+    name: 'Black Lotus',
+    edition: 'Magic: The Gathering · Alpha Limited Edition',
+    price: '$495,000',
+    serial: 'CC-VLT-0214',
+    proof: ['Alpha print verified', 'Graded 9.5'],
+    Art: CardSlabArt,
+    artProps: {
+      art: 'lotus',
+      cardName: 'BLACK LOTUS',
+      setName: 'ALPHA · GEM MINT',
+      grade: '9.5',
+    },
+    box: [-34, -80, 68, 86],
+    h: 0.6,
+  },
+  {
+    id: 'strat',
+    name: "Fender Custom Shop '60s Relic Stratocaster",
+    edition: 'Olympic White · Masterbuilt',
+    price: '$4,850',
+    serial: 'CC-VLT-1960',
+    proof: ['Builder certificate', 'Serial matched'],
+    Art: GuitarArt,
+    artProps: {},
+    box: [-44, -156, 88, 162],
+    h: 0.7,
+  },
+  {
+    id: 'aj1',
+    name: "Air Jordan 1 Retro High OG 'Lost & Found'",
+    edition: 'Deadstock · Original box',
+    price: '$425',
+    serial: 'CC-VLT-0085',
+    proof: ['Stitching inspected', 'Box & tags verified'],
+    Art: SneakerArt,
+    artProps: {},
+    box: [-56, -66, 112, 72],
+    h: 0.34,
+  },
+];
+
+function VaultDoor() {
+  const u = useSvgIds();
+  const bolts = Array.from({ length: 18 }, (_, i) => (i / 18) * Math.PI * 2);
+  return (
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={u('rim')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="0.35" stopColor="#c9d1de" />
+          <stop offset="0.7" stopColor="#7d8798" />
+          <stop offset="1" stopColor="#dfe4ec" />
+        </linearGradient>
+        <radialGradient id={u('face')} cx="0.35" cy="0.3" r="0.8">
+          <stop offset="0" stopColor="#2f5d8c" />
+          <stop offset="0.6" stopColor="#163657" />
+          <stop offset="1" stopColor="#0a1a2e" />
+        </radialGradient>
+        <linearGradient id={u('gold')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fbe7a1" />
+          <stop offset="0.5" stopColor="#d9a62e" />
+          <stop offset="1" stopColor="#a8761a" />
+        </linearGradient>
+        <path id={u('arc')} d="M-104 0 A104 104 0 0 1 104 0" />
+      </defs>
+      <circle r="156" fill={`url(#${u('rim')})`} />
+      <circle r="146" fill={`url(#${u('face')})`} />
+      <circle
+        r="146"
+        fill="none"
+        stroke="#020617"
+        strokeOpacity="0.5"
+        strokeWidth="2"
+      />
+      {bolts.map((a) => (
+        <g
+          key={a}
+          transform={`translate(${Math.cos(a) * 134} ${Math.sin(a) * 134})`}
+        >
+          <circle r="5.6" fill={`url(#${u('rim')})`} />
+          <circle cx="-1.4" cy="-1.4" r="1.6" fill="#ffffff" opacity="0.8" />
+        </g>
+      ))}
+      <circle
+        r="118"
+        fill="none"
+        stroke={`url(#${u('gold')})`}
+        strokeWidth="1.6"
+        opacity="0.8"
+      />
+      <circle
+        r="90"
+        fill="none"
+        stroke="#ffffff"
+        strokeOpacity="0.08"
+        strokeWidth="14"
+      />
+      <text
+        fontFamily="Inter, system-ui, sans-serif"
+        fontSize="9"
+        fontWeight="800"
+        letterSpacing="4"
+        fill="#f6dd8a"
+        fillOpacity="0.85"
+      >
+        <textPath href={`#${u('arc')}`} startOffset="50%" textAnchor="middle">
+          CART COMMERCE · PRIVATE VAULT
+        </textPath>
+      </text>
+      <path
+        d="M-120 -70 A140 140 0 0 1 40 -132"
+        stroke="#ffffff"
+        strokeOpacity="0.35"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+function VaultWheel() {
+  const u = useSvgIds();
+  return (
+    <svg viewBox="-90 -90 180 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={u('gold')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fbe7a1" />
+          <stop offset="0.5" stopColor="#d9a62e" />
+          <stop offset="1" stopColor="#a8761a" />
+        </linearGradient>
+        <radialGradient id={u('hub')} cx="0.35" cy="0.3" r="0.8">
+          <stop offset="0" stopColor="#fff6d6" />
+          <stop offset="0.5" stopColor="#d9a62e" />
+          <stop offset="1" stopColor="#8a5f12" />
+        </radialGradient>
+      </defs>
+      {[0, 72, 144, 216, 288].map((r) => (
+        <g key={r} transform={`rotate(${r})`}>
+          <rect
+            x="-3.5"
+            y="-76"
+            width="7"
+            height="60"
+            rx="3.5"
+            fill={`url(#${u('gold')})`}
+          />
+          <circle cy="-78" r="8" fill={`url(#${u('hub')})`} />
+        </g>
+      ))}
+      <circle r="28" fill={`url(#${u('hub')})`} />
+      <circle
+        r="20"
+        fill="none"
+        stroke="#0f2744"
+        strokeOpacity="0.4"
+        strokeWidth="1.4"
+      />
+      <text
+        y="4"
+        fontFamily="Inter, system-ui, sans-serif"
+        fontSize="12"
+        fontWeight="900"
+        fill="#0f2744"
+        textAnchor="middle"
+      >
+        CC
+      </text>
+    </svg>
+  );
+}
+
+function VaultFrame() {
+  const u = useSvgIds();
+  return (
+    <svg
+      viewBox="0 0 400 400"
+      className={styles.frameSvg}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <radialGradient id={u('niche')} cx="0.5" cy="0.25" r="0.8">
+          <stop offset="0" stopColor="#21486f" />
+          <stop offset="0.55" stopColor="#0d2038" />
+          <stop offset="1" stopColor="#040b15" />
+        </radialGradient>
+        <linearGradient id={u('gold')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fbe7a1" />
+          <stop offset="0.5" stopColor="#d9a62e" />
+          <stop offset="1" stopColor="#8a5f12" />
+        </linearGradient>
+        <linearGradient id={u('steel')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#eef1f6" />
+          <stop offset="0.5" stopColor="#8d96a6" />
+          <stop offset="1" stopColor="#c9d1de" />
+        </linearGradient>
+        <radialGradient id={u('halo')}>
+          <stop offset="0.6" stopColor="#daa520" stopOpacity="0.25" />
+          <stop offset="1" stopColor="#daa520" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={u('plinth')} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#24507e" />
+          <stop offset="1" stopColor="#0a1a2e" />
+        </linearGradient>
+      </defs>
+      <circle cx="200" cy="200" r="200" fill={`url(#${u('halo')})`} />
+      <circle cx="200" cy="200" r="176" fill={`url(#${u('steel')})`} />
+      <circle
+        cx="200"
+        cy="200"
+        r="170"
+        fill="none"
+        stroke={`url(#${u('gold')})`}
+        strokeWidth="8"
+      />
+      <circle cx="200" cy="200" r="160" fill={`url(#${u('niche')})`} />
+      {/* Velvet ribs */}
+      <g stroke="#ffffff" strokeOpacity="0.035" strokeWidth="10">
+        {[-120, -80, -40, 0, 40, 80, 120].map((x) => (
+          <path key={x} d={`M${200 + x} 40 V360`} />
+        ))}
+      </g>
+      {/* Display pedestal */}
+      <ellipse cx="200" cy="330" rx="86" ry="12" fill="#020617" opacity="0.6" />
+      <path d="M138 296 H262 L254 330 H146 Z" fill={`url(#${u('plinth')})`} />
+      <ellipse cx="200" cy="296" rx="62" ry="10" fill="#3a6a9a" />
+      <ellipse
+        cx="200"
+        cy="296"
+        rx="62"
+        ry="10"
+        fill="none"
+        stroke={`url(#${u('gold')})`}
+        strokeWidth="2"
+      />
+      {/* Hinge */}
+      <rect
+        x="18"
+        y="140"
+        width="16"
+        height="36"
+        rx="4"
+        fill={`url(#${u('steel')})`}
+      />
+      <rect
+        x="18"
+        y="224"
+        width="16"
+        height="36"
+        rx="4"
+        fill={`url(#${u('steel')})`}
+      />
+    </svg>
+  );
+}
+
+function Seal({ serial }) {
+  const u = useSvgIds();
+  const scallops = Array.from({ length: 24 }, (_, i) => {
+    const a = (i / 24) * Math.PI * 2;
+    return `${(Math.cos(a) * 30).toFixed(2)},${(Math.sin(a) * 30).toFixed(2)}`;
+  });
+  return (
+    <svg viewBox="-40 -40 80 92" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={u('gold')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fff2c2" />
+          <stop offset="0.5" stopColor="#d9a62e" />
+          <stop offset="1" stopColor="#8a5f12" />
+        </linearGradient>
+      </defs>
+      <path d="M-12 18 L-20 50 L-10 44 L-4 52 L2 22 Z" fill="#1e3a5f" />
+      <path d="M12 18 L20 50 L10 44 L4 52 L-2 22 Z" fill="#2d5a87" />
+      {scallops.map((pt) => {
+        const [x, y] = pt.split(',');
+        return (
+          <circle key={pt} cx={x} cy={y} r="6" fill={`url(#${u('gold')})`} />
+        );
+      })}
+      <circle r="30" fill={`url(#${u('gold')})`} />
+      <circle
+        r="24"
+        fill="none"
+        stroke="#0f2744"
+        strokeOpacity="0.5"
+        strokeWidth="1"
+      />
+      <text
+        y="-8"
+        fontFamily="Inter, system-ui, sans-serif"
+        fontSize="5.4"
+        fontWeight="800"
+        letterSpacing="1"
+        fill="#0f2744"
+        textAnchor="middle"
+      >
+        AUTHENTIC
+      </text>
+      <path
+        d="M-8 1 l5 5 l11 -12"
+        stroke="#0f2744"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <text
+        y="16"
+        fontFamily="Inter, system-ui, sans-serif"
+        fontSize="4"
+        fontWeight="700"
+        letterSpacing="0.4"
+        fill="#0f2744"
+        textAnchor="middle"
+      >
+        {serial}
+      </text>
+    </svg>
+  );
+}
+Seal.propTypes = { serial: PropTypes.string.isRequired };
+
 export function VaultAnimation({ className }) {
-  const [activeItem, setActiveItem] = useState(0);
+  const [index, setIndex] = useState(0);
+  const [cycle, setCycle] = useState(0);
+  const rootRef = useRef(null);
+  const [paused, setPaused] = useState(false);
+  const piece = PIECES[index];
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveItem((prev) => (prev + 1) % 4);
-    }, 3500);
-    return () => clearInterval(timer);
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([entry]) =>
+      setPaused(!entry.isIntersecting)
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
+  const handleIteration = (e) => {
+    if (e.target !== e.currentTarget) return;
+    setIndex((i) => (i + 1) % PIECES.length);
+  };
+
+  const choose = (i) => {
+    setIndex(i);
+    // Re-key the animated layers so the reveal restarts for the chosen piece.
+    setCycle((c) => c + 1);
+  };
+
+  const { Art, artProps, box, h } = piece;
+
   return (
-    <div className={`${styles.vaultContainer} ${className || ''}`.trim()}>
-      <svg
-        viewBox="0 0 600 380"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={styles.vaultSvg}
-        aria-label="Luxury vault showcase animation"
+    <div
+      ref={rootRef}
+      className={`${styles.vault} ${paused ? styles.paused : ''} ${className || ''}`.trim()}
+    >
+      <div
+        className={styles.visual}
+        role="img"
+        aria-label={`Private vault opening to reveal ${piece.name}, authenticated with a Cart Commerce seal`}
       >
-        <defs>
-          {/* Gold gradients */}
-          <linearGradient id="vaultGold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#daa520" />
-            <stop offset="50%" stopColor="#f4d03f" />
-            <stop offset="100%" stopColor="#b8860b" />
-          </linearGradient>
-
-          <linearGradient id="vaultNavy" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#1e3a5f" />
-            <stop offset="50%" stopColor="#142c4a" />
-            <stop offset="100%" stopColor="#0a1829" />
-          </linearGradient>
-
-          <radialGradient id="vaultCoreGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#daa520" stopOpacity="0.45" />
-            <stop offset="60%" stopColor="#38bdf8" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="#1e3a5f" stopOpacity="0" />
-          </radialGradient>
-
-          <linearGradient id="scannerBeam" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="transparent" />
-            <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="transparent" />
-          </linearGradient>
-
-          {/* Card Hologram Gradient */}
-          <linearGradient id="holoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#daa520" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#ec4899" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" />
-          </linearGradient>
-
-          <filter id="vaultGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Outer ambient glow */}
-        <circle cx="300" cy="190" r="150" fill="url(#vaultCoreGlow)" />
-
-        {/* Base Pedestal & Cylindrical Vault Structure */}
-        <g className={styles.vaultStructure}>
-          {/* Base shadow */}
-          <ellipse cx="300" cy="335" rx="200" ry="24" fill="rgba(0,0,0,0.35)" />
-
-          {/* Lower Stage Tier */}
-          <path
-            d="M120 310 L180 340 L420 340 L480 310 Z"
-            fill="url(#vaultNavy)"
-            stroke="url(#vaultGold)"
-            strokeWidth="2"
-          />
-
-          {/* Stage Front Rim */}
-          <ellipse
-            cx="300"
-            cy="310"
-            rx="180"
-            ry="22"
-            fill="#0f2744"
-            stroke="rgba(218,165,32,0.4)"
-            strokeWidth="2"
-          />
-
-          {/* Concentric Energy Rings */}
-          <ellipse
-            cx="300"
-            cy="310"
-            rx="150"
-            ry="18"
-            fill="none"
-            stroke="url(#vaultGold)"
-            strokeWidth="1.5"
-            strokeDasharray="8 6"
-            className={styles.spinRingSlow}
-          />
-          <ellipse
-            cx="300"
-            cy="310"
-            rx="120"
-            ry="14"
-            fill="none"
-            stroke="#38bdf8"
-            strokeWidth="1.5"
-            strokeDasharray="4 4"
-            className={styles.spinRingReverse}
-          />
-
-          {/* Cylindrical Portal Pillars */}
-          <path
-            d="M130 310 L130 90 Q145 80 160 90 L160 310 Z"
-            fill="url(#vaultNavy)"
-            stroke="rgba(218,165,32,0.6)"
-            strokeWidth="2"
-          />
-          <path
-            d="M440 310 L440 90 Q455 80 470 90 L470 310 Z"
-            fill="url(#vaultNavy)"
-            stroke="rgba(218,165,32,0.6)"
-            strokeWidth="2"
-          />
-
-          {/* Top Arch Rim */}
-          <path
-            d="M130 90 Q300 20 470 90"
-            fill="none"
-            stroke="url(#vaultGold)"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M160 100 Q300 35 440 100"
-            fill="none"
-            stroke="rgba(56, 189, 248, 0.5)"
-            strokeWidth="2"
-          />
-        </g>
-
-        {/* Vault Core Hologram Generator */}
-        <g className={styles.hologramCore}>
-          {/* Vertical Containment Beam */}
-          <rect
-            x="200"
-            y="70"
-            width="200"
-            height="240"
-            fill="url(#scannerBeam)"
-            opacity="0.25"
-            className={styles.containmentBeam}
-          />
-
-          {/* Horizontal Scanner Laser sweeping up/down */}
-          <line
-            x1="180"
-            y1="190"
-            x2="420"
-            y2="190"
-            stroke="#38bdf8"
-            strokeWidth="3"
-            filter="url(#vaultGlow)"
-            className={styles.scanningLaser}
-          />
-
-          {/* Levitating Centerpiece Items */}
-          {/* Item 0: Air Jordan Sneaker Silhouette */}
-          <g
-            className={`${styles.vaultItem} ${activeItem === 0 ? styles.vaultItemActive : ''}`}
-            transform="translate(240, 130)"
+        <VaultFrame />
+        <div className={styles.niche} key={`niche-${cycle}`}>
+          <div className={styles.spot} />
+          <div className={styles.piece} style={{ '--piece-h': `${h * 100}%` }}>
+            <div className={styles.pieceFloat}>
+              <svg
+                viewBox={box.join(' ')}
+                xmlns="http://www.w3.org/2000/svg"
+                key={piece.id}
+              >
+                <Art {...artProps} />
+              </svg>
+            </div>
+          </div>
+          <div className={styles.scan} />
+        </div>
+        <div className={styles.seal} key={`seal-${cycle}`}>
+          <Seal serial={piece.serial} />
+        </div>
+        <div className={styles.doorHinge}>
+          <div
+            className={styles.door}
+            key={`door-${cycle}`}
+            onAnimationIteration={handleIteration}
           >
-            {/* Sneaker Outline SVG */}
-            <path
-              d="M15 65 L40 65 Q70 65 90 55 L105 45 Q115 35 110 20 L105 10 Q100 0 85 5 L65 15 L50 25 L30 40 L10 48 Q0 52 5 62 Q8 65 15 65 Z"
-              fill="url(#vaultGold)"
-              stroke="#ffffff"
-              strokeWidth="1.5"
-              filter="url(#vaultGlow)"
-            />
-            {/* Swoosh Accent */}
-            <path
-              d="M35 52 Q60 52 80 35 Q55 42 40 45 Z"
-              fill="#1e3a5f"
-            />
-            <text x="60" y="85" textAnchor="middle" fill="#daa520" fontSize="11" fontWeight="700" letterSpacing="1">
-              AIR JORDAN 1
-            </text>
-          </g>
+            <VaultDoor />
+            <div className={styles.wheel}>
+              <VaultWheel />
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* Item 1: MTG Black Lotus Foil Card */}
-          <g
-            className={`${styles.vaultItem} ${activeItem === 1 ? styles.vaultItemActive : ''}`}
-            transform="translate(260, 110)"
-          >
-            <rect
-              x="0"
-              y="0"
-              width="80"
-              height="115"
-              rx="6"
-              fill="url(#holoGradient)"
-              stroke="url(#vaultGold)"
-              strokeWidth="2"
-              filter="url(#vaultGlow)"
+      <div className={styles.info} aria-live="polite">
+        <div className={styles.infoInner} key={piece.id}>
+          <span className={styles.eyebrow}>
+            <span className={styles.eyebrowDot} />
+            Vault {String(index + 1).padStart(2, '0')} · Authenticated
+          </span>
+          <h3 className={styles.name}>{piece.name}</h3>
+          <p className={styles.edition}>{piece.edition}</p>
+          <p className={styles.price}>{piece.price}</p>
+          <ul className={styles.proof}>
+            {piece.proof.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+            <li>Insured white-glove delivery</li>
+          </ul>
+        </div>
+        <div
+          className={styles.dots}
+          role="group"
+          aria-label="Choose a vault piece"
+        >
+          {PIECES.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              className={`${styles.dot} ${i === index ? styles.dotActive : ''}`}
+              aria-label={`Show ${p.name}`}
+              aria-pressed={i === index}
+              onClick={() => choose(i)}
             />
-            <rect x="8" y="8" width="64" height="60" rx="3" fill="#0f2744" opacity="0.8" />
-            {/* Lotus Blossom */}
-            <path
-              d="M40 30 C30 15 20 35 40 50 C60 35 50 15 40 30 Z"
-              fill="#b8860b"
-            />
-            <circle cx="40" cy="38" r="4" fill="#38bdf8" />
-            <text x="40" y="90" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="800">
-              BLACK LOTUS
-            </text>
-            <text x="40" y="103" textAnchor="middle" fill="#daa520" fontSize="8" fontWeight="600">
-              ALPHA 9.5
-            </text>
-          </g>
-
-          {/* Item 2: Custom Shop Stratocaster Guitar */}
-          <g
-            className={`${styles.vaultItem} ${activeItem === 2 ? styles.vaultItemActive : ''}`}
-            transform="translate(250, 100)"
-          >
-            {/* Guitar Body */}
-            <path
-              d="M50 140 C25 140 20 115 35 95 C25 80 35 60 50 70 L50 20 L58 20 L58 70 C75 60 85 80 75 95 C90 115 85 140 60 140 Z"
-              fill="url(#vaultGold)"
-              stroke="#ffffff"
-              strokeWidth="1.5"
-              filter="url(#vaultGlow)"
-            />
-            {/* Guitar Neck */}
-            <rect x="52" y="5" width="4" height="65" fill="#ffffff" />
-            <text x="54" y="155" textAnchor="middle" fill="#38bdf8" fontSize="10" fontWeight="700">
-              FENDER '60S STRAT
-            </text>
-          </g>
-
-          {/* Item 3: Olympic Barbell & Weights */}
-          <g
-            className={`${styles.vaultItem} ${activeItem === 3 ? styles.vaultItemActive : ''}`}
-            transform="translate(230, 130)"
-          >
-            {/* Barbell Bar */}
-            <rect x="0" y="28" width="140" height="6" rx="2" fill="#ffffff" filter="url(#vaultGlow)" />
-            {/* Outer Plates Left */}
-            <rect x="18" y="5" width="8" height="52" rx="3" fill="url(#vaultGold)" stroke="#ffffff" strokeWidth="1" />
-            <rect x="28" y="12" width="6" height="38" rx="2" fill="#38bdf8" />
-            {/* Outer Plates Right */}
-            <rect x="106" y="12" width="6" height="38" rx="2" fill="#38bdf8" />
-            <rect x="114" y="5" width="8" height="52" rx="3" fill="url(#vaultGold)" stroke="#ffffff" strokeWidth="1" />
-            <text x="70" y="80" textAnchor="middle" fill="#daa520" fontSize="10" fontWeight="700">
-              ROGUE OHIO BAR (20KG)
-            </text>
-          </g>
-        </g>
-
-        {/* Floating Quantum Particles */}
-        <g className={styles.vaultParticles}>
-          <circle cx="210" cy="160" r="2.5" fill="#daa520" className={styles.particleP1} />
-          <circle cx="390" cy="140" r="2" fill="#38bdf8" className={styles.particleP2} />
-          <circle cx="280" cy="90" r="1.5" fill="#ffffff" className={styles.particleP3} />
-          <circle cx="330" cy="220" r="2" fill="#daa520" className={styles.particleP4} />
-          <circle cx="230" cy="240" r="1.5" fill="#38bdf8" className={styles.particleP5} />
-        </g>
-
-        {/* Telemetry HUD Elements */}
-        <g className={styles.vaultHud} opacity="0.75">
-          <text x="145" y="120" fill="rgba(255,255,255,0.6)" fontSize="8" fontFamily="monospace">
-            VAULT://SECURE_INDEX
-          </text>
-          <text x="145" y="132" fill="#38bdf8" fontSize="8" fontFamily="monospace">
-            STATUS: AUTHENTICATED
-          </text>
-          <text x="400" y="120" fill="rgba(255,255,255,0.6)" fontSize="8" fontFamily="monospace">
-            ENCRYPTION: QUANTUM
-          </text>
-          <text x="400" y="132" fill="#daa520" fontSize="8" fontFamily="monospace">
-            TIER: ULTRA_PREMIUM
-          </text>
-        </g>
-      </svg>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
+
+VaultAnimation.propTypes = {
+  className: PropTypes.string,
+};

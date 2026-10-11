@@ -18,56 +18,77 @@ describe('Hero Animations & Interactive Switcher', () => {
       expect(tabs).toHaveLength(4);
 
       expect(screen.getByText('Cart Track')).toBeInTheDocument();
-      expect(screen.getByText('Luxury Vault')).toBeInTheDocument();
-      expect(screen.getByText('3D Stage')).toBeInTheDocument();
-      expect(screen.getByText('WebGL Vortex')).toBeInTheDocument();
+      expect(screen.getByText('Private Vault')).toBeInTheDocument();
+      expect(screen.getByText('Studio Gallery')).toBeInTheDocument();
+      expect(screen.getByText('Gold Dust')).toBeInTheDocument();
 
-      // Click on 3D Stage
-      fireEvent.click(screen.getByText('3D Stage'));
+      expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
+      expect(tabs[0]).toHaveAttribute('aria-controls', 'hero-animation-track');
+
+      // Click on the Studio Gallery
+      fireEvent.click(screen.getByText('Studio Gallery'));
       expect(onSelect).toHaveBeenCalledWith('3d');
     });
   });
 
   describe('VaultAnimation', () => {
-    it('renders the 2D vector vault showcase and levitating items', () => {
+    it('reveals an authenticated curated piece and lets shoppers pick another', () => {
       render(<VaultAnimation />);
       expect(
-        screen.getByLabelText(/Luxury vault showcase animation/i)
+        screen.getByRole('img', { name: /Private vault opening to reveal/i })
       ).toBeInTheDocument();
-      expect(screen.getByText(/AIR JORDAN 1/i)).toBeInTheDocument();
-      expect(screen.getByText(/BLACK LOTUS/i)).toBeInTheDocument();
-      expect(screen.getByText(/FENDER '60S STRAT/i)).toBeInTheDocument();
-      expect(screen.getByText(/ROGUE OHIO BAR/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'The One Ring' })
+      ).toBeInTheDocument();
+      expect(screen.getByText(/Authenticated/i)).toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Show Black Lotus/i })
+      );
+      expect(
+        screen.getByRole('heading', { name: 'Black Lotus' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /Show Black Lotus/i })
+      ).toHaveAttribute('aria-pressed', 'true');
     });
   });
 
   describe('Isometric3DHero', () => {
-    it('renders 3D spatial product cards and handles mouse tilt interaction', () => {
+    it('shows curated pieces next to Studio creations and handles tilt', () => {
       render(<Isometric3DHero />);
-      expect(
-        screen.getByLabelText(/Interactive 3D product showcase/i)
-      ).toBeInTheDocument();
+      const region = screen.getByRole('region', { name: /Studio gallery/i });
+      expect(region).toBeInTheDocument();
 
+      expect(screen.getAllByText('Mia & the Moon Fox').length).toBeGreaterThan(
+        0
+      );
       expect(
         screen.getByText("Air Jordan 1 'Lost & Found'")
       ).toBeInTheDocument();
-      expect(screen.getByText(/Black Lotus Alpha 9.5/i)).toBeInTheDocument();
-      expect(screen.getByText(/Rogue Ohio Cerakote Bar/i)).toBeInTheDocument();
+      expect(screen.getByText('Team Leo Hoodie')).toBeInTheDocument();
 
-      // Mouse move triggers tilt without errors
-      const viewport = screen.getByRole('region');
-      fireEvent.mouseMove(viewport, { clientX: 200, clientY: 150 });
-      fireEvent.mouseLeave(viewport);
+      // Choosing a card brings it to the front.
+      fireEvent.click(screen.getByRole('button', { name: /Our Crew/i }));
+      expect(screen.getByRole('button', { name: /Our Crew/i })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
+
+      // Pointer tilt runs without errors
+      fireEvent.pointerMove(region, { clientX: 200, clientY: 150 });
+      fireEvent.pointerLeave(region);
     });
   });
 
   describe('WebGLCosmicHero', () => {
-    it('renders WebGL canvas or graceful fallback with HUD telemetry', () => {
+    it('renders the gold dust stage or its static fallback', () => {
       render(<WebGLCosmicHero />);
-      expect(screen.getByText('QUANTUM COSMOS')).toBeInTheDocument();
       expect(
-        screen.getByText(/GPU ACCELERATED \/\/ 1200 PARTICLES/i)
+        screen.getByRole('img', { name: /Gold dust particles forming/i })
       ).toBeInTheDocument();
+      expect(screen.getByText(/Gold Dust · WebGL/i)).toBeInTheDocument();
+      expect(screen.getByText('Your cart')).toBeInTheDocument();
     });
   });
 
@@ -78,22 +99,27 @@ describe('Hero Animations & Interactive Switcher', () => {
         /Shop Smarter/i
       );
 
-      // Initially on track
+      // Initially on the cart track
+      expect(
+        screen.getByRole('img', { name: /chrome Cart Commerce cart/i })
+      ).toBeInTheDocument();
       expect(screen.getByText('CHECKOUT')).toBeInTheDocument();
 
-      // Switch to Vault
-      fireEvent.click(screen.getByText('Luxury Vault'));
-      expect(screen.getByText(/AIR JORDAN 1/i)).toBeInTheDocument();
+      // Switch to the vault
+      fireEvent.click(screen.getByText('Private Vault'));
+      expect(
+        screen.getByRole('heading', { name: 'The One Ring' })
+      ).toBeInTheDocument();
 
-      // Switch to 3D
-      fireEvent.click(screen.getByText('3D Stage'));
+      // Switch to the Studio gallery
+      fireEvent.click(screen.getByText('Studio Gallery'));
       expect(
         screen.getByText("Air Jordan 1 'Lost & Found'")
       ).toBeInTheDocument();
 
-      // Switch to WebGL
-      fireEvent.click(screen.getByText('WebGL Vortex'));
-      expect(screen.getByText('QUANTUM COSMOS')).toBeInTheDocument();
+      // Switch to gold dust
+      fireEvent.click(screen.getByText('Gold Dust'));
+      expect(screen.getByText(/Gold Dust · WebGL/i)).toBeInTheDocument();
     });
   });
 });

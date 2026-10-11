@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
+import { CartIcon, Cube3DIcon, SparklesIcon, VaultIcon } from '../Icons';
 import styles from './Hero.module.css';
-import { CartIcon, VaultIcon, Cube3DIcon, SparklesIcon } from '../Icons';
 
 /**
  * HeroAnimationSwitcher
  *
- * Interactive segmented controller allowing users to toggle between
- * the 4 distinct Hero showcase animations.
+ * Segmented control for the four hero showcases: the checkout cart track,
+ * the private vault, the 3D Studio gallery and the WebGL gold dust.
  */
 export function HeroAnimationSwitcher({ activeMode, onSelectMode }) {
   const modes = [
@@ -14,25 +14,25 @@ export function HeroAnimationSwitcher({ activeMode, onSelectMode }) {
       id: 'track',
       label: 'Cart Track',
       Icon: CartIcon,
-      badge: 'Classic',
+      badge: 'Checkout',
     },
     {
       id: 'vault',
-      label: 'Luxury Vault',
+      label: 'Private Vault',
       Icon: VaultIcon,
-      badge: 'Vector',
+      badge: 'Certified',
     },
     {
       id: '3d',
-      label: '3D Stage',
+      label: 'Studio Gallery',
       Icon: Cube3DIcon,
-      badge: 'Spatial',
+      badge: '3D',
     },
     {
       id: 'webgl',
-      label: 'WebGL Vortex',
+      label: 'Gold Dust',
       Icon: SparklesIcon,
-      badge: 'GPU',
+      badge: 'WebGL',
     },
   ];
 
@@ -40,7 +40,7 @@ export function HeroAnimationSwitcher({ activeMode, onSelectMode }) {
     <div
       className={styles.switcherContainer}
       role="tablist"
-      aria-label="Hero Animation Mode Switcher"
+      aria-label="Hero showcase"
     >
       <div className={styles.switcherTrack}>
         {modes.map((mode) => {

@@ -1,177 +1,259 @@
-import { useEffect, useState } from 'react';
-import styles from './Hero.module.css';
-import {
-  SneakerIcon,
-  CardGameIcon,
-  GuitarIcon,
-  DumbbellIcon,
-} from '../Icons';
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
+import { ProductArt } from './heroArt';
+import styles from './Isometric3DHero.module.css';
 
 /**
- * Isometric3DHero
+ * Studio Gallery: a slow 3D carousel that pairs curated catalogue pieces
+ * with things shoppers make in the Custom Creation Studio — a personalised
+ * storybook, a framed poster and a hoodie starring their own cast.
  *
- * Interactive 3D spatial showcase using CSS 3D transforms (preserve-3d).
- * Features mouse-tracking tilt, rotating multi-tier pedestal,
- * and 4 floating 3D layered luxury product cards with dynamic specular glare.
+ * The ring turns with a CSS transition; pointer tilt and glare are written
+ * straight to CSS variables from a requestAnimationFrame loop that only runs
+ * while the pointer is moving, so React never re-renders on mousemove.
  */
+
+const CARDS = [
+  {
+    id: 'storybook',
+    kind: 'storybook',
+    source: 'studio',
+    title: 'Mia & the Moon Fox',
+    subtitle: 'Personalised storybook starring your cast',
+    price: 'from $39',
+    cta: 'Design yours',
+  },
+  {
+    id: 'aj1',
+    kind: 'sneaker',
+    source: 'curated',
+    title: "Air Jordan 1 'Lost & Found'",
+    subtitle: 'Footwear · Deadstock, authenticated',
+    price: '$425',
+    cta: 'View piece',
+  },
+  {
+    id: 'poster',
+    kind: 'poster',
+    source: 'studio',
+    title: 'Our Crew',
+    subtitle: 'Framed poster of your family as characters',
+    price: 'from $59',
+    cta: 'Design yours',
+  },
+  {
+    id: 'xm5',
+    kind: 'headphones',
+    source: 'curated',
+    title: 'Sony WH-1000XM5',
+    subtitle: 'Audio · Wireless noise cancelling',
+    price: '$398',
+    cta: 'View piece',
+  },
+  {
+    id: 'hoodie',
+    kind: 'hoodie',
+    source: 'studio',
+    title: 'Team Leo Hoodie',
+    subtitle: 'Apparel · Your character in gold foil',
+    price: 'from $49',
+    cta: 'Design yours',
+  },
+  {
+    id: 'strat',
+    kind: 'guitar',
+    source: 'curated',
+    title: "Fender '60s Relic Strat",
+    subtitle: 'Instruments · Custom Shop, Olympic White',
+    price: '$4,850',
+    cta: 'View piece',
+  },
+];
+
+const AUTO_MS = 3800;
+const mod = (n, m) => ((n % m) + m) % m;
+// Signed distance of card i from the front for a given step: -3 … 2.
+const offsetOf = (i, step) =>
+  mod(i - step + Math.floor(CARDS.length / 2), CARDS.length) -
+  Math.floor(CARDS.length / 2);
+
 export function Isometric3DHero({ className }) {
-  const [rotation, setRotation] = useState({ x: 12, y: -15 });
-  const [activeCard, setActiveCard] = useState(0);
-
-  // Smooth mouse tilt handler
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
-    const ny = (e.clientY - rect.top) / rect.height - 0.5;
-
-    setRotation({
-      x: 15 - ny * 30, // Tilt forward / backward
-      y: -15 + nx * 35, // Tilt left / right
-    });
-  };
-
-  const handleMouseLeave = () => {
-    // Return to default isometric angle smoothly
-    setRotation({ x: 14, y: -18 });
-  };
+  const rootRef = useRef(null);
+  const tiltRef = useRef(null);
+  const target = useRef({ x: 0, y: 0 });
+  const current = useRef({ x: 0, y: 0 });
+  const frame = useRef(0);
+  const prevStep = useRef(0);
+  const [step, setStep] = useState(0);
+  const [hold, setHold] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [reduced, setReduced] = useState(false);
+  const active = mod(step, CARDS.length);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveCard((prev) => (prev + 1) % 4);
-    }, 4000);
-    return () => clearInterval(timer);
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mq) return undefined;
+    const apply = () => setReduced(mq.matches);
+    apply();
+    mq.addEventListener?.('change', apply);
+    return () => mq.removeEventListener?.('change', apply);
   }, []);
 
-  const cards = [
-    {
-      id: 'shoes',
-      title: "Air Jordan 1 'Lost & Found'",
-      subtitle: 'Footwear Collection',
-      price: '$425.00',
-      badge: 'Iconic',
-      color: '#ef4444',
-      Icon: SneakerIcon,
-      transform: 'translate3d(-140px, -40px, 60px) rotateY(-10deg)',
-    },
-    {
-      id: 'mtg',
-      title: 'Black Lotus Alpha 9.5',
-      subtitle: 'Rare Collectibles',
-      price: '$495,000',
-      badge: 'Grail',
-      color: '#b8860b',
-      Icon: CardGameIcon,
-      transform: 'translate3d(140px, -60px, 80px) rotateY(12deg)',
-    },
-    {
-      id: 'instruments',
-      title: "Fender '60s Custom Strat",
-      subtitle: 'Musical Instruments',
-      price: '$4,850',
-      badge: 'Masterbuilt',
-      color: '#38bdf8',
-      Icon: GuitarIcon,
-      transform: 'translate3d(-120px, 90px, 100px) rotateY(-8deg)',
-    },
-    {
-      id: 'weights',
-      title: 'Rogue Ohio Cerakote Bar',
-      subtitle: 'Strength & Fitness',
-      price: '$350.00',
-      badge: 'Made in USA',
-      color: '#10b981',
-      Icon: DumbbellIcon,
-      transform: 'translate3d(120px, 80px, 50px) rotateY(8deg)',
-    },
-  ];
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([entry]) =>
+      setVisible(entry.isIntersecting)
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (hold || !visible || reduced) return undefined;
+    const timer = setInterval(() => setStep((s) => s + 1), AUTO_MS);
+    return () => clearInterval(timer);
+  }, [hold, visible, reduced]);
+
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+
+  useEffect(() => {
+    prevStep.current = step;
+  }, [step]);
+
+  const tick = () => {
+    const c = current.current;
+    const t = target.current;
+    c.x += (t.x - c.x) * 0.12;
+    c.y += (t.y - c.y) * 0.12;
+    const el = tiltRef.current;
+    if (el) {
+      el.style.setProperty('--tilt-x', `${(-c.y * 10).toFixed(2)}deg`);
+      el.style.setProperty('--tilt-y', `${(c.x * 14).toFixed(2)}deg`);
+      el.style.setProperty('--glare-x', `${(50 + c.x * 60).toFixed(1)}%`);
+      el.style.setProperty('--glare-y', `${(30 + c.y * 50).toFixed(1)}%`);
+    }
+    if (Math.abs(t.x - c.x) + Math.abs(t.y - c.y) > 0.001) {
+      frame.current = requestAnimationFrame(tick);
+    } else {
+      frame.current = 0;
+    }
+  };
+
+  const kick = () => {
+    if (!frame.current && !reduced) frame.current = requestAnimationFrame(tick);
+  };
+
+  const handlePointerMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    target.current = {
+      x: (e.clientX - rect.left) / rect.width - 0.5,
+      y: (e.clientY - rect.top) / rect.height - 0.5,
+    };
+    kick();
+  };
+
+  const handlePointerLeave = () => {
+    target.current = { x: 0, y: 0 };
+    setHold(false);
+    kick();
+  };
+
+  const goTo = (i) => setStep((s) => s + offsetOf(i, s));
+
+  const card = CARDS[active];
 
   return (
     <div
-      className={`${styles.iso3dViewport} ${className || ''}`.trim()}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      ref={rootRef}
+      className={`${styles.gallery} ${reduced ? styles.still : ''} ${className || ''}`.trim()}
+      onPointerMove={handlePointerMove}
+      onPointerEnter={() => setHold(true)}
+      onPointerLeave={handlePointerLeave}
+      onFocus={() => setHold(true)}
+      onBlur={() => setHold(false)}
       role="region"
-      aria-label="Interactive 3D product showcase"
+      aria-label="Studio gallery: curated pieces and custom creations in 3D"
     >
-      {/* 3D Scene Root */}
-      <div
-        className={styles.iso3dScene}
-        style={{
-          transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-        }}
-      >
-        {/* Base 3D Pedestal Stage */}
-        <div className={styles.iso3dPedestal}>
-          <div className={styles.pedestalTop}>
-            <div className={styles.pedestalGlowRing} />
-            <div className={styles.pedestalCore} />
-          </div>
-          <div className={styles.pedestalShadow} />
-        </div>
-
-        {/* Floating Center Hologram Sphere */}
-        <div className={styles.iso3dCenterOrb}>
-          <div className={styles.orbInnerGlow} />
-          <div className={styles.orbRings}>
-            <div className={styles.orbRing1} />
-            <div className={styles.orbRing2} />
-          </div>
-        </div>
-
-        {/* 4 Orbiting 3D Glass Cards */}
-        {cards.map((card, index) => {
-          const isSelected = activeCard === index;
-          return (
-            <div
-              key={card.id}
-              className={`${styles.isoCard} ${isSelected ? styles.isoCardFocused : ''}`}
-              style={{
-                transform: card.transform,
-              }}
-              onClick={() => setActiveCard(index)}
-            >
-              {/* Glass Reflection Glare */}
+      <div className={styles.viewport}>
+        <div ref={tiltRef} className={styles.tilt}>
+          <div className={styles.floor} />
+          {CARDS.map((c, i) => {
+            const off = offsetOf(i, step);
+            const prevOff = offsetOf(i, prevStep.current);
+            // A card wrapping from one end to the other jumps while hidden.
+            const wrapping = Math.abs(off - prevOff) > 1;
+            const dist = Math.abs(off);
+            const isActive = off === 0;
+            return (
               <div
-                className={styles.cardGlare}
+                key={c.id}
+                className={`${styles.slot} ${dist > 2 ? styles.slotHidden : ''}`}
                 style={{
-                  background: `linear-gradient(${135 + rotation.y * 2}deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)`,
+                  '--off': off,
+                  '--dist': dist,
+                  transition: wrapping ? 'none' : undefined,
                 }}
-              />
-
-              {/* Card Content */}
-              <div className={styles.cardHeader}>
-                <span className={styles.cardEmoji}>
-                  <card.Icon size={24} strokeWidth={2} />
-                </span>
-                <span
-                  className={styles.cardBadge}
-                  style={{
-                    backgroundColor: `${card.color}22`,
-                    color: card.color,
-                    borderColor: `${card.color}44`,
-                  }}
+              >
+                <button
+                  type="button"
+                  className={`${styles.card} ${styles[c.source]} ${isActive ? styles.cardActive : ''}`}
+                  onClick={() => goTo(i)}
+                  aria-pressed={isActive}
+                  aria-label={`${c.title}, ${c.price}`}
+                  tabIndex={dist > 1 ? -1 : 0}
                 >
-                  {card.badge}
-                </span>
+                  <span className={styles.cardTop}>
+                    <span className={styles.badge}>
+                      {c.source === 'studio' ? 'Studio' : 'Curated'}
+                    </span>
+                    <span className={styles.price}>{c.price}</span>
+                  </span>
+                  <span className={styles.artPanel}>
+                    <span className={styles.artHalo} />
+                    <ProductArt kind={c.kind} className={styles.art} />
+                  </span>
+                  <span className={styles.title}>{c.title}</span>
+                  <span className={styles.subtitle}>{c.subtitle}</span>
+                  <span className={styles.cta}>{c.cta} →</span>
+                  <span className={styles.glare} aria-hidden="true" />
+                </button>
               </div>
-
-              <div className={styles.cardBody}>
-                <h4 className={styles.cardTitle}>{card.title}</h4>
-                <p className={styles.cardSubtitle}>{card.subtitle}</p>
-                <div className={styles.cardPriceRow}>
-                  <span className={styles.cardPrice}>{card.price}</span>
-                  <span className={styles.cardAction}>Inspect →</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {/* Helper text */}
-      <div className={styles.iso3dHint}>
-        <span>Interactive 3D • Move cursor to tilt</span>
+      <div className={styles.controls}>
+        <button
+          type="button"
+          className={styles.arrow}
+          onClick={() => setStep((s) => s - 1)}
+          aria-label="Previous piece"
+        >
+          ‹
+        </button>
+        <span className={styles.caption} aria-live="polite">
+          <span className={styles.captionSource}>
+            {card.source === 'studio'
+              ? 'Custom Creation Studio'
+              : 'Curated catalogue'}
+          </span>
+          <span className={styles.captionTitle}>{card.title}</span>
+        </span>
+        <button
+          type="button"
+          className={styles.arrow}
+          onClick={() => setStep((s) => s + 1)}
+          aria-label="Next piece"
+        >
+          ›
+        </button>
       </div>
     </div>
   );
 }
+
+Isometric3DHero.propTypes = {
+  className: PropTypes.string,
+};

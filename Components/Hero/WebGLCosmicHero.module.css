@@ -1,0 +1,139 @@
+/* Gold Dust — WebGL particle stage. */
+
+.stage {
+  position: relative;
+  z-index: 20;
+  width: min(100% - 2rem, 900px);
+  height: 340px;
+  margin-bottom: 3rem;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      70% 80% at 50% 45%,
+      rgba(45, 90, 135, 0.55) 0%,
+      rgba(15, 39, 68, 0.2) 60%,
+      rgba(15, 39, 68, 0) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 20, 36, 0.55) 0%, rgba(8, 20, 36, 0.8) 100%);
+  border: 1px solid rgba(218, 165, 32, 0.22);
+  box-shadow:
+    0 30px 60px rgba(2, 6, 23, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 420px;
+  height: 260px;
+  margin: -150px 0 0 -210px;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(218, 165, 32, 0.2),
+    rgba(218, 165, 32, 0)
+  );
+  pointer-events: none;
+}
+
+.floor {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 34px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(246, 221, 138, 0.22),
+    rgba(246, 221, 138, 0)
+  );
+  pointer-events: none;
+}
+
+.canvasHost {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.fallback {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(60%, 340px);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 6px rgba(218, 165, 32, 0.6));
+}
+
+.hud {
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.label {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-secondary-light);
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .label {
+    animation: dustLabel 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes dustLabel {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .stage {
+    height: 280px;
+    border-radius: 20px;
+  }
+  .hud {
+    left: 1rem;
+    right: 1rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+  .label {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
