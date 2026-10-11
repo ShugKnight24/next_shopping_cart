@@ -3,7 +3,8 @@
  *   0  two kids, Maya and Sam, side by side on a soft stage
  *   1  picker tiles orbit them and fly in; each kid's look changes with each
  *      tile that lands on them, a beat apart
- *   2  they hop into a storybook that opens on a page starring both of them
+ *   2  a storybook tilts up on its stand, open on a page starring both of
+ *      them, and turns to the next chapter while they reach for it
  *   3  a framed poster of the pair on the wall
  *   4  Maya's hoodie and Sam's tee, each printed with its owner
  *   5  pull back on everything, ready to start
@@ -13,12 +14,7 @@
  */
 
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import {
-  createStorySpread,
-  momentById,
-  momentLayers,
-  spreadConfig,
-} from '../Studio/book/bookPages';
+import { spreadConfig } from '../Studio/book/bookPages';
 import { createPet } from '../Studio/cast/castModel';
 import { decodeSvg } from '../Studio/cast/castRaster';
 import {
@@ -227,6 +223,7 @@ const plain = (kid, extra = {}) => ({
 const KIDS = [
   {
     person: MAYA,
+    side: 1,
     looks: [
       plain(MAYA),
       plain(MAYA, { hair: 'buns' }),
@@ -245,6 +242,7 @@ const KIDS = [
   },
   {
     person: SAM,
+    side: -1,
     looks: [
       plain(SAM),
       plain(SAM, { hair: 'curlyTop' }),
@@ -351,18 +349,35 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
   // "grown-up" part to the next person when there is no adult), plus the pet.
   const cast = [MAYA, SAM, createPet({ id: 'hero-pet', name: 'Biscuit' })];
 
-  // The three products, rendered by the editors' own code.
-  const bookArt = PRODUCTS.book.artboard(PRODUCTS.book.defaults);
-  const spread = {
-    ...createStorySpread(momentById('picnic')),
-    id: 'hero-spread',
-  };
-  const bookOptions = {
-    ...PRODUCTS.book.defaults,
-    cast,
-    spreads: [spread],
-    activeSpread: spread.id,
-  };
+  // The three products, rendered by the editors' own code. The book is the
+  // "Birthday book" idea: its first two story spreads (a picnic, then the
+  // party) both star the pair, so a page can turn from one to the next.
+  const bookDefaults = { ...PRODUCTS.book.defaults, format: 'landscape' };
+  const bookArt = PRODUCTS.book.artboard(bookDefaults);
+  const bookBuilt = buildStarter(
+    'book',
+    STARTERS.book.find((b) => b.id === 'birthday'),
+    { artboard: bookArt, options: bookDefaults, cast }
+  );
+  const storySpreads = bookBuilt.options.spreads
+    .filter((sp) => sp.kind === 'story')
+    .slice(0, 2);
+  const spreadRender = (sp) =>
+    renderDesign({
+      artboard: bookArt,
+      draw: (ctx, b) =>
+        drawBookSubstrate(ctx, { ...b, config: spreadConfig(b.config) }),
+      config: {
+        ...bookDefaults,
+        cast,
+        spreads: bookBuilt.options.spreads,
+        activeSpread: sp.id,
+      },
+      layers: bookBuilt.layers.filter((l) => l.page === sp.id),
+      cast,
+      // Sharp enough to read the story text on the tilted page.
+      scale: 3,
+    });
   const posterOptions = { ...PRODUCTS.poster.defaults, cast };
   const posterArt = PRODUCTS.poster.artboard(posterOptions);
   const posterBuilt = buildStarter('poster', DUO_POSTER, {
@@ -400,23 +415,15 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
       ),
       personCanvas(k.person, { pose: 'cheer', mood: 'laugh' }),
       personCanvas(k.person, { pose: 'wave', mood: 'grin' }),
+      // Reaching towards the book beside them: Maya stands left of it and
+      // reaches right, Sam stands right of it and reaches left.
+      personCanvas(k.person, { pose: 'reach', mood: 'grin', side: k.side }),
     ]);
 
-  const [kidArts, spreadCanvas, posterCanvas, garmentCanvases] =
+  const [kidArts, spreadCanvases, posterCanvas, garmentCanvases] =
     await Promise.all([
       Promise.all(KIDS.map(kidArt)),
-      renderDesign({
-        artboard: bookArt,
-        draw: (ctx, b) =>
-          drawBookSubstrate(ctx, { ...b, config: spreadConfig(b.config) }),
-        config: bookOptions,
-        layers: momentLayers(momentById('picnic'), {
-          cast,
-          artboard: bookArt,
-          spread,
-        }),
-        cast,
-      }),
+      Promise.all(storySpreads.map(spreadRender)),
       renderDesign({
         artboard: posterArt,
         draw: drawPosterSubstrate,
@@ -471,7 +478,7 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
   const looksOf = (canvases) =>
     canvases.map((l) => ({ texture: tex(l.canvas), aspect: l.aspect }));
 
-  const kids = kidArts.map(([lookCanvases, , cheer, wave], ki) => {
+  const kids = kidArts.map(([lookCanvases, , cheer, wave, point], ki) => {
     const looks = looksOf(lookCanvases);
     const figureMat = mat(
       new THREE.MeshBasicMaterial({
@@ -498,6 +505,7 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
       looks,
       cheer: looksOf([cheer])[0],
       wave: looksOf([wave])[0],
+      point: looksOf([point])[0],
       shown: looks[0],
       // Sam follows Maya a beat behind, so every hop is a little relay.
       delay: ki * 0.018,
@@ -546,84 +554,169 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
     });
 
   /* -------------------------------------------------------------- book -- */
+  // An open picture book on a reading stand on a round table. The stand
+  // tilts it up as the kids arrive so the camera reads the pages face on,
+  // then a page turns from one chapter to the next.
   const BOOK = { x: -2.3, z: 0.4 };
-  const bookGroup = new THREE.Group();
-  bookGroup.position.set(BOOK.x, 0.62, BOOK.z);
-  scene.add(bookGroup);
-  const table = new THREE.Mesh(
-    keep(new THREE.CylinderGeometry(0.95, 0.95, 0.05, 48)),
-    mat(new THREE.MeshStandardMaterial({ color: '#6b4a34', roughness: 0.6 }))
+  // How far the stand tilts the book up from flat: pages face the camera.
+  const BOOK_TILT = 0.95;
+  const TABLE_R = 1.4;
+  const TABLE_Y = 0.625;
+  const wood = mat(
+    new THREE.MeshStandardMaterial({ color: '#6b4a34', roughness: 0.55 })
   );
-  table.position.set(BOOK.x, 0.6, BOOK.z);
+  const table = new THREE.Mesh(
+    keep(new THREE.CylinderGeometry(TABLE_R, TABLE_R, 0.05, 64)),
+    wood
+  );
+  table.position.set(BOOK.x, TABLE_Y - 0.025, BOOK.z);
   table.castShadow = table.receiveShadow = true;
   const tableLeg = new THREE.Mesh(
-    keep(new THREE.CylinderGeometry(0.06, 0.12, 0.58, 16)),
+    keep(new THREE.CylinderGeometry(0.07, 0.14, 0.58, 16)),
     mat(new THREE.MeshStandardMaterial({ color: '#4d3424', roughness: 0.6 }))
   );
   tableLeg.position.set(BOOK.x, 0.29, BOOK.z);
   tableLeg.castShadow = true;
   scene.add(table, tableLeg);
 
-  const W = 0.85,
-    D = 0.85;
-  const cloth = mat(
-    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.75 })
-  );
-  /**
-   * Each page gets its own canvas. The left one is the inside of the cover:
-   * the cover turns over to show it, which leaves it rotated half a turn, so
-   * it is painted rotated half a turn the other way.
-   */
-  const pageSide = (half) => {
-    const w = spreadCanvas.width / 2;
-    const h = spreadCanvas.height;
-    const [c, ctx] = canvasOf(w, h);
-    if (half === 'left') {
-      ctx.translate(w, h);
-      ctx.rotate(Math.PI);
-    }
-    ctx.drawImage(spreadCanvas, half === 'left' ? 0 : w, 0, w, h, 0, 0, w, h);
-    return mat(new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.9 }));
+  // Page size from the spread's own aspect: each page is half of it.
+  const W = 0.82;
+  const D = (W * 2 * bookArt.height) / bookArt.width;
+  // The hardcover border the substrate paints around the spread is the 3D
+  // book's own cover here, so the textures start inside it.
+  const INSET = 14;
+  const pageTexture = (canvas, half) => {
+    const k = canvas.width / bookArt.width;
+    const inset = INSET * k;
+    const w = canvas.width / 2 - inset;
+    const h = canvas.height - inset * 2;
+    const [c, ctx] = canvasOf(Math.round(w), Math.round(h));
+    ctx.drawImage(
+      canvas,
+      half === 'left' ? inset : canvas.width / 2,
+      inset,
+      w,
+      h,
+      0,
+      0,
+      w,
+      h
+    );
+    return mat(
+      new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.85 })
+    );
   };
-  const pageGeo = keep(new THREE.PlaneGeometry(W, D));
-  pageGeo.rotateX(-Math.PI / 2);
-  pageGeo.translate(W / 2, 0, 0);
-  const rightPage = new THREE.Mesh(pageGeo, pageSide('right'));
-  rightPage.position.y = 0.05;
-  rightPage.receiveShadow = true;
-  const block = new THREE.Mesh(
-    keep(new THREE.BoxGeometry(W, 0.04, D)),
-    mat(new THREE.MeshStandardMaterial({ color: '#f3ecdc', roughness: 0.9 }))
+  /**
+   * One page, lying face up, curving up from the spine and settling flat
+   * towards the edge as a real open book does. `side` 1 runs from the spine
+   * to the right, -1 to the left; texture left-to-right either way.
+   */
+  const ARCH = 0.045;
+  const pageGeometry = (side, lift = 0) => {
+    const g = keep(new THREE.PlaneGeometry(W, D, 24, 1));
+    g.rotateX(-Math.PI / 2);
+    g.translate((side * W) / 2, 0, 0);
+    const pos = g.attributes.position;
+    for (let v = 0; v < pos.count; v += 1) {
+      const u = Math.abs(pos.getX(v)) / W;
+      pos.setY(
+        v,
+        lift +
+          ARCH * Math.sin(Math.min(1, u * 1.6) * (Math.PI / 2)) * (1 - u * 0.35)
+      );
+    }
+    g.computeVertexNormals();
+    return g;
+  };
+  const [spreadA, spreadB] = spreadCanvases;
+  // The leaf that turns: the next chapter's left page on its back, built as
+  // a left page then turned over, so it reads correctly once it lands.
+  const leafBack = pageGeometry(-1);
+  leafBack.rotateZ(Math.PI);
+
+  const bookTilt = new THREE.Group();
+  bookTilt.position.set(BOOK.x, TABLE_Y, BOOK.z + D / 2 - 0.05);
+  scene.add(bookTilt);
+  const bookGroup = new THREE.Group();
+  // Hinged on its bottom edge: the far edge rises as the stand tilts.
+  bookGroup.position.set(0, 0.06, -D / 2);
+  bookTilt.add(bookGroup);
+
+  const cloth = mat(
+    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.7 })
   );
-  block.position.set(W / 2, 0.025, 0);
-  const backBoard = new THREE.Mesh(
-    keep(new THREE.BoxGeometry(W + 0.02, 0.012, D + 0.02)),
+  const cream = mat(
+    new THREE.MeshStandardMaterial({ color: '#f3ecdc', roughness: 0.9 })
+  );
+  const STACK = 0.035;
+  [-1, 1].forEach((side) => {
+    const board = new THREE.Mesh(
+      keep(new THREE.BoxGeometry(W + 0.04, 0.014, D + 0.06)),
+      cloth
+    );
+    board.position.set((side * (W + 0.04)) / 2, -STACK - 0.007, 0);
+    const pages = new THREE.Mesh(
+      keep(new THREE.BoxGeometry(W - 0.01, STACK, D - 0.01)),
+      cream
+    );
+    pages.position.set((side * W) / 2, -STACK / 2, 0);
+    bookGroup.add(board, pages);
+  });
+  const spine = new THREE.Mesh(
+    keep(
+      new THREE.CylinderGeometry(0.03, 0.03, D + 0.06, 16, 1, false, 0, Math.PI)
+    ),
     cloth
   );
-  backBoard.position.set(W / 2, 0.003, 0);
-  const coverPivot = new THREE.Group();
-  coverPivot.position.y = 0.05;
-  // The inside of the cover faces down until the cover turns over.
-  const leftPage = new THREE.Mesh(pageGeo, pageSide('left'));
-  leftPage.rotation.x = Math.PI;
-  leftPage.position.y = -0.0005;
-  const coverBoard = new THREE.Mesh(
-    keep(new THREE.BoxGeometry(W + 0.02, 0.012, D + 0.02)),
-    cloth
+  spine.rotation.x = Math.PI / 2;
+  spine.position.y = -STACK - 0.01;
+  const leftPage = new THREE.Mesh(
+    pageGeometry(-1),
+    pageTexture(spreadA, 'left')
   );
-  coverBoard.position.set(W / 2 + 0.01, 0.008, 0);
-  const coverFoil = new THREE.Mesh(
-    keep(new THREE.PlaneGeometry(0.3, 0.06)),
-    mat(new THREE.MeshBasicMaterial({ color: '#e8b44c', toneMapped: false }))
+  const rightBase = new THREE.Mesh(
+    pageGeometry(1),
+    pageTexture(spreadB, 'right')
   );
-  coverFoil.rotation.x = -Math.PI / 2;
-  coverFoil.position.set(W / 2, 0.016, -0.14);
-  coverPivot.add(coverBoard, coverFoil);
-  coverPivot.add(leftPage);
-  bookGroup.add(backBoard, block, rightPage, coverPivot);
-  bookGroup.traverse((o) => {
+  const leaf = new THREE.Group();
+  leaf.position.y = 0.003;
+  leaf.add(
+    new THREE.Mesh(pageGeometry(1, 0.0005), pageTexture(spreadA, 'right')),
+    new THREE.Mesh(leafBack, pageTexture(spreadB, 'left'))
+  );
+  bookGroup.add(spine, leftPage, rightBase, leaf);
+
+  // The stand: a slanted wooden back the book rests on, and a lip it sits in.
+  const standBack = new THREE.Mesh(
+    keep(new THREE.BoxGeometry(W * 1.5, 0.03, D * 0.92)),
+    wood
+  );
+  standBack.position.set(0, -STACK - 0.035, 0);
+  bookGroup.add(standBack);
+  const lip = new THREE.Mesh(
+    keep(new THREE.BoxGeometry(W * 2.15, 0.07, 0.05)),
+    wood
+  );
+  lip.position.set(0, 0.03, 0.02);
+  bookTilt.add(lip);
+  // A strut that props the stand up from behind.
+  const strut = new THREE.Mesh(
+    keep(new THREE.BoxGeometry(0.06, 0.02, 1)),
+    wood
+  );
+  scene.add(strut);
+  const strutFrom = new THREE.Vector3();
+  const strutTo = new THREE.Vector3();
+
+  bookTilt.traverse((o) => {
     if (o.isMesh) o.castShadow = o.receiveShadow = true;
   });
+
+  // A warm reading light on the pages once they face the camera.
+  const bookLight = new THREE.SpotLight('#fff1d6', 0, 6, 0.6, 0.7, 1.2);
+  bookLight.position.set(BOOK.x + 0.6, 3.2, BOOK.z + 2.2);
+  bookLight.target = bookGroup;
+  scene.add(bookLight);
 
   /* ------------------------------------------------------------ poster -- */
   const POSTER = { x: 0, y: 2.05, z: -2.3 };
@@ -746,7 +839,8 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
    */
   const spotsFor = (side, by) => {
     const home = [side * 0.42, 0.08, 0.8];
-    const page = [BOOK.x + side * 0.4, 0.68, BOOK.z - 0.27];
+    // On the table either side of the stand, pointing at their story.
+    const page = [BOOK.x + side * (W + 0.2), TABLE_Y, BOOK.z + 0.7];
     const wall = [POSTER.x + side * 1.08, 0.0, -1.85];
     // Level with the rail, so the hop in from the wall comes between the
     // garments rather than through one.
@@ -754,8 +848,8 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
     return [
       { at: 0.0, pos: home, h: FIG_H },
       { at: 0.34, pos: home, h: FIG_H },
-      { at: 0.44, pos: page, h: 0.38 },
-      { at: 0.56, pos: page, h: 0.38 },
+      { at: 0.44, pos: page, h: 0.52 },
+      { at: 0.56, pos: page, h: 0.52 },
       { at: 0.64, pos: wall, h: FIG_H * 0.9 },
       { at: 0.76, pos: wall, h: FIG_H * 0.9 },
       { at: 0.84, pos: rack, h: FIG_H * 0.9 },
@@ -798,15 +892,15 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
     { at: 0.32, pos: [0.35, 1.5, 5.1], look: [0, 0.88, 0.6], wide: 1.2 },
     {
       at: 0.44,
-      pos: [BOOK.x + 0.1, 2.45, BOOK.z + 2.6],
-      look: [BOOK.x, 0.8, BOOK.z],
-      wide: 1.05,
+      pos: [BOOK.x + 0.15, 2.4, BOOK.z + 4.9],
+      look: [BOOK.x - 0.1, 0.98, BOOK.z],
+      wide: 1.25,
     },
     {
       at: 0.56,
-      pos: [BOOK.x + 0.05, 2.25, BOOK.z + 2.35],
-      look: [BOOK.x, 0.8, BOOK.z],
-      wide: 1.05,
+      pos: [BOOK.x + 0.05, 2.2, BOOK.z + 4.1],
+      look: [BOOK.x - 0.1, 0.98, BOOK.z],
+      wide: 1.25,
     },
     { at: 0.64, pos: [0.0, 1.7, 4.0], look: [0, 1.3, -2.0], wide: 1.3 },
     { at: 0.76, pos: [0.05, 1.65, 3.7], look: [0.05, 1.3, -2.0], wide: 1.3 },
@@ -861,6 +955,7 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
       let look = kid.looks[Math.min(kid.landed, kid.looks.length - 1)];
       if (q > 0.92) look = kid.wave;
       else if (kid.moving && q > 0.36) look = kid.cheer;
+      else if (q > 0.44 && q < 0.56) look = kid.point;
       show(kid, look);
       const { h, pop } = kid;
       kid.mesh.scale.set(h * look.aspect * (1 + pop), h * (1 - pop * 0.6), 1);
@@ -899,10 +994,25 @@ export async function loadStudioScene({ THREE, renderer, mobile }) {
       tile.mesh.lookAt(camera.position);
     }
 
-    // The book opens as the kids arrive, and they stand on its pages.
-    const open = ease(span(p, 0.36, 0.45));
-    coverPivot.rotation.z = open * Math.PI;
-    bookGroup.rotation.y = lerp(0.5, 0, open);
+    // The stand tilts the book up to the camera as the kids arrive, then a
+    // page turns to the next chapter.
+    const lift = ease(span(p, 0.36, 0.45));
+    bookTilt.rotation.x = lerp(0.08, BOOK_TILT, lift);
+    bookTilt.rotation.y = lerp(0.35, 0, lift);
+    const turn = smooth(span(p, 0.485, 0.535));
+    leaf.rotation.z = turn * Math.PI;
+    // The turning leaf lifts and bows a little as it goes over.
+    leaf.position.y = 0.003 + Math.sin(turn * Math.PI) * 0.03;
+    bookLight.intensity =
+      lerp(0, 22, span(p, 0.38, 0.46)) * (1 - span(p, 0.58, 0.64));
+    // The strut runs from the back of the stand down to the table.
+    strutFrom.set(0, -0.06, -D * 0.55);
+    bookTilt.localToWorld(strutFrom);
+    strutTo.set(BOOK.x, TABLE_Y + 0.01, strutFrom.z - 0.12);
+    strut.position.lerpVectors(strutFrom, strutTo, 0.5);
+    strut.scale.z = Math.max(0.01, strutFrom.distanceTo(strutTo));
+    strut.lookAt(strutTo);
+    strut.visible = lift > 0.05;
 
     // The poster lights up when the camera reaches the wall.
     posterLight.intensity = lerp(0, 40, span(p, 0.58, 0.66));
