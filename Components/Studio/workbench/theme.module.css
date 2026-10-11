@@ -33,6 +33,9 @@
   --wb-selection-soft: rgb(87 168 255 / 18%);
   --wb-guide: #ff4d8d;
 
+  /* Light card behind ink-outlined cast and scenery art in picker tiles. */
+  --wb-art-card: #f4f1ea;
+
   --wb-danger: #f2574c;
   --wb-success: #3ecf8e;
 

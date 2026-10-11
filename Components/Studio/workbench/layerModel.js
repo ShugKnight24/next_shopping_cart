@@ -12,7 +12,14 @@
  * painter for that type.
  */
 
-export const LAYER_TYPES = ['text', 'shape', 'art', 'image'];
+export const LAYER_TYPES = [
+  'text',
+  'shape',
+  'art',
+  'image',
+  'character',
+  'piece',
+];
 
 /** Slots come from a template and carry a role so the inspector can label them
  *  ("Title", "Subtitle") and a template swap can map old content onto new. */
@@ -96,11 +103,49 @@ export const createImageLayer = (overrides = {}) => ({
   ...overrides,
 });
 
+/**
+ * A member of the cast doing something on this page. Who they are lives in
+ * `options.cast` (so a new haircut reaches every page); the layer holds only
+ * the placement: pose, mood, what they hold, and where they stand.
+ */
+export const createCharacterLayer = (overrides = {}) => ({
+  ...BASE,
+  id: uid('character'),
+  type: 'character',
+  name: 'Character',
+  castId: null,
+  pose: 'stand',
+  mood: 'smile',
+  prop: 'none',
+  flipX: false,
+  width: 110,
+  height: 200,
+  lockAspect: true,
+  ...overrides,
+});
+
+/** A scenery piece from `cast/scenePieces`: a tree, the sun, a cake. */
+export const createPieceLayer = (overrides = {}) => ({
+  ...BASE,
+  id: uid('piece'),
+  type: 'piece',
+  name: 'Scenery',
+  piece: 'tree',
+  tint: null,
+  flipX: false,
+  width: 120,
+  height: 160,
+  lockAspect: true,
+  ...overrides,
+});
+
 const FACTORIES = {
   text: createTextLayer,
   shape: createShapeLayer,
   art: createArtLayer,
   image: createImageLayer,
+  character: createCharacterLayer,
+  piece: createPieceLayer,
 };
 
 export const createLayer = (type, overrides) =>
@@ -203,8 +248,20 @@ export const resizeLayer = (layer, handle, dx, dy) => {
   const localDx = dx * cos - dy * sin;
   const localDy = dx * sin + dy * cos;
 
-  const width = Math.max(MIN_SIZE, layer.width + localDx * handle.fx);
-  const height = Math.max(MIN_SIZE, layer.height + localDy * handle.fy);
+  let width = Math.max(MIN_SIZE, layer.width + localDx * handle.fx);
+  let height = Math.max(MIN_SIZE, layer.height + localDy * handle.fy);
+
+  // Artwork that must not squash (people, scenery) scales uniformly, led by
+  // whichever axis the handle moved more.
+  if (layer.lockAspect) {
+    // Follow whichever axis the handle moved more, growing or shrinking.
+    const kx = handle.fx ? width / layer.width : 1;
+    const ky = handle.fy ? height / layer.height : 1;
+    const k = Math.abs(Math.log(kx)) >= Math.abs(Math.log(ky)) ? kx : ky;
+    const scale = Math.max(MIN_SIZE / Math.min(layer.width, layer.height), k);
+    width = layer.width * scale;
+    height = layer.height * scale;
+  }
 
   // Keep the opposite edge pinned: the centre moves by half the size change.
   const shiftX = (handle.fx * (width - layer.width)) / 2;
@@ -374,5 +431,47 @@ export const describeLayer = (layer) => {
   if (layer.type === 'art') return layer.art;
   if (layer.type === 'shape') return layer.shape;
   if (layer.type === 'image') return layer.src ? 'Image' : 'Empty image';
+  if (layer.type === 'character') return `${layer.pose}, ${layer.mood}`;
+  if (layer.type === 'piece') return layer.piece;
   return layer.type;
+};
+
+/**
+ * Refit a character's box when its art changes shape (a raised arm, a
+ * balloon): same scale, same feet, same centre line. `prev` and `next` are
+ * the art sizes in rig units.
+ */
+export const reframeLayer = (layer, prev, next) => {
+  if (!prev?.height || !next?.height) return layer;
+  const k = layer.height / prev.height;
+  const bottom = layer.y + layer.height / 2;
+  const height = next.height * k;
+  return {
+    ...layer,
+    width: next.width * k,
+    height,
+    y: bottom - height / 2,
+  };
+};
+
+/**
+ * Carry a layer onto a differently shaped artboard (portrait to landscape, a
+ * square post to a story): its centre keeps its relative spot and it scales
+ * by the smaller of the two stretches, so nothing distorts or falls off.
+ */
+export const refitLayer = (layer, from, to) => {
+  if (!from?.width || !from?.height) return layer;
+  const sx = to.width / from.width;
+  const sy = to.height / from.height;
+  const k = Math.min(sx, sy);
+  if (sx === 1 && sy === 1) return layer;
+  return {
+    ...layer,
+    x: layer.x * sx,
+    y: layer.y * sy,
+    width: layer.width * k,
+    height: layer.height * k,
+    ...(layer.type === 'text' ? { fontSize: layer.fontSize * k } : {}),
+    ...(layer.strokeWidth ? { strokeWidth: layer.strokeWidth * k } : {}),
+  };
 };

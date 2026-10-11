@@ -38,15 +38,18 @@ export const useWorkbenchDesign = ({
 
   const statusTimer = useRef(null);
 
+  // A paged design (a book) saves every page, not just the one on screen.
+  const layers = workbench.allLayers ?? workbench.layers;
+
   const doc = useMemo(
     () =>
       createDesignDoc({
         mode: product.mode,
         options,
-        layers: workbench.layers,
+        layers,
         meta: { product: product.route },
       }),
-    [product.mode, product.route, options, workbench.layers]
+    [product.mode, product.route, options, layers]
   );
 
   const persistence = useDesignPersistence({ mode: product.mode, doc });
@@ -87,8 +90,8 @@ export const useWorkbenchDesign = ({
   }, [persistence, applyDoc, announce]);
 
   const price = useMemo(
-    () => product.price(options, workbench.layers.length, quantity),
-    [product, options, workbench.layers.length, quantity]
+    () => product.price(options, layers.length, quantity),
+    [product, options, layers.length, quantity]
   );
 
   const addToCart = useCallback(() => {
@@ -102,7 +105,7 @@ export const useWorkbenchDesign = ({
       price: price.unit,
       image,
       quantity,
-      customAttributes: summarize?.(options, workbench.layers) ?? {},
+      customAttributes: summarize?.(options, layers) ?? {},
     });
 
     dispatch({ type: 'ADD_CUSTOM_ITEM', payload: { customItem: item } });
@@ -119,7 +122,7 @@ export const useWorkbenchDesign = ({
     snapshot,
     summarize,
     options,
-    workbench.layers,
+    layers,
     dispatch,
     setIsCartOpen,
     announce,

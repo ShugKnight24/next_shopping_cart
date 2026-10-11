@@ -1,3 +1,12 @@
+import { artForLayer, memberById, PET_BOX } from '../cast/castModel';
+import {
+  decodeSvg,
+  imageForSvg,
+  imageForUrl,
+  pieceArtFor,
+} from '../cast/castRaster';
+import { normalizeCompanion } from '../core/characterSchema';
+import { drawCompanion } from '../drawCharacter';
 import { drawStamp } from '../drawStamp';
 import { handlePositions, rotationHandlePosition } from './layerModel';
 
@@ -140,6 +149,16 @@ const paintText = (ctx, layer) => {
 
   const tracking = layer.letterSpacing ?? 0;
 
+  // Words over a busy scene or photo need lifting off it.
+  if (layer.shadow === 'soft') {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = fontSize * 0.22;
+    ctx.shadowOffsetY = fontSize * 0.06;
+  } else if (layer.shadow === 'glow') {
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.85)';
+    ctx.shadowBlur = fontSize * 0.35;
+  }
+
   lines.forEach((line, i) => {
     const y = startY + i * lineHeight;
 
@@ -249,10 +268,106 @@ const paintArt = (ctx, layer) => {
   });
 };
 
+/** Soft stand-in while art decodes, or for a cast member who was removed. */
+const paintPending = (ctx, layer) => {
+  ctx.fillStyle = 'rgba(120, 120, 140, 0.12)';
+  ctx.beginPath();
+  roundRect(
+    ctx,
+    -layer.width / 2,
+    -layer.height / 2,
+    layer.width,
+    layer.height,
+    Math.min(layer.width, layer.height) * 0.2
+  );
+  ctx.fill();
+};
+
+/** Draw an SVG art image into the layer box, scaled to fit, feet on the floor. */
+const paintArtImage = (ctx, layer, art, image) => {
+  const k = Math.min(layer.width / art.width, layer.height / art.height);
+  const w = art.width * k;
+  const h = art.height * k;
+  ctx.drawImage(image, -w / 2, layer.height / 2 - h, w, h);
+};
+
+/**
+ * Which way each character's nearest neighbour stands (-1 left, 1 right, 0
+ * alone), so "hold hands" reaches the right way. Mirrored layers flip it.
+ */
+export const facingOf = (layers) => {
+  const people = layers.filter((l) => l.type === 'character' && l.visible);
+  const out = new Map();
+  people.forEach((layer) => {
+    let best = null;
+    people.forEach((other) => {
+      if (other === layer) return;
+      if (!best || Math.abs(other.x - layer.x) < Math.abs(best.x - layer.x))
+        best = other;
+    });
+    const side = best ? Math.sign(best.x - layer.x) || 1 : 0;
+    out.set(layer.id, layer.flipX ? -side : side);
+  });
+  return out;
+};
+
+/**
+ * Decode every figure and scenery image a stack needs, so an offscreen render
+ * (a 3D hero texture, a print proof) draws real art instead of placeholders.
+ */
+export const warmLayers = (layers, cast) => {
+  const facing = facingOf(layers);
+  const jobs = layers.map((layer) => {
+    if (layer.type === 'piece') {
+      const art = pieceArtFor(layer.piece, layer.tint);
+      return decodeSvg(art.key, art.svg);
+    }
+    if (layer.type !== 'character') return null;
+    const member = memberById(cast, layer.castId);
+    if (!member || member.kind === 'pet') return null;
+    const art = artForLayer(layer, member, facing.get(layer.id) ?? 0);
+    return decodeSvg(art.key, art.svg);
+  });
+  return Promise.all(jobs.filter(Boolean));
+};
+
+const paintCharacter = (ctx, layer, { cast, facing }) => {
+  const member = memberById(cast, layer.castId);
+  if (!member) return paintPending(ctx, layer);
+
+  if (member.kind === 'pet') {
+    // Pets are the procedural companions from drawCharacter, scaled to the box.
+    const k = Math.min(
+      layer.width / PET_BOX.width,
+      layer.height / PET_BOX.height
+    );
+    drawCompanion(ctx, normalizeCompanion(member), {
+      x: 0,
+      y: layer.height / 2 - 26 * k,
+      scale: k,
+    });
+    return undefined;
+  }
+
+  const art = artForLayer(layer, member, facing?.get(layer.id) ?? 0);
+  const image = imageForSvg(art.key, art.svg);
+  if (!image) return paintPending(ctx, layer);
+  return paintArtImage(ctx, layer, art, image);
+};
+
+const paintPiece = (ctx, layer) => {
+  const art = pieceArtFor(layer.piece, layer.tint);
+  const image = imageForSvg(art.key, art.svg);
+  if (!image) return paintPending(ctx, layer);
+  return paintArtImage(ctx, layer, art, image);
+};
+
 const PAINTERS = {
   text: paintText,
   shape: paintShape,
   art: paintArt,
+  character: paintCharacter,
+  piece: paintPiece,
 };
 
 /* -------------------------------------------------------------- stack -- */
@@ -261,13 +376,18 @@ export const paintLayers = (
   ctx,
   {
     layers = [],
-    imageFor = null,
+    imageFor = imageForUrl,
+    cast = null,
     selection = null,
     guides = null,
     artboard,
     scale = 1,
   }
 ) => {
+  const facing = layers.some((l) => l.type === 'character')
+    ? facingOf(layers)
+    : null;
+
   layers.forEach((layer) => {
     if (!layer.visible) return;
 
@@ -278,7 +398,7 @@ export const paintLayers = (
     if (layer.flipX) ctx.scale(-1, 1);
 
     if (layer.type === 'image') paintImage(ctx, layer, imageFor);
-    else (PAINTERS[layer.type] ?? paintShape)(ctx, layer);
+    else (PAINTERS[layer.type] ?? paintShape)(ctx, layer, { cast, facing });
 
     ctx.restore();
   });

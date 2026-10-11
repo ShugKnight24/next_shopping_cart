@@ -50,6 +50,25 @@
   white-space: nowrap;
 }
 
+.backButton {
+  margin-left: auto;
+  flex-shrink: 0;
+  height: 26px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--wb-text-dim);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backButton:hover {
+  border-color: var(--wb-accent-line);
+  color: var(--wb-text);
+}
+
 .layerType {
   font-size: 0.72rem;
   line-height: 1.25;

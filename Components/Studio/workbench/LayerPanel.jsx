@@ -11,8 +11,8 @@ import { ShapeIcon } from './ToolRail';
  *
  * Listed topmost-first. The array is stored bottom-up because that is paint
  * order, but every design tool shows the stack the way it is seen — the thing
- * in front at the top — and `SocialStudio` showing it the other way round is
- * the single most common complaint about that editor. The reversal happens
+ * in front at the top — and the old social editor showing it the other way
+ * round was the single most common complaint about it. The reversal happens
  * here, at the view, and nothing below this file changes.
  *
  * Structurally: the row *is* a `<button>`, and the eye and lock buttons are its
