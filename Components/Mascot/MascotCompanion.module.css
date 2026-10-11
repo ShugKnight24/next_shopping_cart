@@ -22,44 +22,65 @@
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 39, 68, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-  font-size: 0.78rem;
-  font-weight: 500;
+  color: var(--color-text-inverse);
+  border: 1px solid rgba(218, 165, 32, 0.35);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 18px rgba(15, 39, 68, 0.22);
+  transition:
+    transform var(--transition-smooth),
+    background-color var(--transition-fast),
+    box-shadow var(--transition-smooth);
 }
 
 .enableButton:hover {
-  background: #0f172a;
+  background: var(--color-primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 24px rgba(15, 39, 68, 0.28);
+}
+
+.enableButton:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
 }
 
 .sparkleIcon {
-  color: #38bdf8;
+  color: var(--color-gold-light);
 }
 
 /* Speech Bubble */
 .speechBubble {
   position: relative;
   pointer-events: auto;
-  max-width: 290px;
-  background: #ffffff;
-  color: #0f172a;
-  border-radius: 18px;
-  padding: 14px 16px;
-  margin-bottom: 12px;
+  max-width: 296px;
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  border-radius: 20px;
+  padding: 14px 16px 14px;
+  margin-bottom: 14px;
   box-shadow:
-    0 12px 32px rgba(15, 23, 42, 0.16),
-    0 2px 6px rgba(15, 23, 42, 0.08);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+    0 18px 40px -12px rgba(15, 39, 68, 0.28),
+    0 2px 6px rgba(15, 39, 68, 0.08);
+  border: 1px solid rgba(30, 58, 95, 0.1);
+  overflow: visible;
   animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Thin gold accent along the top edge */
+.speechBubble::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 18px;
+  right: 18px;
+  height: 3px;
+  border-radius: 0 0 var(--radius-full) var(--radius-full);
+  background: var(--gradient-gold);
 }
 
 @keyframes popIn {
@@ -76,13 +97,14 @@
 .bubbleTail {
   position: absolute;
   bottom: -7px;
-  right: 42px;
+  right: 54px;
   width: 14px;
   height: 14px;
-  background: #ffffff;
+  background: var(--color-surface);
   transform: rotate(45deg);
-  border-right: 1px solid rgba(226, 232, 240, 0.9);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  border-bottom-right-radius: 3px;
+  border-right: 1px solid rgba(30, 58, 95, 0.1);
+  border-bottom: 1px solid rgba(30, 58, 95, 0.1);
 }
 
 .speechHeader {
@@ -91,8 +113,8 @@
   align-items: flex-start;
   gap: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(30, 58, 95, 0.08);
 }
 
 .mascotInfo {
@@ -101,16 +123,19 @@
 }
 
 .mascotName {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 0.84rem;
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 .mascotTitle {
+  margin-top: 1px;
   font-size: 0.68rem;
-  color: #64748b;
-  font-weight: 500;
+  font-weight: var(--weight-semibold);
+  color: var(--color-gold-hover);
+  letter-spacing: 0.01em;
 }
 
 .speechControls {
@@ -123,26 +148,35 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: var(--color-tertiary-dark);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .iconButton:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+.iconButton:focus-visible,
+.actionChip:focus-visible,
+.switcherOption:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 1px;
 }
 
 .speechText {
   margin: 0;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: #334155;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
   font-weight: 450;
 }
 
@@ -150,13 +184,13 @@
 .switcherDrawer {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px solid rgba(30, 58, 95, 0.08);
 }
 
 .switcherTitle {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #64748b;
+  font-size: 0.66rem;
+  font-weight: var(--weight-semibold);
+  color: var(--color-gold-hover);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -173,15 +207,18 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  padding: 6px 10px 6px 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid rgba(30, 58, 95, 0.1);
   font-size: 0.78rem;
-  font-weight: 600;
-  color: #1e293b;
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary-dark);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
   text-align: left;
 }
 
@@ -202,20 +239,20 @@
 
 .optionRole {
   font-size: 0.65rem;
-  color: #64748b;
-  font-weight: 400;
+  color: var(--color-text-muted);
+  font-weight: var(--weight-normal);
 }
 
 .switcherOption:hover {
-  background: #ffffff;
-  border-color: #cbd5e1;
+  background: var(--color-primary-50);
+  border-color: rgba(30, 58, 95, 0.22);
   transform: translateX(-2px);
 }
 
 .switcherActive {
-  background: rgba(37, 99, 235, 0.08);
-  border-color: #2563eb;
-  color: #1d4ed8;
+  background: rgba(218, 165, 32, 0.1);
+  border-color: var(--color-gold-light);
+  color: var(--color-primary);
 }
 
 /* Interactive Action Chips inside Speech Bubble */
@@ -225,34 +262,39 @@
   gap: 6px;
   margin-top: 10px;
   padding-top: 8px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(30, 58, 95, 0.08);
 }
 
 .actionChip {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 9px;
-  border-radius: 9999px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #334155;
+  padding: 5px 11px 5px 9px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-50);
+  border: 1px solid rgba(30, 58, 95, 0.12);
+  color: var(--color-primary);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .actionChip:hover {
-  background: #ffffff;
-  border-color: #38bdf8;
-  color: #0284c7;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 6px 14px -6px rgba(15, 39, 68, 0.5);
 }
 
 .chipIcon {
-  color: #f59e0b;
+  color: var(--color-gold-light);
 }
 
 /* Floating Particles */
@@ -308,9 +350,37 @@
   outline: none;
 }
 
+/* Soft white sticker edge keeps navy outfits readable on dark sections */
+.characterButton > svg {
+  filter: drop-shadow(1.2px 0 0 rgba(255, 255, 255, 0.85))
+    drop-shadow(-1.2px 0 0 rgba(255, 255, 255, 0.85))
+    drop-shadow(0 1.2px 0 rgba(255, 255, 255, 0.85))
+    drop-shadow(0 -1.2px 0 rgba(255, 255, 255, 0.85))
+    drop-shadow(0 8px 14px rgba(15, 39, 68, 0.25));
+}
+
 .characterButton:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
   border-radius: 24px;
+}
+
+/* Click celebration hop: translate/rotate only, never scale */
+.interactiveReaction {
+  animation: mascotHop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mascotHop {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  35% {
+    transform: translateY(-12px) rotate(-4deg);
+  }
+  65% {
+    transform: translateY(1px) rotate(2deg);
+  }
 }
 
 /* Settings Bar */
@@ -320,42 +390,56 @@
   align-items: center;
   gap: 6px;
   margin-top: 4px;
-  background: rgba(15, 23, 42, 0.82);
+  background: rgba(15, 39, 68, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
-  padding: 4px 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  border-radius: var(--radius-full);
+  padding: 3px 4px;
+  box-shadow: 0 8px 20px -8px rgba(15, 39, 68, 0.5);
 }
 
 .togglePill,
 .swapPill {
   background: none;
   border: none;
-  padding: 2px 6px;
+  padding: 4px 10px;
   font-size: 0.7rem;
-  font-weight: 500;
-  color: #94a3b8;
+  font-weight: var(--weight-medium);
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
-  border-radius: 9999px;
-  transition: all 0.15s ease;
+  border-radius: var(--radius-full);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+}
+
+.swapPill {
+  color: var(--color-gold-light);
+  font-weight: var(--weight-semibold);
 }
 
 .togglePill:hover,
 .swapPill:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-inverse);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.togglePill:focus-visible,
+.swapPill:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 1px;
 }
 
 .statusDot {
   width: 6px;
   height: 6px;
-  border-radius: 9999px;
-  background: #22c55e;
+  border-radius: var(--radius-full);
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.18);
 }
 
 @media (max-width: 640px) {
@@ -365,5 +449,23 @@
   }
   .speechBubble {
     max-width: 250px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speechBubble,
+  .particle,
+  .interactiveReaction {
+    animation: none;
+  }
+
+  .particle {
+    opacity: 0;
+  }
+
+  .enableButton:hover,
+  .switcherOption:hover,
+  .actionChip:hover {
+    transform: none;
   }
 }
