@@ -99,6 +99,7 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
 
   const geos = [];
   const keep = (g) => (geos.push(g), g);
+  const texs = [];
 
   /** A thin rod between two points: the wire of the cart. */
   const rod = (a, b, r = 0.012) => {
@@ -267,90 +268,512 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
   };
 
   /* ---------------------------------------------------------- products -- */
+  /** A smooth 1D profile through `[a, value]` keys, tabulated once at build time. */
+  const profile = (keys) => {
+    const pts = new THREE.CatmullRomCurve3(
+      keys.map(([a, v]) => V(a, v, 0)),
+      false,
+      'centripetal'
+    ).getPoints(400);
+    const table = new Float32Array(257);
+    let j = 1;
+    for (let i = 0; i <= 256; i += 1) {
+      const a = i / 256;
+      while (j < pts.length - 1 && pts[j].x < a) j += 1;
+      const p0 = pts[j - 1];
+      const p1 = pts[j];
+      table[i] = lerp(p0.y, p1.y, clamp01((a - p0.x) / (p1.x - p0.x || 1)));
+    }
+    return (a) => {
+      const f = clamp01(a) * 256;
+      const i = Math.min(255, Math.floor(f));
+      return lerp(table[i], table[i + 1], f - i);
+    };
+  };
+
+  /**
+   * An indexed grid over a parametric surface `at(u, v, out)`. Normals come
+   * from the surface's own derivatives, so seams between patches stay smooth.
+   */
+  const grid = (nu, nv, at, flip = false) => {
+    const pos = [];
+    const nor = [];
+    const uv = [];
+    const idx = [];
+    const p = V(0, 0, 0);
+    const du = V(0, 0, 0);
+    const dv = V(0, 0, 0);
+    const q = V(0, 0, 0);
+    const e = 1e-3;
+    for (let j = 0; j <= nv; j += 1) {
+      for (let i = 0; i <= nu; i += 1) {
+        const u = i / nu;
+        const v = j / nv;
+        at(u, v, p);
+        at(Math.min(1, u + e), v, du).sub(at(Math.max(0, u - e), v, q));
+        at(u, Math.min(1, v + e), dv).sub(at(u, Math.max(0, v - e), q));
+        q.crossVectors(du, dv).normalize();
+        if (flip) q.negate();
+        pos.push(p.x, p.y, p.z);
+        nor.push(q.x, q.y, q.z);
+        uv.push(u, v);
+      }
+    }
+    for (let j = 0; j < nv; j += 1) {
+      for (let i = 0; i < nu; i += 1) {
+        const a = j * (nu + 1) + i;
+        const b = a + 1;
+        const c = a + nu + 1;
+        const d = c + 1;
+        if (flip) idx.push(a, c, b, b, c, d);
+        else idx.push(a, b, c, b, d, c);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    return geo;
+  };
+
+  /** Herringbone and pivot circles, for the outsole's bump map. */
+  const treadTexture = () => {
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 192;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#a0a0a0';
+    ctx.fillRect(0, 0, 512, 192);
+    ctx.strokeStyle = '#303030';
+    ctx.lineWidth = 3;
+    for (let x = -64; x < 560; x += 12) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x - 40, 96);
+      ctx.lineTo(x, 192);
+      ctx.stroke();
+    }
+    [
+      [392, 96, 50],
+      [92, 96, 38],
+    ].forEach(([cx, cy, r]) => {
+      ctx.fillStyle = '#a0a0a0';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + 5, 0, TAU);
+      ctx.fill();
+      for (let k = r; k > 4; k -= 9) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, k, 0, TAU);
+        ctx.stroke();
+      }
+    });
+    return new THREE.CanvasTexture(c);
+  };
+
+  /**
+   * A high-top basketball sneaker in white, varsity red and black leather.
+   * The upper is a lasted shell: cross-sections swept heel to toe, closed over
+   * the toe box and open at the collar, with overlays laid on its surface.
+   * The toe points along +x; the sole sits on y = 0.
+   */
   const buildSneaker = () => {
     const g = new THREE.Group();
-    const upper = new THREE.Shape();
-    upper.moveTo(-0.5, 0.06);
-    upper.bezierCurveTo(-0.52, 0.22, -0.42, 0.3, -0.3, 0.32);
-    upper.lineTo(-0.14, 0.33);
-    upper.bezierCurveTo(-0.06, 0.24, 0.08, 0.2, 0.22, 0.17);
-    upper.bezierCurveTo(0.4, 0.14, 0.5, 0.1, 0.52, 0.04);
-    upper.lineTo(-0.5, 0.04);
-    const upperGeo = keep(
-      new THREE.ExtrudeGeometry(upper, {
-        depth: 0.26,
-        bevelEnabled: true,
-        bevelThickness: 0.05,
-        bevelSize: 0.04,
-        bevelSegments: 4,
-        curveSegments: 18,
-      })
-    );
-    upperGeo.translate(0, 0, -0.13);
-    g.add(
-      new THREE.Mesh(
-        upperGeo,
-        mat(
-          new THREE.MeshStandardMaterial({ color: '#f4f2ee', roughness: 0.55 })
-        )
-      )
-    );
-    const sole = new THREE.Shape();
-    sole.moveTo(-0.56, 0);
-    sole.lineTo(0.58, 0);
-    sole.bezierCurveTo(0.62, 0.02, 0.6, 0.07, 0.55, 0.08);
-    sole.lineTo(-0.54, 0.08);
-    sole.bezierCurveTo(-0.6, 0.06, -0.6, 0.01, -0.56, 0);
-    const soleGeo = keep(
-      new THREE.ExtrudeGeometry(sole, {
-        depth: 0.36,
-        bevelEnabled: true,
-        bevelThickness: 0.01,
-        bevelSize: 0.01,
-        bevelSegments: 2,
-      })
-    );
-    soleGeo.translate(0, -0.02, -0.18);
-    g.add(
-      new THREE.Mesh(
-        soleGeo,
-        mat(
-          new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.4 })
-        )
-      )
-    );
-    // A bold accent stripe, sapphire with a gold edge.
-    const stripe = new THREE.Shape();
-    stripe.moveTo(-0.34, 0.1);
-    stripe.bezierCurveTo(-0.1, 0.11, 0.18, 0.18, 0.34, 0.24);
-    stripe.bezierCurveTo(0.14, 0.15, -0.1, 0.14, -0.34, 0.16);
-    const stripeGeo = keep(
-      new THREE.ExtrudeGeometry(stripe, { depth: 0.37, bevelEnabled: false })
-    );
-    stripeGeo.translate(0, 0, -0.185);
-    g.add(
-      new THREE.Mesh(
-        stripeGeo,
-        mat(
-          new THREE.MeshStandardMaterial({ color: '#2457c5', roughness: 0.35 })
-        )
-      )
-    );
-    const heel = new THREE.Mesh(
-      keep(new THREE.BoxGeometry(0.1, 0.12, 0.38)),
-      gold
-    );
-    heel.position.set(-0.47, 0.18, 0);
-    g.add(heel);
-    for (let i = 0; i < 4; i += 1) {
-      const lace = new THREE.Mesh(
-        keep(new THREE.BoxGeometry(0.03, 0.014, 0.24)),
-        mat(new THREE.MeshStandardMaterial({ color: '#222', roughness: 0.7 }))
+    const leather = (color, roughness) =>
+      mat(
+        new THREE.MeshPhysicalMaterial({
+          color,
+          roughness,
+          clearcoat: 0.35,
+          clearcoatRoughness: 0.4,
+        })
       );
-      lace.position.set(-0.08 + i * 0.07, 0.31 - i * 0.03, 0);
-      lace.rotation.z = -0.35;
-      g.add(lace);
+    const white = leather('#f3f0e9', 0.5);
+    const red = leather('#b3121e', 0.42);
+    const black = leather('#17181c', 0.4);
+    const lining = mat(
+      new THREE.MeshStandardMaterial({
+        color: '#25272d',
+        roughness: 0.95,
+        side: THREE.BackSide,
+      })
+    );
+    const insoleMat = mat(
+      new THREE.MeshStandardMaterial({ color: '#2b2d33', roughness: 0.95 })
+    );
+    const nylon = mat(
+      new THREE.MeshStandardMaterial({ color: '#f1efe8', roughness: 0.72 })
+    );
+    const sail = mat(
+      new THREE.MeshStandardMaterial({ color: '#ede4cf', roughness: 0.62 })
+    );
+    const tread = treadTexture();
+    texs.push(tread);
+    const outsole = mat(
+      new THREE.MeshStandardMaterial({
+        color: '#9c1620',
+        roughness: 0.9,
+        bumpMap: tread,
+        bumpScale: 1.5,
+      })
+    );
+    const eyeletMat = mat(
+      new THREE.MeshStandardMaterial({
+        color: '#2c2d33',
+        metalness: 0.6,
+        roughness: 0.35,
+      })
+    );
+    const add = (geo, m) => {
+      const mesh = new THREE.Mesh(keep(geo), m);
+      g.add(mesh);
+      return mesh;
+    };
+
+    // The last: footprint half-width, topline height and collar opening, heel (0) to toe (1).
+    const X0 = -0.5;
+    const X1 = 0.52;
+    const BASE = 0.062;
+    const halfW = profile([
+      [0, 0.112],
+      [0.25, 0.118],
+      [0.5, 0.13],
+      [0.7, 0.156],
+      [0.86, 0.158],
+      [1, 0.14],
+    ]);
+    const topY = profile([
+      [0, 0.54],
+      [0.14, 0.53],
+      [0.28, 0.536],
+      [0.42, 0.568],
+      [0.5, 0.48],
+      [0.58, 0.39],
+      [0.66, 0.315],
+      [0.74, 0.27],
+      [0.84, 0.238],
+      [0.92, 0.212],
+      [0.97, 0.17],
+      [1, 0.1],
+    ]);
+    const gap = profile([
+      [0, 0],
+      [0.04, 0],
+      [0.08, 0.04],
+      [0.13, 0.066],
+      [0.22, 0.08],
+      [0.3, 0.078],
+      [0.39, 0.058],
+      [0.46, 0.042],
+      [0.56, 0.036],
+      [0.63, 0.024],
+      [0.67, 0],
+      [1, 0],
+    ]);
+    const endRound = (a) => {
+      const h = clamp01(a / 0.12);
+      const t = clamp01((1 - a) / 0.17);
+      return Math.sqrt(1 - (1 - h) ** 2) * Math.sqrt(1 - (1 - t) ** 2);
+    };
+    // Toe spring and a slight heel rocker, shared by every part.
+    const spring = (x) =>
+      0.07 * smooth(span(x, 0.12, 0.58)) ** 1.5 +
+      0.022 * smooth(span(x, -0.34, -0.56)) ** 2;
+    const cosSpace = (u) => (1 - Math.cos(Math.PI * u)) / 2;
+
+    /** A point on the upper: `v` runs from the sole (0) up to the topline (1). */
+    const upperAt = (a, v, side, out) => {
+      const th = (clamp01(v) * Math.PI) / 2;
+      const f = Math.sin(th);
+      const heel = 1 - smooth(span(a, 0, 0.3));
+      // The heel narrows toward the Achilles; the forefoot stays full.
+      const hw =
+        halfW(a) *
+        endRound(a) *
+        (1 - 0.16 * f * f * (1 - smooth(span(a, 0.05, 0.45))));
+      const gp = Math.min(Math.max(0, gap(a)), hw * 0.8);
+      const p = lerp(0.45, 0.9, smooth(span(a, 0.45, 0.82)));
+      const x =
+        lerp(X0, X1, a) +
+        heel * (0.045 * f ** 3 - 0.028 * Math.sin(Math.PI * f));
+      return out.set(
+        x,
+        lerp(BASE, topY(a), f) + spring(x),
+        side * (gp + (hw - gp) * Math.max(0, Math.cos(th)) ** p)
+      );
+    };
+    const nA = V(0, 0, 0);
+    const nB = V(0, 0, 0);
+    const nC = V(0, 0, 0);
+    const upperNormal = (a, v, side, out) => {
+      upperAt(Math.min(1, a + 1e-3), v, side, out).sub(
+        upperAt(Math.max(0, a - 1e-3), v, side, nA)
+      );
+      upperAt(a, Math.min(1, v + 1e-3), side, nB).sub(
+        upperAt(a, Math.max(0, v - 1e-3), side, nC)
+      );
+      return out.cross(nB).normalize().multiplyScalar(side);
+    };
+
+    // Shell: white leather outside, dark lining seen through the collar.
+    [-1, 1].forEach((side) => {
+      const shell = keep(
+        grid(64, 16, (u, v, o) => upperAt(cosSpace(u), v, side, o), side < 0)
+      );
+      g.add(new THREE.Mesh(shell, white), new THREE.Mesh(shell, lining));
+    });
+
+    // Overlays sit just proud of the shell, each following its curvature.
+    const nP = V(0, 0, 0);
+    const panel = (side, a0, a1, lo, hi, lift, m, nu = 28, nv = 8) =>
+      add(
+        grid(
+          nu,
+          nv,
+          (u, v, o) => {
+            const a = lerp(a0, a1, u);
+            const vv = clamp01(lerp(lo(a), hi(a), v));
+            upperAt(a, vv, side, o);
+            return o.addScaledVector(upperNormal(a, vv, side, nP), lift);
+          },
+          side < 0
+        ),
+        m
+      );
+    [-1, 1].forEach((side) => {
+      // Swoosh-like sweep: a straight top edge from a fine tail at the heel,
+      // a deep belly, and a head that hooks up over the toe overlay.
+      const sweepTop = (u) =>
+        lerp(0.52, 0.44, u) - 0.04 * Math.sin(Math.PI * u);
+      panel(
+        side,
+        0.22,
+        0.64,
+        (a) => {
+          const u = span(a, 0.22, 0.64);
+          return (
+            sweepTop(u) - 0.48 * u ** 1.3 * Math.sqrt(Math.max(0, 1 - u ** 5))
+          );
+        },
+        (a) => sweepTop(span(a, 0.22, 0.64)),
+        0.012,
+        black,
+        44,
+        8
+      );
+      // Ankle collar, dipping lower over the ankle bone.
+      panel(
+        side,
+        0,
+        0.46,
+        (a) => 0.68 - 0.09 * Math.sin(Math.PI * span(a, 0.03, 0.46)),
+        () => 1,
+        0.004,
+        black,
+        30,
+        6
+      );
+      // Toe overlay: wraps the toe and sweeps back to meet the eyestay.
+      panel(
+        side,
+        0.53,
+        1,
+        () => 0,
+        (a) =>
+          span(a, 0.53, 0.66) ** 0.7 -
+          0.5 * smooth(span(a, 0.66, 0.8)) +
+          0.12 * smooth(span(a, 0.88, 1)),
+        0.008,
+        red,
+        32,
+        10
+      );
+      // Heel counter, a rounded cup.
+      panel(
+        side,
+        0,
+        0.34,
+        () => 0,
+        (a) => 0.66 * Math.sqrt(Math.max(0, 1 - span(a, 0, 0.34) ** 2)),
+        0.008,
+        red,
+        24,
+        10
+      );
+      // Eyestay, running up the lacing to the collar.
+      panel(
+        side,
+        0.4,
+        0.665,
+        () => 0.8,
+        () => 1,
+        0.011,
+        red,
+        24,
+        3
+      );
+    });
+
+    // Padded collar around the ankle opening.
+    const rim = [];
+    for (let k = 0; k <= 22; k += 1)
+      rim.push(upperAt(lerp(0.45, 0.04, k / 22), 1, 1, V(0, 0, 0)));
+    for (let k = 1; k <= 22; k += 1)
+      rim.push(upperAt(lerp(0.04, 0.45, k / 22), 1, -1, V(0, 0, 0)));
+    add(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rim), 96, 0.024, 8),
+      black
+    );
+
+    // Tongue: a padded nylon strip that follows the lacing and stands above the collar.
+    const tongueLine = new THREE.CatmullRomCurve3([
+      ...[0.7, 0.6, 0.5, 0.42].map((a) =>
+        V(lerp(X0, X1, a), topY(a) - 0.004, 0)
+      ),
+      V(-0.12, 0.635, 0),
+    ]);
+    const tongue = new THREE.BoxGeometry(1, 1, 1, 6, 20, 1);
+    const tp = tongue.attributes.position;
+    const cP = V(0, 0, 0);
+    const cT = V(0, 0, 0);
+    for (let i = 0; i < tp.count; i += 1) {
+      const s = tp.getY(i) + 0.5;
+      const w = tp.getX(i) * 2;
+      const d = tp.getZ(i) + 0.5;
+      tongueLine.getPointAt(s, cP);
+      tongueLine.getTangentAt(s, cT);
+      const hw =
+        0.068 *
+        (s > 0.8 ? 0.4 + 0.6 * Math.sqrt(1 - ((s - 0.8) / 0.2) ** 2) : 1);
+      const thick = lerp(0.012, 0.034, smooth(span(s, 0.4, 0.9)));
+      const n = d * thick - 0.03 * w * w - 0.01;
+      const x = cP.x + cT.y * n;
+      tp.setXYZ(i, x, cP.y - cT.x * n + spring(x), w * hw);
     }
+    tongue.computeVertexNormals();
+    add(tongue, nylon);
+    // A red tag at the top of the tongue.
+    tongueLine.getPointAt(0.84, cP);
+    tongueLine.getTangentAt(0.84, cT);
+    const tagN = V(cT.y, -cT.x, 0);
+    const tag = new THREE.BoxGeometry(0.07, 0.05, 0.006);
+    tag.applyMatrix4(
+      new THREE.Matrix4()
+        .makeBasis(V(0, 0, -1), cT, tagN)
+        .setPosition(cP.addScaledVector(tagN, 0.028))
+    );
+    add(tag, red);
+
+    // Eyelets and criss-cross laces.
+    const ROWS = 7;
+    const eyelet = (k, side) => {
+      const a = lerp(0.44, 0.635, k / (ROWS - 1));
+      const p = upperAt(a, 0.9, side, V(0, 0, 0));
+      return p.addScaledVector(upperNormal(a, 0.9, side, nP), 0.013);
+    };
+    const eyeParts = [];
+    const laceParts = [];
+    const zAxis = V(0, 0, 1);
+    const lift = V(0.55, 0.83, 0).normalize();
+    for (let k = 0; k < ROWS; k += 1) {
+      [-1, 1].forEach((side) => {
+        const a = lerp(0.44, 0.635, k / (ROWS - 1));
+        const ring = new THREE.TorusGeometry(0.015, 0.005, 4, 10);
+        ring.applyQuaternion(
+          new THREE.Quaternion().setFromUnitVectors(
+            zAxis,
+            upperNormal(a, 0.9, side, V(0, 0, 0))
+          )
+        );
+        const at = eyelet(k, side);
+        ring.translate(at.x, at.y, at.z);
+        eyeParts.push(ring);
+        if (k < ROWS - 1) {
+          const from = eyelet(k, side);
+          const to = eyelet(k + 1, -side);
+          const mid = from
+            .clone()
+            .lerp(to, 0.5)
+            .addScaledVector(lift, side > 0 ? 0.03 : 0.042);
+          laceParts.push(
+            new THREE.TubeGeometry(
+              new THREE.QuadraticBezierCurve3(from, mid, to),
+              8,
+              0.011,
+              5
+            )
+          );
+        }
+      });
+    }
+    const top0 = eyelet(0, 1);
+    const top1 = eyelet(0, -1);
+    laceParts.push(
+      new THREE.TubeGeometry(
+        new THREE.QuadraticBezierCurve3(
+          top0,
+          top0.clone().lerp(top1, 0.5).addScaledVector(lift, 0.035),
+          top1
+        ),
+        8,
+        0.011,
+        5
+      )
+    );
+    add(mergeGeometries(eyeParts), eyeletMat);
+    add(mergeGeometries(laceParts), nylon);
+    eyeParts.forEach((p) => p.dispose());
+    laceParts.forEach((p) => p.dispose());
+
+    // Sole unit: a sail cupsole over a slightly wider red rubber outsole.
+    const slab = (x0, x1, grow, y0, y1) => (u, v, o) => {
+      const a = cosSpace(u);
+      const x = lerp(x0, x1, a);
+      const hw = (halfW(a) + grow) * endRound(a);
+      const phi = v * TAU;
+      const c = Math.cos(phi);
+      const s = Math.sin(phi);
+      const top = typeof y1 === 'function' ? y1(a) : y1;
+      return o.set(
+        x,
+        lerp(y0, top, 0.5 + 0.5 * Math.sign(s) * Math.abs(s) ** 0.28) +
+          spring(x),
+        hw * Math.sign(c) * Math.abs(c) ** 0.28
+      );
+    };
+    add(
+      grid(
+        64,
+        24,
+        slab(-0.515, 0.535, 0.014, 0.01, (a) => lerp(0.104, 0.088, a))
+      ),
+      sail
+    );
+    const outsoleGeo = grid(64, 16, slab(-0.524, 0.544, 0.02, -0.022, 0.02));
+    const op = outsoleGeo.attributes.position;
+    const ouv = outsoleGeo.attributes.uv;
+    for (let i = 0; i < op.count; i += 1)
+      ouv.setXY(i, (op.getX(i) + 0.524) / 1.068, (op.getZ(i) + 0.2) / 0.4);
+    add(outsoleGeo, outsole);
+    // Insole, seen through the collar.
+    add(
+      grid(
+        40,
+        2,
+        (u, v, o) => {
+          const a = cosSpace(u);
+          const x = lerp(X0, X1, a);
+          return o.set(
+            x,
+            0.108 + spring(x),
+            (v * 2 - 1) * halfW(a) * endRound(a) * 0.85
+          );
+        },
+        true
+      ),
+      insoleMat
+    );
+
     g.scale.setScalar(0.5);
     return shadowed(g);
   };
@@ -572,32 +995,65 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
     const black = mat(
       new THREE.MeshStandardMaterial({
         color: '#1c1f26',
-        metalness: 0.6,
-        roughness: 0.35,
+        metalness: 0.55,
+        roughness: 0.38,
       })
     );
+    // Cast-iron bell: lathed, flat-footed, widest just below its middle.
     const bell = new THREE.Mesh(
-      keep(new THREE.SphereGeometry(0.17, 32, 24)),
+      keep(
+        new THREE.LatheGeometry(
+          new THREE.SplineCurve(
+            [
+              [0, 0],
+              [0.1, 0],
+              [0.135, 0.014],
+              [0.168, 0.06],
+              [0.183, 0.14],
+              [0.172, 0.22],
+              [0.14, 0.284],
+              [0.085, 0.322],
+              [0, 0.334],
+            ].map(([x, y]) => new THREE.Vector2(x, y))
+          ).getPoints(28),
+          40
+        )
+      ),
       black
     );
-    bell.scale.y = 0.92;
-    bell.position.y = 0.17;
+    // The handle rises out of the shoulders as one bent bar.
     const handle = new THREE.Mesh(
-      keep(new THREE.TorusGeometry(0.1, 0.028, 12, 32, Math.PI)),
+      keep(
+        new THREE.TubeGeometry(
+          new THREE.CatmullRomCurve3([
+            V(-0.1, 0.25, 0),
+            V(-0.122, 0.34, 0),
+            V(-0.112, 0.43, 0),
+            V(-0.06, 0.47, 0),
+            V(0.06, 0.47, 0),
+            V(0.112, 0.43, 0),
+            V(0.122, 0.34, 0),
+            V(0.1, 0.25, 0),
+          ]),
+          40,
+          0.026,
+          10
+        )
+      ),
       black
     );
-    handle.position.y = 0.3;
     const band = new THREE.Mesh(
-      keep(new THREE.TorusGeometry(0.168, 0.012, 8, 48)),
+      keep(new THREE.TorusGeometry(0.184, 0.01, 8, 56)),
       gold
     );
     band.rotation.x = Math.PI / 2;
-    band.position.y = 0.17;
+    band.position.y = 0.14;
     const foot = new THREE.Mesh(
-      keep(new THREE.CylinderGeometry(0.1, 0.1, 0.03, 32)),
-      black
+      keep(new THREE.TorusGeometry(0.1, 0.008, 6, 40)),
+      gold
     );
-    foot.position.y = 0.02;
+    foot.rotation.x = Math.PI / 2;
+    foot.position.y = 0.004;
     g.add(bell, handle, band, foot);
     return shadowed(g);
   };
@@ -661,14 +1117,14 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
   scene.add(cart);
 
   const PRODUCTS = [
-    { build: buildSneaker, angle: -1.3, lift: 0.2, scale: 1 },
-    { build: buildHeadphones, angle: -0.65, lift: 0.18, scale: 1.05 },
+    { build: buildSneaker, angle: -1.17, lift: 0.2, scale: 1 },
+    { build: buildHeadphones, angle: -0.585, lift: 0.18, scale: 1.05 },
     { build: buildGuitar, angle: 0, lift: 0.08, scale: 0.85 },
-    { build: buildCard, angle: 0.65, lift: 0.36, scale: 1.05 },
-    { build: buildKettlebell, angle: 1.3, lift: 0.04, scale: 1.1 },
+    { build: buildCard, angle: 0.585, lift: 0.36, scale: 1.05 },
+    { build: buildKettlebell, angle: 1.17, lift: 0.04, scale: 1.25 },
   ];
   // An arc of pedestals behind the cart, open toward the camera.
-  const R = 1.9;
+  const R = 1.75;
   const pedestalGeo = keep(new THREE.CylinderGeometry(0.26, 0.3, 0.42, 48));
   const capGeo = keep(new THREE.TorusGeometry(0.26, 0.008, 6, 64));
   const items = PRODUCTS.map((spec, i) => {
@@ -779,25 +1235,57 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
   const dummy = new THREE.Object3D();
 
   /* ------------------------------------------------------------ camera -- */
+  /*
+   * `aim` is where the subject sits beside the look point, as a fraction of the
+   * camera distance (negative: to its left). Wide screens leave it there, clear
+   * of the captions; portrait screens slide the camera over to centre it.
+   */
   const SHOTS = [
     { at: 0.0, pos: [0.0, 1.55, 4.3], look: [0, 0.62, 0] },
     { at: 0.12, pos: [2.4, 2.1, 3.7], look: [0, 0.75, -0.4] },
     { at: 0.26, pos: [-2.2, 1.9, 3.8], look: [0, 0.75, -0.4] },
     { at: 0.38, pos: [0.0, 2.7, 4.0], look: [0, 0.6, -0.2] },
-    { at: 0.62, pos: [0.9, 1.9, 3.1], look: [0, 0.65, 0] },
+    // The fly-ins: the camera drifts left to right with the haul.
+    { at: 0.41, pos: [-1.0, 2.9, 4.2], look: [-0.6, 0.95, -0.25], aim: -0.11 },
+    { at: 0.48, pos: [-0.2, 2.9, 4.1], look: [0.0, 0.95, -0.2], aim: -0.05 },
+    { at: 0.53, pos: [0.4, 2.9, 4.0], look: [0.4, 0.95, -0.2], aim: -0.05 },
+    // ...then holds high over the cart's shoulder, looking down the kettlebell's
+    // arc so its whole drop into the basket stays in frame.
+    { at: 0.57, pos: [-0.8, 3.25, 4.05], look: [0.82, 0.95, 0.38], aim: -0.09 },
+    {
+      at: 0.645,
+      pos: [-0.8, 3.25, 4.05],
+      look: [0.82, 0.95, 0.38],
+      aim: -0.09,
+    },
     { at: 0.72, pos: [1.5, 1.75, 3.3], look: [0.1, 0.95, 0] },
     { at: 0.86, pos: [-0.3, 1.5, 3.6], look: [0, 0.6, 0] },
     { at: 1.0, pos: [0.0, 1.55, 4.3], look: [0, 0.62, 0] },
   ];
   const vPos = SHOTS.map((s) => V(...s.pos));
   const vLook = SHOTS.map((s) => V(...s.look));
+  const aims = SHOTS.map((s) => s.aim ?? 0);
   const lookAt = V(0, 0, 0);
+  const across = V(0, 0, 0);
+  // Portrait screens are narrow: pull back a little and centre the subject.
+  let portrait = false;
   const shot = (p) => {
-    let i = SHOTS.findIndex((s) => s.at > p) - 1;
-    if (i < 0) i = p <= 0 ? 0 : SHOTS.length - 2;
+    let i = 0;
+    while (i < SHOTS.length - 2 && SHOTS[i + 1].at <= p) i += 1;
     const t = smooth(span(p, SHOTS[i].at, SHOTS[i + 1].at));
     camera.position.lerpVectors(vPos[i], vPos[i + 1], t);
     lookAt.lerpVectors(vLook[i], vLook[i + 1], t);
+    if (!portrait) return;
+    across.subVectors(camera.position, lookAt);
+    const d = across.length();
+    camera.position.copy(lookAt).addScaledVector(across, 1.3);
+    // (camera - look) x up points to screen left; slide toward the subject.
+    across
+      .cross(UP)
+      .normalize()
+      .multiplyScalar(-lerp(aims[i], aims[i + 1], t) * d);
+    camera.position.add(across);
+    lookAt.add(across);
   };
 
   const tmp = V(0, 0, 0);
@@ -936,6 +1424,7 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
   const resize = (w, h) => {
     camera.aspect = w / h;
     camera.fov = w / h < 0.8 ? 48 : w / h < 1.2 ? 40 : 34;
+    portrait = w / h < 0.8;
     // Frame the scene beside the captions: right of them on wide screens, above them on phones.
     if (w / h > 1.1) camera.setViewOffset(w, h, -w * 0.16, 0, w, h);
     else camera.setViewOffset(w, h, 0, h * 0.17, w, h);
@@ -945,6 +1434,7 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
   const dispose = () => {
     geos.forEach((g) => g.dispose());
     mats.forEach((m) => m.dispose());
+    texs.forEach((t) => t.dispose());
     items.forEach((item) => item.object.userData.texture?.dispose());
     envTexture.dispose();
     pmrem.dispose();
