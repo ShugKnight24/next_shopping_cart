@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BoxIcon, ShieldCheckIcon, SparklesIcon, TruckIcon } from '../Icons';
 import { CartySvg, FoxSvg, LeoSvg, LunaSvg } from '../Mascot/MascotArtwork';
+import { svgDataUrl } from './cast/castRaster';
+import { PERSON_PRESETS, personArt } from './cast/castRig';
 import styles from './StudioHeroAnimated.module.css';
 import {
   StudioBookOpenSvg,
@@ -10,15 +12,44 @@ import {
   StudioQuillSvg,
 } from './StudioSVGs';
 
+/**
+ * The family at the centre of the stage, drawn by the same cast rig the
+ * editors use. Built after mount: the data URLs are tens of kilobytes and
+ * do not belong in every server-rendered page.
+ */
+const familyArt = () =>
+  [
+    [PERSON_PRESETS.adult, { pose: 'stand', mood: 'soft', prop: 'book' }],
+    [
+      {
+        ...PERSON_PRESETS.kid,
+        hair: 'buns',
+        hairColor: 'espresso',
+        skin: 'caramel',
+        topColor: 'mustard',
+        pattern: 'stars',
+        bottom: 'overalls',
+      },
+      { pose: 'cheer', mood: 'laugh' },
+    ],
+    [PERSON_PRESETS.toddler, { pose: 'stand', mood: 'grin', prop: 'teddy' }],
+  ].map(([person, placement]) => {
+    const art = personArt(person, placement);
+    // One scale for everyone, so the grown-up is taller than the little one.
+    return { src: svgDataUrl(art.svg), height: Math.round(art.height * 0.62) };
+  });
+
 export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
   const [activeSpeech, setActiveSpeech] = useState('finley');
+  const [family, setFamily] = useState([]);
+  useEffect(() => setFamily(familyArt()), []);
 
   const MASCOT_QUOTES = {
     leo: "Leo: Let's write an unforgettable hero tale!",
     luna: 'Luna: Every page deserves dazzling colors!',
     finley: 'Finley: Starlight shines brightest in the heart!',
     carty: 'Carty: Packed with heirloom care & love!',
-    child: 'Adventurer: Look, I created my own book!',
+    child: 'Maya: We made ourselves into a storybook!',
   };
 
   return (
@@ -150,75 +181,22 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                   {MASCOT_QUOTES.child}
                 </div>
               )}
-              <svg
-                width="112"
-                height="112"
-                viewBox="0 0 120 120"
-                fill="none"
+              <div
+                className={styles.castFamily}
                 role="img"
-                aria-label="Child Hero Creator"
+                aria-label="A family made in the studio: a grown-up reading, a kid cheering and a little one with a teddy"
               >
-                {/* Child character silhouette and glowing open book */}
-                <ellipse
-                  cx="60"
-                  cy="110"
-                  rx="42"
-                  ry="8"
-                  fill="rgba(15, 23, 42, 0.4)"
-                />
-                {/* Torso & Green/Navy Explorer Outfit */}
-                <path
-                  d="M42 75 C40 68 46 60 60 60 C74 60 80 68 78 75 L82 105 L38 105 Z"
-                  fill="#2563eb"
-                />
-                {/* Arms holding the book */}
-                <path
-                  d="M38 75 Q46 88 56 86"
-                  stroke="#fed7aa"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M82 75 Q74 88 64 86"
-                  stroke="#fed7aa"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
-                {/* Head / Face */}
-                <circle cx="60" cy="42" r="18" fill="#fed7aa" />
-                {/* Cheerful Eyes & Smile */}
-                <circle cx="54" cy="40" r="2.2" fill="#1e293b" />
-                <circle cx="66" cy="40" r="2.2" fill="#1e293b" />
-                <path
-                  d="M55 48 Q60 53 65 48"
-                  stroke="#1e293b"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <circle cx="50" cy="46" r="3" fill="rgba(244, 63, 94, 0.4)" />
-                <circle cx="70" cy="46" r="3" fill="rgba(244, 63, 94, 0.4)" />
-                {/* Hair - Playful curls */}
-                <path
-                  d="M42 36 C42 22 78 20 78 36 C78 30 72 26 60 26 C48 26 42 30 42 36 Z"
-                  fill="#78350f"
-                />
-                <circle cx="44" cy="30" r="6" fill="#78350f" />
-                <circle cx="76" cy="30" r="6" fill="#78350f" />
-                <circle cx="60" cy="24" r="7" fill="#78350f" />
-                {/* Open Storybook on desk */}
-                <path
-                  d="M44 92 L60 86 L76 92 L74 104 L60 98 L46 104 Z"
-                  fill="#ffffff"
-                  stroke="#cbd5e1"
-                  strokeWidth="1.5"
-                />
-                <path d="M60 86 L60 98" stroke="#3b82f6" strokeWidth="2" />
-                {/* Starlight sparkles rising from book */}
-                <circle cx="56" cy="80" r="2" fill="#fbbf24" />
-                <circle cx="64" cy="76" r="2.5" fill="#38bdf8" />
-                <circle cx="60" cy="72" r="1.5" fill="#f43f5e" />
-              </svg>
+                {family.map(({ src, height }, i) => (
+                  <img
+                    // Fixed order and length: the index is a stable key.
+                    key={i}
+                    src={src}
+                    alt=""
+                    style={{ height }}
+                    draggable={false}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Guide 3: Finley The Starlight Fox */}

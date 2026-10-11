@@ -253,6 +253,27 @@
   z-index: 5;
 }
 
+/* The studio-made family: grown-up, kid and little one, feet on one line. */
+.castFamily {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  transform-origin: bottom center;
+}
+
+.castFamily img {
+  display: block;
+  width: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 10px rgb(2 6 23 / 35%));
+}
+
+@media (max-width: 640px) {
+  .castFamily {
+    transform: scale(0.74);
+  }
+}
+
 .mascotLeo {
   animation: gentleBob 3.5s ease-in-out infinite 0.3s;
 }
