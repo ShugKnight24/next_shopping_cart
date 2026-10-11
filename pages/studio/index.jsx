@@ -8,6 +8,7 @@ import {
   SparklesIcon,
   TruckIcon,
 } from '../../Components/Icons';
+import { StudioStory } from '../../Components/Scroll3D/StudioStory';
 import { PREVIEWS } from '../../Components/Studio/preview/previewConfigs';
 import { StudioPreview } from '../../Components/Studio/preview/StudioPreview';
 import { StudioHeroAnimated } from '../../Components/Studio/StudioHeroAnimated';
@@ -136,7 +137,10 @@ export default function StudioPage() {
         />
       </Head>
 
-      <main className={styles.studioContainer}>
+      {/* Scroll-scrubbed 3D tour, full width above the studio. */}
+      <StudioStory />
+
+      <main className={styles.studioContainer} id="studio-hero">
         {/* Animated Mascot Hero Scene */}
         <StudioHeroAnimated
           onExploreWorkstations={() => {

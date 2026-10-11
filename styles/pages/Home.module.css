@@ -6,7 +6,9 @@
 }
 
 .homeContainer.premium {
-  overflow-x: hidden;
+  /* clip, not hidden: hidden makes this a scroll container, and the 3D
+     story's sticky viewport would stick to it instead of the page. */
+  overflow-x: clip;
 }
 
 .carouselLoading {

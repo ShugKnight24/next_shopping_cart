@@ -9,6 +9,7 @@ import { Hero } from '../Components/Hero/Hero';
 import { HowItWorks } from '../Components/HowItWorks';
 import { Products } from '../Components/Products/Products';
 import { Reasons } from '../Components/Reasons/Reasons';
+import { ShopStory } from '../Components/Scroll3D/ShopStory';
 import { EcommerceSizzleReel } from '../Components/Video/EcommerceSizzleReel';
 import styles from '../styles/pages/Home.module.css';
 
@@ -92,7 +93,11 @@ export default function Home() {
       </Head>
 
       <div className={`${styles.homeContainer} ${styles.premium}`}>
-        <Hero />
+        {/* Scroll-scrubbed 3D tour of the store, above the classic hero. */}
+        <ShopStory />
+        <div id="main-hero">
+          <Hero />
+        </div>
         {/* Curated Featured Categories */}
         <FeaturedCategories />
         {/* How It Works Section */}
