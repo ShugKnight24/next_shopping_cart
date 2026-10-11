@@ -16,9 +16,15 @@
 .brandLogoSvg {
   margin: 0 0 0 0.5rem;
   width: 100%;
-  max-width: 270px;
+  max-width: 252px;
   height: auto;
   display: block;
+}
+
+@media (max-width: 1080px) {
+  .brandLogoSvg {
+    max-width: 216px;
+  }
 }
 
 @media (max-width: 768px) {

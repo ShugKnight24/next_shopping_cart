@@ -1,85 +1,119 @@
 import PropTypes from 'prop-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
+/**
+ * One mark, five grounds. Every variant is the same chrome-and-gold cart
+ * glyph; only the badge, paint and wordmark treatment change.
+ */
 export const BRAND_VARIANTS = {
-  geometric: {
-    id: 'geometric',
-    name: 'Favicon Badge',
-    badge: 'Favicon Match',
-    tagline: 'Sapphire Squircle & Starlight Cart',
+  primary: {
+    id: 'primary',
+    name: 'Primary Badge',
+    badge: 'Default',
+    tagline: 'Chrome cart on a navy squircle',
     subtitle: 'SHOPPING MADE SIMPLE',
+    usage: 'Header, favicon, app icon, checkout',
     description:
-      'The exact deep sapphire squircle emblem from the favicon, with radiant gold shopping cart and starlight jewel.',
+      'The chrome wire cart with its gold grip and plate, set on the navy squircle. The default for every storefront surface.',
   },
-  floating: {
-    id: 'floating',
-    name: 'Floating Minimal Cart',
-    badge: 'Clean & Borderless',
-    tagline: 'Open Canvas Cart & Starlight',
+  mono: {
+    id: 'mono',
+    name: 'Minimal Mono',
+    badge: 'One colour',
+    tagline: 'The glyph alone, in a single ink',
     subtitle: 'SHOPPING MADE SIMPLE',
+    usage: 'Receipts, packaging, embossing, watermarks',
     description:
-      'The cart and radiant starlight jewel from the favicon, floating cleanly on the canvas without the badge box.',
+      'The same cart drawn in one ink with no badge. For surfaces that print, stamp or emboss, and anywhere colour would be noise.',
   },
-  soviet: {
-    id: 'soviet',
-    name: 'Soviet Constructivist',
-    badge: 'Constructivist',
-    tagline: 'Bold Geometric Poster Art',
-    subtitle: 'COMMERCE & INDUSTRY',
+  inverse: {
+    id: 'inverse',
+    name: 'Midnight Editorial',
+    badge: 'Inverse',
+    tagline: 'Gold-framed midnight tile, serif wordmark',
+    subtitle: 'SHOPPING MADE SIMPLE',
+    usage: 'Lookbooks, campaigns, dark editorial pages',
     description:
-      '1920s Constructivist poster aesthetic with bold 45° diagonal geometry, industrial gear wheels, and a red star accent.',
+      'A sharp midnight tile with a gold frame and the serif voice of the homepage headlines. For editorial and campaign moments.',
   },
-  edgy: {
-    id: 'edgy',
-    name: 'Dark & Edgy',
-    badge: 'Cyber Streetwear',
-    tagline: 'Matte Obsidian & Acid Accent',
-    subtitle: 'BLACK LABEL',
+  studio: {
+    id: 'studio',
+    name: 'Creation Studio',
+    badge: 'Playful',
+    tagline: 'Round badge, holo plate, a cart full of ideas',
+    subtitle: 'CUSTOM CREATION STUDIO',
+    usage: 'Custom Creation Studio, kids’ storybooks, gifting',
     description:
-      'Aggressive razor-edge silhouette in matte obsidian black with toxic acid-lime accents and turbine hex wheels.',
+      'The cart turns playful for the studio: a round badge with a holo rim, softened strokes, and a storybook, star and heart on board.',
   },
-  lighthearted: {
-    id: 'lighthearted',
-    name: 'Lighthearted Pop',
-    badge: 'Playful & Bubbly',
-    tagline: 'Warm Bouncy Curves',
-    subtitle: 'EVERYDAY FINDS',
+  crest: {
+    id: 'crest',
+    name: 'Gold Foil Crest',
+    badge: 'Ceremonial',
+    tagline: 'Foil-stamped cart on a navy shield',
+    subtitle: 'CURATED LUXURY GOODS',
+    usage: 'Gift cards, limited drops, certificates',
     description:
-      'Approachable bubbly rounded cart with a cheerful bounce tilt, warm sunset palette, and friendly curved geometry.',
+      'The cart stamped in gold foil on a navy shield. Reserved for gift cards, limited drops and anything that should feel ceremonial.',
   },
 };
 
+/** Ids used by earlier brand systems, mapped onto the current set. */
+export const LEGACY_VARIANT_ALIASES = {
+  geometric: 'primary',
+  badge: 'primary',
+  favicon: 'primary',
+  sleek: 'primary',
+  floating: 'mono',
+  edgy: 'inverse',
+  lighthearted: 'studio',
+  soviet: 'crest',
+};
+
+export const DEFAULT_BRAND_VARIANT = 'primary';
+
+/** Resolve any current or legacy variant id; unknown ids fall back to primary. */
+export function resolveBrandVariant(id) {
+  if (id && BRAND_VARIANTS[id]) return id;
+  if (id && LEGACY_VARIANT_ALIASES[id]) return LEGACY_VARIANT_ALIASES[id];
+  return DEFAULT_BRAND_VARIANT;
+}
+
 export const BrandContext = createContext({
-  variant: 'geometric',
+  variant: DEFAULT_BRAND_VARIANT,
   setVariant: () => {},
   variants: BRAND_VARIANTS,
-  currentInfo: BRAND_VARIANTS.geometric,
+  currentInfo: BRAND_VARIANTS[DEFAULT_BRAND_VARIANT],
 });
 
 const STORAGE_KEY = 'cart_commerce_brand_variant';
 
 export function BrandProvider({ children }) {
-  const [variant, setVariantState] = useState('geometric');
+  const [variant, setVariantState] = useState(DEFAULT_BRAND_VARIANT);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && BRAND_VARIANTS[saved]) {
-        setVariantState(saved);
-      }
+      if (!saved) return;
+      const resolved = resolveBrandVariant(saved);
+      setVariantState(resolved);
+      // Rewrite legacy ids so the stored preference stays current.
+      if (resolved !== saved) localStorage.setItem(STORAGE_KEY, resolved);
     } catch {
       // Ignore localStorage access issues in restricted modes
     }
   }, []);
 
   const setVariant = (newVariant) => {
-    if (BRAND_VARIANTS[newVariant]) {
-      setVariantState(newVariant);
-      try {
-        localStorage.setItem(STORAGE_KEY, newVariant);
-      } catch {
-        // Ignore localStorage error
-      }
+    if (!BRAND_VARIANTS[newVariant] && !LEGACY_VARIANT_ALIASES[newVariant]) {
+      return;
+    }
+    const resolved = resolveBrandVariant(newVariant);
+    setVariantState(resolved);
+    try {
+      localStorage.setItem(STORAGE_KEY, resolved);
+    } catch {
+      // Ignore localStorage error
     }
   };
 
@@ -87,7 +121,7 @@ export function BrandProvider({ children }) {
     variant,
     setVariant,
     variants: BRAND_VARIANTS,
-    currentInfo: BRAND_VARIANTS[variant] || BRAND_VARIANTS.geometric,
+    currentInfo: BRAND_VARIANTS[variant] || BRAND_VARIANTS.primary,
   };
 
   return (

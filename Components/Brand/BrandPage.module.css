@@ -1,0 +1,736 @@
+/* Brand guidelines page (pages/brand.js) */
+
+.page {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-16);
+  color: var(--color-primary-dark);
+}
+
+.breadcrumb {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-dark-grey);
+  margin-bottom: var(--space-6);
+}
+
+.breadcrumb a {
+  color: var(--color-primary-light);
+  text-decoration: none;
+}
+
+.breadcrumb span:last-child {
+  color: var(--color-primary-dark);
+  font-weight: var(--weight-semibold);
+}
+
+/* Shared stages */
+.stage {
+  margin: 0;
+  border-radius: var(--radius-2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+}
+
+.stage figcaption {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.stageLight {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+}
+
+.stageDark {
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    #1e3a5f 0%,
+    #0f2744 55%,
+    #081628 100%
+  );
+  border: 1px solid rgba(218, 165, 32, 0.18);
+}
+
+/* Hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--space-10);
+  align-items: center;
+  margin-bottom: var(--space-16);
+}
+
+.eyebrow,
+.kicker {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold-hover);
+}
+
+.heroTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: var(--space-3) 0 var(--space-4);
+}
+
+.heroLead {
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 34rem;
+}
+
+.heroStage {
+  border-radius: var(--radius-3xl);
+  padding: var(--space-12) var(--space-10);
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    #1e3a5f 0%,
+    #0f2744 55%,
+    #081628 100%
+  );
+  border: 1px solid rgba(218, 165, 32, 0.22);
+  box-shadow: var(--shadow-2xl);
+  display: flex;
+  justify-content: center;
+}
+
+.heroLogo {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  display: block;
+}
+
+/* Sections */
+.section {
+  margin-bottom: var(--space-16);
+}
+
+.sectionHead {
+  max-width: 40rem;
+  margin-bottom: var(--space-6);
+}
+
+.sectionHead h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-extrabold);
+  letter-spacing: -0.01em;
+  margin: var(--space-1) 0 var(--space-2);
+}
+
+.sectionHead p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.sectionHeadRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.sectionHeadRow .sectionHead {
+  margin-bottom: 0;
+}
+
+/* The mark */
+.markGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: var(--space-6);
+  align-items: stretch;
+}
+
+.heroMark {
+  width: 100%;
+  max-width: 300px;
+}
+
+.heroMark svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.anatomy {
+  margin: 0;
+  padding: var(--space-6) var(--space-6) var(--space-6) var(--space-10);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-2xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.anatomy li::marker {
+  color: var(--color-gold);
+  font-weight: var(--weight-bold);
+}
+
+/* Lockups */
+.lockupGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.lockupWide {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  display: block;
+}
+
+.lockupStacked {
+  width: 100%;
+  max-width: 190px;
+  height: auto;
+  display: block;
+}
+
+.lockupCard {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  display: block;
+}
+
+.rulesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.ruleCard {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  background: var(--color-surface-muted);
+}
+
+.ruleCard h3 {
+  font-size: var(--text-base);
+  margin: 0 0 var(--space-4);
+}
+
+.ruleCard p {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+/* The clear-space box: padding = 1/4 of the mark height (mark ≈ 64/288 of width). */
+.clearSpace {
+  display: flex;
+  justify-content: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.clearSpaceInner {
+  width: 100%;
+  max-width: 300px;
+  padding: 16.7px;
+  outline: 1px dashed var(--color-gold-light);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(218, 165, 32, 0.08) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.clearSpaceInner > svg {
+  background: var(--color-surface);
+}
+
+.minSizes {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-4);
+}
+
+.minSizes > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.minSizes span {
+  font-size: var(--text-xs);
+  color: var(--color-dark-grey);
+}
+
+/* Variants */
+.segmented {
+  display: inline-flex;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-light-grey);
+  border: 1px solid var(--color-border-light);
+}
+
+.segmented button {
+  border: 0;
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+}
+
+.variantGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-5);
+}
+
+.variantCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  overflow: hidden;
+  transition:
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.variantCard:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.variantCardActive {
+  border-color: var(--color-gold-light);
+  box-shadow:
+    0 0 0 1px var(--color-gold-light),
+    var(--shadow-glow-gold);
+}
+
+.variantStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 132px;
+  padding: var(--space-6);
+  border: 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.variantBody {
+  padding: var(--space-5) var(--space-5) var(--space-3);
+  flex-grow: 1;
+}
+
+.variantBody h3 {
+  font-size: var(--text-lg);
+  margin: var(--space-1) 0 var(--space-2);
+}
+
+.variantBody p {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.variantTag {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold-hover);
+}
+
+.variantUsage strong {
+  color: var(--color-primary-dark);
+  margin-right: var(--space-1);
+}
+
+.variantButton {
+  margin: 0 var(--space-5) var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-primary-dark);
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.variantButton:hover:not(:disabled) {
+  background: var(--color-primary);
+}
+
+.variantButton:disabled {
+  background: transparent;
+  color: var(--color-gold-hover);
+  border-color: var(--color-gold-light);
+  cursor: default;
+}
+
+.markRow {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+  padding: var(--space-8);
+  border-radius: var(--radius-2xl);
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    #1e3a5f 0%,
+    #0f2744 55%,
+    #081628 100%
+  );
+}
+
+.markRow figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1 1 96px;
+}
+
+.markRow figcaption {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/* Icons */
+.iconGrid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.iconCard {
+  margin: 0;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-5);
+  background: var(--color-surface-muted);
+}
+
+.iconCard figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.iconCard code {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-normal);
+  color: var(--color-dark-grey);
+}
+
+.iconSizes {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.iconSizes canvas {
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.touchIcon {
+  /* iOS masks app icons to roughly a 22% continuous corner. */
+  border-radius: 40px;
+  box-shadow: var(--shadow-lg);
+}
+
+.tabMock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  font-size: 12px;
+  color: var(--color-charcoal);
+  max-width: 200px;
+}
+
+.tabDark {
+  background: #202124;
+  border-color: #202124;
+  color: #e8eaed;
+}
+
+/* Colour */
+.paletteGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-4);
+}
+
+.finishGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+.swatch code,
+.swatch span:last-child {
+  font-size: var(--text-xs);
+  color: var(--color-dark-grey);
+}
+
+.swatchChip {
+  display: block;
+  height: 72px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-light);
+  margin-bottom: var(--space-2);
+}
+
+.swatchChrome {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #dfe4ec 45%,
+    #9aa4b4 75%,
+    #eef1f6 100%
+  );
+}
+
+.swatchGold {
+  background: linear-gradient(135deg, #f6dd8a 0%, #d9a62e 50%, #a8761a 100%);
+}
+
+.swatchFoil {
+  background: linear-gradient(
+    170deg,
+    #fbecb4 0%,
+    #d9a62e 35%,
+    #f3d27a 55%,
+    #a8761a 100%
+  );
+}
+
+.swatchHolo {
+  background: linear-gradient(
+    135deg,
+    #ffcf6b 0%,
+    #ff7eb3 35%,
+    #7ec8ff 70%,
+    #b28dff 100%
+  );
+}
+
+/* Typography */
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.typeCard {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+}
+
+.typeCard p {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.typeSampleSans {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-extrabold);
+  font-size: var(--text-2xl);
+  letter-spacing: 0.11em;
+}
+
+.typeSampleSub {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.42em;
+  color: var(--color-gold-hover);
+}
+
+.typeSampleSerif {
+  font-family: var(--font-serif);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-3xl);
+}
+
+/* Usage */
+.usageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.usageCard {
+  margin: 0;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border-light);
+}
+
+.usageStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: var(--space-6);
+  border: 0;
+  overflow: hidden;
+}
+
+.usageCard figcaption {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  border-top: 3px solid;
+}
+
+.usageDo figcaption {
+  border-top-color: var(--color-success);
+  color: var(--color-success-dark);
+}
+
+.usageDont figcaption {
+  border-top-color: var(--color-error);
+  color: var(--color-error-dark);
+}
+
+/* Legacy */
+.legacy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6) var(--space-8);
+}
+
+.legacy h3 {
+  margin: var(--space-1) 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+
+.legacy p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.legacyLogo {
+  width: 200px;
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .markGrid,
+  .iconGrid,
+  .typeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .usageGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: var(--space-6) var(--space-4) var(--space-12);
+  }
+
+  .lockupGrid,
+  .rulesGrid,
+  .usageGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroStage {
+    padding: var(--space-8) var(--space-5);
+  }
+
+  .markRow {
+    padding: var(--space-6) var(--space-4);
+  }
+}
