@@ -1,0 +1,67 @@
+/* Starter ideas. Tokens come from theme.module.css. */
+
+.note {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--wb-text-dim);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 6px 8px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-lg);
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.card:hover {
+  border-color: var(--wb-accent-line);
+  transform: translateY(-2px);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: var(--wb-art-card);
+}
+
+.name {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.idea {
+  font-size: 0.68rem;
+  line-height: 1.4;
+  color: var(--wb-text-faint);
+}
