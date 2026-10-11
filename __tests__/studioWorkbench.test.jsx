@@ -6,7 +6,13 @@ import {
   within,
 } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { starterBook } from '../Components/Studio/book/bookPages';
+import { starterCast } from '../Components/Studio/cast/castModel';
 import { PREVIEWS } from '../Components/Studio/preview/previewConfigs';
+import {
+  buildStarter,
+  STARTERS,
+} from '../Components/Studio/starters/starters';
 import { StudioPreview } from '../Components/Studio/preview/StudioPreview';
 import {
   BOOK_FORMATS,
@@ -52,6 +58,23 @@ vi.mock('../analytics/google', () => ({
   trackWebVitals: vi.fn(),
 }));
 
+/** A new book opens on its first story spread, already acted out by the starter cast. */
+const bookOpening = (() => {
+  const book = starterBook({
+    cast: starterCast(),
+    artboard: PRODUCTS.book.artboard(PRODUCTS.book.defaults),
+  });
+  return book.layers.filter((l) => l.page === book.activeSpread).length;
+})();
+
+/** A new poster or garment opens on its first idea, already acted out. */
+const ideaOpening = (key) =>
+  buildStarter(key, STARTERS[key][0], {
+    artboard: PRODUCTS[key].artboard(PRODUCTS[key].defaults),
+    options: PRODUCTS[key].defaults,
+    cast: starterCast(),
+  }).layers.length;
+
 const priceOf = (table, id, key = 'price') =>
   table.find((entry) => entry.id === id)[key];
 
@@ -61,6 +84,7 @@ const ROUTES = [
     Page: BookWorkbenchPage,
     product: PRODUCTS.book,
     templateMode: 'book',
+    openingLayers: bookOpening,
     /** The product's own document options, not the layer inspector's. */
     optionField: { label: 'Format', value: 'square', option: /8" × 8" Square/ },
     // Square format, lay-flat hardcover and velvet paper carry no surcharge.
@@ -71,7 +95,9 @@ const ROUTES = [
     Page: PosterWorkbenchPage,
     product: PRODUCTS.poster,
     templateMode: 'poster',
-    optionField: { label: 'Frame', value: 'oak', option: /Solid Oak/ },
+    openingLayers: ideaOpening('poster'),
+    /** Poster and apparel options are picture tiles, not selects. */
+    optionTile: { group: 'Frame', name: 'Oak, +$25' },
     expectedTotal: () =>
       priceOf(POSTER_SIZES, '18x24') +
       priceOf(POSTER_FRAMES, 'oak', 'priceModifier'),
@@ -81,11 +107,8 @@ const ROUTES = [
     Page: ApparelWorkbenchPage,
     product: PRODUCTS.apparel,
     templateMode: 'apparel',
-    optionField: {
-      label: 'Style',
-      value: 'hoodie',
-      option: /Organic Kids' Hoodie/,
-    },
+    openingLayers: ideaOpening('apparel'),
+    optionTile: { group: 'Style', name: 'Hoodie, $48' },
     expectedTotal: () =>
       priceOf(GARMENTS, 'hoodie') +
       priceOf(PLACEMENTS, 'chest', 'priceModifier') +
@@ -119,7 +142,15 @@ const canvasNamed = (product, layers) =>
 
 describe.each(ROUTES)(
   '$label workbench',
-  ({ Page, product, templateMode, optionField, expectedTotal }) => {
+  ({
+    Page,
+    product,
+    templateMode,
+    optionField,
+    optionTile,
+    expectedTotal,
+    openingLayers = 0,
+  }) => {
     it('renders the workbench shell with its title, exit and actions', () => {
       renderWorkbench(Page);
 
@@ -167,17 +198,26 @@ describe.each(ROUTES)(
     it('adds a layer to the artboard when a creation tool is picked', () => {
       renderWorkbench(Page);
 
-      expect(canvasNamed(product, 0)).toBeInTheDocument();
+      expect(canvasNamed(product, openingLayers)).toBeInTheDocument();
 
       fireEvent.click(screen.getByRole('button', { name: 'Text (T)' }));
 
-      expect(canvasNamed(product, 1)).toBeInTheDocument();
+      expect(canvasNamed(product, openingLayers + 1)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
     });
 
     it("shows the product's own options in the inspector", () => {
       renderWorkbench(Page);
 
+      if (optionTile) {
+        const group = within(inspectorPanel()).getByRole('group', {
+          name: optionTile.group,
+        });
+        expect(
+          within(group).getByRole('button', { name: optionTile.name })
+        ).toHaveAttribute('aria-pressed', 'true');
+        return;
+      }
       const field = within(inspectorPanel()).getByLabelText(optionField.label);
       expect(field).toHaveValue(optionField.value);
       expect(

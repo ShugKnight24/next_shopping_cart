@@ -1,0 +1,14 @@
+/* Apparel settings art. Tokens come from theme.module.css. */
+
+.finish {
+  width: 70%;
+  height: 70%;
+  fill: var(--wb-accent);
+  stroke: var(--wb-accent);
+  stroke-width: 2.4;
+}
+
+.shine {
+  fill: rgb(255 255 255 / 55%);
+  stroke: none;
+}

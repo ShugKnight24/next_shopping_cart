@@ -1,0 +1,159 @@
+/* Product settings panels (book, poster, apparel, social). Tokens come from
+   theme.module.css. */
+
+.note {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--wb-text-dim);
+}
+
+.preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.castList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.castRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.castArt {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--wb-art-card);
+}
+
+.castName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--wb-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ideaThumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.chip {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--wb-border-strong);
+}
+
+.price {
+  font-variant-numeric: tabular-nums;
+  color: var(--wb-text-dim);
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 4px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text-dim);
+  font-size: 0.64rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.product:hover {
+  border-color: var(--wb-border-strong);
+  color: var(--wb-text);
+}
+
+.product:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+.product img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 4px;
+  background: var(--wb-art-card);
+}
+
+.product span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formatBox {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.format {
+  display: block;
+  border: 1.5px solid var(--wb-accent);
+  border-radius: 3px;
+  background: var(--wb-accent-soft);
+}
+
+.theme {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--wb-border-strong);
+}
+
+.theme span {
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+}

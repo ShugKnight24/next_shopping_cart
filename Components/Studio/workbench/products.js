@@ -8,6 +8,7 @@
  */
 
 import { computePrice, modifierFor } from '../core/pricing';
+import { formatById } from '../social/socialArt';
 
 /* ------------------------------------------------------------- poster -- */
 
@@ -54,6 +55,40 @@ export const POSTER_PAPERS = [
     name: 'Stretched Canvas',
     sub: 'Woven texture',
     priceModifier: 15,
+  },
+];
+
+/** The poster's printed ground when no illustrated scene is behind it. */
+export const POSTER_ART_STYLES = [
+  {
+    id: 'cosmic',
+    name: 'Cosmic',
+    css: 'linear-gradient(135deg, #0f172a, #312e81 50%, #0369a1)',
+  },
+  {
+    id: 'sunburst',
+    name: 'Sunburst',
+    css: 'linear-gradient(135deg, #ea580c, #f59e0b 50%, #fef08a)',
+  },
+  {
+    id: 'retro',
+    name: 'Retro',
+    css: 'linear-gradient(135deg, #4c1d95, #db2777 50%, #fbbf24)',
+  },
+  {
+    id: 'botanical',
+    name: 'Botanical',
+    css: 'linear-gradient(135deg, #064e3b, #047857 50%, #6ee7b7)',
+  },
+  {
+    id: 'sunset',
+    name: 'Sunset',
+    css: 'linear-gradient(135deg, #831843, #ea580c 50%, #fde047)',
+  },
+  {
+    id: 'minimal',
+    name: 'Gallery white',
+    css: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
   },
 ];
 
@@ -167,6 +202,8 @@ export const PRODUCTS = {
     blurb: 'Museum-grade giclée prints, framed and ready to hang.',
     manufacturer: 'Cart Gallery Press',
     idPrefix: 'CUSTOM-POSTER',
+    // Options that reshape the artboard; layers are refitted with them.
+    frameKeys: ['size', 'orientation'],
     defaults: {
       size: '18x24',
       orientation: 'portrait',
@@ -174,6 +211,8 @@ export const PRODUCTS = {
       paper: 'cotton',
       mat: 'none',
       artStyle: 'cosmic',
+      sceneId: null,
+      timeOfDay: 'day',
     },
     artboard: (options) => {
       const size =
@@ -280,6 +319,7 @@ export const PRODUCTS = {
     blurb: 'Hardcover heirloom books starring your child.',
     manufacturer: 'Cart Heirloom Bindery',
     idPrefix: 'CUSTOM-BOOK',
+    frameKeys: ['format'],
     defaults: {
       format: 'square',
       cover: 'hardcover',
@@ -318,6 +358,48 @@ export const PRODUCTS = {
             'Paper'
           ),
         ].filter(Boolean),
+        layerCount,
+        perLayer: 0,
+        freeLayers: 999,
+        quantity,
+      }),
+  },
+
+  social: {
+    // Not 'social': drafts saved by the old social editor are a different
+    // document shape and must not be restored into this one.
+    mode: 'social-post',
+    route: '/studio/social',
+    title: 'Social Post',
+    blurb: 'Posts, stories, pins and fliers starring your cast.',
+    manufacturer: 'Cart Commerce Studio',
+    idPrefix: 'CUSTOM-SOCIAL',
+    // Made to download, not to print and ship.
+    digital: true,
+    frameKeys: ['format'],
+    defaults: {
+      format: 'square',
+      theme: 'obsidian',
+      backdrop: 'glow',
+      sceneId: null,
+      timeOfDay: 'day',
+      caption: '',
+    },
+    artboard: (options) => artboardFor(formatById(options.format).ratio, 620),
+    exportWidth: (options) => formatById(options.format).exportWidth,
+    exportLabel: (options) => {
+      const f = formatById(options.format);
+      return `${f.exportWidth} × ${Math.round(f.exportWidth / f.ratio)} px`;
+    },
+    printSpec: (options) => {
+      const f = formatById(options.format);
+      return `${f.name} · ${f.exportWidth} × ${Math.round(f.exportWidth / f.ratio)}`;
+    },
+    price: (options, layerCount, quantity) =>
+      computePrice({
+        base: 0,
+        baseLabel: 'Digital post',
+        modifiers: [],
         layerCount,
         perLayer: 0,
         freeLayers: 999,
