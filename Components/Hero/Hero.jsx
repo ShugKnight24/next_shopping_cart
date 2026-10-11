@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useId, useState } from 'react';
 import { StarFilled } from '../Icons';
 import { CartCommerceMark } from './CartCommerceMark';
 import { CartTrackScene } from './CartTrackScene';
@@ -22,43 +23,75 @@ function CartCommerceLogo({ className }) {
   return <CartCommerceMark className={className} />;
 }
 
-// Cart Pattern Background Component
+/**
+ * One shopping cart drawn as a line icon on a 64-unit box: a handle with a
+ * grip, a wire basket (rim, rails and wires), the chassis and two wheels.
+ * The same three-quarter silhouette as the brand mark, so the wallpaper
+ * reads as carts at a glance rather than as trapezoids.
+ */
+function PatternCart({ x, y, scale = 1, rotate = 0 }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate}) scale(${scale})`}>
+      {/* Handle and grip */}
+      <path d="M4 14 H11 L17 22" strokeWidth="2.6" />
+      {/* Basket: rim, floor, ends */}
+      <path d="M17 22 H60 L55 42 H22 Z" strokeWidth="2.2" />
+      {/* Wire rails and uprights */}
+      <path
+        d="M18.6 28.6 H58.4 M20.2 35.2 H56.8 M27 22 L29 42 M37 22 L38 42 M47 22 L47 42 M56 22 L54 42"
+        strokeWidth="1.1"
+        opacity="0.75"
+      />
+      {/* Chassis */}
+      <path d="M22 42 L24.5 49 H55" strokeWidth="2.2" />
+      {/* Wheels */}
+      <circle cx="28" cy="54" r="3.4" strokeWidth="2" />
+      <circle cx="51" cy="54" r="3.4" strokeWidth="2" />
+    </g>
+  );
+}
+
+PatternCart.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  scale: PropTypes.number,
+  rotate: PropTypes.number,
+};
+
+// Cart Pattern Background Component: a staggered wallpaper of carts that
+// drifts diagonally by exactly one tile per loop.
 function CartPatternBackground({ className }) {
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   return (
     <div className={className}>
       <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern
-            id="cartPattern"
+            id={`${id}-carts`}
             x="0"
             y="0"
-            width="120"
-            height="100"
+            width="220"
+            height="160"
             patternUnits="userSpaceOnUse"
           >
-            {/* Mini cart silhouette */}
             <g
-              opacity="0.15"
               fill="none"
               stroke="rgba(218, 165, 32, 1)"
-              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.2"
             >
-              {/* Basket */}
-              <path d="M20 25 L25 55 L75 55 L80 25 Z" />
-              {/* Rim */}
-              <path d="M18 25 L82 25" strokeWidth="2" />
-              {/* Handle */}
-              <path d="M15 25 L8 15 L3 15" />
-              {/* Wheels */}
-              <circle cx="32" cy="62" r="5" />
-              <circle cx="68" cy="62" r="5" />
+              <PatternCart x={14} y={8} scale={1.3} rotate={-4} />
+              <PatternCart x={128} y={84} scale={1.1} rotate={5} />
             </g>
           </pattern>
         </defs>
         <rect
+          x="-220"
+          y="-160"
           width="200%"
           height="200%"
-          fill="url(#cartPattern)"
+          fill={`url(#${id}-carts)`}
           className={styles.cartPatternRect}
         />
       </svg>
