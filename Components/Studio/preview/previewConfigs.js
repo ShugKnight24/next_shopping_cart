@@ -1,66 +1,48 @@
+import { spreadConfig } from '../book/bookPages';
 import {
   drawApparelSubstrate,
   drawBookSubstrate,
   drawPosterSubstrate,
 } from '../drawSubstrate';
-import { SCENE_ENVIRONMENTS } from '../sceneEnvironments';
-import {
-  BOOK_FORMATS,
-  GARMENTS,
-  GARMENT_COLORS,
-  POSTER_FRAMES,
-  POSTER_SIZES,
-  PRODUCTS,
-} from '../workbench/products';
+import { GARMENT_COLORS, POSTER_FRAMES, PRODUCTS } from '../workbench/products';
 
 /**
- * The three embedded previews.
+ * The three embedded previews on the studio page.
  *
- * Each exposes three or four controls — enough to prove the product is really
- * customizable, few enough that the full designer is obviously the place to
- * finish. `slot_*` keys write into the starter template's matching slot role,
- * which is how a visitor's typed words survive the handoff.
+ * Each one is the real editor's opening, small: a finished idea acted out by
+ * a kid the visitor names and picks, drawn by the same renderers. Three or
+ * four choices prove it is theirs to make; "Continue" opens exactly this in
+ * the full designer, which rebuilds it from the idea and the kid
+ * (`meta.idea`, `meta.hero`) rather than a long layer list.
  */
+
+/** The book draws the open spread; the preview shows its first story page. */
+const drawBook = (ctx, board) =>
+  drawBookSubstrate(ctx, {
+    ...board,
+    config: spreadConfig(board.config ?? {}),
+  });
 
 export const PREVIEWS = [
   {
     id: 'book',
     product: PRODUCTS.book,
     templateMode: 'book',
-    drawSubstrate: drawBookSubstrate,
-    starterTemplateId: 'book-classic-storybook',
+    drawSubstrate: drawBook,
+    ideas: ['adventure', 'birthday', 'seasons', 'together'],
+    ideaLabel: 'Story',
     eyebrow: 'Kids Favorite',
     headline: "Children's Storybooks",
     blurb:
-      'Personalized hardcover heirloom books starring your child, their companion, and the world you choose for them.',
-    fields: [
-      {
-        key: 'slot_title',
-        type: 'text',
-        label: 'Story title',
-        placeholder: "Maya's Cosmic Quest",
-        maxLength: 28,
-      },
-      {
-        key: 'sceneId',
-        type: 'select',
-        label: 'Scene',
-        options: SCENE_ENVIRONMENTS.slice(0, 6),
-      },
-      {
-        key: 'format',
-        type: 'select',
-        label: 'Format',
-        options: BOOK_FORMATS,
-      },
-    ],
+      'Hardcover storybooks starring your child, acting out every page with the people and pets they love.',
+    swatch: null,
     upsell: {
       title: 'In the full designer',
       features: [
-        'Design the hero and their companion, feature by feature',
-        'Eight cover and spread templates, seven styles',
-        'Layer artwork anywhere on the page',
-        'Live 300 DPI proof and lay-flat binding preview',
+        'Make the whole family, from hair to sneakers',
+        'Nine story moments and eight illustrated worlds',
+        'Move every character, word and piece of scenery',
+        'Add, reorder and proof every page',
       ],
     },
   },
@@ -70,39 +52,28 @@ export const PREVIEWS = [
     product: PRODUCTS.poster,
     templateMode: 'poster',
     drawSubstrate: drawPosterSubstrate,
-    starterTemplateId: 'poster-type-slab',
+    ideas: ['birthday', 'room', 'adventure', 'pals'],
+    ideaLabel: 'Poster',
     eyebrow: 'Gallery Archival',
     headline: 'Framed Art Posters',
     blurb:
-      'Museum-grade giclée prints on archival stock, framed and ready to hang the day they arrive.',
-    fields: [
-      {
-        key: 'slot_title',
-        type: 'text',
-        label: 'Headline',
-        placeholder: 'The Bravest Explorer',
-        maxLength: 28,
-      },
-      {
-        key: 'size',
-        type: 'select',
-        label: 'Print size',
-        options: POSTER_SIZES,
-      },
-      {
-        key: 'frame',
-        type: 'select',
-        label: 'Frame',
-        options: POSTER_FRAMES,
-      },
-    ],
+      'Museum-grade prints of your kid as the star, framed and ready to hang the day they arrive.',
+    swatch: {
+      key: 'frame',
+      label: 'Frame',
+      options: POSTER_FRAMES.filter((f) => f.color).map((f) => ({
+        value: f.id,
+        name: f.name,
+        color: f.color,
+      })),
+    },
     upsell: {
       title: 'In the full designer',
       features: [
-        'Twelve layouts across six categories, seven styles',
-        'Add text, shapes and artwork anywhere on the artboard',
-        'Mats, paper stocks and custom ink colours',
-        'Zoom, snap guides and a live 300 DPI proof',
+        'Six poster ideas, eight illustrated backdrops',
+        'Sizes, mounts and paper stocks you can see',
+        'Your whole cast, posed and moved anywhere',
+        'A live 300 DPI proof in every frame',
       ],
     },
   },
@@ -112,39 +83,28 @@ export const PREVIEWS = [
     product: PRODUCTS.apparel,
     templateMode: 'apparel',
     drawSubstrate: drawApparelSubstrate,
-    starterTemplateId: 'apparel-monogram-stacked',
+    ideas: ['star', 'space', 'pet', 'crew'],
+    ideaLabel: 'Design',
     eyebrow: 'Craft Workshop',
     headline: "Kids' Apparel & Kicks",
     blurb:
-      'Organic cotton hoodies, tees, varsity jackets and canvas high-tops, embroidered to order.',
-    fields: [
-      {
-        key: 'slot_title',
-        type: 'text',
-        label: 'Monogram',
-        placeholder: 'NOAH',
-        maxLength: 12,
-      },
-      {
-        key: 'garment',
-        type: 'select',
-        label: 'Garment',
-        options: GARMENTS,
-      },
-      {
-        key: 'color',
-        type: 'swatch',
-        label: 'Colourway',
-        options: GARMENT_COLORS,
-      },
-    ],
+      'Organic hoodies, tees and varsity jackets printed with their own character and name.',
+    swatch: {
+      key: 'color',
+      label: 'Colourway',
+      options: GARMENT_COLORS.map((c) => ({
+        value: c.value,
+        name: c.name,
+        color: c.value,
+      })),
+    },
     upsell: {
       title: 'In the full designer',
       features: [
-        'Ten layouts across six categories, seven styles',
-        'Accent trim, placement zones and embroidery finishes',
-        'Layer badges, artwork and lettering freely',
-        'Stitch proof before anything goes to the machine',
+        'Hoodies, tees, varsity jackets and high-tops',
+        'Pocket, chest or a hero backprint',
+        'Screen print, satin, chain stitch or puff',
+        'Your design on every garment at a glance',
       ],
     },
   },

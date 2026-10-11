@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { decodeDesign } from '../Components/Studio/core/designCodec';
-import { TEMPLATES_BY_MODE } from '../Components/Studio/workbench/templates';
+import { STARTERS } from '../Components/Studio/starters/starters';
 import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
 import { MascotProvider } from '../context/MascotProvider';
@@ -62,12 +62,6 @@ function decodeContinueLink(link) {
     route,
     doc: decodeDesign(new URLSearchParams(query).get('d')),
   };
-}
-
-/** The slot roles a handed-off template can fill, straight from the table. */
-function slotRolesOf(mode, templateId) {
-  const template = TEMPLATES_BY_MODE[mode].find((t) => t.id === templateId);
-  return (template?.layers ?? []).map((layer) => layer.slotRole);
 }
 
 describe('Studio launcher page', () => {
@@ -132,10 +126,10 @@ describe('Studio launcher page', () => {
       within(previews).getByRole('heading', { name: "Kids' Apparel & Kicks" })
     ).toBeInTheDocument();
 
-    // Each preview paints the real substrate, not a stock image.
+    // Each preview paints a real idea starring a kid, not a stock image.
     expect(
       within(previews).getByRole('img', {
-        name: 'Framed Art Poster preview',
+        name: 'Framed Art Poster preview starring Maya: Birthday star',
       })
     ).toBeInTheDocument();
   });
@@ -147,23 +141,34 @@ describe('Studio launcher page', () => {
       name: "Kids' Apparel & Kicks",
     });
 
-    const monogram = within(apparel).getByLabelText('Monogram');
-    fireEvent.change(monogram, { target: { value: 'MAYA' } });
-    expect(monogram).toHaveValue('MAYA');
-
-    const garment = within(apparel).getByLabelText('Garment');
-    fireEvent.change(garment, { target: { value: 'jacket' } });
-    expect(garment).toHaveValue('jacket');
+    const name = within(apparel).getByLabelText("Your star's name");
+    fireEvent.change(name, { target: { value: 'Noah' } });
+    fireEvent.click(within(apparel).getByRole('button', { name: 'Kai' }));
+    fireEvent.click(
+      within(apparel).getByRole('button', { name: 'Space cadet' })
+    );
+    expect(
+      within(apparel).getByRole('img', {
+        name: "Kids' Custom Apparel preview starring Noah: Space cadet",
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(apparel).getByRole('button', { name: 'Kai' })
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('hands the preview off to the full designer with the typed words intact', () => {
+  it('hands the preview off to the full designer with the idea and kid intact', () => {
     renderStudio();
 
     const poster = screen.getByRole('region', { name: 'Framed Art Posters' });
 
-    fireEvent.change(within(poster).getByLabelText('Headline'), {
-      target: { value: 'MAYA THE BRAVE' },
+    fireEvent.change(within(poster).getByLabelText("Your star's name"), {
+      target: { value: 'Mira' },
     });
+    fireEvent.click(within(poster).getByRole('button', { name: 'Zara' }));
+    fireEvent.click(
+      within(poster).getByRole('button', { name: 'Adventure awaits' })
+    );
 
     const { route, doc } = decodeContinueLink(
       within(poster).getByRole('link', {
@@ -175,10 +180,12 @@ describe('Studio launcher page', () => {
     expect(doc).not.toBeNull();
     expect(doc.mode).toBe('poster');
 
-    // The link carries a template reference plus the typed slot text rather
-    // than every seeded layer, so the reference has to actually resolve.
-    expect(slotRolesOf('poster', doc.meta.template)).toContain('title');
-    expect(doc.meta.slots.title).toBe('MAYA THE BRAVE');
+    // The link carries the idea and the kid rather than every seeded layer,
+    // so the idea has to actually resolve.
+    expect(STARTERS.poster.map((s) => s.id)).toContain(doc.meta.idea);
+    expect(doc.meta.idea).toBe('adventure');
+    expect(doc.meta.hero).toEqual({ look: 'zara', name: 'Mira' });
+    expect(doc.layers).toEqual([]);
   });
 
   it('carries a storybook preview into the book designer under its own mode', () => {
@@ -186,9 +193,9 @@ describe('Studio launcher page', () => {
 
     const book = screen.getByRole('region', { name: "Children's Storybooks" });
 
-    fireEvent.change(within(book).getByLabelText('Story title'), {
-      target: { value: "Noah's Deep Sea Dive" },
-    });
+    fireEvent.click(
+      within(book).getByRole('button', { name: 'All year round' })
+    );
 
     const { route, doc } = decodeContinueLink(
       within(book).getByRole('link', {
@@ -198,8 +205,8 @@ describe('Studio launcher page', () => {
 
     expect(route).toBe('/studio/book');
     expect(doc.mode).toBe('storybook');
-    expect(slotRolesOf('book', doc.meta.template)).toContain('title');
-    expect(doc.meta.slots.title).toBe("Noah's Deep Sea Dive");
+    expect(doc.meta.idea).toBe('seasons');
+    expect(STARTERS.book.find((s) => s.id === doc.meta.idea)?.book).toBe(true);
   });
 
   it('describes what the bespoke designer adds over the preview', () => {

@@ -51,6 +51,99 @@ export const starterCast = () => [
   createPet({ id: 'cast-pet', name: 'Biscuit' }),
 ];
 
+/**
+ * Ready-made kids for places that offer a quick pick instead of the full
+ * look editor (the studio page's previews). Each is a patch on the kid
+ * preset, so a preview link can carry just the id.
+ */
+export const KID_LOOKS = [
+  {
+    id: 'maya',
+    name: 'Maya',
+    look: {
+      skin: 'caramel',
+      hair: 'buns',
+      hairColor: 'espresso',
+      top: 'tee',
+      topColor: 'mustard',
+      pattern: 'stars',
+      accentColor: 'white',
+      bottom: 'overalls',
+      bottomColor: 'denim',
+      shoes: 'sneakers',
+      shoeColor: 'red',
+    },
+  },
+  {
+    id: 'sam',
+    name: 'Sam',
+    look: {
+      skin: 'peach',
+      freckles: true,
+      hair: 'curlyTop',
+      hairColor: 'ginger',
+      eyeColor: 'green',
+      glasses: 'round',
+      top: 'tee',
+      topColor: 'teal',
+      pattern: 'stripes',
+      accentColor: 'white',
+      bottom: 'shorts',
+      bottomColor: 'navy',
+      shoes: 'sneakers',
+      shoeColor: 'mustard',
+    },
+  },
+  {
+    id: 'zara',
+    name: 'Zara',
+    look: {
+      skin: 'cocoa',
+      hair: 'braids',
+      hairColor: 'black',
+      top: 'sundress',
+      topColor: 'berry',
+      pattern: 'dots',
+      accentColor: 'white',
+      shoes: 'sneakers',
+      shoeColor: 'white',
+    },
+  },
+  {
+    id: 'kai',
+    name: 'Kai',
+    look: {
+      skin: 'golden',
+      hair: 'spiky',
+      hairColor: 'black',
+      top: 'hoodie',
+      topColor: 'red',
+      pattern: 'solid',
+      bottom: 'jeans',
+      bottomColor: 'denim',
+      shoes: 'sneakers',
+      shoeColor: 'black',
+    },
+  },
+];
+
+export const kidLookById = (id) =>
+  KID_LOOKS.find((k) => k.id === id) ?? KID_LOOKS[0];
+
+/** The starter cast, with one of the ready-made kids as its hero. */
+export const castStarring = (lookId, name = null) => {
+  const kid = kidLookById(lookId);
+  return starterCast().map((member) =>
+    member.id === 'cast-hero'
+      ? {
+          ...createPerson('kid', kid.look),
+          id: 'cast-hero',
+          name: name?.trim() || kid.name,
+        }
+      : member
+  );
+};
+
 export const memberById = (cast, id) => cast?.find((m) => m.id === id) ?? null;
 
 export const memberName = (member, fallback = 'Someone') =>

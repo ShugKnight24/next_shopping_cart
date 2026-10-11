@@ -253,3 +253,79 @@
     transform: none;
   }
 }
+
+/* --------------------------------------------------------- kids, ideas -- */
+
+.kids {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.kid {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 4px;
+  overflow: hidden;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.kid:hover {
+  transform: translateY(-1px);
+}
+
+.kidActive {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-secondary) 25%, transparent);
+}
+
+.kidArt {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ideas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.idea {
+  padding: 0.42rem 0.8rem;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+
+.idea:hover {
+  border-color: var(--color-text-muted);
+}
+
+.ideaActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.kid:focus-visible,
+.idea:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}

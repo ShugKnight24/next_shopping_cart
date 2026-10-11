@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { artForLayer, placeMember } from '../cast/castModel';
+import { artForLayer, castStarring, placeMember } from '../cast/castModel';
 import { CastPanel } from '../cast/CastPanel';
 import { SceneryPanel } from '../cast/CastProperties';
 import { ADULT_HEIGHT } from '../cast/castRig';
 import { pieceArt, pieceById } from '../cast/scenePieces';
 import { StarterGallery } from '../starters/StarterGallery';
-import { buildStarter, relayout } from '../starters/starters';
+import { buildStarter, relayout, STARTERS } from '../starters/starters';
 import { CanvasViewport } from './CanvasViewport';
 import { Inspector } from './Inspector';
 import { applyTemplate, reframeLayer } from './layerModel';
@@ -223,6 +223,30 @@ export const WorkbenchRoute = ({
    */
   const rebuildFromTemplate = useCallback(
     (doc) => {
+      // The studio page's previews send an idea and a kid: build the same
+      // starter here, with the same cast, at this artboard.
+      const starter =
+        doc?.meta?.idea &&
+        STARTERS[templateMode]?.find((s) => s.id === doc.meta.idea);
+      if (starter && castEnabled) {
+        const options = { ...product.defaults, ...doc.options };
+        const built = buildStarter(templateMode, starter, {
+          artboard: product.artboard(options),
+          options,
+          cast: castStarring(doc.meta.hero?.look, doc.meta.hero?.name),
+        });
+        return {
+          ...doc,
+          options: {
+            ...options,
+            ...built.options,
+            cast: built.cast,
+            ...(starter.book ? {} : { idea: starter.id }),
+          },
+          layers: built.layers,
+        };
+      }
+
       if (!doc?.meta?.template) return doc;
 
       const template = (TEMPLATES_BY_MODE[templateMode] ?? []).find(
@@ -239,7 +263,7 @@ export const WorkbenchRoute = ({
 
       return { ...doc, layers };
     },
-    [templateMode]
+    [templateMode, castEnabled, product]
   );
 
   const design = useWorkbenchDesign({

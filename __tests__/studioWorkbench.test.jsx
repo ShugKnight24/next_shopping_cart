@@ -9,11 +9,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { starterBook } from '../Components/Studio/book/bookPages';
 import { starterCast } from '../Components/Studio/cast/castModel';
 import { PREVIEWS } from '../Components/Studio/preview/previewConfigs';
-import {
-  buildStarter,
-  STARTERS,
-} from '../Components/Studio/starters/starters';
 import { StudioPreview } from '../Components/Studio/preview/StudioPreview';
+import { buildStarter, STARTERS } from '../Components/Studio/starters/starters';
 import {
   BOOK_FORMATS,
   FINISHES,
@@ -262,14 +259,19 @@ describe.each(ROUTES)(
 );
 
 describe('preview handoff', () => {
-  it('rebuilds a preview link into real layers in the full designer', () => {
-    // 1. Someone personalizes the poster preview on the marketing page.
+  it('opens the idea and kid from a studio-page preview in the full designer', () => {
+    // 1. Someone personalizes the poster preview on the studio page.
     const preview = PREVIEWS.find((entry) => entry.id === 'poster');
     render(<StudioPreview {...preview} />);
 
-    fireEvent.change(screen.getByLabelText('Headline'), {
-      target: { value: 'MAYA THE BRAVE' },
+    fireEvent.click(screen.getByRole('button', { name: 'Zara' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Bedroom door' }));
+    fireEvent.change(screen.getByLabelText("Your star's name"), {
+      target: { value: 'Zuri' },
     });
+    expect(
+      screen.getByRole('img', { name: /starring Zuri: Bedroom door/ })
+    ).toBeInTheDocument();
 
     const href = screen
       .getByRole('link', { name: /Continue in the full designer/i })
@@ -281,18 +283,19 @@ describe('preview handoff', () => {
     window.history.replaceState({}, '', href);
     renderWorkbench(PosterWorkbenchPage);
 
-    const seeded = TEMPLATES_BY_MODE.poster.find(
-      (template) => template.id === preview.starterTemplateId
-    ).layers.length;
-
-    expect(canvasNamed(PRODUCTS.poster, seeded)).toBeInTheDocument();
-
-    // 3. Their words are on a real, editable layer.
+    // 3. The same idea, starring the same kid, as real editable layers.
+    const ideas = within(inspectorPanel()).getByRole('group', {
+      name: 'Ideas',
+    });
+    expect(
+      within(ideas).getByRole('button', { name: 'Bedroom door' })
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(
+      within(inspectorPanel()).getByRole('button', { name: 'Select Zuri' })
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Layers (2)' }));
     expect(
-      within(inspectorPanel()).getByRole('button', {
-        name: /MAYA THE BRAVE/,
-      })
+      within(inspectorPanel()).getByRole('button', { name: /Zuri's Room/ })
     ).toBeInTheDocument();
   });
 });

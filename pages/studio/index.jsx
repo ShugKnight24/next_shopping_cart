@@ -256,9 +256,9 @@ export default function StudioPage() {
               A Taste of Each Creation Suite
             </h2>
             <p className={styles.sectionSubtitle}>
-              Change a few things and watch the proof update. When you want
-              layers, templates and full print control, open the bespoke
-              designer — whatever you have made comes with you.
+              Pick your star, name them and choose an idea, and watch the proof
+              update. When you want the whole cast, every page and full print
+              control, open the designer — whatever you made comes with you.
             </p>
           </div>
 
@@ -269,8 +269,9 @@ export default function StudioPage() {
                 product={preview.product}
                 templateMode={preview.templateMode}
                 drawSubstrate={preview.drawSubstrate}
-                starterTemplateId={preview.starterTemplateId}
-                fields={preview.fields}
+                ideas={preview.ideas}
+                ideaLabel={preview.ideaLabel}
+                swatch={preview.swatch}
                 eyebrow={preview.eyebrow}
                 headline={preview.headline}
                 blurb={preview.blurb}

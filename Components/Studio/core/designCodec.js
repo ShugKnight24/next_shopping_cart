@@ -78,6 +78,9 @@ export const encodeDesign = (doc) => {
         ...(doc.meta?.slots && Object.keys(doc.meta.slots).length
           ? { s: doc.meta.slots }
           : {}),
+        // …or an idea and the kid who stars in it (see StudioPreview).
+        ...(doc.meta?.idea ? { idea: doc.meta.idea } : {}),
+        ...(doc.meta?.hero ? { h: doc.meta.hero } : {}),
       })
     );
   } catch {
@@ -94,7 +97,12 @@ export const decodeDesign = (encoded) => {
       mode: raw.m,
       options: raw.o,
       layers: (raw.l ?? []).map(unpackLayer),
-      meta: { template: raw.tpl ?? null, slots: raw.s ?? null },
+      meta: {
+        template: raw.tpl ?? null,
+        slots: raw.s ?? null,
+        idea: raw.idea ?? null,
+        hero: raw.h ?? null,
+      },
     });
   } catch {
     return null;
