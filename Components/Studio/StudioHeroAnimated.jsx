@@ -192,7 +192,7 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                     key={i}
                     src={src}
                     alt=""
-                    style={{ height }}
+                    style={{ '--h': `${height}px` }}
                     draggable={false}
                   />
                 ))}
