@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { TileGrid } from '../cast/CastArt';
 import { SCENE_ENVIRONMENTS, TIME_OF_DAY_OPTIONS } from '../sceneEnvironments';
-import { CATALOG } from '../starters/catalog';
+import { CATALOG, productById } from '../starters/catalog';
 import {
   CastOnDesign,
   IdeaPicker,
@@ -12,7 +12,12 @@ import {
   SceneThumb,
 } from '../workbench/DesignPanel';
 import { createLayer } from '../workbench/layerModel';
-import { SegmentedControl, TextAreaField } from '../workbench/WorkbenchFields';
+import { paintLayers } from '../workbench/renderLayers';
+import {
+  SegmentedControl,
+  TextAreaField,
+  TextField,
+} from '../workbench/WorkbenchFields';
 import { InspectorSection, WorkbenchButton } from '../workbench/WorkbenchShell';
 import {
   BACKDROPS,
@@ -49,6 +54,123 @@ export const retint = (layers, fromTheme, toTheme) => {
     });
     return next;
   });
+};
+
+/** "summer, #drops sale" → "#summer #drops #sale". */
+export const formatHashtags = (raw) =>
+  String(raw ?? '')
+    .split(/[\s,#]+/)
+    .filter(Boolean)
+    .map((tag) => `#${tag}`)
+    .join(' ');
+
+/** What gets pasted into the post: the caption, then its hashtags. */
+export const postText = (caption, hashtags) =>
+  [caption?.trim(), formatHashtags(hashtags)].filter(Boolean).join('\n\n');
+
+const priceText = (product) => `$${product.price.toLocaleString('en-US')}`;
+
+/**
+ * Feature a product. If the post already shows one, it is swapped in place,
+ * along with any words that named it or gave its price; otherwise a photo,
+ * name and price are added.
+ */
+export const featureProduct = (layers, product, { artboard, pal }) => {
+  const shown = layers.find((l) => l.type === 'image' && l.productId);
+  if (shown) {
+    const old = productById(shown.productId);
+    return {
+      layers: layers.map((l) => {
+        if (l.id === shown.id)
+          return {
+            ...l,
+            src: product.image,
+            name: product.productName,
+            productId: product.itemid,
+          };
+        if (l.type !== 'text' || !old) return l;
+        if (l.text === old.productName)
+          return { ...l, text: product.productName };
+        if (l.text === priceText(old))
+          return { ...l, text: priceText(product) };
+        return l;
+      }),
+      selectId: shown.id,
+    };
+  }
+
+  const { width: w, height: h } = artboard;
+  const size = Math.min(w, h) * 0.5;
+  const added = [
+    createLayer('image', {
+      name: product.productName,
+      src: product.image,
+      fit: 'contain',
+      radius: 18,
+      productId: product.itemid,
+      x: w / 2,
+      y: h * 0.5,
+      width: size,
+      height: size,
+    }),
+    createLayer('text', {
+      name: 'Product name',
+      slotRole: 'subtitle',
+      text: product.productName,
+      x: w / 2,
+      y: h * 0.5 + size / 2 + 30,
+      width: w * 0.84,
+      height: 44,
+      fontSize: 22,
+      fontFamily: 'serif',
+      fontWeight: 700,
+      color: pal.text,
+      colorRole: 'text',
+    }),
+    createLayer('text', {
+      name: 'Price',
+      slotRole: 'badge',
+      text: priceText(product),
+      x: w / 2,
+      y: h * 0.5 + size / 2 + 66,
+      width: w * 0.5,
+      height: 36,
+      fontSize: 22,
+      fontFamily: 'sans',
+      fontWeight: 800,
+      color: pal.accent,
+      colorRole: 'accent',
+    }),
+  ];
+  return { layers: [...layers, ...added], selectId: added[0].id };
+};
+
+/** The post as it lands in a feed: the picture, then the words under it. */
+const FeedPreview = ({ artboard, layers, cast, options, drawSubstrate }) => (
+  <div className={panelStyles.phone}>
+    <div className={panelStyles.phoneScreen}>
+      <LivePreview
+        width={artboard.width}
+        height={artboard.height}
+        deps={[layers, options, cast, artboard]}
+        draw={(ctx, width, height) => {
+          drawSubstrate(ctx, { width, height, config: options });
+          paintLayers(ctx, { layers, cast, artboard });
+        }}
+      />
+      <p className={panelStyles.feedCaption}>
+        {postText(options.caption, options.hashtags) || 'Your caption'}
+      </p>
+    </div>
+  </div>
+);
+
+FeedPreview.propTypes = {
+  artboard: PropTypes.object.isRequired,
+  layers: PropTypes.array.isRequired,
+  cast: PropTypes.array,
+  options: PropTypes.object.isRequired,
+  drawSubstrate: PropTypes.func.isRequired,
 };
 
 const FormatArt = ({ ratio }) => {
@@ -112,9 +234,12 @@ export const SocialPanel = ({
   editMember,
   placeOnPage,
   applyIdea,
+  announce = () => {},
 }) => {
   const [allProducts, setAllProducts] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
+  const [showFeed, setShowFeed] = useState(false);
   const pal = socialPalette(options.theme);
 
   const setTheme = (theme) =>
@@ -123,69 +248,44 @@ export const SocialPanel = ({
       layers: retint(layers, doc.theme ?? options.theme, theme),
     }));
 
-  /** A product photo, its name and its price, as one undo step. */
+  /** Feature a product, as one undo step. */
   const feature = (product) => {
-    const { width: w, height: h } = artboard;
-    const size = Math.min(w, h) * 0.5;
-    const layers = [
-      createLayer('image', {
-        name: product.productName,
-        src: product.image,
-        fit: 'contain',
-        radius: 18,
-        productId: product.itemid,
-        x: w / 2,
-        y: h * 0.5,
-        width: size,
-        height: size,
-      }),
-      createLayer('text', {
-        name: 'Product name',
-        slotRole: 'subtitle',
-        text: product.productName,
-        x: w / 2,
-        y: h * 0.5 + size / 2 + 30,
-        width: w * 0.84,
-        height: 44,
-        fontSize: 22,
-        fontFamily: 'serif',
-        fontWeight: 700,
-        color: pal.text,
-        colorRole: 'text',
-      }),
-      createLayer('text', {
-        name: 'Price',
-        slotRole: 'badge',
-        text: `$${product.price.toLocaleString('en-US')}`,
-        x: w / 2,
-        y: h * 0.5 + size / 2 + 66,
-        width: w * 0.5,
-        height: 36,
-        fontSize: 22,
-        fontFamily: 'sans',
-        fontWeight: 800,
-        color: pal.accent,
-        colorRole: 'accent',
-      }),
-    ];
-    workbench.transact(({ layers: current }) => ({
-      layers: [...current, ...layers],
-    }));
-    workbench.select(layers[0].id);
+    const shown = workbench.layers.find(
+      (l) => l.type === 'image' && l.productId
+    );
+    const old = shown && productById(shown.productId);
+    const next = featureProduct(workbench.layers, product, { artboard, pal });
+    workbench.transact(() => ({ layers: next.layers }));
+    workbench.select(next.selectId);
+    announce(`${product.productName} featured.`);
     if (!options.caption)
       setOption(
         'caption',
         `${product.productName} by ${product.manufacturer}. Shop it now at Cart Commerce.`
       );
+    // A caption that named the old product now names the new one.
+    else if (old && options.caption.includes(old.productName))
+      setOption(
+        'caption',
+        options.caption.split(old.productName).join(product.productName)
+      );
   };
 
   const copyCaption = async () => {
     try {
-      await navigator.clipboard.writeText(options.caption ?? '');
+      await navigator.clipboard.writeText(
+        postText(options.caption, options.hashtags)
+      );
+      setCopyFailed(false);
       setCopied(true);
+      announce('Caption and hashtags copied.');
       setTimeout(() => setCopied(false), 1800);
     } catch {
+      // No clipboard (plain HTTP, permission denied): say so, and leave the
+      // text where it can be selected and copied by hand.
       setCopied(false);
+      setCopyFailed(true);
+      announce('Could not copy. Select the caption and copy it yourself.');
     }
   };
 
@@ -317,13 +417,53 @@ export const SocialPanel = ({
             setOptions((c) => ({ ...c, caption }), { commit: false })
           }
         />
+        <TextField
+          label="Hashtags"
+          value={options.hashtags ?? ''}
+          placeholder="summer, drops, sale"
+          hint={formatHashtags(options.hashtags) || null}
+          onChange={(hashtags) =>
+            setOptions((c) => ({ ...c, hashtags }), { commit: false })
+          }
+        />
         <WorkbenchButton
           variant="subtle"
           onClick={copyCaption}
-          disabled={!options.caption}
+          disabled={!options.caption && !options.hashtags}
         >
-          {copied ? 'Copied' : 'Copy caption'}
+          {copied ? 'Copied' : 'Copy caption and hashtags'}
         </WorkbenchButton>
+        {copyFailed && (
+          <Note>
+            Copying is blocked here. Select the text below and copy it yourself.
+          </Note>
+        )}
+        {copyFailed && (
+          <textarea
+            className={panelStyles.copyFallback}
+            readOnly
+            rows={4}
+            aria-label="Caption and hashtags to copy"
+            value={postText(options.caption, options.hashtags)}
+            onFocus={(event) => event.target.select()}
+          />
+        )}
+        <WorkbenchButton
+          variant="subtle"
+          aria-pressed={showFeed}
+          onClick={() => setShowFeed((v) => !v)}
+        >
+          {showFeed ? 'Hide the feed preview' : 'Preview in a feed'}
+        </WorkbenchButton>
+        {showFeed && (
+          <FeedPreview
+            artboard={artboard}
+            layers={workbench.layers}
+            cast={cast}
+            options={options}
+            drawSubstrate={drawSubstrate}
+          />
+        )}
       </InspectorSection>
     </>
   );
@@ -341,4 +481,5 @@ SocialPanel.propTypes = {
   editMember: PropTypes.func.isRequired,
   placeOnPage: PropTypes.func.isRequired,
   applyIdea: PropTypes.func.isRequired,
+  announce: PropTypes.func,
 };

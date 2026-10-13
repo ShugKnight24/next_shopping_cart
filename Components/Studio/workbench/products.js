@@ -392,6 +392,7 @@ export const PRODUCTS = {
       sceneId: null,
       timeOfDay: 'day',
       caption: '',
+      hashtags: 'cartcommerce curated newdrop',
     },
     artboard: (options) => artboardFor(formatById(options.format).ratio, 620),
     exportWidth: (options) => formatById(options.format).exportWidth,

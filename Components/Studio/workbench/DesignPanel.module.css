@@ -157,3 +157,39 @@
   border-radius: 50%;
   box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
 }
+
+/* Social: the post in a phone, as it lands in a feed. */
+.phone {
+  padding: 10px 8px 14px;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: var(--wb-radius-lg);
+  background: var(--wb-chrome-sunken);
+}
+
+.phoneScreen {
+  overflow: hidden;
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-raised);
+}
+
+.feedCaption {
+  margin: 0;
+  padding: 8px 10px 10px;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--wb-text);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.copyFallback {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text);
+  font: inherit;
+  font-size: 0.78rem;
+  resize: vertical;
+}

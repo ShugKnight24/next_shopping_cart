@@ -595,6 +595,7 @@ export const WorkbenchRoute = ({
                 placeOnPage,
                 applyIdea: applyStarter,
                 addPiece,
+                announce: design.announce,
               })}
             >
               {product.digital ? (

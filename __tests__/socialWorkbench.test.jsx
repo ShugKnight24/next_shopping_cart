@@ -1,12 +1,19 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { retint } from '../Components/Studio/social/SocialPanel';
+import {
+  featureProduct,
+  formatHashtags,
+  postText,
+  retint,
+} from '../Components/Studio/social/SocialPanel';
 import { socialPalette } from '../Components/Studio/social/socialArt';
+import { CATALOG } from '../Components/Studio/starters/catalog';
 import { relayout } from '../Components/Studio/starters/starters';
 import { refitLayer } from '../Components/Studio/workbench/layerModel';
 import { PRODUCTS } from '../Components/Studio/workbench/products';
 import { ToastProvider } from '../Components/UI/Toast';
 import { CartProvider } from '../context/CartProvider';
+import products from '../data/products.json';
 import SocialWorkbenchPage from '../pages/studio/social';
 
 /**
@@ -103,15 +110,96 @@ describe('social post designer', () => {
     expect(screen.getByText('Square post · 1080 × 1080')).toBeInTheDocument();
   });
 
-  it('features a store product as photo, name and price in one step', () => {
+  it('swaps the featured product in place, as one undo step', () => {
     renderSocial();
     const before = layerCount();
     fireEvent.click(
-      within(aside()).getAllByRole('button', { name: /^Feature / })[0]
+      within(aside()).getAllByRole('button', { name: /^Feature / })[1]
     );
-    expect(layerCount()).toBe(before + 3);
-    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    // The opening idea already shows a product, so it is replaced, not stacked.
     expect(layerCount()).toBe(before);
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
+  });
+
+  it('renames the product in the caption when another is featured', () => {
+    renderSocial();
+    const caption = () => within(aside()).getByLabelText('Post caption');
+    expect(caption().value).toContain('Air Jordan 1');
+
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: /^Feature SM58/ })
+    );
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Design settings' })
+    );
+
+    expect(caption().value).toContain('SM58');
+    expect(caption().value).not.toContain('Air Jordan 1');
+  });
+
+  it('copies the caption with its hashtags and announces it', async () => {
+    const writeText = vi.fn().mockResolvedValue();
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
+    renderSocial();
+
+    fireEvent.change(within(aside()).getByLabelText('Hashtags'), {
+      target: { value: 'summer, drops' },
+    });
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Copy caption and hashtags' })
+    );
+
+    await screen.findByRole('button', { name: 'Copied' });
+    expect(writeText.mock.calls[0][0]).toMatch(/#summer #drops$/);
+    vi.unstubAllGlobals();
+  });
+
+  it('offers the text to copy by hand when the clipboard is blocked', async () => {
+    vi.stubGlobal('navigator', {
+      ...navigator,
+      clipboard: { writeText: vi.fn().mockRejectedValue(new Error('denied')) },
+    });
+    renderSocial();
+
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Copy caption and hashtags' })
+    );
+
+    expect(
+      await within(aside()).findByLabelText('Caption and hashtags to copy')
+    ).toBeInTheDocument();
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('featuring products', () => {
+  const artboard = { width: 1080, height: 1080 };
+  const pal = socialPalette('obsidian');
+  const [first, second] = CATALOG;
+
+  it('adds a photo, name and price to a post without one', () => {
+    const { layers } = featureProduct([], first, { artboard, pal });
+    expect(layers.map((l) => l.type)).toEqual(['image', 'text', 'text']);
+  });
+
+  it('swaps the photo, name and price of the product already shown', () => {
+    const { layers: once } = featureProduct([], first, { artboard, pal });
+    const { layers: twice } = featureProduct(once, second, { artboard, pal });
+
+    expect(twice).toHaveLength(3);
+    expect(twice[0].productId).toBe(second.itemid);
+    expect(twice[1].text).toBe(second.productName);
+    expect(twice[2].text).toContain(second.price.toLocaleString('en-US'));
+  });
+
+  it('can feature every product in the store', () => {
+    expect(CATALOG.length).toBe(products.length);
+  });
+
+  it('formats hashtags and joins them under the caption', () => {
+    expect(formatHashtags('summer, #drops  sale')).toBe('#summer #drops #sale');
+    expect(postText('Hello', 'a b')).toBe('Hello\n\n#a #b');
+    expect(postText('', 'a')).toBe('#a');
   });
 });
 
