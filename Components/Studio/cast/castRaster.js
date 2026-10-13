@@ -58,6 +58,8 @@ export const imageForSvg = (key, svg) => {
   return entry.ready ? entry.img : null;
 };
 
+const URL_RETRY_MS = 5000;
+
 /**
  * A decoded photo for an image layer (a product shot, an upload), or null
  * while it loads. Other origins are asked for CORS, so a photo that would
@@ -67,6 +69,11 @@ export const imageForUrl = (src) => {
   if (!src) return null;
   const key = `url:${src}`;
   let entry = images.get(key);
+  // A failed photo is tried again after a pause, not on every paint.
+  if (entry?.failedAt && Date.now() - entry.failedAt > URL_RETRY_MS) {
+    images.delete(key);
+    entry = null;
+  }
   if (!entry) {
     if (typeof Image === 'undefined') return null;
     const img = new Image();
@@ -78,7 +85,7 @@ export const imageForUrl = (src) => {
       broadcast();
     };
     img.onerror = () => {
-      entry.failed = true;
+      entry.failedAt = Date.now();
     };
     img.src = src;
   }
