@@ -463,3 +463,27 @@
     display: none;
   }
 }
+
+/* The guides are buttons; drop the browser's button chrome. */
+button.characterGuide {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+button.characterGuide:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

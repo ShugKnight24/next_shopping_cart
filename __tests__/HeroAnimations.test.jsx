@@ -5,6 +5,7 @@ import { HeroAnimationSwitcher } from '../Components/Hero/HeroAnimationSwitcher'
 import { Isometric3DHero } from '../Components/Hero/Isometric3DHero';
 import { VaultAnimation } from '../Components/Hero/VaultAnimation';
 import { WebGLCosmicHero } from '../Components/Hero/WebGLCosmicHero';
+import { StudioHeroAnimated } from '../Components/Studio/StudioHeroAnimated';
 
 describe('Hero Animations & Interactive Switcher', () => {
   describe('HeroAnimationSwitcher', () => {
@@ -147,6 +148,18 @@ describe('Hero Animations & Interactive Switcher', () => {
       // Switch to gold dust
       fireEvent.click(screen.getByText('Gold Dust'));
       expect(screen.getByText(/Gold Dust · WebGL/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('StudioHeroAnimated', () => {
+    it('lets keyboard users hear each guide', () => {
+      render(<StudioHeroAnimated />);
+      const leo = screen.getByRole('button', { name: 'Leo The Story Lion' });
+
+      fireEvent.focus(leo);
+
+      expect(leo).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByText(/^Leo: /, { selector: 'p' })).toBeInTheDocument();
     });
   });
 });

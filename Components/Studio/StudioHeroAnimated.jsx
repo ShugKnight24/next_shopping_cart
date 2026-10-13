@@ -140,11 +140,19 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
 
           {/* Mascots Guiding the Child Avatar */}
           <div className={styles.mascotScene}>
+            {/* The bubbles are visual; this reads the open one aloud. */}
+            <p className={styles.srOnly} aria-live="polite">
+              {MASCOT_QUOTES[activeSpeech]}
+            </p>
             {/* Guide 1: Leo The Story Lion */}
-            <div
+            <button
+              type="button"
               className={`${styles.characterGuide} ${styles.mascotLeo}`}
               onMouseEnter={() => setActiveSpeech('leo')}
+              onFocus={() => setActiveSpeech('leo')}
               onClick={() => setActiveSpeech('leo')}
+              aria-pressed={activeSpeech === 'leo'}
+              aria-label="Leo The Story Lion"
               title="Leo The Story Lion"
             >
               {activeSpeech === 'leo' && (
@@ -153,13 +161,17 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                 </div>
               )}
               <LeoSvg size={96} />
-            </div>
+            </button>
 
             {/* Guide 2: Luna The Shepherd */}
-            <div
+            <button
+              type="button"
               className={`${styles.characterGuide} ${styles.mascotLuna}`}
               onMouseEnter={() => setActiveSpeech('luna')}
+              onFocus={() => setActiveSpeech('luna')}
               onClick={() => setActiveSpeech('luna')}
+              aria-pressed={activeSpeech === 'luna'}
+              aria-label="Luna The Cosmic Shepherd"
               title="Luna The Cosmic Shepherd"
             >
               {activeSpeech === 'luna' && (
@@ -168,13 +180,17 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                 </div>
               )}
               <LunaSvg size={102} />
-            </div>
+            </button>
 
             {/* Central Star: The Child Avatar seated with glowing book */}
-            <div
+            <button
+              type="button"
               className={`${styles.characterGuide} ${styles.childHero}`}
               onMouseEnter={() => setActiveSpeech('child')}
+              onFocus={() => setActiveSpeech('child')}
               onClick={() => setActiveSpeech('child')}
+              aria-pressed={activeSpeech === 'child'}
+              aria-label="Hero Child Creator"
               title="Hero Child Creator"
             >
               {activeSpeech === 'child' && (
@@ -198,13 +214,17 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                   />
                 ))}
               </div>
-            </div>
+            </button>
 
             {/* Guide 3: Finley The Starlight Fox */}
-            <div
+            <button
+              type="button"
               className={`${styles.characterGuide} ${styles.mascotFinley}`}
               onMouseEnter={() => setActiveSpeech('finley')}
+              onFocus={() => setActiveSpeech('finley')}
               onClick={() => setActiveSpeech('finley')}
+              aria-pressed={activeSpeech === 'finley'}
+              aria-label="Finley The Starlight Fox"
               title="Finley The Starlight Fox"
             >
               {activeSpeech === 'finley' && (
@@ -213,13 +233,17 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                 </div>
               )}
               <FoxSvg size={98} />
-            </div>
+            </button>
 
             {/* Guide 4: Carty The Courier */}
-            <div
+            <button
+              type="button"
               className={`${styles.characterGuide} ${styles.mascotCarty}`}
               onMouseEnter={() => setActiveSpeech('carty')}
+              onFocus={() => setActiveSpeech('carty')}
               onClick={() => setActiveSpeech('carty')}
+              aria-pressed={activeSpeech === 'carty'}
+              aria-label="Carty The Courier"
               title="Carty The Courier"
             >
               {activeSpeech === 'carty' && (
@@ -228,7 +252,7 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
                 </div>
               )}
               <CartySvg size={96} />
-            </div>
+            </button>
           </div>
 
           {/* Drafting Table Front Edge */}
