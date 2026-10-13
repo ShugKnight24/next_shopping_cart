@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
+import { PauseIcon, PlayIcon } from '../Icons';
 import { ProductArt } from './heroArt';
 import styles from './Isometric3DHero.module.css';
 
@@ -262,7 +263,7 @@ export function Isometric3DHero({ className }) {
             onClick={() => setPaused((p) => !p)}
             aria-label={paused ? 'Play the gallery' : 'Pause the gallery'}
           >
-            {paused ? '▶' : '❚❚'}
+            {paused ? <PlayIcon size={14} /> : <PauseIcon size={14} />}
           </button>
         )}
       </div>
