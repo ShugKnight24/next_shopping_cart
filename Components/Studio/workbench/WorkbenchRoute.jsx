@@ -547,7 +547,16 @@ export const WorkbenchRoute = ({
           {panel === 'inspector' && (
             <Inspector
               workbench={workbench}
-              context={cast ? { cast, onEditMember: editMember } : null}
+              context={
+                cast
+                  ? {
+                      cast,
+                      onEditMember: editMember,
+                      pageLayers: workbench.layers,
+                      selectLayer: workbench.select,
+                    }
+                  : null
+              }
               settingsLabel={
                 templateMode === 'book' ? 'Page settings' : 'Design settings'
               }

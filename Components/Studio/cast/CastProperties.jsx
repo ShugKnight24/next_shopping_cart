@@ -135,6 +135,18 @@ export const CharacterProperties = ({ layer, set, context }) => {
           }))}
           value={layer.castId}
           onChange={(castId) => {
+            // One of each person per page: if they are already here, go to
+            // them rather than make a second copy.
+            const here = context?.pageLayers?.find(
+              (l) =>
+                l.type === 'character' &&
+                l.castId === castId &&
+                l.id !== layer.id
+            );
+            if (here) {
+              context.selectLayer?.(here.id);
+              return;
+            }
             const next = memberById(cast, castId);
             const prev = artForLayer(layer, member);
             const art = artForLayer(layer, next);

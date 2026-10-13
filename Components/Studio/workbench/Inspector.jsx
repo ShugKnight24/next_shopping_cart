@@ -677,6 +677,10 @@ export const Inspector = ({
           <WorkbenchButton
             variant="subtle"
             onClick={() => duplicate(selection.id)}
+            disabled={Boolean(selection.castId)}
+            title={
+              selection.castId ? 'Each person appears once per page' : undefined
+            }
           >
             Duplicate
           </WorkbenchButton>

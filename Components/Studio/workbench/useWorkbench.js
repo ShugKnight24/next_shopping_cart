@@ -197,7 +197,8 @@ export const useWorkbench = ({
   const duplicate = useCallback(
     (id) => {
       const source = layers.find((l) => l.id === id);
-      if (!source) return null;
+      // A cast member appears once per page, so a person is not copied.
+      if (!source || source.castId) return null;
 
       const copy = duplicateLayer(source);
       update((current) => [...current, copy]);

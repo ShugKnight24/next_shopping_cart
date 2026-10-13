@@ -107,6 +107,38 @@ describe('storybook cast editor', () => {
     ).toBeInTheDocument();
   });
 
+  it('keeps each person to one copy per page', () => {
+    renderBook();
+    const onPage = () =>
+      within(aside())
+        .getByRole('heading', { name: 'On this page' })
+        .closest('section');
+    const people = () =>
+      within(onPage())
+        .getAllByRole('button', { name: /^Select / })
+        .map((b) => b.getAttribute('aria-label') ?? b.textContent);
+    const before = people();
+    expect(before.length).toBeGreaterThan(1);
+
+    fireEvent.click(within(onPage()).getByRole('button', { name: before[0] }));
+    expect(
+      within(aside()).getByRole('button', { name: 'Duplicate' })
+    ).toBeDisabled();
+
+    // Re-cast this layer as someone already on the page: no second copy.
+    const other = before[1].replace(/^Select /, '');
+    fireEvent.click(
+      within(within(aside()).getByRole('group', { name: 'Who is this?' })).getByRole(
+        'button',
+        { name: other }
+      )
+    );
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Page settings' })
+    );
+    expect(people()).toEqual(before);
+  });
+
   it('turns pages, each with its own layers, and adds new ones', () => {
     renderBook();
     const pages = screen.getByRole('navigation', { name: 'Pages' });
