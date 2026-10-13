@@ -88,20 +88,45 @@ export const encodeDesign = (doc) => {
   }
 };
 
+// `?d=` arrives from anywhere: keep only the shapes the editors expect.
+const MAX_DECODED_LAYERS = 300;
+const isObject = (value) =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+const stringOrNull = (value, max = 80) =>
+  typeof value === 'string' ? value.slice(0, max) : null;
+
+const decodeHero = (hero) =>
+  isObject(hero) && typeof hero.look === 'string'
+    ? {
+        look: hero.look,
+        ...(typeof hero.name === 'string'
+          ? { name: hero.name.slice(0, 40) }
+          : {}),
+      }
+    : null;
+
 export const decodeDesign = (encoded) => {
   if (!encoded) return null;
   try {
     const raw = JSON.parse(fromBase64Url(encoded));
+    if (!isObject(raw)) return null;
+    const layers = Array.isArray(raw.l) ? raw.l : [];
     return migrateDesignDoc({
       v: raw.v,
-      mode: raw.m,
-      options: raw.o,
-      layers: (raw.l ?? []).map(unpackLayer),
+      mode: stringOrNull(raw.m),
+      options: isObject(raw.o) ? raw.o : {},
+      layers: layers
+        .slice(0, MAX_DECODED_LAYERS)
+        .filter(
+          (layer) =>
+            isObject(layer) && (layer.t == null || typeof layer.t === 'string')
+        )
+        .map(unpackLayer),
       meta: {
-        template: raw.tpl ?? null,
-        slots: raw.s ?? null,
-        idea: raw.idea ?? null,
-        hero: raw.h ?? null,
+        template: stringOrNull(raw.tpl),
+        slots: isObject(raw.s) ? raw.s : null,
+        idea: stringOrNull(raw.idea),
+        hero: decodeHero(raw.h),
       },
     });
   } catch {
