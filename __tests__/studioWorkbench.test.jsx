@@ -273,9 +273,11 @@ describe('preview handoff', () => {
       screen.getByRole('img', { name: /starring Zuri: Bedroom door/ })
     ).toBeInTheDocument();
 
-    const href = screen
-      .getByRole('link', { name: /Continue in the full designer/i })
-      .getAttribute('href');
+    const link = screen.getByRole('link', {
+      name: /Continue in the full designer/i,
+    });
+    const href = link.getAttribute('href');
+    fireEvent.click(link);
 
     cleanup();
 

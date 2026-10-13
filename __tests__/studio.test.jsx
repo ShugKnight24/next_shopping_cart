@@ -184,7 +184,8 @@ describe('Studio launcher page', () => {
     // so the idea has to actually resolve.
     expect(STARTERS.poster.map((s) => s.id)).toContain(doc.meta.idea);
     expect(doc.meta.idea).toBe('adventure');
-    expect(doc.meta.hero).toEqual({ look: 'zara', name: 'Mira' });
+    // The child's name stays out of the URL.
+    expect(doc.meta.hero).toEqual({ look: 'zara' });
     expect(doc.layers).toEqual([]);
   });
 

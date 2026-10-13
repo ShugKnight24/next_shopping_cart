@@ -138,10 +138,38 @@ export const castStarring = (lookId, name = null) => {
       ? {
           ...createPerson('kid', kid.look),
           id: 'cast-hero',
-          name: name?.trim() || kid.name,
+          // A decoded `?d=` link can carry anything here.
+          name:
+            (typeof name === 'string' && name.trim().slice(0, 40)) || kid.name,
         }
       : member
   );
+};
+
+/*
+ * A child's name is personal, so the studio preview does not put it in the
+ * designer link (URLs land in logs, history and Referer headers). It rides
+ * in sessionStorage for one handoff instead.
+ */
+const HANDOFF_NAME_KEY = 'studio.handoffName';
+
+export const stashHandoffName = (name) => {
+  try {
+    if (name) sessionStorage.setItem(HANDOFF_NAME_KEY, name);
+    else sessionStorage.removeItem(HANDOFF_NAME_KEY);
+  } catch {
+    // Storage blocked: the designer falls back to the kid's own name.
+  }
+};
+
+export const takeHandoffName = () => {
+  try {
+    const name = sessionStorage.getItem(HANDOFF_NAME_KEY);
+    sessionStorage.removeItem(HANDOFF_NAME_KEY);
+    return name;
+  } catch {
+    return null;
+  }
 };
 
 export const memberById = (cast, id) => cast?.find((m) => m.id === id) ?? null;

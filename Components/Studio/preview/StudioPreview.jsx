@@ -2,7 +2,12 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PersonImage } from '../cast/CastArt';
-import { castStarring, KID_LOOKS, kidLookById } from '../cast/castModel';
+import {
+  castStarring,
+  KID_LOOKS,
+  kidLookById,
+  stashHandoffName,
+} from '../cast/castModel';
 import { onRasterReady } from '../cast/castRaster';
 import { encodeDesign } from '../core/designCodec';
 import { DESIGN_SCHEMA_VERSION } from '../core/designDoc';
@@ -132,10 +137,10 @@ export const StudioPreview = ({
       mode: product.mode,
       options,
       layers: [],
-      meta: { idea: starter.id, hero: { look, name: name.trim() } },
+      meta: { idea: starter.id, hero: { look } },
     });
     return encoded ? `${product.route}?d=${encoded}` : product.route;
-  }, [product, options, starter, look, name]);
+  }, [product, options, starter, look]);
 
   const heroName = name.trim() || kidLookById(look).name;
 
@@ -246,7 +251,11 @@ export const StudioPreview = ({
               ))}
             </ul>
 
-            <Link href={continueHref} className={styles.continueBtn}>
+            <Link
+              href={continueHref}
+              className={styles.continueBtn}
+              onClick={() => stashHandoffName(name.trim())}
+            >
               Continue in the full designer
             </Link>
 

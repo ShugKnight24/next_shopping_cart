@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { artForLayer, castStarring, placeMember } from '../cast/castModel';
+import {
+  artForLayer,
+  castStarring,
+  placeMember,
+  takeHandoffName,
+} from '../cast/castModel';
 import { CastPanel } from '../cast/CastPanel';
 import { SceneryPanel } from '../cast/CastProperties';
 import { ADULT_HEIGHT } from '../cast/castRig';
@@ -233,7 +238,10 @@ export const WorkbenchRoute = ({
         const built = buildStarter(templateMode, starter, {
           artboard: product.artboard(options),
           options,
-          cast: castStarring(doc.meta.hero?.look, doc.meta.hero?.name),
+          cast: castStarring(
+            doc.meta.hero?.look,
+            doc.meta.hero?.name ?? takeHandoffName()
+          ),
         });
         return {
           ...doc,
