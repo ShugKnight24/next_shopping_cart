@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useRef } from 'react';
+import { sameCastArt } from '../cast/castModel';
 import { onRasterReady } from '../cast/castRaster';
+import { omit, useStable } from '../core/useStable';
 import { paintLayers } from '../workbench/renderLayers';
 import {
   activeSpreadOf,
@@ -94,6 +96,10 @@ export const PageStrip = ({
   cast,
 }) => {
   const spreads = useMemo(() => options.spreads ?? [], [options.spreads]);
+  // What a page's paper looks like, kept stable across page turns and cast
+  // edits, so a thumbnail repaints only when its own page changes.
+  const paper = useStable(omit(options, ['activeSpread', 'cast']));
+  const castArt = useStable(cast, sameCastArt);
   const firstStory = spreads.find((s) => s.kind === 'story')?.id;
   const all = workbench.allLayers ?? workbench.layers;
 
@@ -166,11 +172,11 @@ export const PageStrip = ({
               >
                 <SpreadThumb
                   spread={spread}
-                  options={options}
+                  options={paper}
                   artboard={artboard}
                   drawSubstrate={drawSubstrate}
                   layers={bySpread.get(spread.id)}
-                  cast={cast}
+                  cast={castArt}
                 />
                 <span className={styles.label}>{label}</span>
               </button>

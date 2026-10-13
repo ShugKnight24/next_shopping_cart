@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useMemo, useRef } from 'react';
 import styles from '../book/PageStrip.module.css';
 import { onRasterReady } from '../cast/castRaster';
+import { useSettled } from '../core/useStable';
 import { refitLayer } from './layerModel';
 import { paintLayers } from './renderLayers';
 
@@ -104,6 +105,9 @@ export const VariantStrip = ({
   cast,
   fitLayers = refitAll,
 }) => {
+  // The other formats catch up once a drag pauses: refitting every layer
+  // for four boards on each pointer move would cost a frame per move.
+  const settled = useSettled(workbench.layers, 120);
   // Stable per variant until an option changes, so a drag repaints the
   // thumbnails without rebuilding their configs.
   const entries = useMemo(
@@ -136,7 +140,7 @@ export const VariantStrip = ({
                   config={config}
                   board={board}
                   from={artboard}
-                  layers={workbench.layers}
+                  layers={settled}
                   drawSubstrate={drawSubstrate}
                   cast={cast}
                   fitLayers={fitLayers}

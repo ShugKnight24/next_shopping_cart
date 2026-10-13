@@ -172,6 +172,17 @@ export const takeHandoffName = () => {
   }
 };
 
+/** Everything about a member that shows in art: their look, not their name. */
+const artKey = ({ name: _name, ...look }) => JSON.stringify(look);
+
+/** Two casts that would draw the same (a renamed member draws the same). */
+export const sameCastArt = (a, b) =>
+  a === b ||
+  (Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((member, i) => artKey(member) === artKey(b[i])));
+
 export const memberById = (cast, id) => cast?.find((m) => m.id === id) ?? null;
 
 export const memberName = (member, fallback = 'Someone') =>

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useRef } from 'react';
 import { onRasterReady } from '../cast/castRaster';
+import { omit, useStable } from '../core/useStable';
 import { paintLayers } from '../workbench/renderLayers';
 import { InspectorSection, WorkbenchButton } from '../workbench/WorkbenchShell';
 import styles from './StarterGallery.module.css';
@@ -94,6 +95,11 @@ export const StarterGallery = ({
   limit = null,
   title = 'Start from an idea',
 }) => {
+  // Words typed elsewhere (a caption) and page turns do not change an idea's
+  // picture; without this every idea rebuilds on each keystroke.
+  const look = useStable(
+    omit(options, ['activeSpread', 'caption', 'hashtags'])
+  );
   const all = STARTERS[mode] ?? [];
   const list = limit ? all.slice(0, limit) : all;
   if (!list.length) return null;
@@ -117,7 +123,7 @@ export const StarterGallery = ({
                 mode={mode}
                 starter={starter}
                 artboard={artboard}
-                options={options}
+                options={look}
                 cast={cast}
                 drawSubstrate={drawSubstrate}
               />

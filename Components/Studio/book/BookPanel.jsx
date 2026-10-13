@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { TileGrid } from '../cast/CastArt';
+import { sameCastArt } from '../cast/castModel';
+import { useStable } from '../core/useStable';
 import {
   SCENE_ENVIRONMENTS,
   TIME_OF_DAY_OPTIONS,
@@ -73,6 +75,8 @@ export const BookPanel = ({
   const spreads = options.spreads ?? [];
   const spread = activeSpreadOf(options);
   const cast = options.cast ?? [];
+  // Typing a name must not repaint every moment picture.
+  const castArt = useStable(cast, sameCastArt);
 
   const withSpread = (list, patch) =>
     list.map((s) => (s.id === spread.id ? { ...s, ...patch } : s));
@@ -178,7 +182,7 @@ export const BookPanel = ({
                 art: (
                   <MomentThumb
                     moment={m}
-                    cast={cast}
+                    cast={castArt}
                     artboard={artboard}
                     drawSubstrate={drawSubstrate}
                     options={options}
