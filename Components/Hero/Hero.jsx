@@ -109,25 +109,13 @@ function CartPatternBackground({ className }) {
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const [animationMode, setAnimationMode] = useState('track');
-  const [_mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    });
-  };
-
   return (
-    <section
-      className={`${styles.hero} ${isVisible ? styles.visible : ''}`}
-      onMouseMove={handleMouseMove}
-    >
+    <section className={`${styles.hero} ${isVisible ? styles.visible : ''}`}>
       {/* Cart Pattern Background - animates diagonally */}
       <CartPatternBackground className={styles.cartPatternBg} />
 
