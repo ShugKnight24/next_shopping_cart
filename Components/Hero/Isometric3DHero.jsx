@@ -88,7 +88,9 @@ export function Isometric3DHero({ className }) {
   const [hold, setHold] = useState(false);
   const [visible, setVisible] = useState(true);
   const [reduced, setReduced] = useState(false);
+  const [paused, setPaused] = useState(false);
   const active = mod(step, CARDS.length);
+  const autoPlaying = !paused && !hold && visible && !reduced;
 
   useEffect(() => {
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -110,10 +112,10 @@ export function Isometric3DHero({ className }) {
   }, []);
 
   useEffect(() => {
-    if (hold || !visible || reduced) return undefined;
+    if (!autoPlaying) return undefined;
     const timer = setInterval(() => setStep((s) => s + 1), AUTO_MS);
     return () => clearInterval(timer);
-  }, [hold, visible, reduced]);
+  }, [autoPlaying]);
 
   useEffect(() => () => cancelAnimationFrame(frame.current), []);
 
@@ -233,7 +235,11 @@ export function Isometric3DHero({ className }) {
         >
           ‹
         </button>
-        <span className={styles.caption} aria-live="polite">
+        {/* A rotating caption is only announced when the shopper turns it. */}
+        <span
+          className={styles.caption}
+          aria-live={autoPlaying ? 'off' : 'polite'}
+        >
           <span className={styles.captionSource}>
             {card.source === 'studio'
               ? 'Custom Creation Studio'
@@ -249,6 +255,16 @@ export function Isometric3DHero({ className }) {
         >
           ›
         </button>
+        {!reduced && (
+          <button
+            type="button"
+            className={styles.arrow}
+            onClick={() => setPaused((p) => !p)}
+            aria-label={paused ? 'Play the gallery' : 'Pause the gallery'}
+          >
+            {paused ? '▶' : '❚❚'}
+          </button>
+        )}
       </div>
     </div>
   );

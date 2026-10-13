@@ -83,6 +83,20 @@ describe('Hero Animations & Interactive Switcher', () => {
   });
 
   describe('Isometric3DHero', () => {
+    it('can be paused, and only announces pieces the shopper turns to', () => {
+      const { container } = render(<Isometric3DHero />);
+      const caption = () =>
+        container.querySelector('[aria-live]:not([aria-live="assertive"])');
+
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Pause the gallery' })
+      );
+      expect(
+        screen.getByRole('button', { name: 'Play the gallery' })
+      ).toBeInTheDocument();
+      expect(caption()).toHaveAttribute('aria-live', 'polite');
+    });
+
     it('shows curated pieces next to Studio creations and handles tilt', () => {
       render(<Isometric3DHero />);
       const region = screen.getByRole('region', { name: /Studio gallery/i });
