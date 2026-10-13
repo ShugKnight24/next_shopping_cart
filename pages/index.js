@@ -12,6 +12,7 @@ import { Reasons } from '../Components/Reasons/Reasons';
 import { ShopStory } from '../Components/Scroll3D/ShopStory';
 import { EcommerceSizzleReel } from '../Components/Video/EcommerceSizzleReel';
 import styles from '../styles/pages/Home.module.css';
+import { SITE_URL } from '../utils/site';
 
 const CarouselLoading = () => (
   <div className={styles.carouselLoading}>
@@ -41,11 +42,10 @@ export default function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Cart Commerce',
-    url: 'https://cart-commerce.vercel.app',
+    url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',
-      target:
-        'https://cart-commerce.vercel.app/products?search={search_term_string}',
+      target: `${SITE_URL}/products?search={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   };
@@ -54,7 +54,7 @@ export default function Home() {
     '@context': 'https://schema.org',
     '@type': 'OnlineStore',
     name: 'Cart Commerce',
-    url: 'https://cart-commerce.vercel.app',
+    url: SITE_URL,
     description:
       'Curated destination for authentic sneakers, high-fidelity audio, collectible cards, and premium fitness gear.',
     priceRange: '$$$',
@@ -81,12 +81,12 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+          content={`${SITE_URL}/static/img/og-preview.png`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:image"
-          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+          content={`${SITE_URL}/static/img/og-preview.png`}
         />
         <script
           type="application/ld+json"

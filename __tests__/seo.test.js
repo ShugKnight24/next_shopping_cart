@@ -20,18 +20,20 @@ describe('SEO & Dynamic XML Sitemap', () => {
   it('indexes all static routes with appropriate priority', () => {
     const sitemap = generateSiteMap(mockProducts);
 
-    expect(sitemap).toContain('<loc>https://cart-commerce.vercel.app</loc>');
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/products</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app</loc>'
     );
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/favorites</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app/products</loc>'
     );
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/cart</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app/favorites</loc>'
     );
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/checkout</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app/cart</loc>'
+    );
+    expect(sitemap).toContain(
+      '<loc>https://next-shopping-cart-beta.vercel.app/checkout</loc>'
     );
   });
 
@@ -39,13 +41,13 @@ describe('SEO & Dynamic XML Sitemap', () => {
     const sitemap = generateSiteMap(mockProducts);
 
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/products/JORDAN-4-BRED-REIM</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app/products/JORDAN-4-BRED-REIM</loc>'
     );
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/products/SONY-WH1000XM5</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app/products/SONY-WH1000XM5</loc>'
     );
     expect(sitemap).toContain(
-      '<loc>https://cart-commerce.vercel.app/products/CHARIZARD-1ST-ED</loc>'
+      '<loc>https://next-shopping-cart-beta.vercel.app/products/CHARIZARD-1ST-ED</loc>'
     );
     expect(sitemap).toContain('<changefreq>weekly</changefreq>');
     expect(sitemap).toContain('<priority>0.8</priority>');

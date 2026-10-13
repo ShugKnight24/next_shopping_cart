@@ -1,5 +1,6 @@
 // More Info On Custom Documents: https://nextjs.org/docs/advanced-features/custom-document
 import Document, { Head, Html, Main, NextScript } from 'next/document';
+import { SITE_URL } from '../utils/site';
 
 class MyDocument extends Document {
   static async getInitialProps(context) {
@@ -19,7 +20,7 @@ class MyDocument extends Document {
           <link rel="alternate icon" href="/favicon.ico" />
           <meta
             property="og:image"
-            content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+            content={`${SITE_URL}/static/img/og-preview.png`}
           />
         </Head>
         <body>

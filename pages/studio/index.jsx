@@ -15,6 +15,7 @@ import { StudioHeroAnimated } from '../../Components/Studio/StudioHeroAnimated';
 import { KidsStudioVideoTour } from '../../Components/Video/KidsStudioVideoTour';
 import { useMascot } from '../../context/MascotProvider';
 import styles from '../../styles/pages/Studio.module.css';
+import { SITE_URL } from '../../utils/site';
 
 const BESPOKE_CAPABILITIES = [
   {
@@ -130,17 +131,14 @@ export default function StudioPage() {
         />
         <meta
           property="og:image"
-          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+          content={`${SITE_URL}/static/img/og-preview.png`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:image"
-          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+          content={`${SITE_URL}/static/img/og-preview.png`}
         />
-        <link
-          rel="canonical"
-          href="https://next-shopping-cart-shugknight24.vercel.app/studio"
-        />
+        <link rel="canonical" href={`${SITE_URL}/studio`} />
       </Head>
 
       {/* Scroll-scrubbed 3D tour, full width above the studio. */}

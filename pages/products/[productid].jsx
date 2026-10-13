@@ -38,6 +38,7 @@ import { TrustBadges } from '../../Components/Products/TrustBadges';
 import { Badge, RatingStars } from '../../Components/UI';
 import { useToast } from '../../Components/UI/Toast';
 import styles from '../../styles/pages/Products.module.css';
+import { SITE_URL } from '../../utils/site';
 
 export const getStaticPaths = async () => {
   const all = getAllProducts();
@@ -299,7 +300,7 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
     category: category || undefined,
     offers: {
       '@type': 'Offer',
-      url: `https://cart-commerce.vercel.app/products/${itemid}`,
+      url: `${SITE_URL}/products/${itemid}`,
       priceCurrency: 'USD',
       price: effectivePrice,
       priceValidUntil: '2027-12-31',
@@ -334,19 +335,19 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cart-commerce.vercel.app',
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Products',
-        item: 'https://cart-commerce.vercel.app/products',
+        item: `${SITE_URL}/products`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: productName,
-        item: `https://cart-commerce.vercel.app/products/${itemid}`,
+        item: `${SITE_URL}/products/${itemid}`,
       },
     ],
   };
@@ -363,11 +364,7 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
         <meta property="og:type" content="product" />
         <meta
           property="og:image"
-          content={
-            image.startsWith('/')
-              ? `https://cart-commerce.vercel.app${image}`
-              : image
-          }
+          content={image.startsWith('/') ? `${SITE_URL}${image}` : image}
         />
         <meta
           property="product:price:amount"

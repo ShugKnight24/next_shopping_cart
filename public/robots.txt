@@ -10,4 +10,4 @@ Disallow: /checkout
 Disallow: /favorites
 
 # Host & Sitemap
-Sitemap: https://cart-commerce.vercel.app/sitemap.xml
+Sitemap: https://next-shopping-cart-beta.vercel.app/sitemap.xml

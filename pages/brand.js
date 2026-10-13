@@ -9,6 +9,7 @@ import { CartCommerceMark } from '../Components/Hero/CartCommerceMark';
 import { LegacyLogo } from '../Components/Legacy/LegacyLogo';
 import { Logo } from '../Components/Logo';
 import { useToast } from '../Components/UI/Toast';
+import { SITE_URL } from '../utils/site';
 
 const PALETTE = [
   { name: 'Sapphire Navy', token: '--color-primary', hex: '#1E3A5F' },
@@ -86,7 +87,7 @@ export default function BrandPage() {
         />
         <meta
           property="og:image"
-          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+          content={`${SITE_URL}/static/img/og-preview.png`}
         />
       </Head>
 

@@ -18,6 +18,7 @@ import {
 import { PRODUCTS } from '../../Components/Studio/workbench/products';
 import { VariantStrip } from '../../Components/Studio/workbench/VariantStrip';
 import { WorkbenchRoute } from '../../Components/Studio/workbench/WorkbenchRoute';
+import { SITE_URL } from '../../utils/site';
 
 const summarize = (options, layers) => ({
   Format: formatById(options.format).name,
@@ -93,10 +94,7 @@ export default function SocialWorkbenchPage() {
           name="description"
           content="Design posts, stories, pins and fliers starring your own characters and products from the store, then download them at full size."
         />
-        <link
-          rel="canonical"
-          href="https://next-shopping-cart-shugknight24.vercel.app/studio/social"
-        />
+        <link rel="canonical" href={`${SITE_URL}/studio/social`} />
       </Head>
 
       <WorkbenchRoute
