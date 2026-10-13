@@ -27,7 +27,7 @@ const CAPTIONS = [
     at: [0.66, 0.86],
     kicker: 'Checkout in seconds',
     title: 'Pay your way. Ship it fast.',
-    body: 'Apple Pay, Klarna and every major card, with free express shipping on qualifying orders.',
+    body: 'Apple Pay, Klarna and every major card, with free shipping on qualifying orders.',
   },
   {
     at: [0.9, 1.01],

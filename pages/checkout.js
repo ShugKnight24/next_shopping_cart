@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import { CartContext } from '../context/CartProvider';
 import { useToast } from '../Components/UI/Toast';
 import {
+  FREE_SHIPPING_THRESHOLD,
   calculateDiscount,
   formatCurrency,
   totalPrice,
@@ -19,7 +20,7 @@ const SHIPPING_OPTIONS = [
     title: 'Standard Ground Delivery',
     time: '3-5 business days',
     price: 0,
-    minForFree: 150,
+    minForFree: FREE_SHIPPING_THRESHOLD,
     baseCost: 10,
   },
   {
@@ -82,7 +83,7 @@ export default function Checkout() {
   );
   let shippingCost = activeShippingObj?.price || 0;
   if (selectedShippingMethod === 'standard') {
-    shippingCost = rawSubtotal >= 150 ? 0 : 10;
+    shippingCost = rawSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 10;
   }
 
   const taxRate = 0.0825; // 8.25% estimated tax

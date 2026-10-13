@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { FREE_SHIPPING_THRESHOLD } from '../../utils/cartUtils';
 import { BoxIcon, ShieldCheckIcon, SparklesIcon, TruckIcon } from '../Icons';
 import { CartySvg, FoxSvg, LeoSvg, LunaSvg } from '../Mascot/MascotArtwork';
 import { svgDataUrl } from './cast/castRaster';
@@ -262,7 +263,7 @@ export function StudioHeroAnimated({ onExploreWorkstations, onWatchTour }) {
           </div>
           <div className={styles.pillar}>
             <TruckIcon size={18} />
-            <span>Free Express Shipping Over $150</span>
+            <span>Free Shipping Over ${FREE_SHIPPING_THRESHOLD}</span>
           </div>
         </div>
       </div>

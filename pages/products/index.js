@@ -11,6 +11,7 @@ import {
   TagIcon,
 } from '../../Components/Icons';
 import styles from '../../styles/pages/Products.module.css';
+import { FREE_SHIPPING_THRESHOLD } from '../../utils/cartUtils';
 
 export default function ProductsPage() {
   const [, setSelectedProduct] = useState(null);
@@ -73,7 +74,7 @@ export default function ProductsPage() {
               </div>
               <div className={styles.statPill}>
                 <TruckIcon size={16} />
-                <span>Free Express Shipping $50+</span>
+                <span>Free Shipping ${FREE_SHIPPING_THRESHOLD}+</span>
               </div>
               <div className={styles.statPill}>
                 <TagIcon size={16} />

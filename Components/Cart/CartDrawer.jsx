@@ -10,6 +10,7 @@ import {
 } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import {
+  FREE_SHIPPING_THRESHOLD,
   calculateDiscount,
   formatCurrency,
   totalPrice,
@@ -25,8 +26,6 @@ import {
 } from '../Icons';
 import { useToast } from '../UI/Toast';
 import styles from './CartDrawer.module.css';
-
-const FREE_SHIPPING_THRESHOLD = 150;
 
 export function CartDrawer() {
   const router = useRouter();
@@ -203,13 +202,13 @@ export function CartDrawer() {
               <span className={styles.freeSuccess}>
                 <CheckCircleIcon size={16} />
                 <span>
-                  You unlocked <strong>Free Express Shipping!</strong>
+                  You unlocked <strong>free shipping!</strong>
                 </span>
               </span>
             ) : (
               <span>
                 Add <strong>{formatCurrency(amountToFreeShipping)}</strong> more
-                for Free Shipping
+                for free shipping
               </span>
             )}
           </div>
