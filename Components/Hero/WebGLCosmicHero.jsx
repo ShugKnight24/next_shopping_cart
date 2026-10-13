@@ -460,7 +460,20 @@ export function WebGLCosmicHero({ className }) {
     wrap.addEventListener('pointermove', onMove);
     wrap.addEventListener('pointerleave', onLeave);
 
+    // A GPU reset or a tab the browser reclaimed: drawing would silently do
+    // nothing and leave an empty stage, so show the drawn cart instead.
+    const onLost = (event) => {
+      event.preventDefault();
+      stop();
+      io?.disconnect();
+      ro?.disconnect();
+      canvas.remove();
+      setWebglSupported(false);
+    };
+    canvas.addEventListener('webglcontextlost', onLost);
+
     return () => {
+      canvas.removeEventListener('webglcontextlost', onLost);
       stop();
       io?.disconnect();
       ro?.disconnect();
