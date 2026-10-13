@@ -293,6 +293,13 @@ export const ScrollStory = ({
       }}
     >
       <div className={styles.sticky}>
+        {/* First in the Tab order, so keyboard users can pass the story
+            before its captions, links and chapter dots. */}
+        {skipTo && (
+          <a className={styles.skip} href={skipTo}>
+            Skip the story
+          </a>
+        )}
         <canvas
           ref={canvasRef}
           className={`${styles.canvas} ${state === 'ready' ? styles.canvasReady : ''}`}
@@ -356,11 +363,6 @@ export const ScrollStory = ({
         <div ref={cueRef} className={styles.cue} aria-hidden="true">
           Scroll
         </div>
-        {skipTo && (
-          <a className={styles.skip} href={skipTo}>
-            Skip the story
-          </a>
-        )}
       </div>
     </section>
   );

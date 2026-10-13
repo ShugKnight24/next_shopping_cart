@@ -51,4 +51,20 @@ describe('ScrollStory without WebGL', () => {
     }
     expect(screen.getByRole('link', { name: 'Shop now' })).toBeInTheDocument();
   });
+
+  it('puts the skip link before everything else in the story', async () => {
+    render(
+      <ScrollStory
+        id="test-story"
+        label="Test story"
+        captions={CAPTIONS}
+        loadScene={vi.fn()}
+        skipTo="#after"
+      />
+    );
+    const story = await screen.findByLabelText('Test story');
+    const focusable = story.querySelectorAll('a[href], button');
+
+    expect(focusable[0]).toHaveTextContent('Skip the story');
+  });
 });
