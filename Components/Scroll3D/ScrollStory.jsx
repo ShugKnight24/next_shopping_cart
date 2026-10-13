@@ -53,6 +53,18 @@ export const ScrollStory = ({
     let disposed = false;
     let frame = 0;
     let cleanup = () => {};
+    let isStatic = false;
+
+    // Without the scene every caption is laid out and visible, so none of
+    // them may stay inert from the scroll-driven fade.
+    const goStatic = () => {
+      if (disposed) return;
+      isStatic = true;
+      capRefs.current.forEach((el) => {
+        if (el) el.inert = false;
+      });
+      setState('static');
+    };
 
     const fade = (p, [a, b]) => {
       const fadeIn = a <= 0 ? 1 : span(p, a - 0.02, a + 0.02);
@@ -70,6 +82,7 @@ export const ScrollStory = ({
     };
 
     const paintCaptions = (p) => {
+      if (isStatic) return;
       let current = 0;
       captionsRef.current.forEach((cap, i) => {
         const el = capRefs.current[i];
@@ -128,7 +141,7 @@ export const ScrollStory = ({
       try {
         THREE = await import('three');
       } catch {
-        if (!disposed) setState('static');
+        goStatic();
         return;
       }
       if (disposed) return;
@@ -147,7 +160,7 @@ export const ScrollStory = ({
           powerPreference: 'high-performance',
         });
       } catch {
-        setState('static');
+        goStatic();
         return;
       }
       renderer.setPixelRatio(
@@ -170,7 +183,7 @@ export const ScrollStory = ({
         console.warn(`[${id}] 3D story fell back to text`, error);
         renderer.dispose();
         renderer.forceContextLoss();
-        if (!disposed) setState('static');
+        goStatic();
         return;
       }
       if (disposed) {
