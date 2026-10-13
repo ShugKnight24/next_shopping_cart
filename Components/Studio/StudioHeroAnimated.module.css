@@ -474,7 +474,7 @@ button.characterGuide {
 }
 
 button.characterGuide:focus-visible {
-  outline: 2px solid #fbbf24;
+  outline: 2px solid var(--color-gold-light);
   outline-offset: 4px;
   border-radius: 12px;
 }
