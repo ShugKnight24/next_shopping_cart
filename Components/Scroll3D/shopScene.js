@@ -37,7 +37,10 @@ export async function loadShopScene({ THREE, renderer, mobile }) {
   scene.fog = new THREE.Fog(bg, 7, 16);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  // The room is only needed to bake the environment map; free it after.
+  const room = new RoomEnvironment();
+  const envTexture = pmrem.fromScene(room, 0.04).texture;
+  room.dispose();
   scene.environment = envTexture;
   scene.environmentIntensity = 0.9;
 
