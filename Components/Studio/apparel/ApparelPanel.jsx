@@ -121,6 +121,20 @@ const FinishArt = ({ id }) => (
 
 FinishArt.propTypes = { id: PropTypes.string.isRequired };
 
+// The segments only fit the size letter, so the hint carries the ages and
+// any upcharge; the price is shown where the choice is made.
+const sizeHint = (sizeId) => {
+  const size = YOUTH_SIZES.find((s) => s.id === sizeId);
+  const extras = YOUTH_SIZES.filter((s) => s.priceModifier)
+    .map(
+      (s) => `${s.name.replace('Youth ', '')} ${priceDetail(s.priceModifier)}`
+    )
+    .join(', ');
+  return [size?.sub && `Ages ${size.sub}.`, extras && `${extras}.`]
+    .filter(Boolean)
+    .join(' ');
+};
+
 export const ApparelPanel = ({
   options,
   setOption,
@@ -186,16 +200,13 @@ export const ApparelPanel = ({
 
       <SegmentedControl
         label="Size"
-        hint={
-          YOUTH_SIZES.find((s) => s.id === options.size)?.sub
-            ? `Ages ${YOUTH_SIZES.find((s) => s.id === options.size).sub}`
-            : null
-        }
+        hint={sizeHint(options.size)}
         value={options.size}
         onChange={(value) => setOption('size', value)}
         options={YOUTH_SIZES.map((s) => ({
           value: s.id,
           label: s.name.replace('Youth ', ''),
+          title: `${s.name}, ${priceDetail(s.priceModifier)}`,
         }))}
       />
     </InspectorSection>
