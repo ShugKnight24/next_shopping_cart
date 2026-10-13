@@ -24,7 +24,7 @@ A high-performance, white-label e-commerce storefront built with **Next.js 15**,
 - **Modern Brand Identity & 3-Variant Logo System (`/brand`)**:
   - Three distinct, bespoke vector marks: _Geometric Monogram_ (precision dual-arc interlock in gold & navy), _Minimalist Continuous Line & Starlight_ (aerodynamic continuous stroke with radiant 8-point starlight jewel), and _Archival Heritage Crest_ (hexagonal luxury heraldic shield with star compass).
   - Dynamic `BrandContext` with real-time reactive theme switching, persistent active variant selection across all headers and footers, interactive `BrandVariantPickerModal`, and an editorial brand showcase portal at `/brand`.
-  - Upgraded high-contrast vector favicon (`/favicon.svg`), 180×180 Apple Touch Icon (`/apple-touch-icon.svg`), and 1200×630 editorial OpenGraph social banner (`/static/img/og-preview.svg`).
+  - Upgraded high-contrast vector favicon (`/favicon.svg`), 180×180 Apple Touch Icon (`/apple-touch-icon.png`, drawn from `/apple-touch-icon.svg`), 192 and 512px install icons in `/site.webmanifest`, and a 1200×630 OpenGraph social banner (`/static/img/og-preview.png`, drawn from `/static/img/og-preview.svg`).
   - Archived original 2020 cyan/red cloud logo to `public/static/img/legacy/` and `Components/Legacy/LegacyLogo.jsx`.
 - **Zero-Emoji Compliance**: Fully replaced Unicode emojis across the entire application and studio platform with a dedicated, accessible SVG icon library (`Components/Icons/` and `Components/Studio/StudioSVGs.jsx`).
 - **Smart Catalog Hydration Reconciler**: Eliminates stale browser cache overwrites by reconciling fresh product metadata on client load while safely preserving the shopper's active cart quantities, available stock deductions, and saved favorites.

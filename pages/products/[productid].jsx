@@ -361,7 +361,14 @@ export default function ProductID({ currentProduct, relatedProducts = [] }) {
         <meta property="og:title" content={`${productName} | Cart Commerce`} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="product" />
-        <meta property="og:image" content={image} />
+        <meta
+          property="og:image"
+          content={
+            image.startsWith('/')
+              ? `https://cart-commerce.vercel.app${image}`
+              : image
+          }
+        />
         <meta
           property="product:price:amount"
           content={String(effectivePrice)}

@@ -128,9 +128,15 @@ export default function StudioPage() {
           property="og:description"
           content="Design personalized keepsake storybooks, gallery posters, and custom kids' kicks with real-time interactive canvas proofing."
         />
-        <meta property="og:image" content="/static/img/og-preview.svg" />
+        <meta
+          property="og:image"
+          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+        />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="/static/img/og-preview.svg" />
+        <meta
+          name="twitter:image"
+          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+        />
         <link
           rel="canonical"
           href="https://next-shopping-cart-shugknight24.vercel.app/studio"

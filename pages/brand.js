@@ -84,7 +84,10 @@ export default function BrandPage() {
           property="og:description"
           content="One chrome-and-gold cart, every surface."
         />
-        <meta property="og:image" content="/static/img/og-preview.svg" />
+        <meta
+          property="og:image"
+          content="https://cart-commerce.vercel.app/static/img/og-preview.png"
+        />
       </Head>
 
       <div className={styles.page}>
@@ -313,7 +316,7 @@ export default function BrandPage() {
                 <img src="/favicon.svg" alt="" width="16" height="16" />
                 <img src="/favicon.svg" alt="" width="32" height="32" />
                 <img
-                  src="/apple-touch-icon.svg"
+                  src="/apple-touch-icon.png"
                   alt="Apple touch icon at 180px"
                   width="180"
                   height="180"
@@ -322,7 +325,7 @@ export default function BrandPage() {
               </div>
               <figcaption>
                 Actual size · 16, 32 and 180px
-                <code>/favicon.svg · /apple-touch-icon.svg</code>
+                <code>/favicon.svg · /apple-touch-icon.png</code>
               </figcaption>
             </figure>
             <figure className={styles.iconCard}>
