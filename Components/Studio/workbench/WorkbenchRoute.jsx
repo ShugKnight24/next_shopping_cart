@@ -393,7 +393,9 @@ export const WorkbenchRoute = ({
         (l) => l.type === 'character' && l.castId === member.id
       );
       if (here) {
-        stayInPanel.current = true;
+        // Selecting the layer that is already selected fires no effect, so
+        // only raise the flag when the selection will actually change.
+        stayInPanel.current = here.id !== workbench.selectedId;
         workbench.select(here.id);
         design.announce(`${here.name} is already on this page.`);
         return;
