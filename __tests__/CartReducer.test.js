@@ -201,6 +201,42 @@ describe('CartReducer', () => {
     ).toBe(true);
   });
 
+  it('charges the variant price the product page quotes', () => {
+    const guitar = initialState.inventory.find(
+      (item) => item.itemid === 'SGS17HCCH'
+    );
+    const vintage = { id: 'vintage', name: 'Vintage White', priceModifier: 50 };
+
+    const state = reducer(initialState, {
+      type: 'ADD_ITEM',
+      payload: { productId: 'SGS17HCCH', variant: vintage },
+    });
+
+    expect(state.cart[0].price).toBe(guitar.price + 50);
+  });
+
+  it('keeps a studio design adjustable after a reload', () => {
+    const design = {
+      itemid: 'CUSTOM-POSTER-1',
+      productName: 'Custom poster',
+      price: 40,
+      quantity: 1,
+      available: 99,
+      isCustom: true,
+    };
+
+    const reloaded = reducer(initialState, {
+      type: 'SET_CART',
+      payload: { cart: [design], promo: null, favorites: [] },
+    });
+    const updated = reducer(reloaded, {
+      type: 'UPDATE_QUANTITY',
+      payload: { productId: 'CUSTOM-POSTER-1', quantity: 3 },
+    });
+
+    expect(updated.cart[0].quantity).toBe(3);
+  });
+
   it('throws an error for unrecognized actions', () => {
     expect(() => {
       reducer(sampleState, { type: 'UNKNOWN_ACTION' });

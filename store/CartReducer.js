@@ -50,9 +50,17 @@ export const reducer = (state, action) => {
         };
       });
 
+      // Studio designs are not in the catalogue. Without an inventory entry
+      // every quantity change on them would be a silent no-op.
+      const customLines = loadedCart
+        .filter(
+          (line) => !inventoryToUse.some((item) => item.itemid === line.itemid)
+        )
+        .map((line) => ({ ...line, available: line.available ?? 99 }));
+
       return {
         ...state,
-        inventory: inventoryToUse,
+        inventory: [...inventoryToUse, ...customLines],
         cart: loadedCart,
         promo: loadedPromo,
       };
@@ -75,6 +83,11 @@ export const reducer = (state, action) => {
 
       const activeVariant = variant || selectedVariant;
       const existingCartItem = cart.find((item) => item.itemid === productId);
+      // The product page quotes base price plus the variant's modifier, so
+      // the line must charge the same.
+      const variantPrice = activeVariant
+        ? { price: currentItem.price + (activeVariant.priceModifier || 0) }
+        : {};
 
       const updatedCart = existingCartItem
         ? cart.map((item) =>
@@ -82,6 +95,7 @@ export const reducer = (state, action) => {
               ? {
                   ...item,
                   quantity: item.quantity + clampedQty,
+                  ...variantPrice,
                   ...(activeVariant ? { selectedVariant: activeVariant } : {}),
                 }
               : item
@@ -91,6 +105,7 @@ export const reducer = (state, action) => {
             {
               ...currentItem,
               quantity: clampedQty,
+              ...variantPrice,
               ...(activeVariant ? { selectedVariant: activeVariant } : {}),
             },
           ];
