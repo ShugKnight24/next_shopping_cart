@@ -115,10 +115,16 @@ entry, a `drawSubstrate` painter, and a `documentSection` render function.
 - **Ideas swap, they do not replace.** Starter layers carry `fromStarter`;
   opening another idea (outside the book) swaps only those, records
   `options.idea`, and keeps whatever the shopper added — like a book moment.
-- **The artboard can follow the document.** `product.frameKeys` (poster size
-  and orientation, book and social format) are doc keys; changing one refits
-  every layer in the same undo step (`starters.relayout` re-lays-out the open
-  idea for the new shape, `layerModel.refitLayer` scales the rest).
+- **The artboard can follow the document.** `product.frameKeys` (poster size,
+  orientation, frame and mount; book and social format) are doc keys; changing
+  one refits every layer in the same undo step (`starters.relayout` re-lays-out
+  the open idea for the new shape, `layerModel.refitLayer` scales the rest).
+  A poster's frame or mount moves the print window without changing the
+  artboard: `product.artRect` reports it and `refitLayerToRect` follows it.
+- **One of each person per page.** `placeOnPage` selects a member already
+  there, "Who is this?" jumps to them, and `useWorkbench.duplicate` refuses a
+  layer with a `castId`. A duplicate drops `fromStarter`, so it is the
+  shopper's own and survives an idea swap.
 - **Theme colours are roles.** Social layers record `colorRole` / `fillRole`;
   a theme change repaints only layers still wearing the old theme's colour.
 - **Image layers load through `castRaster.imageForUrl`** (the default
@@ -140,20 +146,36 @@ entry, a `drawSubstrate` painter, and a `documentSection` render function.
 - **Never put `Date.now()` in anything rendered during SSR.** The handoff link is
   built without `createDesignDoc` for this reason: a timestamp differs between
   server and client and React discards the whole element as a hydration mismatch.
+  The same goes for counters: rig SVG ids are named by what they draw
+  (`cast-pat-<pattern>-<colours>`), never numbered.
+- **The handoff never carries the child's name.** `meta.hero` is `{ look }`;
+  the name rides in sessionStorage (`stashHandoffName` / `takeHandoffName`).
+  `decodeDesign` checks every field's shape, since `?d=` comes from anywhere.
+- **Remote product photos load with CORS.** Every catalogue host sends
+  `Access-Control-Allow-Origin`, so all products can be featured and export
+  still works. Next's image optimizer is not a proxy here: Scryfall refuses it.
+- **Thumbnails take stable inputs.** `core/useStable` keeps an object's
+  identity while nothing it draws changes (`sameCastArt` ignores names), and
+  `useSettled` holds the format strip until a drag pauses. Pass a thumbnail
+  the whole `options` and it repaints on every keystroke.
 - **Do not run `npm run build` while `next dev` is running.** They share `.next`
   and the dev server starts throwing `Cannot find module './chunks/...'`.
 - **The book route no longer passes `avatar` / `companion` to the substrate.**
   The cast are layers; `drawBookStage` only paints them for callers that still
   pass the legacy records (the marketing preview).
 
-## Cart facts that still bite
+## Cart facts
 
-- **`selectedVariant.priceModifier` is displayed and never charged.**
-  `pages/products/[productid].jsx` shows `price + modifier`; `utils/cartUtils.js`
-  sums `item.price * quantity`. Up to $150 per line.
-- **Custom items vanish from `inventory` on reload**, so `UPDATE_QUANTITY` bails
-  at `if (!cartItem || !inventoryItem) return state` and the qty box no-ops.
-- `hooks/useActions.js` logs every cart action to the console.
+- `ADD_ITEM` charges base price plus the variant's `priceModifier`. A cart line
+  is still keyed by `itemid`, so a second variant of the same product merges
+  into the first line and reprices it.
+- `SET_CART` puts custom (studio) lines back into `inventory`, or their
+  quantity controls would no-op after a reload.
+- A custom line stores a PNG and its design, so a few can fill localStorage;
+  `CartProvider` toasts once when a save hits the quota.
+- `FREE_SHIPPING_THRESHOLD` in `utils/cartUtils.js` is the only free-shipping
+  number. Checkout waives standard delivery only, so copy says "free shipping",
+  never "free express".
 
 ## House rules
 
