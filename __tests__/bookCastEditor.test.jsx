@@ -128,10 +128,9 @@ describe('storybook cast editor', () => {
     // Re-cast this layer as someone already on the page: no second copy.
     const other = before[1].replace(/^Select /, '');
     fireEvent.click(
-      within(within(aside()).getByRole('group', { name: 'Who is this?' })).getByRole(
-        'button',
-        { name: other }
-      )
+      within(
+        within(aside()).getByRole('group', { name: 'Who is this?' })
+      ).getByRole('button', { name: other })
     );
     fireEvent.click(
       within(aside()).getByRole('button', { name: 'Page settings' })
@@ -206,7 +205,8 @@ describe('paged workbench', () => {
 
 describe('history across a book', () => {
   it('records a drag as one undo step', async () => {
-    const { useDesignHistory } = await import('../Components/Studio/core/useDesignHistory');
+    const { useDesignHistory } =
+      await import('../Components/Studio/core/useDesignHistory');
     const { result } = renderHook(() => useDesignHistory(['a']));
     act(() => result.current.update(['b'], { commit: false }));
     act(() => result.current.update(['c'], { commit: false }));
@@ -218,7 +218,8 @@ describe('history across a book', () => {
   });
 
   it('keeps redo when an unfinished drag is undone', async () => {
-    const { useDesignHistory } = await import('../Components/Studio/core/useDesignHistory');
+    const { useDesignHistory } =
+      await import('../Components/Studio/core/useDesignHistory');
     const { result } = renderHook(() => useDesignHistory(['a']));
     act(() => result.current.update(['b']));
     act(() => result.current.update(['c']));
@@ -236,22 +237,36 @@ describe('history across a book', () => {
     const count = () => within(pages()).getAllByRole('button').length;
     const before = count();
 
-    fireEvent.click(within(aside()).getByRole('button', { name: 'Delete page' }));
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Delete page' })
+    );
     expect(count()).toBe(before - 1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
     expect(count()).toBe(before);
     fireEvent.click(within(pages()).getByRole('button', { name: 'Pages 1–2' }));
-    expect(screen.getByRole('img', { name: /design canvas/ })).not.toHaveAccessibleName(/, 0 layers$/);
+    expect(
+      screen.getByRole('img', { name: /design canvas/ })
+    ).not.toHaveAccessibleName(/, 0 layers$/);
   });
 
   it("acts out a moment without deleting the shopper's own layers", () => {
     renderBook();
-    const layers = () => Number(screen.getByRole('img', { name: /design canvas/ }).getAttribute('aria-label').match(/(\d+) layers/)[1]);
+    const layers = () =>
+      Number(
+        screen
+          .getByRole('img', { name: /design canvas/ })
+          .getAttribute('aria-label')
+          .match(/(\d+) layers/)[1]
+      );
     fireEvent.click(screen.getByRole('button', { name: 'Text (T)' }));
     const withMine = layers();
-    fireEvent.click(within(aside()).getByRole('button', { name: 'Page settings' }));
-    fireEvent.click(within(aside()).getByRole('button', { name: 'Rocket ride' }));
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Page settings' })
+    );
+    fireEvent.click(
+      within(aside()).getByRole('button', { name: 'Rocket ride' })
+    );
     // The rocket moment has one character, three pieces and its words, plus the shopper's text.
     expect(layers()).toBe(1 + 3 + 1 + 1);
     expect(withMine).toBeGreaterThan(1);

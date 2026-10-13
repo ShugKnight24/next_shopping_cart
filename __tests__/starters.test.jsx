@@ -28,73 +28,76 @@ vi.mock('next/router', () => ({
 
 const FREE_LAYERS = { poster: 6, apparel: 3 };
 
-describe.each(['poster', 'apparel', 'book', 'social'])('%s starters', (mode) => {
-  const product = PRODUCTS[mode];
-  const options = { ...product.defaults, cast: starterCast() };
-  const artboard = product.artboard(options);
+describe.each(['poster', 'apparel', 'book', 'social'])(
+  '%s starters',
+  (mode) => {
+    const product = PRODUCTS[mode];
+    const options = { ...product.defaults, cast: starterCast() };
+    const artboard = product.artboard(options);
 
-  it.each(STARTERS[mode].map((s) => [s.name, s]))(
-    'builds "%s"',
-    (_, starter) => {
-      const built = buildStarter(mode, starter, {
+    it.each(STARTERS[mode].map((s) => [s.name, s]))(
+      'builds "%s"',
+      (_, starter) => {
+        const built = buildStarter(mode, starter, {
+          artboard,
+          options,
+          cast: options.cast,
+        });
+        expect(built.layers.length).toBeGreaterThan(0);
+
+        const ids = new Set(built.cast.map((m) => m.id));
+        built.layers
+          .filter((l) => l.type === 'character')
+          .forEach((l) => expect(ids.has(l.castId)).toBe(true));
+
+        if (FREE_LAYERS[mode]) {
+          expect(built.layers.length).toBeLessThanOrEqual(FREE_LAYERS[mode]);
+          const config = { ...options, ...built.options };
+          const before = product.price(options, 0, 1).subtotal;
+          expect(product.price(config, built.layers.length, 1).subtotal).toBe(
+            before
+          );
+        }
+
+        if (mode === 'book') {
+          const pages = built.options.spreads.filter((s) => s.kind === 'story');
+          expect(pages.length).toBeGreaterThanOrEqual(3);
+          pages.forEach((page) =>
+            expect(
+              built.layers.some(
+                (l) => l.page === page.id && l.type === 'character'
+              )
+            ).toBe(true)
+          );
+        }
+
+        // Every placeholder in the words was filled in.
+        built.layers
+          .filter((l) => l.type === 'text')
+          .forEach((l) => expect(l.text).not.toMatch(/\{/));
+      }
+    );
+
+    it('adds anyone an idea needs to the cast', () => {
+      const lonely = [options.cast[0]];
+      const needy =
+        STARTERS[mode].find((s) => (s.needs ?? []).length > 1) ??
+        STARTERS[mode][0];
+      const built = buildStarter(mode, needy, {
         artboard,
         options,
-        cast: options.cast,
+        cast: lonely,
       });
-      expect(built.layers.length).toBeGreaterThan(0);
-
-      const ids = new Set(built.cast.map((m) => m.id));
-      built.layers
-        .filter((l) => l.type === 'character')
-        .forEach((l) => expect(ids.has(l.castId)).toBe(true));
-
-      if (FREE_LAYERS[mode]) {
-        expect(built.layers.length).toBeLessThanOrEqual(FREE_LAYERS[mode]);
-        const config = { ...options, ...built.options };
-        const before = product.price(options, 0, 1).subtotal;
-        expect(product.price(config, built.layers.length, 1).subtotal).toBe(
-          before
-        );
-      }
-
-      if (mode === 'book') {
-        const pages = built.options.spreads.filter((s) => s.kind === 'story');
-        expect(pages.length).toBeGreaterThanOrEqual(3);
-        pages.forEach((page) =>
-          expect(
-            built.layers.some(
-              (l) => l.page === page.id && l.type === 'character'
-            )
-          ).toBe(true)
-        );
-      }
-
-      // Every placeholder in the words was filled in.
-      built.layers
-        .filter((l) => l.type === 'text')
-        .forEach((l) => expect(l.text).not.toMatch(/\{/));
-    }
-  );
-
-  it('adds anyone an idea needs to the cast', () => {
-    const lonely = [options.cast[0]];
-    const needy =
-      STARTERS[mode].find((s) => (s.needs ?? []).length > 1) ??
-      STARTERS[mode][0];
-    const built = buildStarter(mode, needy, {
-      artboard,
-      options,
-      cast: lonely,
+      expect(built.cast.length).toBeGreaterThanOrEqual(needy.needs.length);
     });
-    expect(built.cast.length).toBeGreaterThanOrEqual(needy.needs.length);
-  });
 
-  it('inspires with an idea other than the one on screen', () => {
-    const current = STARTERS[mode][0].id;
-    for (let i = 0; i < 10; i += 1)
-      expect(randomStarter(mode, current).id).not.toBe(current);
-  });
-});
+    it('inspires with an idea other than the one on screen', () => {
+      const current = STARTERS[mode][0].id;
+      for (let i = 0; i < 10; i += 1)
+        expect(randomStarter(mode, current).id).not.toBe(current);
+    });
+  }
+);
 
 describe('scroll stories', () => {
   it.each([
