@@ -87,8 +87,9 @@ export const useDesignHistory = (
     () =>
       setState((prev) => {
         // Uncommitted previews are the newest change: undo them first.
+        // Cancelling a gesture that never committed keeps the redo tail.
         if (prev.pending) {
-          const entries = prev.entries.slice(0, prev.index + 1);
+          const entries = prev.entries.slice();
           entries[prev.index] = prev.pending;
           return { entries, index: prev.index, pending: undefined };
         }

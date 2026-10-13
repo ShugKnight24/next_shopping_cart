@@ -185,6 +185,19 @@ describe('history across a book', () => {
     expect(result.current.present).toEqual(['a']);
   });
 
+  it('keeps redo when an unfinished drag is undone', async () => {
+    const { useDesignHistory } = await import('../Components/Studio/core/useDesignHistory');
+    const { result } = renderHook(() => useDesignHistory(['a']));
+    act(() => result.current.update(['b']));
+    act(() => result.current.update(['c']));
+    act(() => result.current.undo());
+    act(() => result.current.update(['b-dragging'], { commit: false }));
+    act(() => result.current.undo());
+    expect(result.current.present).toEqual(['b']);
+    act(() => result.current.redo());
+    expect(result.current.present).toEqual(['c']);
+  });
+
   it('brings back a deleted page and its art on undo', () => {
     renderBook();
     const pages = () => screen.getByRole('navigation', { name: 'Pages' });
