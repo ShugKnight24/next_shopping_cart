@@ -193,11 +193,15 @@ export const ScrollStory = ({
         return;
       }
 
+      // Reduced motion shows a still frame: draw it only when it changes.
+      let stale = true;
+      let drawnAt = -1;
       const resize = () => {
         const { clientWidth: w, clientHeight: h } = canvas;
         if (!w || !h) return;
         renderer.setSize(w, h, false);
         scene.resize(w, h);
+        stale = true;
       };
       const observer = new ResizeObserver(resize);
       observer.observe(canvas);
@@ -229,8 +233,12 @@ export const ScrollStory = ({
         const target = progressOf();
         if (reducedQuery.matches) progress = restingProgress(target);
         else progress += (target - progress) * (1 - Math.exp(-dt * 7));
-        scene.update(progress, now / 1000, reducedQuery.matches);
-        renderer.render(scene.scene, scene.camera);
+        if (!reducedQuery.matches || stale || progress !== drawnAt) {
+          scene.update(progress, now / 1000, reducedQuery.matches);
+          renderer.render(scene.scene, scene.camera);
+          drawnAt = progress;
+          stale = false;
+        }
         paintCaptions(reducedQuery.matches ? target : progress);
       };
 
