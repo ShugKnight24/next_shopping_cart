@@ -144,16 +144,16 @@ export const BookPanel = ({
   /** Delete this spread and its art, as one undo step. */
   const remove = () => {
     const fallback = storyIds[storyIndex - 1] ?? storyIds[storyIndex + 1];
-    // Unpaged layers belong to the first story spread; if that is the one
-    // going, they move to the first one that stays.
-    const home = storyIds[0] === spread.id ? storyIds[1] : storyIds[0];
+    // Unpaged layers (older drafts) show on the first story spread, so they
+    // are its art: deleting that spread deletes them with it. Otherwise they
+    // are pinned to it, so they stay put once the spread order changes.
     const firstStory = storyIds[0];
     workbench.select(null);
     workbench.transact(({ layers, doc }) => ({
       doc: { spreads: doc.spreads.filter((s) => s.id !== spread.id) },
       layers: layers
         .filter((l) => (l.page ?? firstStory) !== spread.id)
-        .map((l) => (l.page ? l : { ...l, page: home })),
+        .map((l) => (l.page ? l : { ...l, page: firstStory })),
     }));
     setOptions((current) => ({ ...current, activeSpread: fallback }), {
       commit: false,
