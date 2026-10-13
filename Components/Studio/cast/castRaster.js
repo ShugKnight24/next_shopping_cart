@@ -25,6 +25,19 @@ const remember = (map, key, value) => {
   return value;
 };
 
+/**
+ * Read an entry and mark it recently used, so eviction takes the art nobody
+ * has drawn for a while rather than the oldest art still on the page.
+ */
+const recall = (map, key) => {
+  const value = map.get(key);
+  if (value !== undefined) {
+    map.delete(key);
+    map.set(key, value);
+  }
+  return value;
+};
+
 /** Tell listeners once per frame, however many images decoded in it. */
 let queued = 0;
 const broadcast = () => {
@@ -41,7 +54,7 @@ const broadcast = () => {
 
 /** A decoded image for some SVG, or null while it is still decoding. */
 export const imageForSvg = (key, svg) => {
-  let entry = images.get(key);
+  let entry = recall(images, key);
   if (!entry) {
     if (typeof Image === 'undefined') return null;
     const img = new Image();
@@ -68,7 +81,7 @@ const URL_RETRY_MS = 5000;
 export const imageForUrl = (src) => {
   if (!src) return null;
   const key = `url:${src}`;
-  let entry = images.get(key);
+  let entry = recall(images, key);
   // A failed photo is tried again after a pause, not on every paint.
   if (entry?.failedAt && Date.now() - entry.failedAt > URL_RETRY_MS) {
     images.delete(key);
@@ -129,7 +142,7 @@ export const personArtFor = (person, placement) => {
   if (hit) return hit;
   const key = JSON.stringify([person, placement]);
   const art =
-    arts.get(key) ??
+    recall(arts, key) ??
     remember(arts, key, { key, ...personArt(person, placement) });
   perMember.set(pkey, art);
   return art;
@@ -137,5 +150,7 @@ export const personArtFor = (person, placement) => {
 
 export const pieceArtFor = (id, tint) => {
   const key = `piece:${id}:${tint ?? ''}`;
-  return arts.get(key) ?? remember(arts, key, { key, ...pieceArt(id, tint) });
+  return (
+    recall(arts, key) ?? remember(arts, key, { key, ...pieceArt(id, tint) })
+  );
 };
