@@ -101,6 +101,12 @@ describe('stack order', () => {
     expect(copy.id).not.toBe(source.id);
     expect(copy.x).toBe(source.x + 16);
   });
+
+  it("makes a duplicate of a starter layer the shopper's own", () => {
+    const copy = duplicateLayer(text({ id: 'a', fromStarter: true }));
+
+    expect(copy.fromStarter).toBeUndefined();
+  });
 });
 
 describe('alignment', () => {

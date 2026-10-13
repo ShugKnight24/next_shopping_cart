@@ -305,7 +305,9 @@ export const reorder = (layers, id, direction) => {
   return next;
 };
 
-export const duplicateLayer = (layer) => ({
+// A copy is the shopper's own layer: dropping `fromStarter` keeps it through
+// an idea swap, which only replaces the starter's layers.
+export const duplicateLayer = ({ fromStarter: _fromStarter, ...layer }) => ({
   ...layer,
   id: uid(layer.type),
   name: `${layer.name} copy`,
