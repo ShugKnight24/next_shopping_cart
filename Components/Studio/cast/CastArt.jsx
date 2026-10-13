@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useId, useMemo } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import { CompanionPortrait } from '../CharacterPortraits';
 import styles from './CastPanel.module.css';
 import { svgDataUrl } from './castRaster';
@@ -110,6 +110,10 @@ MemberImage.propTypes = {
  * buttons, never `role="radio"` — the house rule the suites rely on.
  *   options: [{ value, name, art, detail? }] — `detail` is a second line,
  *   such as a price.
+ *
+ * One Tab stop per grid. The arrow keys move focus (up and down by a row),
+ * Home and End jump to the ends, and Enter or Space picks: some grids apply
+ * a whole idea, so moving through them must not pick each one on the way.
  */
 export const TileGrid = ({
   label,
@@ -121,6 +125,32 @@ export const TileGrid = ({
   hideLabel = false,
 }) => {
   const labelId = useId();
+  const buttons = useRef([]);
+  const activeIndex = options.findIndex((o) => o.value === value);
+  const [focusIndex, setFocusIndex] = useState(null);
+  // The last tile focused keeps the Tab stop; otherwise the picked one.
+  const tabbable =
+    focusIndex !== null && focusIndex < options.length
+      ? focusIndex
+      : Math.max(0, activeIndex);
+
+  const onKeyDown = (event, index) => {
+    const step = {
+      ArrowRight: 1,
+      ArrowLeft: -1,
+      ArrowDown: columns,
+      ArrowUp: -columns,
+    }[event.key];
+    let next;
+    if (step) next = Math.min(options.length - 1, Math.max(0, index + step));
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = options.length - 1;
+    else return;
+    event.preventDefault();
+    setFocusIndex(next);
+    buttons.current[next]?.focus();
+  };
+
   return (
     <div className={styles.tileField}>
       <p className={hideLabel ? styles.srOnly : styles.tileLabel} id={labelId}>
@@ -132,12 +162,18 @@ export const TileGrid = ({
         aria-labelledby={labelId}
         style={{ '--cast-columns': columns }}
       >
-        {options.map((option) => {
+        {options.map((option, index) => {
           const active = option.value === value;
           return (
             <button
               key={option.value}
+              ref={(el) => {
+                buttons.current[index] = el;
+              }}
               type="button"
+              tabIndex={index === tabbable ? 0 : -1}
+              onKeyDown={(event) => onKeyDown(event, index)}
+              onFocus={() => setFocusIndex(index)}
               className={`${styles.tile} ${active ? styles.tileActive : ''}`}
               aria-pressed={active}
               aria-label={
