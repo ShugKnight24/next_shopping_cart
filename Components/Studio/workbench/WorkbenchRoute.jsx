@@ -14,7 +14,7 @@ import { StarterGallery } from '../starters/StarterGallery';
 import { buildStarter, relayout, STARTERS } from '../starters/starters';
 import { CanvasViewport } from './CanvasViewport';
 import { Inspector } from './Inspector';
-import { applyTemplate, reframeLayer } from './layerModel';
+import { applyTemplate, refitLayerToRect, reframeLayer } from './layerModel';
 import { LayerPanel } from './LayerPanel';
 import { paintLayers } from './renderLayers';
 import { STYLE_PRESETS } from './stylePresets';
@@ -147,9 +147,23 @@ export const WorkbenchRoute = ({
       // A new shape of artboard carries every layer (every page) with it.
       const from = product.artboard(before);
       const to = product.artboard(value);
-      if (from.width === to.width && from.height === to.height)
-        setDoc(changed, { commit });
-      else
+      if (from.width === to.width && from.height === to.height) {
+        // Same artboard, but a new mount or frame can move the print window.
+        const fromRect = product.artRect?.(before);
+        const toRect = product.artRect?.(value);
+        const moved =
+          fromRect &&
+          ['x', 'y', 'width', 'height'].some((k) => fromRect[k] !== toRect[k]);
+        if (!moved) setDoc(changed, { commit });
+        else
+          transact(
+            ({ layers }) => ({
+              doc: changed,
+              layers: layers.map((l) => refitLayerToRect(l, fromRect, toRect)),
+            }),
+            { commit }
+          );
+      } else
         transact(
           ({ layers }) => ({
             doc: changed,

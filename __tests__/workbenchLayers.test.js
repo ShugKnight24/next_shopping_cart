@@ -9,6 +9,7 @@ import {
   hitTest,
   layerAt,
   moveLayer,
+  refitLayerToRect,
   reorder,
   resizeLayer,
   snapPosition,
@@ -199,5 +200,29 @@ describe('applyTemplate', () => {
     expect(applyTemplate(templateA, []).every((l) => l.fromTemplate)).toBe(
       true
     );
+  });
+});
+
+describe('moving between print windows', () => {
+  it('keeps a layer at the same place within the window', () => {
+    const from = { x: 32, y: 32, width: 400, height: 600 };
+    const to = { x: 52, y: 52, width: 360, height: 560 };
+    // Centred in the old window.
+    const layer = text({ x: 232, y: 332, width: 100, height: 40 });
+
+    const moved = refitLayerToRect(layer, from, to);
+
+    expect(moved.x).toBeCloseTo(232);
+    expect(moved.y).toBeCloseTo(332);
+    expect(moved.width).toBeLessThan(100);
+  });
+
+  it('keeps a corner layer inside a mount that narrows the window', () => {
+    const from = { x: 32, y: 32, width: 400, height: 600 };
+    const to = { x: 52, y: 52, width: 360, height: 560 };
+    const moved = refitLayerToRect(text({ x: 32, y: 32 }), from, to);
+
+    expect(moved.x).toBe(52);
+    expect(moved.y).toBe(52);
   });
 });

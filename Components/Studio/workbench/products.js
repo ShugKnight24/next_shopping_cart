@@ -8,6 +8,7 @@
  */
 
 import { computePrice, modifierFor } from '../core/pricing';
+import { posterArtRect } from '../drawSubstrate';
 import { formatById } from '../social/socialArt';
 
 /* ------------------------------------------------------------- poster -- */
@@ -202,8 +203,9 @@ export const PRODUCTS = {
     blurb: 'Museum-grade giclée prints, framed and ready to hang.',
     manufacturer: 'Cart Gallery Press',
     idPrefix: 'CUSTOM-POSTER',
-    // Options that reshape the artboard; layers are refitted with them.
-    frameKeys: ['size', 'orientation'],
+    // Options that reshape the artboard or move the print window inside it;
+    // layers are refitted with them, in the same undo step.
+    frameKeys: ['size', 'orientation', 'frame', 'mat'],
     defaults: {
       size: '18x24',
       orientation: 'portrait',
@@ -220,6 +222,12 @@ export const PRODUCTS = {
       const ratio =
         options.orientation === 'landscape' ? 1 / size.ratio : size.ratio;
       return artboardFor(ratio);
+    },
+    // The print window inside the frame and mount; layers live in it.
+    artRect: (options) => {
+      const { width, height } = PRODUCTS.poster.artboard(options);
+      const r = posterArtRect(width, height, options);
+      return { x: r.artInset, y: r.artInset, width: r.artW, height: r.artH };
     },
     printSpec: (options) => {
       const size =

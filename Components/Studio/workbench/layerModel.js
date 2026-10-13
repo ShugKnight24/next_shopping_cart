@@ -461,6 +461,21 @@ export const reframeLayer = (layer, prev, next) => {
  * square post to a story): its centre keeps its relative spot and it scales
  * by the smaller of the two stretches, so nothing distorts or falls off.
  */
+/**
+ * Move a layer from one print window to another on the same artboard (a
+ * poster's mount or frame changing the art window), keeping its place
+ * within the window.
+ */
+export const refitLayerToRect = (layer, from, to) => {
+  if (!from?.width || !from?.height) return layer;
+  const fitted = refitLayer(layer, from, to);
+  return {
+    ...fitted,
+    x: to.x + (layer.x - from.x) * (to.width / from.width),
+    y: to.y + (layer.y - from.y) * (to.height / from.height),
+  };
+};
+
 export const refitLayer = (layer, from, to) => {
   if (!from?.width || !from?.height) return layer;
   const sx = to.width / from.width;

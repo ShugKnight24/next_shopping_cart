@@ -301,3 +301,21 @@ describe('preview handoff', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('poster mount', () => {
+  it('undoes a mount change in one step with the layers it refitted', () => {
+    renderWorkbench(PosterWorkbenchPage);
+    const mount = () =>
+      within(inspectorPanel()).getByRole('group', { name: 'Mount' });
+
+    fireEvent.click(within(mount()).getByRole('button', { name: /^White Mat/ }));
+    expect(
+      within(mount()).getByRole('button', { name: /^White Mat/ })
+    ).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    expect(
+      within(mount()).getByRole('button', { name: /No Mount/ })
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+});
