@@ -23,11 +23,38 @@ describe('Hero Animations & Interactive Switcher', () => {
       expect(screen.getByText('Gold Dust')).toBeInTheDocument();
 
       expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
-      expect(tabs[0]).toHaveAttribute('aria-controls', 'hero-animation-track');
+      expect(tabs[0]).toHaveAttribute('aria-controls', 'hero-showcase-panel');
 
       // Click on the Studio Gallery
       fireEvent.click(screen.getByText('Studio Gallery'));
       expect(onSelect).toHaveBeenCalledWith('3d');
+    });
+
+    it('is one tab stop, moved between with the arrow keys', () => {
+      const onSelect = vi.fn();
+      render(
+        <HeroAnimationSwitcher activeMode="track" onSelectMode={onSelect} />
+      );
+      const tabs = screen.getAllByRole('tab');
+      expect(tabs.map((t) => t.tabIndex)).toEqual([0, -1, -1, -1]);
+
+      fireEvent.keyDown(tabs[0], { key: 'ArrowRight' });
+      expect(onSelect).toHaveBeenLastCalledWith('vault');
+      expect(tabs[1]).toHaveFocus();
+
+      fireEvent.keyDown(tabs[0], { key: 'ArrowLeft' });
+      expect(onSelect).toHaveBeenLastCalledWith('webgl');
+    });
+
+    it('labels the showcase as the panel of the selected tab', () => {
+      render(<Hero />);
+      const panel = screen.getByRole('tabpanel');
+      expect(panel).toHaveAccessibleName(/Cart Track/);
+      screen
+        .getAllByRole('tab')
+        .forEach((tab) =>
+          expect(tab).toHaveAttribute('aria-controls', panel.id)
+        );
     });
   });
 

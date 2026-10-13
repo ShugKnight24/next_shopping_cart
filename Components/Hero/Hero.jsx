@@ -5,7 +5,11 @@ import { StarFilled } from '../Icons';
 import { CartCommerceMark } from './CartCommerceMark';
 import { CartTrackScene } from './CartTrackScene';
 import styles from './Hero.module.css';
-import { HeroAnimationSwitcher } from './HeroAnimationSwitcher';
+import {
+  HERO_PANEL_ID,
+  HeroAnimationSwitcher,
+  heroTabId,
+} from './HeroAnimationSwitcher';
 import { Isometric3DHero } from './Isometric3DHero';
 import { VaultAnimation } from './VaultAnimation';
 import { WebGLCosmicHero } from './WebGLCosmicHero';
@@ -336,7 +340,9 @@ export function Hero() {
       {/* Dynamic Hero Showcase Stage */}
       <div
         className={styles.heroShowcaseStage}
-        id={`hero-animation-${animationMode}`}
+        id={HERO_PANEL_ID}
+        role="tabpanel"
+        aria-labelledby={heroTabId(animationMode)}
       >
         {animationMode === 'track' && <CartTrackScene />}
 
