@@ -1,3 +1,4 @@
+import { cartLineId } from '../utils/cartUtils';
 import { getCurrentItem } from '../utils/getItem';
 import { getAllProducts } from '../utils/productCatalog';
 
@@ -8,6 +9,43 @@ export const initialState = {
   cart: [],
   promo: null,
 };
+
+/**
+ * The variant a shopper picked. Callers send its name as `variant` and the
+ * object as `selectedVariant` (or only one of them); prefer the object, since
+ * only it carries the id and price modifier.
+ */
+const pickedVariant = ({ variant, selectedVariant }) => {
+  const obj = [selectedVariant, variant].find(
+    (v) => v && typeof v === 'object'
+  );
+  const name =
+    obj?.name ?? [variant, selectedVariant].find((v) => typeof v === 'string');
+  if (!name && !obj) return null;
+  return {
+    id: obj?.id ?? name,
+    name: name ?? obj.id,
+    priceModifier: obj?.priceModifier || 0,
+  };
+};
+
+/**
+ * The cart lines an action means. Cart views send a line's id; product
+ * cards and pages send the product's id, which means every line of it.
+ */
+const linesFor = (cart, id) => {
+  const exact = cart.filter((line) => cartLineId(line) === id);
+  return exact.length ? exact : cart.filter((line) => line.itemid === id);
+};
+
+/** Give stock back to the products whose lines left the cart. */
+const restock = (inventory, lines) =>
+  inventory.map((item) => {
+    const back = lines
+      .filter((line) => line.itemid === item.itemid)
+      .reduce((sum, line) => sum + line.quantity, 0);
+    return back ? { ...item, available: item.available + back } : item;
+  });
 
 export const reducer = (state, action) => {
   const { inventory, cart } = state;
@@ -32,10 +70,10 @@ export const reducer = (state, action) => {
           : action.payload.inventory || inventory;
 
       const inventoryToUse = baseInventory.map((freshItem) => {
-        const cartItem = loadedCart.find(
-          (ci) => ci.itemid === freshItem.itemid
-        );
-        const inCartQty = cartItem ? cartItem.quantity : 0;
+        // Every line of the product, one per variant.
+        const inCartQty = loadedCart
+          .filter((ci) => ci.itemid === freshItem.itemid)
+          .reduce((sum, ci) => sum + (parseInt(ci.quantity, 10) || 0), 0);
         const isFav = savedFavorites.has(freshItem.itemid)
           ? true
           : (action.payload.inventory?.find(
@@ -67,12 +105,7 @@ export const reducer = (state, action) => {
     }
 
     case 'ADD_ITEM': {
-      const {
-        productId,
-        quantity = 1,
-        variant,
-        selectedVariant,
-      } = action.payload;
+      const { productId, quantity = 1 } = action.payload;
       const addQty = parseInt(quantity, 10) || 1;
       const currentItem = getCurrentItem(inventory, productId);
 
@@ -81,32 +114,31 @@ export const reducer = (state, action) => {
       const clampedQty = Math.min(addQty, currentItem.available);
       if (clampedQty <= 0) return state;
 
-      const activeVariant = variant || selectedVariant;
-      const existingCartItem = cart.find((item) => item.itemid === productId);
-      // The product page quotes base price plus the variant's modifier, so
-      // the line must charge the same.
-      const variantPrice = activeVariant
-        ? { price: currentItem.price + (activeVariant.priceModifier || 0) }
-        : {};
+      // Each variant is its own line at its own price: the product page
+      // quotes base price plus the variant's modifier, so the line charges
+      // the same, and a second variant never reprices the first.
+      const picked = pickedVariant(action.payload);
+      const lineId = picked ? `${productId}::${picked.id}` : productId;
+      const existing = cart.find((line) => cartLineId(line) === lineId);
 
-      const updatedCart = existingCartItem
-        ? cart.map((item) =>
-            item.itemid === productId
-              ? {
-                  ...item,
-                  quantity: item.quantity + clampedQty,
-                  ...variantPrice,
-                  ...(activeVariant ? { selectedVariant: activeVariant } : {}),
-                }
-              : item
+      const updatedCart = existing
+        ? cart.map((line) =>
+            line === existing
+              ? { ...line, quantity: line.quantity + clampedQty }
+              : line
           )
         : [
             ...cart,
             {
               ...currentItem,
+              lineId,
               quantity: clampedQty,
-              ...variantPrice,
-              ...(activeVariant ? { selectedVariant: activeVariant } : {}),
+              ...(picked
+                ? {
+                    price: currentItem.price + picked.priceModifier,
+                    selectedVariant: picked,
+                  }
+                : {}),
             },
           ];
 
@@ -163,20 +195,17 @@ export const reducer = (state, action) => {
     case 'UPDATE_QUANTITY': {
       const { productId, quantity } = action.payload;
       const targetQty = Math.max(0, parseInt(quantity, 10) || 0);
-      const cartItem = cart.find((item) => item.itemid === productId);
-      const inventoryItem = getCurrentItem(inventory, productId);
+      const [cartItem] = linesFor(cart, productId);
+      const inventoryItem =
+        cartItem && getCurrentItem(inventory, cartItem.itemid);
 
       if (!cartItem || !inventoryItem) return state;
 
       if (targetQty === 0) {
         return {
           ...state,
-          cart: cart.filter((item) => item.itemid !== productId),
-          inventory: inventory.map((item) =>
-            item.itemid === productId
-              ? { ...item, available: item.available + cartItem.quantity }
-              : item
-          ),
+          cart: cart.filter((line) => line !== cartItem),
+          inventory: restock(inventory, [cartItem]),
         };
       }
 
@@ -186,15 +215,15 @@ export const reducer = (state, action) => {
 
       if (clampedDelta === 0) return state;
 
-      const newCartQty = cartItem.quantity + clampedDelta;
-
       return {
         ...state,
-        cart: cart.map((item) =>
-          item.itemid === productId ? { ...item, quantity: newCartQty } : item
+        cart: cart.map((line) =>
+          line === cartItem
+            ? { ...line, quantity: line.quantity + clampedDelta }
+            : line
         ),
         inventory: inventory.map((item) =>
-          item.itemid === productId
+          item.itemid === cartItem.itemid
             ? { ...item, available: item.available - clampedDelta }
             : item
         ),
@@ -203,19 +232,17 @@ export const reducer = (state, action) => {
 
     case 'DECREASE_QUANTITY': {
       const { productId } = action.payload;
-      const cartItem = cart.find((item) => item.itemid === productId);
+      const [cartItem] = linesFor(cart, productId);
 
       if (!cartItem || cartItem.quantity <= 1) return state;
 
       return {
         ...state,
-        cart: cart.map((item) =>
-          item.itemid === productId
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
+        cart: cart.map((line) =>
+          line === cartItem ? { ...line, quantity: line.quantity - 1 } : line
         ),
         inventory: inventory.map((item) =>
-          item.itemid === productId
+          item.itemid === cartItem.itemid
             ? { ...item, available: item.available + 1 }
             : item
         ),
@@ -224,18 +251,14 @@ export const reducer = (state, action) => {
 
     case 'REMOVE_ITEM': {
       const { productId } = action.payload;
-      const cartItem = cart.find((item) => item.itemid === productId);
+      const removed = linesFor(cart, productId);
 
-      if (!cartItem) return state;
+      if (!removed.length) return state;
 
       return {
         ...state,
-        cart: cart.filter((item) => item.itemid !== productId),
-        inventory: inventory.map((item) =>
-          item.itemid === productId
-            ? { ...item, available: item.available + cartItem.quantity }
-            : item
-        ),
+        cart: cart.filter((line) => !removed.includes(line)),
+        inventory: restock(inventory, removed),
       };
     }
 

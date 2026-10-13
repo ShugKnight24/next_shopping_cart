@@ -7,9 +7,11 @@ import { useToast } from '../Components/UI/Toast';
 import {
   FREE_SHIPPING_THRESHOLD,
   calculateDiscount,
+  cartLineId,
   formatCurrency,
   totalPrice,
   totalQuantity,
+  variantName,
 } from '../utils/cartUtils';
 import { CreditCardIcon, AppleIcon, GoogleIcon } from '../Components/Icons';
 import styles from '../styles/pages/Checkout.module.css';
@@ -661,14 +663,16 @@ export default function Checkout() {
 
                 <ul className="summary-item-list">
                   {cart.map((item) => (
-                    <li key={item.itemid} className="summary-item">
+                    <li key={cartLineId(item)} className="summary-item">
                       <div className="summary-item-thumb">
                         <img src={item.image} alt={item.productName} />
                         <span className="summary-item-qty">{item.quantity}</span>
                       </div>
                       <div className="summary-item-desc">
                         <h4>{item.productName}</h4>
-                        <span className="summary-item-brand">{item.manufacturer}</span>
+                        <span className="summary-item-brand">
+                          {[item.manufacturer, variantName(item)].filter(Boolean).join(' · ')}
+                        </span>
                       </div>
                       <span className="summary-item-price">
                         {formatCurrency(item.price * item.quantity)}

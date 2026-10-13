@@ -166,9 +166,12 @@ entry, a `drawSubstrate` painter, and a `documentSection` render function.
 
 ## Cart facts
 
-- `ADD_ITEM` charges base price plus the variant's `priceModifier`. A cart line
-  is still keyed by `itemid`, so a second variant of the same product merges
-  into the first line and reprices it.
+- Each variant is its own cart line: `lineId` is `itemid::variantId`
+  (`cartLineId(line)` falls back to `itemid` for lines saved before), and it
+  charges base price plus that variant's `priceModifier`. Cart views act on
+  the line id; product cards send the product id, which means every line of
+  it. Callers send the variant's name as `variant` and the object as
+  `selectedVariant`; the reducer reads the object.
 - `SET_CART` puts custom (studio) lines back into `inventory`, or their
   quantity controls would no-op after a reload.
 - A custom line stores a PNG and its design, so a few can fill localStorage;
