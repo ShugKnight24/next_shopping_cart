@@ -241,3 +241,14 @@ describe('storybook pages', () => {
     expect(config.sceneId).toBe(book.spreads[3].sceneId);
   });
 });
+
+describe('rig markup', () => {
+  it('draws the same person as the same markup every time', () => {
+    // The server render and the browser must agree, or hydration fails.
+    const person = createPerson('kid', { pattern: 'stars' });
+    const first = personArt(person, {}).svg;
+
+    expect(first).toContain('<pattern');
+    expect(personArt(person, {}).svg).toBe(first);
+  });
+});

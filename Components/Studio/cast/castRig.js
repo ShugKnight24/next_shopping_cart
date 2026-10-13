@@ -453,12 +453,16 @@ const line = (w = 3) =>
 
 /* ------------------------------------------------------------- patterns -- */
 
-let patternSeq = 0;
-
 /** A fill for a garment: a solid colour, or a pattern of the accent on it. */
 const garmentFill = (defs, base, accent, pattern) => {
   if (pattern === 'solid') return base;
-  const id = `cast-pat-${(patternSeq += 1)}`;
+  // Named by what it draws, never by a counter: the same art must produce
+  // the same markup on the server and in the browser, or hydration fails.
+  // Two garments sharing a pattern and colours can share its definition.
+  const id = `cast-pat-${pattern}-${base}-${accent}`.replace(
+    /[^a-z0-9-]/gi,
+    ''
+  );
   const bodies = {
     stripes: `<rect width="12" height="12" fill="${base}"/><rect y="7" width="12" height="4" fill="${accent}"/>`,
     dots: `<rect width="12" height="12" fill="${base}"/><circle cx="3" cy="3" r="1.8" fill="${accent}"/><circle cx="9" cy="9" r="1.8" fill="${accent}"/>`,
