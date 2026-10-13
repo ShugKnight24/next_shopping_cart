@@ -625,8 +625,23 @@
   .floatingOrbs circle,
   .floatingDiamond,
   .floatingCircle,
-  .scrollWheel {
+  .scrollWheel,
+  .badgeDot,
+  .headlineAccent {
     animation: none;
+  }
+  /* The entrances start invisible, so they finish at once rather than
+     being switched off. */
+  .cornerElements path,
+  .logo,
+  .badgeContainer,
+  .headline,
+  .subheadline,
+  .ctaContainer,
+  .trustIndicators,
+  .scrollIndicator {
+    animation-duration: 0.01ms;
+    animation-delay: 0s;
   }
 }
 

@@ -342,4 +342,14 @@
   .loading::before {
     animation: none;
   }
+  /* Chapters fade in place rather than slide (still centred). */
+  .caption {
+    translate: 0 -50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 760px) {
+  .caption {
+    translate: none;
+  }
 }

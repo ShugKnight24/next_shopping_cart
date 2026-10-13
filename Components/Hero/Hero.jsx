@@ -18,7 +18,10 @@ import { WebGLCosmicHero } from './WebGLCosmicHero';
 function scrollToSection(sectionId) {
   const element = document.getElementById(sectionId);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+    const reduced = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    element.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
   }
 }
 
