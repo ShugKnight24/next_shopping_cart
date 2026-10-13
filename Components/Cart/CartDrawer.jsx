@@ -10,10 +10,13 @@ import {
 } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
 import {
+  FREE_SHIPPING_THRESHOLD,
   calculateDiscount,
+  cartLineId,
   formatCurrency,
   totalPrice,
   totalQuantity,
+  variantName,
 } from '../../utils/cartUtils';
 import { getAllProducts } from '../../utils/productCatalog';
 import {
@@ -25,8 +28,6 @@ import {
 } from '../Icons';
 import { useToast } from '../UI/Toast';
 import styles from './CartDrawer.module.css';
-
-const FREE_SHIPPING_THRESHOLD = 150;
 
 export function CartDrawer() {
   const router = useRouter();
@@ -113,7 +114,7 @@ export function CartDrawer() {
   };
 
   const handleRemoveItem = (productId, productName) => {
-    const itemToRemove = cart.find((i) => i.itemid === productId);
+    const itemToRemove = cart.find((i) => cartLineId(i) === productId);
     if (itemToRemove) {
       trackRemoveFromCart(itemToRemove, itemToRemove.quantity);
     }
@@ -203,13 +204,13 @@ export function CartDrawer() {
               <span className={styles.freeSuccess}>
                 <CheckCircleIcon size={16} />
                 <span>
-                  You unlocked <strong>Free Express Shipping!</strong>
+                  You unlocked <strong>free shipping!</strong>
                 </span>
               </span>
             ) : (
               <span>
                 Add <strong>{formatCurrency(amountToFreeShipping)}</strong> more
-                for Free Shipping
+                for free shipping
               </span>
             )}
           </div>
@@ -244,7 +245,7 @@ export function CartDrawer() {
             <>
               <ul className={styles.itemList}>
                 {cart.map((item) => (
-                  <li key={item.itemid} className={styles.cartItem}>
+                  <li key={cartLineId(item)} className={styles.cartItem}>
                     <div className={styles.itemImage}>
                       <img
                         src={item.image}
@@ -260,7 +261,7 @@ export function CartDrawer() {
                         <button
                           className={styles.removeBtn}
                           onClick={() =>
-                            handleRemoveItem(item.itemid, item.productName)
+                            handleRemoveItem(cartLineId(item), item.productName)
                           }
                           aria-label={`Remove ${item.productName} from bag`}
                         >
@@ -280,6 +281,14 @@ export function CartDrawer() {
                         >
                           {item.productName}
                         </Link>
+                      )}
+
+                      {variantName(item) && (
+                        <div className={styles.customAttributesGrid}>
+                          <span className={styles.customAttributeBadge}>
+                            {variantName(item)}
+                          </span>
+                        </div>
                       )}
 
                       {item.customAttributes && (
@@ -303,7 +312,7 @@ export function CartDrawer() {
                             className={styles.qtyBtn}
                             onClick={() =>
                               handleQuantityChange(
-                                item.itemid,
+                                cartLineId(item),
                                 Math.max(0, item.quantity - 1)
                               )
                             }
@@ -316,7 +325,7 @@ export function CartDrawer() {
                             className={styles.qtyBtn}
                             onClick={() =>
                               handleQuantityChange(
-                                item.itemid,
+                                cartLineId(item),
                                 item.quantity + 1
                               )
                             }

@@ -1,0 +1,105 @@
+/* Cart Track scene. Choreography keyframes are generated in CartTrackScene.jsx;
+   this file holds layout, layering and the static look. */
+
+.stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-self: flex-end;
+  padding-bottom: 44px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.scene {
+  position: relative;
+  width: min(100%, 1240px);
+  container-type: inline-size;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.layer {
+  position: absolute;
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.layer svg,
+.fill svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.paused,
+.paused * {
+  animation-play-state: paused !important;
+}
+
+.glint {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 248, 220, 0.95),
+    rgba(240, 199, 94, 0.45) 45%,
+    rgba(240, 199, 94, 0) 100%
+  );
+  mix-blend-mode: screen;
+}
+
+.ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-secondary-light);
+  box-shadow: 0 0 12px rgba(218, 165, 32, 0.55);
+}
+
+.chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.15em 0.7em;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: max(10px, 1.05cqw);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--color-primary-dark);
+  background: linear-gradient(135deg, #fbe7a1 0%, #d9a62e 60%, #b8860b 100%);
+  box-shadow:
+    0 6px 16px rgba(2, 6, 23, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}

@@ -5,6 +5,9 @@
   inset: 0;
   display: grid;
   grid-template-rows: var(--wb-topbar) 1fr var(--wb-statusbar);
+  /* Without an explicit track the column grows to the top bar's min-content
+     width, and on a phone the whole editor overflows the screen. */
+  grid-template-columns: minmax(0, 1fr);
   background: var(--wb-bg);
   color: var(--wb-text);
   font-family: var(--wb-font-ui);
@@ -286,6 +289,13 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto;
     overflow-y: auto;
+  }
+
+  .topActions {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
 
   .rail {

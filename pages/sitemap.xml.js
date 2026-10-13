@@ -1,6 +1,5 @@
 import { getAllProducts } from '../utils/productCatalog';
-
-const SITE_URL = 'https://cart-commerce.vercel.app';
+import { SITE_URL } from '../utils/site';
 
 export function generateSiteMap(products = []) {
   const staticPages = [

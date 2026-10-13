@@ -1,5 +1,6 @@
 // More Info On Custom Documents: https://nextjs.org/docs/advanced-features/custom-document
 import Document, { Head, Html, Main, NextScript } from 'next/document';
+import { SITE_URL } from '../utils/site';
 
 class MyDocument extends Document {
   static async getInitialProps(context) {
@@ -14,9 +15,13 @@ class MyDocument extends Document {
           <meta charSet="UTF-8" />
           <meta name="theme-color" content="#0f172a" />
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-          <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+          <link rel="manifest" href="/site.webmanifest" />
           <link rel="alternate icon" href="/favicon.ico" />
-          <meta property="og:image" content="/static/img/og-preview.svg" />
+          <meta
+            property="og:image"
+            content={`${SITE_URL}/static/img/og-preview.png`}
+          />
         </Head>
         <body>
           <Main />

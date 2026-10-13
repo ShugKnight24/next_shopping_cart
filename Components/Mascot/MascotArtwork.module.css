@@ -1,152 +1,189 @@
+/*
+ * Mascot idle motion: gentle bob, blink, tail wag and an occasional wave.
+ * Only translate/rotate are used on the body so clothing lines never "breathe".
+ * Pivot points are set inline (transform-origin in viewBox units) per character.
+ */
+
 .mascotSvg {
   display: block;
   user-select: none;
   overflow: visible;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.12));
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 6px 12px rgba(15, 39, 68, 0.16));
+  transition: transform var(--transition-smooth);
 }
 
 .mascotSvg:hover {
-  transform: scale(1.06) rotate(-2deg);
+  transform: translateY(-3px) rotate(-2deg);
 }
 
-/* Gentle floating bounce animation */
+/* Gentle idle bob (no scaling) */
 .floatBody {
-  animation: mascotFloat 3.8s ease-in-out infinite;
-  transform-origin: 80px 140px;
+  animation: mascotFloat 4.2s ease-in-out infinite;
 }
 
 @keyframes mascotFloat {
   0%,
   100% {
-    transform: translateY(0px) rotate(0deg);
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-6px) rotate(1.2deg);
+    transform: translateY(-3px);
   }
 }
 
-/* Expressive Blinking Eyes */
+/* Ground shadow softens as the body rises */
+.groundShadow {
+  animation: shadowSoften 4.2s ease-in-out infinite;
+}
+
+@keyframes shadowSoften {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.11;
+  }
+}
+
+/* Blink: eyelids close around each eye group's own centre */
 .blinkingEyes {
-  animation: eyeBlink 4.5s ease-in-out infinite;
-  transform-origin: 80px 64px;
+  animation: eyeBlink 5.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 @keyframes eyeBlink {
   0%,
-  92%,
+  91%,
+  97%,
   100% {
     transform: scaleY(1);
   }
-  95% {
-    transform: scaleY(0.08);
+  94% {
+    transform: scaleY(0.1);
   }
 }
 
-/* Antenna Beacon Pulsing Glow */
+/* Beacon / thruster glow (opacity only) */
 .pulseBeacon {
-  animation: beaconPulse 2s ease-in-out infinite alternate;
+  animation: beaconPulse 1.8s ease-in-out infinite alternate;
 }
 
 @keyframes beaconPulse {
-  0% {
-    opacity: 0.3;
-    transform: scale(0.9);
-    transform-origin: 80px 18px;
+  from {
+    opacity: 0.35;
   }
-  100% {
+  to {
     opacity: 0.95;
-    transform: scale(1.2);
-    transform-origin: 80px 18px;
   }
 }
 
-/* Waving Hand for Carty */
-.wavingArm {
-  animation: waveArm 2.5s ease-in-out infinite alternate;
-  transform-origin: 112px 106px;
-}
-
-@keyframes waveArm {
-  0% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(-12deg);
-  }
-  100% {
-    transform: rotate(6deg);
-  }
-}
-
-/* Waving Paw for Leo, Sparky, and Luna */
+/* Occasional friendly wave, then rest */
+.wavingArm,
 .wavingPaw {
-  animation: wavePaw 2.2s ease-in-out infinite alternate;
-  transform-origin: 100px 110px;
+  animation: wave 4.8s ease-in-out infinite;
 }
 
-@keyframes wavePaw {
-  0% {
+@keyframes wave {
+  0%,
+  55%,
+  100% {
     transform: rotate(0deg);
   }
-  50% {
-    transform: rotate(-14deg);
+  64% {
+    transform: rotate(-10deg);
   }
-  100% {
-    transform: rotate(8deg);
+  73% {
+    transform: rotate(5deg);
+  }
+  82% {
+    transform: rotate(-7deg);
+  }
+  91% {
+    transform: rotate(2deg);
   }
 }
 
-/* Curled Tail Wagging for Luna */
+/* Tail wag */
 .waggingTail {
-  animation: tailWag 1.8s ease-in-out infinite alternate;
-  transform-origin: 52px 125px;
+  animation: tailWag 1.7s ease-in-out infinite alternate;
 }
 
 @keyframes tailWag {
-  0% {
-    transform: rotate(-8deg);
+  from {
+    transform: rotate(-5deg);
   }
-  50% {
-    transform: rotate(10deg);
-  }
-  100% {
-    transform: rotate(-6deg);
+  to {
+    transform: rotate(7deg);
   }
 }
 
-/* Cosmic Helmet Pulse */
+/* Finley's scarf tails drifting in the stellar wind */
+.scarfFlutter {
+  animation: scarfFlutter 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes scarfFlutter {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+
+/* Helmet shimmer and stardust twinkle (opacity only) */
 .cosmicGlow {
-  animation: cosmicPulse 3s ease-in-out infinite alternate;
+  animation: cosmicPulse 2.8s ease-in-out infinite alternate;
 }
 
 @keyframes cosmicPulse {
-  0% {
-    opacity: 0.4;
-    stroke-width: 1.5;
+  from {
+    opacity: 0.35;
   }
-  100% {
-    opacity: 0.9;
-    stroke-width: 2.5;
+  to {
+    opacity: 1;
   }
 }
 
-/* Interactive Click Celebration / Jump */
+/* Click celebration hop (translate/rotate only) */
 .interactiveReaction {
-  animation: mascotJump 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: mascotHop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes mascotJump {
-  0% {
-    transform: scale(1) translateY(0);
-  }
-  30% {
-    transform: scale(1.18, 0.88) translateY(-14px) rotate(-4deg);
-  }
-  60% {
-    transform: scale(0.95, 1.08) translateY(2px) rotate(3deg);
-  }
+@keyframes mascotHop {
+  0%,
   100% {
-    transform: scale(1) translateY(0) rotate(0deg);
+    transform: translateY(0) rotate(0deg);
+  }
+  35% {
+    transform: translateY(-12px) rotate(-4deg);
+  }
+  65% {
+    transform: translateY(1px) rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascotSvg {
+    transition: none;
+  }
+
+  .mascotSvg:hover {
+    transform: none;
+  }
+
+  .floatBody,
+  .groundShadow,
+  .blinkingEyes,
+  .pulseBeacon,
+  .wavingArm,
+  .wavingPaw,
+  .waggingTail,
+  .scarfFlutter,
+  .cosmicGlow,
+  .interactiveReaction {
+    animation: none;
   }
 }

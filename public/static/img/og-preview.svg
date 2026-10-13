@@ -17,6 +17,29 @@
       <stop offset="70%" stop-color="#d97706" />
       <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
+    <linearGradient id="ogMarkNavy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e3a5f"/>
+      <stop offset="1" stop-color="#081628"/>
+    </linearGradient>
+    <linearGradient id="ogMarkChrome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#dfe4ec"/>
+      <stop offset="0.75" stop-color="#9aa4b4"/>
+      <stop offset="1" stop-color="#eef1f6"/>
+    </linearGradient>
+    <linearGradient id="ogMarkChromeFlat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#c3cad6"/>
+    </linearGradient>
+    <linearGradient id="ogMarkChromeBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b9c1ce"/>
+      <stop offset="1" stop-color="#7d8798"/>
+    </linearGradient>
+    <linearGradient id="ogMarkGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6dd8a"/>
+      <stop offset="0.5" stop-color="#d9a62e"/>
+      <stop offset="1" stop-color="#a8761a"/>
+    </linearGradient>
     <filter id="ogDrop" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.6" />
     </filter>
@@ -44,28 +67,29 @@
 
   <!-- Central Card & Emblem -->
   <g filter="url(#ogDrop)">
-    <!-- Cart Icon Emblem (Geometric Monogram) -->
+    <!-- Brand mark: the chrome-and-gold cart on its navy app tile -->
     <g transform="translate(525, 120)">
-      <rect width="150" height="150" rx="36" fill="rgba(255, 255, 255, 0.05)" stroke="url(#ogGold)" stroke-width="2.5" />
-      <!-- Cart Path -->
-      <path
-        d="M28 42 H45 L60 90 A6 6 0 0 0 65.8 94 H106 A6 6 0 0 0 111.8 89.2 L120 52 H49"
-        fill="none"
-        stroke="url(#ogGold)"
-        stroke-width="6.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <!-- Starlight Jewel -->
-      <g transform="translate(85, 64)">
-        <polygon points="0,-18 4.5,-5 18,0 4.5,5 0,18 -4.5,5 -18,0 -4.5,-5" fill="#ffffff" />
-        <polygon points="0,-10 2.5,-2.5 10,0 2.5,2.5 0,10 -2.5,2.5 -10,0 -2.5,-2.5" fill="#fde047" />
+      <rect width="150" height="150" rx="36" fill="url(#ogMarkNavy)" stroke="url(#ogMarkGold)" stroke-width="2.5" />
+      <g transform="translate(75 77) scale(2.05) translate(-32 -32)">
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M25 18L29 37M29 37L56 37" stroke="url(#ogMarkChromeBack)" stroke-width="1.1"/>
+          <circle cx="54" cy="45" r="2.6" fill="#15171c" stroke="url(#ogMarkChromeBack)"/>
+          <path d="M19 44L20 49M46 44L45 49M56 37L55 42M20 49L45 49M45 49L55 42" stroke="url(#ogMarkChrome)" stroke-width="2"/>
+          <g stroke="url(#ogMarkChrome)">
+            <path d="M20.3 25L23.5 44M25.7 25L28 44M31 25L32.5 44M36.3 25L37 44M41.7 25L41.5 44M52 21.5L51 40.5M17.6 37.2L46.4 37.2L56.4 30.2M16.3 31.1L46.7 31.1L56.7 24.1" stroke-width="1.1"/>
+            <path d="M15 25 19 44 46 44 56 37 57 18M46 44L47 25" stroke-width="2"/>
+            <path d="M15 25L8 18M25 18L18 11" stroke-width="2.5"/>
+            <path d="M15 25 47 25 57 18 25 18Z" stroke-width="3"/>
+          </g>
+          <path d="M8 18L18 11" stroke="url(#ogMarkGold)" stroke-width="5"/>
+          <path d="M8 18L18 11" stroke="#fff6d6" stroke-width="1" stroke-opacity="0.7" transform="translate(0 -1.2)"/>
+        </g>
+        <rect x="25" y="31" width="16" height="6" rx="1.5" fill="url(#ogMarkGold)"/>
+        <circle cx="21" cy="52" r="4" fill="#15171c" stroke="url(#ogMarkChrome)" stroke-width="1.6"/>
+        <circle cx="21" cy="52" r="1.3" fill="url(#ogMarkChrome)"/>
+        <circle cx="44" cy="52" r="4" fill="#15171c" stroke="url(#ogMarkChrome)" stroke-width="1.6"/>
+        <circle cx="44" cy="52" r="1.3" fill="url(#ogMarkChrome)"/>
       </g>
-      <!-- Wheels -->
-      <circle cx="66" cy="112" r="8" fill="url(#ogGold)" />
-      <circle cx="66" cy="112" r="3" fill="#0f172a" />
-      <circle cx="106" cy="112" r="8" fill="url(#ogGold)" />
-      <circle cx="106" cy="112" r="3" fill="#0f172a" />
     </g>
 
     <!-- Main Title -->
@@ -93,7 +117,7 @@
       font-weight="700"
       letter-spacing="0.25em"
     >
-      CURATED COMMERCE &bull; CUSTOM CREATION STUDIOS
+      CURATED COMMERCE &#8226; CUSTOM CREATION STUDIOS
     </text>
 
     <text

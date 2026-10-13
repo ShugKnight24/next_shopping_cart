@@ -1,4 +1,5 @@
-import { ShieldCheckIcon, TruckIcon, RotateCcwIcon, LockIcon } from '../Icons';
+import { FREE_SHIPPING_THRESHOLD } from '../../utils/cartUtils';
+import { LockIcon, RotateCcwIcon, ShieldCheckIcon, TruckIcon } from '../Icons';
 import styles from './TrustBadges.module.css';
 
 export function TrustBadges() {
@@ -13,7 +14,7 @@ export function TrustBadges() {
       id: 'shipping',
       icon: TruckIcon,
       title: 'Fast Insured Courier',
-      subtitle: 'Free express shipping on orders $50+',
+      subtitle: `Free shipping on orders $${FREE_SHIPPING_THRESHOLD}+`,
     },
     {
       id: 'returns',

@@ -1,285 +1,104 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useId, useState } from 'react';
+import { StarFilled } from '../Icons';
+import { CartCommerceMark } from './CartCommerceMark';
+import { CartTrackScene } from './CartTrackScene';
+import styles from './Hero.module.css';
 import {
-  HeadphonesIcon,
-  LaptopIcon,
-  SmartphoneIcon,
-  WatchIcon,
-  StarFilled,
-} from '../Icons';
-import { AnimatedCart } from './AnimatedCart';
-import { HeroAnimationSwitcher } from './HeroAnimationSwitcher';
+  HERO_PANEL_ID,
+  HeroAnimationSwitcher,
+  heroTabId,
+} from './HeroAnimationSwitcher';
 import { Isometric3DHero } from './Isometric3DHero';
 import { VaultAnimation } from './VaultAnimation';
 import { WebGLCosmicHero } from './WebGLCosmicHero';
-import styles from './Hero.module.css';
-
-// Product shelf items that will jump into the cart
-const shelfProducts = [
-  {
-    id: 1,
-    icon: 'headphones',
-    color: '#8b5cf6',
-    label: 'Headphones',
-    delay: 2.2,
-  },
-  {
-    id: 2,
-    icon: 'smartphone',
-    color: '#3b82f6',
-    label: 'Smartphone',
-    delay: 2.8,
-  },
-  { id: 3, icon: 'watch', color: '#10b981', label: 'Smart Watch', delay: 3.4 },
-  { id: 4, icon: 'laptop', color: '#f59e0b', label: 'Laptop', delay: 4.0 },
-];
-
-// Get icon component by name
-function getProductIcon(iconName, size = 24) {
-  const icons = {
-    headphones: <HeadphonesIcon size={size} />,
-    smartphone: <SmartphoneIcon size={size} />,
-    watch: <WatchIcon size={size} />,
-    laptop: <LaptopIcon size={size} />,
-  };
-  return icons[iconName];
-}
 
 // Scroll to section helper
 function scrollToSection(sectionId) {
   const element = document.getElementById(sectionId);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+    const reduced = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    element.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
   }
 }
 
-// Premium Cart Commerce Logo - Realistic cart with text inside basket
+// Premium Cart Commerce Logo: the chrome cart mark (see CartCommerceMark).
 function CartCommerceLogo({ className }) {
+  return <CartCommerceMark className={className} />;
+}
+
+/**
+ * One shopping cart drawn as a line icon on a 64-unit box: a handle with a
+ * grip, a wire basket (rim, rails and wires), the chassis and two wheels.
+ * The same three-quarter silhouette as the brand mark, so the wallpaper
+ * reads as carts at a glance rather than as trapezoids.
+ */
+function PatternCart({ x, y, scale = 1, rotate = 0 }) {
   return (
-    <div className={className}>
-      <svg viewBox="0 0 300 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          {/* Realistic metal gradients */}
-          <linearGradient
-            id="logoMetalGradient"
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stopColor="#c0c0c0" />
-            <stop offset="20%" stopColor="#e8e8e8" />
-            <stop offset="40%" stopColor="#f5f5f5" />
-            <stop offset="60%" stopColor="#d8d8d8" />
-            <stop offset="80%" stopColor="#b0b0b0" />
-            <stop offset="100%" stopColor="#909090" />
-          </linearGradient>
-          <linearGradient id="logoMetalDark" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#808080" />
-            <stop offset="50%" stopColor="#606060" />
-            <stop offset="100%" stopColor="#404040" />
-          </linearGradient>
-          <linearGradient
-            id="logoHandleGradient"
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="0%"
-          >
-            <stop offset="0%" stopColor="#606060" />
-            <stop offset="50%" stopColor="#909090" />
-            <stop offset="100%" stopColor="#606060" />
-          </linearGradient>
-          <linearGradient
-            id="logoWheelGradient"
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stopColor="#505050" />
-            <stop offset="50%" stopColor="#707070" />
-            <stop offset="100%" stopColor="#404040" />
-          </linearGradient>
-          <linearGradient id="logoTextGold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#daa520" />
-            <stop offset="50%" stopColor="#f4d03f" />
-            <stop offset="100%" stopColor="#b8860b" />
-          </linearGradient>
-          <filter id="logoShadow" x="-20%" y="-20%" width="140%" height="150%">
-            <feDropShadow dx="3" dy="5" stdDeviation="8" floodOpacity="0.4" />
-          </filter>
-          <filter id="textShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow
-              dx="0"
-              dy="2"
-              stdDeviation="2"
-              floodColor="#000"
-              floodOpacity="0.5"
-            />
-          </filter>
-        </defs>
-
-        {/* Shopping Cart - Centered, realistic design */}
-        <g filter="url(#logoShadow)" transform="translate(50, 10)">
-          {/* Cart basket - trapezoidal wire basket */}
-          <path
-            d="M25 30 L35 110 L165 110 L175 30 Z"
-            fill="url(#logoMetalGradient)"
-            stroke="url(#logoMetalDark)"
-            strokeWidth="3"
-          />
-
-          {/* Wire mesh pattern */}
-          <g stroke="#a0a0a0" strokeWidth="1" opacity="0.5">
-            <line x1="30" y1="50" x2="170" y2="50" />
-            <line x1="32" y1="70" x2="168" y2="70" />
-            <line x1="34" y1="90" x2="166" y2="90" />
-            <line x1="60" y1="32" x2="56" y2="108" />
-            <line x1="100" y1="30" x2="100" y2="110" />
-            <line x1="140" y1="32" x2="144" y2="108" />
-          </g>
-
-          {/* Top rim */}
-          <path
-            d="M20 30 L180 30"
-            stroke="url(#logoHandleGradient)"
-            strokeWidth="6"
-            strokeLinecap="round"
-          />
-
-          {/* Handle */}
-          <path
-            d="M18 30 L5 12"
-            stroke="url(#logoHandleGradient)"
-            strokeWidth="5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M5 12 L-8 12"
-            stroke="#505050"
-            strokeWidth="8"
-            strokeLinecap="round"
-          />
-          <path
-            d="M5 12 L-8 12"
-            stroke="#707070"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-
-          {/* Cart frame legs */}
-          <path
-            d="M35 110 L42 140"
-            stroke="url(#logoMetalDark)"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M165 110 L158 140"
-            stroke="url(#logoMetalDark)"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M42 135 L158 135"
-            stroke="url(#logoMetalDark)"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-
-          {/* Wheels */}
-          <circle cx="48" cy="150" r="10" fill="url(#logoWheelGradient)" />
-          <circle cx="48" cy="150" r="6" fill="#606060" />
-          <circle cx="48" cy="150" r="3" fill="#808080" />
-          <circle cx="152" cy="150" r="10" fill="url(#logoWheelGradient)" />
-          <circle cx="152" cy="150" r="6" fill="#606060" />
-          <circle cx="152" cy="150" r="3" fill="#808080" />
-        </g>
-
-        {/* Text INSIDE the cart basket */}
-        <g filter="url(#textShadow)" transform="translate(50, 10)">
-          <text
-            x="100"
-            y="62"
-            fontFamily="Inter, system-ui, -apple-system, sans-serif"
-            fontSize="28"
-            fontWeight="800"
-            fill="#ffffff"
-            textAnchor="middle"
-            letterSpacing="-1"
-          >
-            Cart
-          </text>
-          <text
-            x="100"
-            y="92"
-            fontFamily="Inter, system-ui, -apple-system, sans-serif"
-            fontSize="20"
-            fontWeight="500"
-            fill="url(#logoTextGold)"
-            textAnchor="middle"
-            letterSpacing="2"
-          >
-            Commerce
-          </text>
-        </g>
-
-        {/* Tagline below cart */}
-        <text
-          x="150"
-          y="175"
-          fontFamily="Inter, system-ui, sans-serif"
-          fontSize="10"
-          fontWeight="500"
-          fill="rgba(255,255,255,0.7)"
-          textAnchor="middle"
-          letterSpacing="3"
-        >
-          PREMIUM SHOPPING EXPERIENCE
-        </text>
-      </svg>
-    </div>
+    <g transform={`translate(${x} ${y}) rotate(${rotate}) scale(${scale})`}>
+      {/* Handle and grip */}
+      <path d="M4 14 H11 L17 22" strokeWidth="2.6" />
+      {/* Basket: rim, floor, ends */}
+      <path d="M17 22 H60 L55 42 H22 Z" strokeWidth="2.2" />
+      {/* Wire rails and uprights */}
+      <path
+        d="M18.6 28.6 H58.4 M20.2 35.2 H56.8 M27 22 L29 42 M37 22 L38 42 M47 22 L47 42 M56 22 L54 42"
+        strokeWidth="1.1"
+        opacity="0.75"
+      />
+      {/* Chassis */}
+      <path d="M22 42 L24.5 49 H55" strokeWidth="2.2" />
+      {/* Wheels */}
+      <circle cx="28" cy="54" r="3.4" strokeWidth="2" />
+      <circle cx="51" cy="54" r="3.4" strokeWidth="2" />
+    </g>
   );
 }
 
-// Cart Pattern Background Component
+PatternCart.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  scale: PropTypes.number,
+  rotate: PropTypes.number,
+};
+
+// Cart Pattern Background Component: a staggered wallpaper of carts that
+// drifts diagonally by exactly one tile per loop.
 function CartPatternBackground({ className }) {
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   return (
     <div className={className}>
       <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern
-            id="cartPattern"
+            id={`${id}-carts`}
             x="0"
             y="0"
-            width="120"
-            height="100"
+            width="220"
+            height="160"
             patternUnits="userSpaceOnUse"
           >
-            {/* Mini cart silhouette */}
             <g
-              opacity="0.15"
               fill="none"
               stroke="rgba(218, 165, 32, 1)"
-              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.2"
             >
-              {/* Basket */}
-              <path d="M20 25 L25 55 L75 55 L80 25 Z" />
-              {/* Rim */}
-              <path d="M18 25 L82 25" strokeWidth="2" />
-              {/* Handle */}
-              <path d="M15 25 L8 15 L3 15" />
-              {/* Wheels */}
-              <circle cx="32" cy="62" r="5" />
-              <circle cx="68" cy="62" r="5" />
+              <PatternCart x={14} y={8} scale={1.3} rotate={-4} />
+              <PatternCart x={128} y={84} scale={1.1} rotate={5} />
             </g>
           </pattern>
         </defs>
         <rect
+          x="-220"
+          y="-160"
           width="200%"
           height="200%"
-          fill="url(#cartPattern)"
+          fill={`url(#${id}-carts)`}
           className={styles.cartPatternRect}
         />
       </svg>
@@ -290,25 +109,13 @@ function CartPatternBackground({ className }) {
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const [animationMode, setAnimationMode] = useState('track');
-  const [_mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    });
-  };
-
   return (
-    <section
-      className={`${styles.hero} ${isVisible ? styles.visible : ''}`}
-      onMouseMove={handleMouseMove}
-    >
+    <section className={`${styles.hero} ${isVisible ? styles.visible : ''}`}>
       {/* Cart Pattern Background - animates diagonally */}
       <CartPatternBackground className={styles.cartPatternBg} />
 
@@ -524,172 +331,17 @@ export function Hero() {
       {/* Dynamic Hero Showcase Stage */}
       <div
         className={styles.heroShowcaseStage}
-        id={`hero-animation-${animationMode}`}
+        id={HERO_PANEL_ID}
+        role="tabpanel"
+        aria-labelledby={heroTabId(animationMode)}
       >
-        {animationMode === 'track' && (
-          <div className={styles.cartTrackSection}>
-            {/* Product Shelves - Items that jump into cart */}
-            <div className={styles.productShelves}>
-              {shelfProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className={`${styles.shelfItem} ${styles[`shelfItem${index + 1}`]}`}
-                  style={{
-                    '--jump-delay': `${product.delay}s`,
-                    '--item-color': product.color,
-                  }}
-                >
-                  <div className={styles.shelfProduct}>
-                    <div
-                      className={styles.productIconWrapper}
-                      style={{ backgroundColor: product.color }}
-                    >
-                      {getProductIcon(product.icon, 32)}
-                    </div>
-                    <span className={styles.productLabel}>{product.label}</span>
-                  </div>
-                  <div className={styles.shelf}>
-                    <div className={styles.shelfTop} />
-                    <div className={styles.shelfFront} />
-                  </div>
-                </div>
-              ))}
-            </div>
+        {animationMode === 'track' && <CartTrackScene />}
 
-            {/* Track line */}
-            <div className={styles.cartTrack}>
-              <svg
-                viewBox="0 0 1440 20"
-                preserveAspectRatio="none"
-                className={styles.trackSvg}
-              >
-                <defs>
-                  <linearGradient
-                    id="trackGradient"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                  >
-                    <stop offset="0%" stopColor="transparent" />
-                    <stop offset="20%" stopColor="rgba(184, 134, 11, 0.3)" />
-                    <stop offset="50%" stopColor="rgba(218, 165, 32, 0.5)" />
-                    <stop offset="80%" stopColor="rgba(184, 134, 11, 0.3)" />
-                    <stop offset="100%" stopColor="transparent" />
-                  </linearGradient>
-                </defs>
-                <line
-                  x1="0"
-                  y1="10"
-                  x2="1440"
-                  y2="10"
-                  stroke="url(#trackGradient)"
-                  strokeWidth="3"
-                />
-              </svg>
-            </div>
+        {animationMode === 'vault' && <VaultAnimation />}
 
-            {/* Animated Cart on the track */}
-            <div className={styles.cartOnTrack}>
-              <AnimatedCart className={styles.animatedCart} />
-            </div>
+        {animationMode === '3d' && <Isometric3DHero />}
 
-            {/* Checkout Register - Cart destination */}
-            <div className={styles.checkoutRegister}>
-              <svg
-                viewBox="0 0 120 100"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <linearGradient
-                    id="registerBody"
-                    x1="0%"
-                    y1="0%"
-                    x2="0%"
-                    y2="100%"
-                  >
-                    <stop offset="0%" stopColor="#daa520" />
-                    <stop offset="50%" stopColor="#b8860b" />
-                    <stop offset="100%" stopColor="#8b6914" />
-                  </linearGradient>
-                  <linearGradient id="screenGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#10b981" />
-                    <stop offset="100%" stopColor="#059669" />
-                  </linearGradient>
-                </defs>
-                {/* Register body */}
-                <rect
-                  x="10"
-                  y="30"
-                  width="100"
-                  height="60"
-                  rx="6"
-                  fill="url(#registerBody)"
-                />
-                {/* Screen */}
-                <rect
-                  x="20"
-                  y="40"
-                  width="50"
-                  height="30"
-                  rx="3"
-                  fill="url(#screenGlow)"
-                />
-                {/* Screen content - dollar sign */}
-                <text
-                  x="45"
-                  y="62"
-                  fontSize="20"
-                  fontWeight="bold"
-                  fill="#fff"
-                  textAnchor="middle"
-                >
-                  $
-                </text>
-                {/* Keypad area */}
-                <rect x="75" y="40" width="28" height="40" rx="2" fill="#2d5a87" />
-                {/* Keypad buttons */}
-                <g fill="#ffffff" opacity="0.8">
-                  <rect x="78" y="44" width="6" height="5" rx="1" />
-                  <rect x="86" y="44" width="6" height="5" rx="1" />
-                  <rect x="94" y="44" width="6" height="5" rx="1" />
-                  <rect x="78" y="52" width="6" height="5" rx="1" />
-                  <rect x="86" y="52" width="6" height="5" rx="1" />
-                  <rect x="94" y="52" width="6" height="5" rx="1" />
-                  <rect x="78" y="60" width="6" height="5" rx="1" />
-                  <rect x="86" y="60" width="6" height="5" rx="1" />
-                  <rect x="94" y="60" width="6" height="5" rx="1" />
-                </g>
-                {/* Card reader slot */}
-                <rect x="75" y="70" width="28" height="6" rx="1" fill="#1e3a5f" />
-                {/* Checkout label */}
-                <text
-                  x="60"
-                  y="22"
-                  fontSize="10"
-                  fontWeight="bold"
-                  fill="#daa520"
-                  textAnchor="middle"
-                >
-                  CHECKOUT
-                </text>
-              </svg>
-            </div>
-          </div>
-        )}
-
-        {animationMode === 'vault' && (
-          <VaultAnimation />
-        )}
-
-        {animationMode === '3d' && (
-          <Isometric3DHero />
-        )}
-
-        {animationMode === 'webgl' && (
-          <WebGLCosmicHero />
-        )}
+        {animationMode === 'webgl' && <WebGLCosmicHero />}
       </div>
 
       {/* Bottom fade to white */}

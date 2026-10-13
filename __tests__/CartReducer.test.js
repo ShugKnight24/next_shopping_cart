@@ -201,6 +201,109 @@ describe('CartReducer', () => {
     ).toBe(true);
   });
 
+  it('charges the variant price the product page quotes', () => {
+    const guitar = initialState.inventory.find(
+      (item) => item.itemid === 'SGS17HCCH'
+    );
+    const vintage = { id: 'vintage', name: 'Vintage White', priceModifier: 50 };
+
+    const state = reducer(initialState, {
+      type: 'ADD_ITEM',
+      payload: { productId: 'SGS17HCCH', variant: vintage },
+    });
+
+    expect(state.cart[0].price).toBe(guitar.price + 50);
+  });
+
+  // The guitar has one in stock; these tests need room for several.
+  const roomy = {
+    ...initialState,
+    inventory: initialState.inventory.map((item) =>
+      item.itemid === 'SGS17HCCH' ? { ...item, available: 10 } : item
+    ),
+  };
+
+  it('keeps each variant on its own line at its own price', () => {
+    const guitar = initialState.inventory.find(
+      (item) => item.itemid === 'SGS17HCCH'
+    );
+    const add = (state, variant) =>
+      reducer(state, {
+        type: 'ADD_ITEM',
+        // As the product page sends it: the name, then the object.
+        payload: {
+          productId: 'SGS17HCCH',
+          variant: variant.name,
+          selectedVariant: variant,
+        },
+      });
+    const cherry = { id: 'cherry', name: 'Heritage Cherry', priceModifier: 0 };
+    const vintage = { id: 'vintage', name: 'Vintage White', priceModifier: 50 };
+
+    const state = add(add(add(roomy, cherry), vintage), cherry);
+
+    expect(state.cart).toHaveLength(2);
+    const [first, second] = state.cart;
+    expect(first).toMatchObject({ quantity: 2, price: guitar.price });
+    expect(second).toMatchObject({ quantity: 1, price: guitar.price + 50 });
+    expect(second.selectedVariant.name).toBe('Vintage White');
+  });
+
+  it('changes and removes one variant line without touching the other', () => {
+    const add = (state, id) =>
+      reducer(state, {
+        type: 'ADD_ITEM',
+        payload: { productId: 'SGS17HCCH', selectedVariant: { id, name: id } },
+      });
+    const both = add(add(roomy, 'a'), 'b');
+    const stock = (s) =>
+      s.inventory.find((i) => i.itemid === 'SGS17HCCH').available;
+
+    const more = reducer(both, {
+      type: 'UPDATE_QUANTITY',
+      payload: { productId: 'SGS17HCCH::b', quantity: 3 },
+    });
+    expect(more.cart.map((l) => l.quantity)).toEqual([1, 3]);
+    expect(stock(more)).toBe(stock(both) - 2);
+
+    const less = reducer(more, {
+      type: 'REMOVE_ITEM',
+      payload: { productId: 'SGS17HCCH::a' },
+    });
+    expect(less.cart).toHaveLength(1);
+    expect(stock(less)).toBe(stock(more) + 1);
+
+    // A product id (from a product card) still means every line of it.
+    const none = reducer(more, {
+      type: 'REMOVE_ITEM',
+      payload: { productId: 'SGS17HCCH' },
+    });
+    expect(none.cart).toHaveLength(0);
+    expect(stock(none)).toBe(stock(roomy));
+  });
+
+  it('keeps a studio design adjustable after a reload', () => {
+    const design = {
+      itemid: 'CUSTOM-POSTER-1',
+      productName: 'Custom poster',
+      price: 40,
+      quantity: 1,
+      available: 99,
+      isCustom: true,
+    };
+
+    const reloaded = reducer(initialState, {
+      type: 'SET_CART',
+      payload: { cart: [design], promo: null, favorites: [] },
+    });
+    const updated = reducer(reloaded, {
+      type: 'UPDATE_QUANTITY',
+      payload: { productId: 'CUSTOM-POSTER-1', quantity: 3 },
+    });
+
+    expect(updated.cart[0].quantity).toBe(3);
+  });
+
   it('throws an error for unrecognized actions', () => {
     expect(() => {
       reducer(sampleState, { type: 'UNKNOWN_ACTION' });

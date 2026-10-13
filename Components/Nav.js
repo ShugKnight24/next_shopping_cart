@@ -302,7 +302,7 @@ export default function Nav() {
               className={styles.brandTrigger}
               onClick={() => setIsBrandPickerOpen(true)}
               aria-label="Brand Logo Variant Selector"
-              title="Switch Brand Logo Style (Geometric, Minimal, Crest)"
+              title="Switch brand logo style (Primary, Mono, Midnight, Studio, Crest)"
             >
               <span className={styles.brandTriggerStar}>✦</span>
               <span className={styles.brandTriggerLabel}>Brand</span>

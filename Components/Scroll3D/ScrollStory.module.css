@@ -1,0 +1,355 @@
+/* Scroll-scrubbed 3D story. Tokens come from styles/tokens.css. */
+
+.story {
+  --story-ink: var(--color-text-inverse);
+  --story-muted: color-mix(in srgb, var(--color-text-inverse) 72%, transparent);
+  --story-gold: var(--color-secondary-light);
+  --story-bg: var(--color-primary-dark);
+  position: relative;
+  height: var(--story-height, 600vh);
+  background: var(--story-bg);
+}
+
+.light {
+  --story-ink: var(--color-text-primary);
+  --story-muted: var(--color-text-secondary);
+  --story-gold: var(--color-secondary);
+  --story-bg: var(--color-light-grey);
+}
+
+.sticky {
+  position: sticky;
+  top: var(--story-top, 0px);
+  height: calc(100svh - var(--story-top, 0px));
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.canvasReady {
+  opacity: 1;
+}
+
+/* Soft scrim so captions sit on calm space, whatever the scene is doing. */
+.sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--story-bg) 82%, transparent) 0%,
+    transparent 46%
+  );
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.loading::before {
+  content: '';
+  width: 38px;
+  height: 38px;
+  border: 2px solid color-mix(in srgb, var(--story-gold) 30%, transparent);
+  border-top-color: var(--story-gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.captions {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.caption {
+  position: absolute;
+  top: 50%;
+  left: clamp(20px, 6vw, 96px);
+  width: min(460px, 40vw);
+  translate: 0 calc(-50% + var(--shift, 0) * 26px);
+  color: var(--story-ink);
+}
+
+.caption[data-on] {
+  pointer-events: auto;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+  font: 600 0.72rem/1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--story-gold);
+}
+
+.kicker b {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid color-mix(in srgb, var(--story-gold) 55%, transparent);
+  border-radius: 50%;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+
+.title {
+  margin: 0 0 1rem;
+  font: 600 clamp(2.1rem, 4.2vw, 3.6rem) / 1.05 var(--font-serif);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--story-ink);
+}
+
+.body {
+  margin: 0;
+  max-width: 40ch;
+  font: 400 1.02rem/1.6 var(--font-sans);
+  color: var(--story-muted);
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+}
+
+.ctaPrimary,
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 1.5rem;
+  border-radius: var(--radius-full);
+  font: 700 0.82rem/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    background-color 0.2s ease;
+}
+
+.ctaPrimary {
+  background: var(--story-gold);
+  color: var(--color-primary-dark);
+  box-shadow: var(--shadow-glow-gold);
+}
+
+.ctaGhost {
+  border: 1px solid color-mix(in srgb, var(--story-ink) 30%, transparent);
+  color: var(--story-ink);
+}
+
+.ctaPrimary:hover,
+.ctaGhost:hover {
+  transform: translateY(-1px);
+}
+
+.ctaPrimary:active,
+.ctaGhost:active {
+  transform: scale(0.97);
+}
+
+.ctaPrimary:focus-visible,
+.ctaGhost:focus-visible,
+.dots button:focus-visible,
+.skip:focus-visible {
+  outline: 2px solid var(--story-gold);
+  outline-offset: 3px;
+}
+
+.dots {
+  position: absolute;
+  right: clamp(14px, 2.4vw, 32px);
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  translate: 0 -50%;
+}
+
+.dots button {
+  display: block;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--story-ink) 45%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.dots button[aria-current='step'] {
+  background: var(--story-gold);
+  border-color: var(--story-gold);
+  transform: scale(1.25);
+}
+
+.cue {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 1;
+  translate: -50% 0;
+  font: 600 0.68rem/1 var(--font-sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--story-muted);
+}
+
+.cue::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 28px;
+  margin: 10px auto 0;
+  background: linear-gradient(var(--story-gold), transparent);
+  animation: cue 1.8s ease-in-out infinite;
+}
+
+@keyframes cue {
+  50% {
+    transform: translateY(6px);
+    opacity: 0.4;
+  }
+}
+
+.skip {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 3;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--story-bg) 70%, transparent);
+  color: var(--story-ink);
+  font: 600 0.72rem/1 var(--font-sans);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.skip:focus-visible {
+  opacity: 1;
+}
+
+/* No WebGL: the captions become a plain, readable introduction. */
+.isStatic {
+  height: auto;
+}
+
+.isStatic .sticky {
+  position: relative;
+  height: auto;
+  padding: 72px 0;
+}
+
+.isStatic .canvas,
+.isStatic .dots,
+.isStatic .cue,
+.isStatic .sticky::after {
+  display: none;
+}
+
+.isStatic .captions {
+  position: static;
+  display: grid;
+  gap: 48px;
+}
+
+.isStatic .caption {
+  position: static;
+  width: auto;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+  translate: none;
+  opacity: 1 !important;
+}
+
+@media (max-width: 760px) {
+  .story {
+    height: var(--story-height-mobile, 520vh);
+  }
+
+  .sticky::after {
+    background: linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--story-bg) 94%, transparent) 0%,
+      color-mix(in srgb, var(--story-bg) 70%, transparent) 32%,
+      transparent 56%
+    );
+  }
+
+  .caption {
+    top: auto;
+    bottom: 64px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+    translate: 0 calc(var(--shift, 0) * 20px);
+  }
+
+  .title {
+    font-size: clamp(1.7rem, 7.6vw, 2.3rem);
+  }
+
+  .body {
+    font-size: 0.92rem;
+  }
+
+  .dots {
+    right: 10px;
+    top: 38%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cue::after,
+  .loading::before {
+    animation: none;
+  }
+  /* Chapters fade in place rather than slide (still centred). */
+  .caption {
+    translate: 0 -50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 760px) {
+  .caption {
+    translate: none;
+  }
+}

@@ -11,13 +11,20 @@ description: >
 
 # Studio architecture
 
-Three surfaces, in order of depth:
+Two surfaces, in order of depth:
 
 | Surface | Where | What it is |
 |---|---|---|
-| **Workbench** | `/studio/book`, `/studio/poster`, `/studio/apparel` | The real editors. Full-screen dark app chrome, zoomable artboard, layer stack, templates. |
+| **Workbench** | `/studio/book`, `/studio/poster`, `/studio/apparel`, `/studio/social` | The real editors. Full-screen dark app chrome, zoomable artboard, layer stack, cast, ideas. |
 | **Preview** | `/studio` | A deliberately shallow live taster per product. Three or four controls, no layers. |
-| **Social studio** | `/studio/social` | Independent editor with its own renderer. Not yet on the shared engine. |
+
+Every workbench works the same way, and should stay that way: it **opens on a
+finished idea** acted out by the starter cast; the settings panel reads top to
+bottom as idea → look/backdrop → who is in it (`CastOnDesign`) → the product
+itself, every choice a picture tile (`TileGrid`, `detail` for price); and a
+strip under the canvas shows the design across the product's range (book:
+`PageStrip`; poster frames, garments, post formats: `VariantStrip`). The shared
+pieces live in `workbench/DesignPanel.jsx`.
 
 ## The one rule
 
@@ -38,7 +45,32 @@ Components/Studio/
                         which honour `tint` — hide the control for the rest.
   drawSubstrate.js      The blank product: poster + frame/mat/paper, garment +
                         colourway/trim, book spread + scene. Draws NO copy.
-  drawCharacter.js      drawHero / drawCompanion onto a canvas.
+  drawCharacter.js      drawHero / drawCompanion onto a canvas. The book's pets
+                        still draw through drawCompanion.
+  cast/                 The cast rig. castRig (original layered SVG people:
+                        adults, kids, little ones; looks, poses, moods, props),
+                        scenePieces (movable scenery art), castRaster (SVG to
+                        decoded images for the canvas), castModel (options.cast),
+                        CastPanel / LookEditor / CastProperties (picture-tile
+                        pickers).
+  book/                 bookPages (spreads, moments, stage geometry), BookPanel,
+                        PageStrip.
+  poster/ apparel/      PosterPanel, ApparelPanel: each product's settings.
+  social/               socialArt (formats, themes, backdrops, the post's
+                        substrate) and SocialPanel. Social is `digital`: a
+                        Share/Download section replaces the order, export runs
+                        at the format's pixel width, and its persistence mode
+                        is 'social-post' so old-editor drafts never load.
+  starters/             Starter ideas per product (starters.js) and the
+                        "Start from an idea" gallery. Built from the live cast
+                        and artboard; poster and apparel ideas stay inside the
+                        free layer count so an idea never raises the price.
+                        catalog.js lists store products with same-origin
+                        photos (others would taint the canvas on export).
+Components/Scroll3D/    ScrollStory (sticky scroll-scrubbed Three.js section
+                        with DOM captions) plus shopScene / studioScene. The
+                        studio scene's book, poster and hoodie are rendered by
+                        the editors' own renderers (warmLayers first).
   core/                 designDoc, designCodec (?d= links), designStore,
                         useDesignPersistence, useDesignHistory, pricing,
                         characterSchema, StudioControls (light theme)
@@ -59,9 +91,49 @@ entry, a `drawSubstrate` painter, and a `documentSection` render function.
   `button` role and the suites select options with `getByRole('button', {name})`.
   Both control kits use `role="group"` + `aria-pressed` + roving `tabIndex`.
 - **Everything persisted lives in `options`.** The design document is
-  `{mode, options, layers}`. The storybook cast sits in `options.avatar` /
-  `options.companion` for exactly this reason — page-local state does not survive
-  a save, a share link, or a reopened cart line.
+  `{mode, options, layers}`. The storybook cast sits in `options.cast` and its
+  pages in `options.spreads` / `options.activeSpread` for exactly this reason —
+  page-local state does not survive a save, a share link, or a reopened cart
+  line.
+- **People are cast members; placements are layers.** A `character` layer holds
+  `castId`, `pose`, `mood`, `prop`; who the person is (hair, outfit) lives in
+  `options.cast`, so one edit reaches every page. `WorkbenchRoute.setCast`
+  refits a member's layers when their outline changes and deletes them when the
+  member leaves. `__tests__/castRig.test.js` draws every person field, pose,
+  mood and prop against the defaults and fails if an option does not change the
+  art — the cast's version of the one rule.
+- **Books are paged.** `useWorkbench({ scope })` shows and edits only layers
+  whose `page` is the active spread (unpaged layers belong to `scope.fallback`,
+  the first story spread) while one history spans the book. Persistence, price
+  and the order summary read `workbench.allLayers`, never the scoped `layers`.
+- **History holds layers and a `doc`.** Each entry is `{ layers, doc }`; routes
+  opt option keys into `doc` with `docKeys` (the cast always is), so undoing
+  "delete page" or "remove from cast" restores options and art together. Use
+  `workbench.transact` for a change to both; `setOptions(next, { commit:
+  false })` for navigation or typing. The open page (`activeSpread`) is not
+  history — undo never turns the page.
+- **Ideas swap, they do not replace.** Starter layers carry `fromStarter`;
+  opening another idea (outside the book) swaps only those, records
+  `options.idea`, and keeps whatever the shopper added — like a book moment.
+- **The artboard can follow the document.** `product.frameKeys` (poster size,
+  orientation, frame and mount; book and social format) are doc keys; changing
+  one refits every layer in the same undo step (`starters.relayout` re-lays-out
+  the open idea for the new shape, `layerModel.refitLayer` scales the rest).
+  A poster's frame or mount moves the print window without changing the
+  artboard: `product.artRect` reports it and `refitLayerToRect` follows it.
+- **One of each person per page.** `placeOnPage` selects a member already
+  there, "Who is this?" jumps to them, and `useWorkbench.duplicate` refuses a
+  layer with a `castId`. A duplicate drops `fromStarter`, so it is the
+  shopper's own and survives an idea swap.
+- **Theme colours are roles.** Social layers record `colorRole` / `fillRole`;
+  a theme change repaints only layers still wearing the old theme's colour.
+- **Image layers load through `castRaster.imageForUrl`** (the default
+  `imageFor` in `paintLayers`). Before it, image layers never drew a picture.
+- **A drag is one undo step.** Previews overwrite the present entry and keep
+  the pre-gesture state in `pending`; the identity commit at gesture end
+  records it. Before this, drags were never undoable.
+- **Sticky needs `overflow: clip`, not `hidden`, on ancestors.** Hidden makes a
+  scroll container and the 3D story's sticky viewport stops sticking.
 - **The apparel artboard is 520x420.** The garment art uses absolute coordinates
   tuned for that canvas; any other size mis-proportions it.
 - **Text auto-fits.** `renderLayers.paintText` shrinks a layer until its wrapped
@@ -74,19 +146,39 @@ entry, a `drawSubstrate` painter, and a `documentSection` render function.
 - **Never put `Date.now()` in anything rendered during SSR.** The handoff link is
   built without `createDesignDoc` for this reason: a timestamp differs between
   server and client and React discards the whole element as a hydration mismatch.
+  The same goes for counters: rig SVG ids are named by what they draw
+  (`cast-pat-<pattern>-<colours>`), never numbered.
+- **The handoff never carries the child's name.** `meta.hero` is `{ look }`;
+  the name rides in sessionStorage (`stashHandoffName` / `takeHandoffName`).
+  `decodeDesign` checks every field's shape, since `?d=` comes from anywhere.
+- **Remote product photos load with CORS.** Every catalogue host sends
+  `Access-Control-Allow-Origin`, so all products can be featured and export
+  still works. Next's image optimizer is not a proxy here: Scryfall refuses it.
+- **Thumbnails take stable inputs.** `core/useStable` keeps an object's
+  identity while nothing it draws changes (`sameCastArt` ignores names), and
+  `useSettled` holds the format strip until a drag pauses. Pass a thumbnail
+  the whole `options` and it repaints on every keystroke.
 - **Do not run `npm run build` while `next dev` is running.** They share `.next`
   and the dev server starts throwing `Cannot find module './chunks/...'`.
-- **`drawBookStage` returns early on page 0**, so the cast only draws on an
-  illustration spread. The book route opens on `activePage: 2`.
+- **The book route no longer passes `avatar` / `companion` to the substrate.**
+  The cast are layers; `drawBookStage` only paints them for callers that still
+  pass the legacy records (the marketing preview).
 
-## Cart facts that still bite
+## Cart facts
 
-- **`selectedVariant.priceModifier` is displayed and never charged.**
-  `pages/products/[productid].jsx` shows `price + modifier`; `utils/cartUtils.js`
-  sums `item.price * quantity`. Up to $150 per line.
-- **Custom items vanish from `inventory` on reload**, so `UPDATE_QUANTITY` bails
-  at `if (!cartItem || !inventoryItem) return state` and the qty box no-ops.
-- `hooks/useActions.js` logs every cart action to the console.
+- Each variant is its own cart line: `lineId` is `itemid::variantId`
+  (`cartLineId(line)` falls back to `itemid` for lines saved before), and it
+  charges base price plus that variant's `priceModifier`. Cart views act on
+  the line id; product cards send the product id, which means every line of
+  it. Callers send the variant's name as `variant` and the object as
+  `selectedVariant`; the reducer reads the object.
+- `SET_CART` puts custom (studio) lines back into `inventory`, or their
+  quantity controls would no-op after a reload.
+- A custom line stores a PNG and its design, so a few can fill localStorage;
+  `CartProvider` toasts once when a save hits the quota.
+- `FREE_SHIPPING_THRESHOLD` in `utils/cartUtils.js` is the only free-shipping
+  number. Checkout waives standard delivery only, so copy says "free shipping",
+  never "free express".
 
 ## House rules
 

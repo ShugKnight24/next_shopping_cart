@@ -1,0 +1,77 @@
+/* Page strip under the book canvas. Tokens come from theme.module.css. */
+
+.strip {
+  flex-shrink: 0;
+  border-top: 1px solid var(--wb-border);
+  background: var(--wb-chrome);
+}
+
+.list {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: thin;
+}
+
+.page,
+.add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  background: var(--wb-chrome-sunken);
+  color: var(--wb-text-dim);
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+
+.page:hover,
+.add:hover {
+  border-color: var(--wb-border-strong);
+  color: var(--wb-text);
+}
+
+.page:focus-visible,
+.add:focus-visible {
+  outline: 2px solid var(--wb-accent);
+  outline-offset: 2px;
+}
+
+.pageActive {
+  border-color: var(--wb-accent);
+  background: var(--wb-accent-soft);
+  color: var(--wb-text);
+}
+
+.thumb {
+  display: block;
+  height: 54px;
+  border-radius: 4px;
+}
+
+.label {
+  line-height: 1;
+}
+
+.add {
+  justify-content: center;
+  min-width: 84px;
+  border-style: dashed;
+}
+
+.add span {
+  font-size: 1.2rem;
+  line-height: 1;
+}

@@ -11,7 +11,9 @@
   padding: 80px 0 0;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 1s ease, transform 1s ease;
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
 }
 .hero.visible {
   opacity: 1;
@@ -35,7 +37,7 @@
     transform: translate(0, 0);
   }
   100% {
-    transform: translate(120px, 100px);
+    transform: translate(220px, 160px);
   }
 }
 .backgroundPattern {
@@ -57,7 +59,8 @@
 }
 
 @keyframes patternFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
   25% {
@@ -84,7 +87,8 @@
 }
 
 @keyframes floatOrb1 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   33% {
@@ -95,7 +99,8 @@
   }
 }
 @keyframes floatOrb2 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   50% {
@@ -103,7 +108,8 @@
   }
 }
 @keyframes floatOrb3 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
   }
   25% {
@@ -114,7 +120,8 @@
   }
 }
 @keyframes floatOrb5 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   50% {
@@ -158,7 +165,11 @@
   position: absolute;
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), rgba(218, 165, 32, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(184, 134, 11, 0.3),
+    rgba(218, 165, 32, 0.1)
+  );
   transform: rotate(45deg);
   animation: floatDiamond 8s ease-in-out infinite;
 }
@@ -194,7 +205,8 @@
 }
 
 @keyframes floatDiamond {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(45deg) translate(0, 0);
     opacity: 0.6;
   }
@@ -289,7 +301,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -326,7 +339,8 @@
 }
 
 @keyframes gradientShift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -514,438 +528,12 @@
 }
 
 @keyframes floatStat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
     transform: translateY(-10px);
-  }
-}
-.cartTrackSection {
-  position: relative;
-  width: 100%;
-  height: 350px;
-  z-index: 20;
-  margin-top: auto;
-}
-
-.productShelves {
-  position: absolute;
-  bottom: 50px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-around;
-  padding: 0 12%;
-  pointer-events: none;
-  z-index: 18;
-}
-
-.shelfItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.shelfProduct {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  animation: productJumpIntoCart 8s ease-in-out infinite;
-  animation-delay: var(--jump-delay, 0s);
-}
-
-.productIconWrapper {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.productLabel {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 4px 10px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.shelf {
-  margin-top: 10px;
-  width: 80px;
-  perspective: 120px;
-}
-
-.shelfTop {
-  height: 8px;
-  background: linear-gradient(180deg, #daa520 0%, #f4d03f 50%, #daa520 100%);
-  border-radius: 3px 3px 0 0;
-  transform: rotateX(-15deg);
-  transform-origin: bottom center;
-  box-shadow: 0 -2px 8px rgba(218, 165, 32, 0.3);
-}
-
-.shelfFront {
-  height: 24px;
-  background: linear-gradient(180deg, #b8860b 0%, #8b6914 50%, #6b5010 100%);
-  border-radius: 0 0 6px 6px;
-  box-shadow: 0 6px 16px rgba(139, 105, 20, 0.4);
-}
-
-@keyframes productJumpIntoCart {
-  0%, 18% {
-    transform: translateY(0) scale(1) rotate(0deg);
-    opacity: 1;
-  }
-  20% {
-    transform: translateY(5px) scale(0.95, 1.05) rotate(0deg);
-    opacity: 1;
-  }
-  24% {
-    transform: translateY(-60px) scale(1.1) rotate(-10deg);
-    opacity: 1;
-  }
-  28% {
-    transform: translateY(-80px) scale(1) rotate(-5deg);
-    opacity: 0.8;
-  }
-  32%, 90% {
-    transform: translateY(-70px) scale(0.6) rotate(0deg);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0) scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-.shelfItem1 .shelfProduct {
-  animation-delay: 0s !important;
-}
-
-.shelfItem2 .shelfProduct {
-  animation-delay: 1.2s !important;
-}
-
-.shelfItem3 .shelfProduct {
-  animation-delay: 2s !important;
-}
-
-.shelfItem4 .shelfProduct {
-  animation-delay: 2.8s !important;
-}
-
-.cartTrack {
-  position: absolute;
-  bottom: 40px;
-  left: 0;
-  right: 0;
-  height: 20px;
-}
-
-.trackSvg {
-  width: 100%;
-  height: 100%;
-}
-
-.cartOnTrack {
-  position: absolute;
-  bottom: 120px;
-  left: 5%;
-  width: 160px;
-  height: auto;
-  z-index: 30;
-}
-
-.animatedCart {
-  width: 100%;
-  height: auto;
-  animation: cartTrackAnimation 8s ease-in-out infinite;
-}
-
-@keyframes cartTrackAnimation {
-  0%, 8% {
-    transform: translateX(0) rotate(0deg);
-  }
-  4% {
-    transform: translateX(0) translateY(-3px) rotate(0deg);
-  }
-  15% {
-    transform: translateX(50px) rotate(-0.5deg);
-  }
-  30% {
-    transform: translateX(200px) rotate(-1.5deg);
-  }
-  45% {
-    transform: translateX(450px) rotate(-2deg);
-  }
-  50% {
-    transform: translateX(600px) rotate(-2deg);
-  }
-  65% {
-    transform: translateX(750px) rotate(-1deg);
-  }
-  80% {
-    transform: translateX(850px) rotate(-0.5deg);
-  }
-  92%, 100% {
-    transform: translateX(850px) rotate(0deg);
-  }
-}
-.checkoutRegister {
-  position: absolute;
-  bottom: 100px;
-  right: 8%;
-  width: 90px;
-  height: auto;
-  z-index: 19;
-  animation: registerPulse 3s ease-in-out infinite;
-}
-
-@keyframes registerPulse {
-  0%, 100% {
-    filter: drop-shadow(0 4px 12px rgba(218, 165, 32, 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 6px 20px rgba(218, 165, 32, 0.6));
-  }
-}
-.cartBody {
-  animation: cartBodyBounce 8s ease-in-out infinite;
-}
-
-@keyframes cartBodyBounce {
-  0%, 8%, 92%, 100% {
-    transform: translateY(0);
-  }
-  30% {
-    transform: translateY(-3px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-  70% {
-    transform: translateY(-3px);
-  }
-}
-.cartItems .cartItem1 {
-  opacity: 0;
-  animation: itemAppear1 8s ease-in-out infinite;
-}
-.cartItems .cartItem2 {
-  opacity: 0;
-  animation: itemAppear2 8s ease-in-out infinite;
-}
-.cartItems .cartItem3 {
-  opacity: 0;
-  animation: itemAppear3 8s ease-in-out infinite;
-}
-.cartItems .cartItem4 {
-  opacity: 0;
-  animation: itemAppear4 8s ease-in-out infinite;
-}
-
-@keyframes itemAppear1 {
-  0%, 24% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.5);
-  }
-  28% {
-    opacity: 1;
-    transform: translateY(5px) scale(1.1);
-  }
-  32%, 100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@keyframes itemAppear2 {
-  0%, 38% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.5);
-  }
-  42% {
-    opacity: 1;
-    transform: translateY(5px) scale(1.1);
-  }
-  46%, 100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@keyframes itemAppear3 {
-  0%, 48% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.5);
-  }
-  52% {
-    opacity: 1;
-    transform: translateY(5px) scale(1.1);
-  }
-  56%, 100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@keyframes itemAppear4 {
-  0%, 60% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.5);
-  }
-  64% {
-    opacity: 1;
-    transform: translateY(5px) scale(1.1);
-  }
-  68%, 100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@keyframes itemBounce1 {
-  0%, 8%, 92%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  30% {
-    transform: translateY(-6px) rotate(-3deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(-5deg);
-  }
-  70% {
-    transform: translateY(-6px) rotate(-3deg);
-  }
-}
-@keyframes itemBounce2 {
-  0%, 8%, 92%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  35% {
-    transform: translateY(-10px) rotate(3deg);
-  }
-  50% {
-    transform: translateY(-18px) rotate(6deg);
-  }
-  65% {
-    transform: translateY(-10px) rotate(3deg);
-  }
-}
-@keyframes itemBounce3 {
-  0%, 8%, 92%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-8px) rotate(-2deg);
-  }
-  50% {
-    transform: translateY(-15px) rotate(-4deg);
-  }
-  75% {
-    transform: translateY(-8px) rotate(-2deg);
-  }
-}
-@keyframes wheelSpinFixed {
-  0%, 8% {
-    transform: rotate(0deg);
-  }
-  15% {
-    transform: rotate(90deg);
-  }
-  30% {
-    transform: rotate(360deg);
-  }
-  50% {
-    transform: rotate(900deg);
-  }
-  65% {
-    transform: rotate(1260deg);
-  }
-  80% {
-    transform: rotate(1500deg);
-  }
-  92%, 100% {
-    transform: rotate(1620deg);
-  }
-}
-.motionLines line {
-  animation: motionLineAppear 8s ease-in-out infinite;
-}
-.motionLines line:nth-child(1) {
-  animation-delay: 0s;
-}
-.motionLines line:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.motionLines line:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.motionLines line:nth-child(4) {
-  animation-delay: 0.15s;
-}
-
-@keyframes motionLineAppear {
-  0%, 20%, 75%, 100% {
-    opacity: 0;
-    transform: translateX(0);
-  }
-  35%, 55% {
-    opacity: 0.7;
-    transform: translateX(-25px);
-  }
-  45% {
-    opacity: 1;
-    transform: translateX(-40px);
-  }
-}
-.speedParticles circle {
-  animation: particleFly 8s ease-in-out infinite;
-}
-.speedParticles circle:nth-child(1) {
-  animation-delay: 0s;
-}
-.speedParticles circle:nth-child(2) {
-  animation-delay: 0.15s;
-}
-.speedParticles circle:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.speedParticles circle:nth-child(4) {
-  animation-delay: 0.45s;
-}
-
-@keyframes particleFly {
-  0%, 25%, 70%, 100% {
-    opacity: 0;
-    transform: translateX(0);
-  }
-  40%, 55% {
-    opacity: 0.6;
-    transform: translateX(-50px);
-  }
-  48% {
-    opacity: 1;
-    transform: translateX(-70px);
-  }
-}
-.groundShadow {
-  animation: shadowScale 8s ease-in-out infinite;
-}
-
-@keyframes shadowScale {
-  0%, 8%, 92%, 100% {
-    transform: scaleX(1);
-    opacity: 0.15;
-  }
-  50% {
-    transform: scaleX(1.2);
-    opacity: 0.08;
   }
 }
 .bottomFade {
@@ -999,7 +587,8 @@
 }
 
 @keyframes scrollBounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
@@ -1012,41 +601,10 @@
   .floatingStats {
     display: none;
   }
-  .productShelves {
-    padding: 0 10%;
-  }
 }
 @media (max-width: 768px) {
   .hero {
     padding: 60px 0 0;
-  }
-  .cartTrackSection {
-    height: 220px;
-  }
-  .productShelves {
-    padding: 0 5%;
-  }
-  .productIconWrapper {
-    width: 36px;
-    height: 36px;
-  }
-  .shelf {
-    width: 55px;
-  }
-  .cartOnTrack {
-    width: 140px;
-    bottom: 40px;
-  }
-  @keyframes cartTrackAnimation {
-    0%, 8% {
-      transform: translateX(0) rotate(0deg);
-    }
-    50% {
-      transform: translateX(400px) rotate(-2deg);
-    }
-    92%, 100% {
-      transform: translateX(600px) rotate(0deg);
-    }
   }
   .scrollIndicator {
     bottom: 80px;
@@ -1056,47 +614,34 @@
   .heroInner {
     padding: 20px;
   }
-  .productShelves {
-    display: none;
-  }
-  .cartOnTrack {
-    width: 120px;
-    left: 2%;
-  }
-  @keyframes cartTrackAnimation {
-    0%, 8% {
-      transform: translateX(0) rotate(0deg);
-    }
-    50% {
-      transform: translateX(200px) rotate(-2deg);
-    }
-    92%, 100% {
-      transform: translateX(300px) rotate(0deg);
-    }
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero {
     transition: none;
   }
-  .animatedCart,
-  .cartBody,
-  .cartItems *,
-  .leftWheel,
-  .rightWheel,
-  .wheelTreads,
-  .motionLines *,
-  .speedParticles *,
-  .groundShadow,
-  .shelfProduct,
   .floatingStats *,
   .cartPatternRect,
   .patternOverlay,
   .floatingOrbs circle,
   .floatingDiamond,
   .floatingCircle,
-  .scrollWheel {
+  .scrollWheel,
+  .badgeDot,
+  .headlineAccent {
     animation: none;
+  }
+  /* The entrances start invisible, so they finish at once rather than
+     being switched off. */
+  .cornerElements path,
+  .logo,
+  .badgeContainer,
+  .headline,
+  .subheadline,
+  .ctaContainer,
+  .trustIndicators,
+  .scrollIndicator {
+    animation-duration: 0.01ms;
+    animation-delay: 0s;
   }
 }
 
@@ -1188,359 +733,6 @@
   z-index: 4;
 }
 
-/* ============================================================================
-   VAULT ANIMATION (2D VECTOR LUXURY)
-   ============================================================================ */
-.vaultContainer {
-  width: 100%;
-  max-width: 780px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin: 0 auto;
-}
-
-.vaultSvg {
-  width: 100%;
-  height: auto;
-  max-height: 380px;
-  filter: drop-shadow(0 16px 40px rgba(0, 0, 0, 0.4));
-}
-
-.spinRingSlow {
-  transform-origin: 300px 310px;
-  animation: vaultSpin 30s linear infinite;
-}
-
-.spinRingReverse {
-  transform-origin: 300px 310px;
-  animation: vaultSpinRev 20s linear infinite;
-}
-
-@keyframes vaultSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes vaultSpinRev {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
-}
-
-.scanningLaser {
-  animation: scanSweep 3s ease-in-out infinite alternate;
-}
-
-@keyframes scanSweep {
-  0% { transform: translateY(-70px); opacity: 0.3; }
-  50% { opacity: 0.9; }
-  100% { transform: translateY(60px); opacity: 0.3; }
-}
-
-.containmentBeam {
-  animation: beamPulse 4s ease-in-out infinite;
-}
-
-@keyframes beamPulse {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.35; }
-}
-
-.vaultItem {
-  opacity: 0;
-  transform: translateY(20px) scale(0.9);
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-}
-
-.vaultItemActive {
-  opacity: 1 !important;
-  transform: translateY(0) scale(1) !important;
-  animation: levitateItem 4s ease-in-out infinite alternate;
-}
-
-@keyframes levitateItem {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-12px) scale(1.02); }
-}
-
-.particleP1 { animation: floatP1 4s ease-in-out infinite alternate; }
-.particleP2 { animation: floatP2 3.5s ease-in-out infinite alternate; }
-.particleP3 { animation: floatP1 5s ease-in-out infinite alternate; }
-.particleP4 { animation: floatP2 4.5s ease-in-out infinite alternate; }
-.particleP5 { animation: floatP1 3s ease-in-out infinite alternate; }
-
-@keyframes floatP1 {
-  from { transform: translate(0, 0); opacity: 0.3; }
-  to { transform: translate(-10px, -20px); opacity: 0.9; }
-}
-
-@keyframes floatP2 {
-  from { transform: translate(0, 0); opacity: 0.4; }
-  to { transform: translate(12px, -18px); opacity: 1; }
-}
-
-/* ============================================================================
-   3D ISOMETRIC SHOWCASE (CSS 3D / SPATIAL)
-   ============================================================================ */
-.iso3dViewport {
-  width: 100%;
-  max-width: 820px;
-  min-height: 400px;
-  perspective: 1200px;
-  perspective-origin: center 40%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: grab;
-  padding: 1.5rem;
-}
-
-.iso3dScene {
-  position: relative;
-  width: 320px;
-  height: 240px;
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.iso3dPedestal {
-  position: absolute;
-  width: 260px;
-  height: 260px;
-  transform: rotateX(75deg) translateZ(-60px);
-  transform-style: preserve-3d;
-}
-
-.pedestalTop {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #1e3a5f 0%, #0a1829 100%);
-  border: 3px solid #daa520;
-  box-shadow: 0 0 35px rgba(218, 165, 32, 0.4), inset 0 0 25px rgba(56, 189, 248, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pedestalGlowRing {
-  width: 80%;
-  height: 80%;
-  border-radius: 50%;
-  border: 1.5px dashed rgba(218, 165, 32, 0.7);
-  animation: vaultSpin 25s linear infinite;
-}
-
-.pedestalCore {
-  position: absolute;
-  width: 40%;
-  height: 40%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #38bdf8 0%, transparent 80%);
-  opacity: 0.6;
-}
-
-.iso3dCenterOrb {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff 0%, #daa520 40%, #1e3a5f 90%);
-  box-shadow: 0 0 30px rgba(218, 165, 32, 0.8), 0 0 60px rgba(56, 189, 248, 0.5);
-  transform: translateZ(30px);
-  animation: orbLevitate 3s ease-in-out infinite alternate;
-}
-
-@keyframes orbLevitate {
-  from { transform: translateZ(20px); }
-  to { transform: translateZ(45px); }
-}
-
-.isoCard {
-  position: absolute;
-  width: 190px;
-  padding: 1rem 1.1rem;
-  background: rgba(15, 39, 68, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(218, 165, 32, 0.4);
-  border-radius: 16px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  user-select: none;
-}
-
-.isoCard:hover,
-.isoCardFocused {
-  border-color: #daa520;
-  box-shadow: 0 20px 48px rgba(218, 165, 32, 0.35), 0 0 24px rgba(56, 189, 248, 0.4);
-  filter: brightness(1.1);
-}
-
-.cardGlare {
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  pointer-events: none;
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.cardEmoji {
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-.cardBadge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-  border: 1px solid;
-}
-
-.cardTitle {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 0.2rem;
-  line-height: 1.25;
-}
-
-.cardSubtitle {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0 0 0.6rem;
-}
-
-.cardPriceRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 0.4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cardPrice {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: #daa520;
-}
-
-.cardAction {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #38bdf8;
-}
-
-.iso3dHint {
-  position: absolute;
-  bottom: 0.5rem;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-/* ============================================================================
-   WEBGL COSMIC VORTEX
-   ============================================================================ */
-.webglContainer {
-  width: 100%;
-  max-width: 860px;
-  min-height: 380px;
-  height: 380px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 24px;
-}
-
-.webglCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  cursor: crosshair;
-}
-
-.webglFallback {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.fallbackVortex {
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(218,165,32,0.3) 0%, rgba(30,58,95,0.6) 60%, transparent 80%);
-  animation: vaultSpin 12s linear infinite;
-}
-
-.webglEmblem {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  pointer-events: none;
-}
-
-.emblemCore {
-  width: 70px;
-  height: 70px;
-  animation: orbLevitate 3s ease-in-out infinite alternate;
-}
-
-.emblemSvg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 16px #daa520);
-}
-
-.emblemLabel {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  color: #daa520;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-}
-
-.webglHud {
-  position: absolute;
-  bottom: 0.75rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.65rem;
-  font-family: monospace;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.08em;
-  pointer-events: none;
-}
-
 @media (max-width: 768px) {
   .switcherTrack {
     gap: 0.2rem;
@@ -1553,12 +745,15 @@
   .switcherBadge {
     display: none;
   }
-  .iso3dScene {
-    transform: scale(0.85) !important;
+}
+
+@media (max-width: 480px) {
+  .switcherIcon {
+    display: none;
   }
-  .webglHud {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
+  .switcherButton {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
 }

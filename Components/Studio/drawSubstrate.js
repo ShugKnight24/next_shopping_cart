@@ -47,9 +47,11 @@ const COMPANION_OPTS = { x: 0, y: 0 };
  * block in the same spot it always has.
  */
 export function posterArtRect(width, height, config = {}) {
-  const { frame = 'oak', orientation = '' } = config;
+  const { frame = 'oak', orientation = '', mat = 'none' } = config;
   const matInset = frame !== 'none' ? 24 : 12;
-  const artInset = matInset + 20;
+  // A mount is a real bevel-cut board around the print; without one the
+  // print runs almost to the frame.
+  const artInset = matInset + (mat && mat !== 'none' ? 28 : 8);
   return {
     matInset,
     artInset,
@@ -66,7 +68,14 @@ export function posterArtRect(width, height, config = {}) {
  * Returns the art rect so the caller does not recompute it.
  */
 export function drawPosterSubstrate(ctx, { width, height, config = {} }) {
-  const { artStyle = 'cosmic', frame = 'oak', paper = 'cotton' } = config;
+  const {
+    artStyle = 'cosmic',
+    frame = 'oak',
+    paper = 'cotton',
+    mat = 'none',
+    sceneId = null,
+    timeOfDay = 'day',
+  } = config;
 
   const rect = posterArtRect(width, height, config);
   const { matInset, artInset, artW, artH, isLandscape } = rect;
@@ -84,22 +93,48 @@ export function drawPosterSubstrate(ctx, { width, height, config = {} }) {
             : 'transparent';
 
   if (frame !== 'none') {
+    // Moulding lit from the top left: a light top/left face, a darker
+    // bottom/right face, and a fine lip where it meets the mount.
     ctx.fillStyle = frameColor;
     ctx.fillRect(8, 8, width - 16, height - 16);
-    ctx.strokeStyle = frame === 'gold' ? '#f59e0b' : 'rgba(0, 0, 0, 0.15)';
-    ctx.lineWidth = frame === 'gold' ? 3 : 2;
+    const lit = ctx.createLinearGradient(8, 8, width - 8, height - 8);
+    lit.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
+    lit.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+    lit.addColorStop(1, 'rgba(0, 0, 0, 0.22)');
+    ctx.fillStyle = lit;
+    ctx.fillRect(8, 8, width - 16, height - 16);
+    ctx.strokeStyle = frame === 'gold' ? '#f59e0b' : 'rgba(0, 0, 0, 0.18)';
+    ctx.lineWidth = frame === 'gold' ? 3 : 1.5;
     ctx.strokeRect(8, 8, width - 16, height - 16);
-
-    if (frame === 'gold') {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(12, 12, width - 24, height - 24);
-    }
+    ctx.strokeStyle =
+      frame === 'gold' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.25)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(
+      matInset - 1.5,
+      matInset - 1.5,
+      width - matInset * 2 + 3,
+      height - matInset * 2 + 3
+    );
   }
 
-  // Poster Mat Board
-  ctx.fillStyle = '#ffffff';
+  // The mount board (or the paper's own margin without one).
+  const matColor =
+    mat === 'black'
+      ? '#1b1c20'
+      : mat === 'offwhite'
+        ? '#f3ecdc'
+        : mat === 'white'
+          ? '#fbfbf8'
+          : '#ffffff';
+  ctx.fillStyle = matColor;
   ctx.fillRect(matInset, matInset, width - matInset * 2, height - matInset * 2);
+  if (mat && mat !== 'none') {
+    // The bevel: a lit core edge around the window, white even on black.
+    ctx.strokeStyle =
+      mat === 'black' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.12)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(artInset - 2, artInset - 2, artW + 4, artH + 4);
+  }
 
   // Artwork Inner Canvas
   const artGrad = ctx.createLinearGradient(
@@ -133,16 +168,35 @@ export function drawPosterSubstrate(ctx, { width, height, config = {} }) {
     artGrad.addColorStop(1, '#e2e8f0');
   }
 
-  ctx.fillStyle = artGrad;
-  ctx.fillRect(artInset, artInset, artW, artH);
+  if (sceneId) {
+    // An illustrated scene, the same ones the storybook pages use.
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.rect) ctx.rect(artInset, artInset, artW, artH);
+    if (ctx.clip) ctx.clip();
+    drawEnvironmentScene(ctx, {
+      sceneId,
+      stageX: artInset,
+      stageY: artInset,
+      stageW: artW,
+      stageH: artH,
+      timeOfDay,
+      weatherEffect: 'none',
+      isFullBleed: true,
+    });
+    ctx.restore();
+  } else {
+    ctx.fillStyle = artGrad;
+    ctx.fillRect(artInset, artInset, artW, artH);
 
-  // Sun / Orb Graphic.
-  const orbY = isLandscape ? artInset + artH * 0.38 : artInset + 80;
-  const orbRadius = isLandscape ? 40 : 50;
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-  ctx.beginPath();
-  ctx.arc(width / 2, orbY, orbRadius, 0, Math.PI * 2);
-  ctx.fill();
+    // Sun / Orb Graphic.
+    const orbY = isLandscape ? artInset + artH * 0.38 : artInset + 80;
+    const orbRadius = isLandscape ? 40 : 50;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.beginPath();
+    ctx.arc(width / 2, orbY, orbRadius, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
   // Paper stock: each option has to be visible on the proof, or the
   // upcharge for canvas and luster is selling nothing.

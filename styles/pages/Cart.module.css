@@ -163,6 +163,11 @@
     font-size: 0.9rem;
   }
 }
+.cart-container .cart-and-info .cart .cart-item .cart-product-info .cart-item-variant {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
 .cart-container .cart-and-info .cart .cart-item .product-quantity {
   flex-basis: 15%;
   display: flex;

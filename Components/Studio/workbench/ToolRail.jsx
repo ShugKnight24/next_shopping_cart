@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { LayersIcon, SparklesIcon } from '../../Icons';
 import {
   SceneBackgroundIcon,
@@ -62,6 +62,51 @@ const ShapeIcon = ({ size = 18 }) => (
 
 ShapeIcon.propTypes = { size: PropTypes.number };
 
+const railSvg = (size, children) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    {children}
+  </svg>
+);
+
+/** Two people, the larger one in front: the cast. */
+const CastIcon = ({ size = 18 }) =>
+  railSvg(
+    size,
+    <>
+      <circle cx="9" cy="7" r="3.2" />
+      <path d="M3.5 20c0-3.6 2.4-6 5.5-6s5.5 2.4 5.5 6" />
+      <circle cx="17" cy="9" r="2.4" />
+      <path d="M15.4 14.2c.5-.1 1-.2 1.6-.2 2.4 0 4 1.8 4 4.6" />
+    </>
+  );
+
+CastIcon.propTypes = { size: PropTypes.number };
+
+/** A tree beside a sun: scenery. */
+const SceneryIcon = ({ size = 18 }) =>
+  railSvg(
+    size,
+    <>
+      <path d="M8 21v-5" />
+      <path d="M8 3.5 3.5 12h9z" />
+      <path d="M8 8.5 4.5 16h7z" />
+      <circle cx="17.5" cy="7" r="2.6" />
+      <path d="M14 21h8" />
+    </>
+  );
+
+SceneryIcon.propTypes = { size: PropTypes.number };
+
 const TOOLS = [
   { id: 'select', name: 'Select', shortcut: 'V', Icon: CursorIcon },
   { id: 'text', name: 'Text', shortcut: 'T', Icon: TextToolIcon },
@@ -73,6 +118,8 @@ const TOOLS = [
 const PANEL_ICONS = {
   templates: TemplateToolIcon,
   layers: LayersIcon,
+  cast: CastIcon,
+  scenery: SceneryIcon,
 };
 
 const DEFAULT_PANELS = [
@@ -117,6 +164,11 @@ export const ToolRail = ({
   activePanel = null,
   onPanelChange = null,
 }) => {
+  const panelList = useMemo(
+    () => (Array.isArray(panels) ? panels : []),
+    [panels]
+  );
+
   useEffect(() => {
     const onKeyDown = (event) => {
       // Modified keys belong to the browser and to undo/redo; a bare letter
@@ -127,17 +179,24 @@ export const ToolRail = ({
       const match = TOOLS.find(
         (candidate) => candidate.shortcut === event.key.toUpperCase()
       );
-      if (!match) return;
+      if (match) {
+        event.preventDefault();
+        onToolChange(match.id);
+        return;
+      }
 
+      // The panel toggles advertise number keys too.
+      const panel = panelList.find(
+        (candidate) => candidate.shortcut === event.key
+      );
+      if (!panel || !onPanelChange) return;
       event.preventDefault();
-      onToolChange(match.id);
+      onPanelChange(activePanel === panel.id ? null : panel.id);
     };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onToolChange]);
-
-  const panelList = Array.isArray(panels) ? panels : [];
+  }, [onToolChange, onPanelChange, activePanel, panelList]);
 
   return (
     <>
@@ -200,4 +259,10 @@ ToolRail.propTypes = {
 /* `ShapeIcon` is the only glyph in this file with a second home — the layer
    list and the inspector both need it, and duplicating the path three times
    would guarantee they drift. */
-export { DEFAULT_PANELS as RAIL_PANELS, TOOLS as RAIL_TOOLS, ShapeIcon };
+export {
+  CastIcon,
+  DEFAULT_PANELS as RAIL_PANELS,
+  TOOLS as RAIL_TOOLS,
+  SceneryIcon,
+  ShapeIcon,
+};

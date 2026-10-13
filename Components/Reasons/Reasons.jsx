@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { FREE_SHIPPING_THRESHOLD } from '../../utils/cartUtils';
 import styles from './Reasons.module.css';
 
 const reasons = [
@@ -39,9 +40,9 @@ const reasons = [
       </svg>
     ),
     title: 'Lightning Fast Delivery',
-    description: 'Free shipping on all orders over $100. Tracking included.',
+    description: `Free shipping on all orders over $${FREE_SHIPPING_THRESHOLD}. Tracking included.`,
     stat: 'FREE',
-    statLabel: 'over $100',
+    statLabel: `over $${FREE_SHIPPING_THRESHOLD}`,
     accent: 'blue',
   },
   {

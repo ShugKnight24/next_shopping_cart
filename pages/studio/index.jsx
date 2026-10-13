@@ -8,12 +8,14 @@ import {
   SparklesIcon,
   TruckIcon,
 } from '../../Components/Icons';
+import { StudioStory } from '../../Components/Scroll3D/StudioStory';
 import { PREVIEWS } from '../../Components/Studio/preview/previewConfigs';
 import { StudioPreview } from '../../Components/Studio/preview/StudioPreview';
 import { StudioHeroAnimated } from '../../Components/Studio/StudioHeroAnimated';
 import { KidsStudioVideoTour } from '../../Components/Video/KidsStudioVideoTour';
 import { useMascot } from '../../context/MascotProvider';
 import styles from '../../styles/pages/Studio.module.css';
+import { SITE_URL } from '../../utils/site';
 
 const BESPOKE_CAPABILITIES = [
   {
@@ -127,16 +129,22 @@ export default function StudioPage() {
           property="og:description"
           content="Design personalized keepsake storybooks, gallery posters, and custom kids' kicks with real-time interactive canvas proofing."
         />
-        <meta property="og:image" content="/static/img/og-preview.svg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="/static/img/og-preview.svg" />
-        <link
-          rel="canonical"
-          href="https://next-shopping-cart-shugknight24.vercel.app/studio"
+        <meta
+          property="og:image"
+          content={`${SITE_URL}/static/img/og-preview.png`}
         />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:image"
+          content={`${SITE_URL}/static/img/og-preview.png`}
+        />
+        <link rel="canonical" href={`${SITE_URL}/studio`} />
       </Head>
 
-      <main className={styles.studioContainer}>
+      {/* Scroll-scrubbed 3D tour, full width above the studio. */}
+      <StudioStory />
+
+      <main className={styles.studioContainer} id="studio-hero">
         {/* Animated Mascot Hero Scene */}
         <StudioHeroAnimated
           onExploreWorkstations={() => {
@@ -252,9 +260,9 @@ export default function StudioPage() {
               A Taste of Each Creation Suite
             </h2>
             <p className={styles.sectionSubtitle}>
-              Change a few things and watch the proof update. When you want
-              layers, templates and full print control, open the bespoke
-              designer — whatever you have made comes with you.
+              Pick your star, name them and choose an idea, and watch the proof
+              update. When you want the whole cast, every page and full print
+              control, open the designer — whatever you made comes with you.
             </p>
           </div>
 
@@ -265,8 +273,9 @@ export default function StudioPage() {
                 product={preview.product}
                 templateMode={preview.templateMode}
                 drawSubstrate={preview.drawSubstrate}
-                starterTemplateId={preview.starterTemplateId}
-                fields={preview.fields}
+                ideas={preview.ideas}
+                ideaLabel={preview.ideaLabel}
+                swatch={preview.swatch}
                 eyebrow={preview.eyebrow}
                 headline={preview.headline}
                 blurb={preview.blurb}

@@ -20,8 +20,6 @@ export function actionDispatcher(
     }
   }
 
-  console.log('custom hook', payload);
-
   dispatch({
     type,
     payload,

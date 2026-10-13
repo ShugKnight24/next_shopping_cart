@@ -55,7 +55,11 @@
 }
 
 .videoElement,
+/* Out of flow, so the canvas's 960px drawing buffer never sets the
+   page's minimum width; the stage's aspect ratio sizes it. */
 .motionCanvas {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;

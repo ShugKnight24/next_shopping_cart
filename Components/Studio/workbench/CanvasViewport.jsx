@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { onRasterReady } from '../cast/castRaster';
 import styles from './CanvasViewport.module.css';
 import {
   handlePositions,
@@ -25,7 +26,8 @@ export const CanvasViewport = ({
   workbench,
   artboard,
   drawSubstrate,
-  imageFor = null,
+  imageFor = undefined,
+  cast = null,
   onFitRequest = null,
   ariaLabel = 'Design canvas',
 }) => {
@@ -40,6 +42,10 @@ export const CanvasViewport = ({
   const spaceHeld = useRef(false);
 
   const { layers, selection, zoom, pan } = workbench;
+
+  // Cast and scenery art decodes asynchronously; repaint as each arrives.
+  const [rasterTick, setRasterTick] = useState(0);
+  useEffect(() => onRasterReady(() => setRasterTick((n) => n + 1)), []);
 
   /* ------------------------------------------------ size + paint loop -- */
 
@@ -66,6 +72,15 @@ export const CanvasViewport = ({
     workbench.fit(viewport);
     onFitRequest?.(viewport);
   }, [viewport, workbench, onFitRequest]);
+
+  // A new format or orientation reshapes the artboard: fit it again.
+  const boardKey = `${artboard.width}x${artboard.height}`;
+  const lastBoardKey = useRef(boardKey);
+  useEffect(() => {
+    if (lastBoardKey.current === boardKey) return;
+    lastBoardKey.current = boardKey;
+    if (viewport.width && viewport.height) workbench.fit(viewport);
+  }, [boardKey, viewport, workbench]);
 
   const paint = useCallback(() => {
     const canvas = canvasRef.current;
@@ -110,6 +125,7 @@ export const CanvasViewport = ({
       layers,
       artboard,
       imageFor,
+      cast,
       selection: null,
       guides: null,
       scale: zoom,
@@ -138,11 +154,13 @@ export const CanvasViewport = ({
     guides,
     drawSubstrate,
     imageFor,
+    cast,
   ]);
 
+  // `rasterTick` repaints once newly decoded art is ready to draw.
   useEffect(() => {
     paint();
-  }, [paint]);
+  }, [paint, rasterTick]);
 
   /* --------------------------------------------------- coordinate maths -- */
 
@@ -426,6 +444,8 @@ CanvasViewport.propTypes = {
   }).isRequired,
   drawSubstrate: PropTypes.func,
   imageFor: PropTypes.func,
+  /** The design's cast, for character layers. */
+  cast: PropTypes.arrayOf(PropTypes.object),
   onFitRequest: PropTypes.func,
   ariaLabel: PropTypes.string,
 };

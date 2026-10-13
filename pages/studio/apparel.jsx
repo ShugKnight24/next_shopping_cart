@@ -1,19 +1,24 @@
 import Head from 'next/head';
+import {
+  ApparelPanel,
+  garmentName,
+} from '../../Components/Studio/apparel/ApparelPanel';
+import { starterCast } from '../../Components/Studio/cast/castModel';
 import { drawApparelSubstrate } from '../../Components/Studio/drawSubstrate';
 import {
+  buildStarter,
+  stageOf,
+  STARTERS,
+} from '../../Components/Studio/starters/starters';
+import {
   FINISHES,
-  GARMENTS,
   GARMENT_COLORS,
+  GARMENTS,
   PLACEMENTS,
   PRODUCTS,
-  YOUTH_SIZES,
 } from '../../Components/Studio/workbench/products';
-import {
-  SelectField,
-  SwatchGrid,
-} from '../../Components/Studio/workbench/WorkbenchFields';
+import { VariantStrip } from '../../Components/Studio/workbench/VariantStrip';
 import { WorkbenchRoute } from '../../Components/Studio/workbench/WorkbenchRoute';
-import { InspectorSection } from '../../Components/Studio/workbench/WorkbenchShell';
 
 const nameFor = (table, id, fallback = '—') =>
   table.find((entry) => entry.id === id)?.name ?? fallback;
@@ -32,69 +37,52 @@ const summarize = (options, layers) => ({
   Elements: `${layers.length} design ${layers.length === 1 ? 'element' : 'elements'}`,
 });
 
-const DocumentSection = ({ options, setOption }) => (
-  <InspectorSection title="Garment">
-    <SelectField
-      label="Style"
-      value={options.garment}
-      onChange={(value) => setOption('garment', value)}
-      options={GARMENTS.map((g) => ({
-        value: g.id,
-        label: `${g.name} — $${g.price}`,
-      }))}
-    />
+/**
+ * A new garment opens finished — the starter kid as the superstar on the
+ * chest — so every control in reach visibly changes something.
+ */
+const cast = starterCast();
+const IDEA = STARTERS.apparel[0];
+const starter = buildStarter('apparel', IDEA, {
+  artboard: PRODUCTS.apparel.artboard(PRODUCTS.apparel.defaults),
+  options: PRODUCTS.apparel.defaults,
+  cast,
+});
 
-    <SelectField
-      label="Size"
-      value={options.size}
-      onChange={(value) => setOption('size', value)}
-      options={YOUTH_SIZES.map((s) => ({
-        value: s.id,
-        label: s.priceModifier
-          ? `${s.name} (${s.sub}) +$${s.priceModifier.toFixed(2)}`
-          : `${s.name} (${s.sub})`,
-      }))}
-    />
+const INITIAL_OPTIONS = {
+  ...PRODUCTS.apparel.defaults,
+  ...starter.options,
+  cast: starter.cast,
+  idea: IDEA.id,
+};
 
-    <SwatchGrid
-      label="Colourway"
-      value={options.color}
-      onChange={(value) => setOption('color', value)}
-      options={GARMENT_COLORS}
-    />
+/** New people and scenery land in the chest print panel. */
+const stageFor = (artboard, options) => {
+  const stage = stageOf('apparel', artboard, options);
+  return {
+    x: (stage.x0 + stage.x1) / 2,
+    feet: stage.feet,
+    adultHeight: stage.adultHeight,
+  };
+};
 
-    <SwatchGrid
-      label="Accent trim"
-      hint="Cuffs, hem, collar ribbing and laces."
-      value={options.accentColor}
-      onChange={(value) => setOption('accentColor', value)}
-      options={GARMENT_COLORS}
-    />
+const GARMENT_VARIANTS = GARMENTS.map((g) => ({
+  id: g.id,
+  name: garmentName(g.id),
+  options: { garment: g.id },
+}));
 
-    {/* A segmented control cannot hold three long placement names in a 320px
-        inspector without overlapping its own label. */}
-    <SelectField
-      label="Placement"
-      value={options.placement}
-      onChange={(value) => setOption('placement', value)}
-      options={PLACEMENTS.map((p) => ({
-        value: p.id,
-        label: p.priceModifier
-          ? `${p.name} — ${p.sub} (+$${p.priceModifier})`
-          : `${p.name} — ${p.sub}`,
-      }))}
-    />
+const stage = (props) => (
+  <VariantStrip
+    {...props}
+    label="Garments"
+    variants={GARMENT_VARIANTS}
+    isActive={(v, options) => v.id === options.garment}
+  />
+);
 
-    <SelectField
-      label="Finish"
-      value={options.finish}
-      onChange={(value) => setOption('finish', value)}
-      options={FINISHES.map((f) => ({
-        value: f.id,
-        label: f.priceModifier ? `${f.name} (+$${f.priceModifier})` : f.name,
-      }))}
-    />
-  </InspectorSection>
+const documentSection = (props) => (
+  <ApparelPanel {...props} drawSubstrate={drawApparelSubstrate} />
 );
 
 export default function ApparelWorkbenchPage() {
@@ -104,7 +92,7 @@ export default function ApparelWorkbenchPage() {
         <title>Apparel Designer | Cart Commerce Studio</title>
         <meta
           name="description"
-          content="Design custom kids' hoodies, tees, varsity jackets and canvas kicks with templates, layers and live embroidery proofing."
+          content="Design custom kids' hoodies, tees, varsity jackets and canvas kicks starring your own characters, with live print proofing."
         />
       </Head>
 
@@ -112,8 +100,13 @@ export default function ApparelWorkbenchPage() {
         product={PRODUCTS.apparel}
         templateMode="apparel"
         drawSubstrate={drawApparelSubstrate}
-        documentSection={(props) => <DocumentSection {...props} />}
+        documentSection={documentSection}
         summarize={summarize}
+        initialOptions={INITIAL_OPTIONS}
+        initialLayers={starter.layers}
+        castEnabled
+        stageFor={stageFor}
+        stage={stage}
       />
     </>
   );

@@ -10,9 +10,11 @@ import { CartContext } from '../context/CartProvider';
 import { ModalContext } from '../context/ModalProvider';
 import {
   calculateDiscount,
+  cartLineId,
   formatCurrency,
   totalPrice,
   totalQuantity,
+  variantName,
 } from '../utils/cartUtils';
 import { TrashIcon } from '../Components/Icons';
 import styles from '../styles/pages/Cart.module.css';
@@ -140,13 +142,20 @@ export default function Cart() {
                 {cart &&
                   cart.map((cartItem) => {
                     return (
-                      <div className="cart-item" key={cartItem.itemid}>
+                      <div className="cart-item" key={cartLineId(cartItem)}>
                         <div className="cart-product-info">
                           <img
                             src={cartItem.image}
                             alt={`${cartItem.productName} made by ${cartItem.manufacturer}`}
                           />
-                          <h2>{cartItem.productName}</h2>
+                          <div>
+                            <h2>{cartItem.productName}</h2>
+                            {variantName(cartItem) && (
+                              <p className="cart-item-variant">
+                                {variantName(cartItem)}
+                              </p>
+                            )}
+                          </div>
                         </div>
                         <div className="product-quantity">
                           <input
@@ -161,7 +170,7 @@ export default function Cart() {
                               dispatch({
                                 type: 'UPDATE_QUANTITY',
                                 payload: {
-                                  productId: cartItem.itemid,
+                                  productId: cartLineId(cartItem),
                                   quantity: event.target.value,
                                 },
                               })
@@ -170,7 +179,7 @@ export default function Cart() {
                         </div>
                         <button
                           className="delete-item"
-                          onClick={() => handleDeleteItem(cartItem.itemid)}
+                          onClick={() => handleDeleteItem(cartLineId(cartItem))}
                           aria-label={`Remove ${cartItem.productName} from cart`}
                         >
                           <TrashIcon size={18} />

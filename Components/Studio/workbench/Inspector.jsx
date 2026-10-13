@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import { SparklesIcon, TrashIcon } from '../../Icons';
 import { SceneBackgroundIcon, TextToolIcon } from '../StudioSVGs';
+import { CharacterProperties, PieceProperties } from '../cast/CastProperties';
 import {
   STAMP_CATEGORIES,
   STAMP_IDS,
@@ -40,6 +41,8 @@ const GLYPHS = {
   shape: ShapeIcon,
   art: SparklesIcon,
   image: SceneBackgroundIcon,
+  character: SparklesIcon,
+  piece: SceneBackgroundIcon,
 };
 
 const TYPE_NAMES = {
@@ -47,7 +50,12 @@ const TYPE_NAMES = {
   shape: 'Shape layer',
   art: 'Artwork layer',
   image: 'Image layer',
+  character: 'Character',
+  piece: 'Scenery',
 };
+
+/** Layers edited mainly by picking pictures: their pickers lead the panel. */
+const VISUAL_FIRST = new Set(['character', 'piece']);
 
 const FONT_OPTIONS = [
   { value: 'display', label: 'Display' },
@@ -306,6 +314,17 @@ const TextProperties = ({ layer, set }) => (
       value={layer.color}
       onChange={(color) => set({ color })}
     />
+
+    <SegmentedControl
+      label="Shadow"
+      options={[
+        { value: 'none', label: 'None' },
+        { value: 'soft', label: 'Soft' },
+        { value: 'glow', label: 'Glow' },
+      ]}
+      value={layer.shadow ?? 'none'}
+      onChange={(shadow) => set({ shadow })}
+    />
   </>
 );
 
@@ -454,6 +473,8 @@ const BODIES = {
   shape: ShapeProperties,
   art: ArtProperties,
   image: ImageProperties,
+  character: CharacterProperties,
+  piece: PieceProperties,
 };
 
 /* -------------------------------------------------------------- panel -- */
@@ -462,6 +483,9 @@ export const Inspector = ({
   workbench,
   documentSection = null,
   stampPicker = null,
+  context = null,
+  ideas = null,
+  settingsLabel = 'Page settings',
   children = null,
 }) => {
   const { selection, updateLayer, reorder, duplicate, removeLayer, align } =
@@ -470,6 +494,7 @@ export const Inspector = ({
   if (!selection) {
     return (
       <div className={styles.panel}>
+        {ideas}
         {documentSection}
         {children}
 
@@ -510,6 +535,18 @@ export const Inspector = ({
   const set = (patch) => updateLayer(selection.id, patch);
   const Body = BODIES[selection.type] ?? ShapeProperties;
   const Glyph = GLYPHS[selection.type] ?? ShapeIcon;
+  const visualFirst = VISUAL_FIRST.has(selection.type);
+
+  const body = (
+    <InspectorSection title={TYPE_NAMES[selection.type] ?? 'Layer'}>
+      <Body
+        layer={selection}
+        set={set}
+        stampPicker={stampPicker}
+        context={context}
+      />
+    </InspectorSection>
+  );
 
   return (
     <div className={styles.panel}>
@@ -523,7 +560,18 @@ export const Inspector = ({
             {TYPE_NAMES[selection.type] ?? 'Layer'}
           </span>
         </span>
+        {/* The page's own settings (scene, cast, order) are one click away,
+            not hidden behind "click empty canvas to deselect". */}
+        <button
+          type="button"
+          className={styles.backButton}
+          onClick={() => workbench.select(null)}
+        >
+          {settingsLabel}
+        </button>
       </header>
+
+      {visualFirst && body}
 
       <InspectorSection title="Position & size">
         <FieldGroup columns={2}>
@@ -595,9 +643,7 @@ export const Inspector = ({
         </div>
       </InspectorSection>
 
-      <InspectorSection title={TYPE_NAMES[selection.type] ?? 'Layer'}>
-        <Body layer={selection} set={set} stampPicker={stampPicker} />
-      </InspectorSection>
+      {!visualFirst && body}
 
       <InspectorSection title="Arrange">
         <div className={styles.arrangeGrid}>
@@ -631,6 +677,10 @@ export const Inspector = ({
           <WorkbenchButton
             variant="subtle"
             onClick={() => duplicate(selection.id)}
+            disabled={Boolean(selection.castId)}
+            title={
+              selection.castId ? 'Each person appears once per page' : undefined
+            }
           >
             Duplicate
           </WorkbenchButton>
@@ -656,10 +706,17 @@ Inspector.propTypes = {
     duplicate: PropTypes.func.isRequired,
     reorder: PropTypes.func.isRequired,
     align: PropTypes.func.isRequired,
+    select: PropTypes.func,
   }).isRequired,
   /** Substrate controls owned by the route, shown when nothing is selected. */
   documentSection: PropTypes.node,
   /** A route-supplied art browser; falls back to the built-in stamp grid. */
   stampPicker: PropTypes.node,
+  /** The way back from a selected layer to the design's own settings. */
+  settingsLabel: PropTypes.string,
+  /** Route data some layer bodies need, e.g. the cast for character layers. */
+  context: PropTypes.object,
+  /** Starter ideas, offered while the page is still empty. */
+  ideas: PropTypes.node,
   children: PropTypes.node,
 };

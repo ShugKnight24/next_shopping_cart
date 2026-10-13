@@ -16,9 +16,15 @@
 .brandLogoSvg {
   margin: 0 0 0 0.5rem;
   width: 100%;
-  max-width: 270px;
+  max-width: 252px;
   height: auto;
   display: block;
+}
+
+@media (max-width: 1080px) {
+  .brandLogoSvg {
+    max-width: 216px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -44,11 +50,25 @@
   box-sizing: border-box;
 }
 
+/* Phones: the logo and the action buttons share the top row, and the links
+   get a row of their own. Stacking everything under the logo used to put
+   five links and three buttons on one ~520px row, which widened the whole
+   page past the screen. */
 @media (max-width: 650px) {
   .navHeader {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'logo actions'
+      'links links';
+    align-items: center;
     padding: 0.5rem 0.75rem;
-    gap: 0.6rem;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .navLogoLink {
+    grid-area: logo;
+    min-width: 0;
   }
 }
 
@@ -69,9 +89,17 @@
 
 @media (max-width: 650px) {
   .navControls {
-    width: 100%;
+    display: contents;
+  }
+
+  .navLinks {
+    grid-area: links;
     justify-content: space-between;
-    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .navActions {
+    grid-area: actions;
   }
 }
 
@@ -545,5 +573,22 @@
   .dropdownMenu {
     right: -70px;
     width: 260px;
+  }
+}
+
+/* Small phones: five links in one row, edge to edge. */
+@media (max-width: 420px) {
+  .navLinks {
+    gap: 0.35rem;
+  }
+
+  .navLinks a,
+  .navLinks .studioDropdownTrigger {
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+  }
+
+  .navLinks .studioBadge {
+    display: none;
   }
 }

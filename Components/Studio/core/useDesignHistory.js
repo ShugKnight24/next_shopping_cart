@@ -32,17 +32,28 @@ export const useDesignHistory = (
         const resolved =
           typeof next === 'function' ? next(prev.entries[prev.index]) : next;
 
+        // Previews (drag frames) overwrite the present entry; `pending` keeps
+        // what it was before the gesture, so the identity commit at gesture
+        // end records the whole gesture as one real step.
+        const base = prev.pending;
+
         // Identical stacks (a drag that ended where it began) should not
         // consume an undo step.
-        if (resolved === prev.entries[prev.index]) return prev;
+        if (resolved === (base ?? prev.entries[prev.index])) {
+          if (!base) return prev;
+          const entries = prev.entries.slice();
+          entries[prev.index] = base;
+          return { ...prev, entries, pending: undefined };
+        }
 
-        const truncated = prev.entries.slice(0, prev.index + 1);
+        const truncated = prev.entries.slice(0, prev.index + (base ? 0 : 1));
+        if (base) truncated.push(base);
         truncated.push(resolved);
 
         const overflow = Math.max(0, truncated.length - limit);
         const entries = overflow ? truncated.slice(overflow) : truncated;
 
-        return { entries, index: entries.length - 1 };
+        return { entries, index: entries.length - 1, pending: undefined };
       });
     },
     [limit]
@@ -57,7 +68,11 @@ export const useDesignHistory = (
 
       const entries = prev.entries.slice();
       entries[prev.index] = resolved;
-      return { ...prev, entries };
+      return {
+        ...prev,
+        entries,
+        pending: prev.pending ?? prev.entries[prev.index],
+      };
     });
   }, []);
 
@@ -70,16 +85,23 @@ export const useDesignHistory = (
 
   const undo = useCallback(
     () =>
-      setState((prev) =>
-        prev.index > 0 ? { ...prev, index: prev.index - 1 } : prev
-      ),
+      setState((prev) => {
+        // Uncommitted previews are the newest change: undo them first.
+        // Cancelling a gesture that never committed keeps the redo tail.
+        if (prev.pending) {
+          const entries = prev.entries.slice();
+          entries[prev.index] = prev.pending;
+          return { entries, index: prev.index, pending: undefined };
+        }
+        return prev.index > 0 ? { ...prev, index: prev.index - 1 } : prev;
+      }),
     []
   );
 
   const redo = useCallback(
     () =>
       setState((prev) =>
-        prev.index < prev.entries.length - 1
+        prev.index < prev.entries.length - 1 && !prev.pending
           ? { ...prev, index: prev.index + 1 }
           : prev
       ),
@@ -88,7 +110,15 @@ export const useDesignHistory = (
 
   /** Discard all history — loading a saved design, or "start over". */
   const reset = useCallback(
-    (layers = []) => setState({ entries: [layers], index: 0 }),
+    (layers = []) =>
+      setState((prev) => ({
+        entries: [
+          typeof layers === 'function'
+            ? layers(prev.entries[prev.index])
+            : layers,
+        ],
+        index: 0,
+      })),
     []
   );
 
@@ -103,8 +133,8 @@ export const useDesignHistory = (
       undo,
       redo,
       reset,
-      canUndo: state.index > 0,
-      canRedo: state.index < state.entries.length - 1,
+      canUndo: state.index > 0 || Boolean(state.pending),
+      canRedo: state.index < state.entries.length - 1 && !state.pending,
       depth: state.entries.length,
     }),
     [
@@ -117,6 +147,7 @@ export const useDesignHistory = (
       reset,
       state.index,
       state.entries.length,
+      state.pending,
     ]
   );
 };

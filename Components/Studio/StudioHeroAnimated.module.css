@@ -253,6 +253,30 @@
   z-index: 5;
 }
 
+/* The studio-made family: grown-up, kid and little one, feet on one line. */
+.castFamily {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  transform-origin: bottom center;
+}
+
+.castFamily img {
+  display: block;
+  width: auto;
+  height: var(--h);
+  pointer-events: none;
+  filter: drop-shadow(0 8px 10px rgb(2 6 23 / 35%));
+}
+
+/* Sized, not transformed: a scale() leaves the full-size box in the
+   layout, and on a phone that box alone was wider than the screen. */
+@media (max-width: 640px) {
+  .castFamily img {
+    height: calc(var(--h) * 0.74);
+  }
+}
+
 .mascotLeo {
   animation: gentleBob 3.5s ease-in-out infinite 0.3s;
 }
@@ -423,8 +447,43 @@
   .mascotScene {
     height: 200px;
     gap: 6px;
+    /* Never let the row of characters set the page's width. */
+    contain: inline-size;
+  }
+  /* Room for the family and one guide either side. */
+  .mascotScene > .characterGuide:first-child,
+  .mascotScene > .characterGuide:last-child {
+    display: none;
+  }
+  .mascotScene .characterGuide > svg {
+    width: 76px;
+    height: 76px;
   }
   .floatingTool {
     display: none;
   }
+}
+
+/* The guides are buttons; drop the browser's button chrome. */
+button.characterGuide {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+button.characterGuide:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
