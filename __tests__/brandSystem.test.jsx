@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   BrandProvider,
@@ -7,7 +8,10 @@ import {
   useBrand,
 } from '../Components/Brand/BrandContext';
 import { BrandMark } from '../Components/Brand/BrandMark';
-import { BrandVariantPickerModal } from '../Components/Brand/BrandVariantPicker';
+import {
+  BrandQuickSwitcherPill,
+  BrandVariantPickerModal,
+} from '../Components/Brand/BrandVariantPicker';
 import { LegacyLogo } from '../Components/Legacy/LegacyLogo';
 import { Logo } from '../Components/Logo';
 import { ToastProvider } from '../Components/UI/Toast';
@@ -264,5 +268,55 @@ describe('Brand System & Logo Variants', () => {
 
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('keeps focus inside the brand dialog and returns it on close', () => {
+    const Harness = () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Open brand
+          </button>
+          <BrandVariantPickerModal
+            isOpen={open}
+            onClose={() => setOpen(false)}
+          />
+        </>
+      );
+    };
+    render(
+      <BrandProvider>
+        <ToastProvider>
+          <Harness />
+        </ToastProvider>
+      </BrandProvider>
+    );
+    const opener = screen.getByRole('button', { name: 'Open brand' });
+    opener.focus();
+    fireEvent.click(opener);
+
+    const close = screen.getByRole('button', { name: 'Close brand modal' });
+    expect(close).toHaveFocus();
+
+    // Shift+Tab from the first control wraps to the last, not the page.
+    fireEvent.keyDown(close, { key: 'Tab', shiftKey: true });
+    expect(screen.getByRole('dialog')).toContainElement(document.activeElement);
+    expect(document.activeElement).not.toBe(close);
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(opener).toHaveFocus();
+  });
+
+  it('names the brand pill by what it shows', () => {
+    render(
+      <BrandProvider>
+        <BrandQuickSwitcherPill onOpen={() => {}} />
+      </BrandProvider>
+    );
+
+    expect(
+      screen.getByRole('button', { name: /Brand Style:/ })
+    ).toBeInTheDocument();
   });
 });

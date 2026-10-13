@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { LegacyLogo } from '../Legacy/LegacyLogo';
 import { Logo } from '../Logo';
 import { useToast } from '../UI/Toast';
@@ -18,6 +19,8 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
   const { variant: activeVariant, setVariant } = useBrand();
   const [previewTheme, setPreviewTheme] = useState('light');
   const toast = useToast();
+  const contentRef = useRef(null);
+  useFocusTrap(contentRef, isOpen);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -48,7 +51,12 @@ export function BrandVariantPickerModal({ isOpen, onClose }) {
       aria-modal="true"
       aria-labelledby="brandModalTitle"
     >
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={contentRef}
+        tabIndex={-1}
+        className={styles.modalContent}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className={styles.modalHeader}>
           <div className={styles.modalHeaderMark}>
             <BrandMark size={44} title="Cart Commerce" />
@@ -212,7 +220,8 @@ export function BrandQuickSwitcherPill({ onOpen }) {
       type="button"
       className={styles.floatingSwitcherPill}
       onClick={onOpen}
-      aria-label="Customize Brand Identity"
+      // No aria-label: the visible "Brand Style: <name>" is the name, so
+      // voice control users can say what they see.
       title="Customize Brand Identity & Logo Variant"
     >
       <BrandMark variant={variant} theme="dark" size={20} title="" />
