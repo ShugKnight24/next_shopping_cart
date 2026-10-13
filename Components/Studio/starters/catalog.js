@@ -1,13 +1,14 @@
 /**
- * Store products a design can feature: only those whose photo is served from
- * this site, so a post that shows one can still be exported (a photo from
- * another origin would taint the canvas).
+ * Store products a design can feature. Remote photos are requested with CORS
+ * (see castRaster's imageForUrl): every catalogue host sends
+ * `Access-Control-Allow-Origin`, so they draw without tainting the canvas,
+ * and a host that stopped would fail to load rather than break export.
  */
 
 import products from '../../../data/products.json';
 
 export const CATALOG = products
-  .filter((p) => typeof p.image === 'string' && /^\/(?!\/)/.test(p.image))
+  .filter((p) => typeof p.image === 'string' && p.image)
   .map((p) => ({
     itemid: p.itemid,
     productName: p.productName,
