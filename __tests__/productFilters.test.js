@@ -206,6 +206,10 @@ describe('Functional Product Filter Predicates', () => {
   });
 
   describe('matchesProductQuery & filterBySearchQuery', () => {
+    it('tolerates typos like instant search', () => {
+      expect(matchesProductQuery(sampleProducts[0], 'jorden')).toBe(true);
+    });
+
     it('matches by product name substring', () => {
       expect(matchesProductQuery(sampleProducts[0], 'jordan')).toBe(true);
       expect(matchesProductQuery(sampleProducts[0], 'stratocaster')).toBe(

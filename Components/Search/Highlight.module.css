@@ -1,0 +1,6 @@
+.match {
+  background: color-mix(in srgb, var(--color-gold-light) 28%, transparent);
+  color: inherit;
+  font-weight: 700;
+  border-radius: 2px;
+}

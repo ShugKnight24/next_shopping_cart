@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- **Fuzzy product search without Algolia (`utils/productSearch.js`)**: Instant search and the command palette now rank the in-memory catalog with typo tolerance (1 typo from 4 characters, 2 from 8), prefix matching on the word being typed, accent- and spacing-insensitive matching, and field-weighted relevance (name, brand, SKU, tags, category, description).
+- **Search match highlighting (`Components/Search/Highlight.jsx`)**: Instant search and command palette results mark the matched part of the product name and brand.
+- **Catalog search filter**: `matchesProductQuery` delegates to the same fuzzy matcher, so the catalog pipeline and instant search agree.
+
+### Removed
+
+- **Algolia configuration**: Dropped `.example.env`, which held only the `NEXT_PUBLIC_ALGOLIA_*` keys.
+
+---
+
 ## [0.10.0] - 2026-09-06
 
 ### Added

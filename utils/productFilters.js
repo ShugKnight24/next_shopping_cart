@@ -1,4 +1,5 @@
 import { CATEGORY_DEFINITIONS } from '../Components/Products/CategoryFilterTabs';
+import { matchesQuery } from './productSearch';
 
 /**
  * Functional & Declarative Product Filtering and Sorting Pipeline
@@ -90,6 +91,7 @@ export const filterByPriceRange =
 
 /**
  * Pure search matching predicate to eliminate duplicated query matching logic across components.
+ * Delegates to the fuzzy matcher so the catalog filter and instant search agree.
  *
  * @param {object} product
  * @param {string} query
@@ -97,27 +99,9 @@ export const filterByPriceRange =
  */
 export const matchesProductQuery = (product, query) => {
   if (!query || typeof query !== 'string') return true;
-  const q = query.trim().toLowerCase();
-  if (!q) return true;
+  if (!query.trim()) return true;
   if (!product || typeof product !== 'object') return false;
-
-  const name = (product.productName || '').toLowerCase();
-  const brand = (product.manufacturer || '').toLowerCase();
-  const desc = (product.description || '').toLowerCase();
-  const id = (product.itemid || '').toLowerCase();
-  const category = (product.category || '').toLowerCase();
-  const tags = Array.isArray(product.tags)
-    ? product.tags.join(' ').toLowerCase()
-    : '';
-
-  return (
-    name.includes(q) ||
-    brand.includes(q) ||
-    desc.includes(q) ||
-    id.includes(q) ||
-    category.includes(q) ||
-    tags.includes(q)
-  );
+  return matchesQuery(product, query);
 };
 
 /**

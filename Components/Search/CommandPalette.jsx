@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { searchProducts as rankProducts } from '../../utils/productSearch';
 import { BadgeGroup } from '../UI/Badge';
 import { RatingStars } from '../UI/RatingStars';
 import styles from './CommandPalette.module.css';
+import { Highlight } from './Highlight';
 
 export function CommandPalette({
   isOpen,
@@ -60,20 +62,7 @@ export function CommandPalette({
 
       // Simulate search delay for UX
       setTimeout(() => {
-        const filtered = products.filter((product) => {
-          const searchLower = searchQuery.toLowerCase();
-          return (
-            product.productName?.toLowerCase().includes(searchLower) ||
-            product.manufacturer?.toLowerCase().includes(searchLower) ||
-            product.description?.toLowerCase().includes(searchLower) ||
-            product.tags?.some((tag) =>
-              tag.toLowerCase().includes(searchLower)
-            ) ||
-            product.category?.toLowerCase().includes(searchLower)
-          );
-        });
-
-        setResults(filtered.slice(0, 8));
+        setResults(rankProducts(products, searchQuery, { limit: 8 }));
         setSelectedIndex(0);
         setIsLoading(false);
       }, 150);
@@ -222,14 +211,14 @@ export function CommandPalette({
                   <div className={styles.productInfo}>
                     <div className={styles.productHeader}>
                       <span className={styles.manufacturer}>
-                        {product.manufacturer}
+                        <Highlight text={product.manufacturer} query={query} />
                       </span>
                       {product.badges && (
                         <BadgeGroup badges={product.badges} max={2} />
                       )}
                     </div>
                     <h4 className={styles.productName}>
-                      {product.productName}
+                      <Highlight text={product.productName} query={query} />
                     </h4>
                     <div className={styles.productMeta}>
                       {product.rating && (

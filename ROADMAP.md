@@ -953,7 +953,6 @@ Current State (Phase 1)           Future State (Phase 6)
 ### External Integrations Documentation
 
 - Stripe Payments
-- Algolia Search
 - Sanity CMS
 - Shopify Storefront
 - Google Analytics

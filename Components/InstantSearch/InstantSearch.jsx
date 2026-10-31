@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { trackSearch } from '../../analytics/google';
 import { CartContext } from '../../context/CartProvider';
+import { buildSearchIndex, searchProducts } from '../../utils/productSearch';
 import { Hit } from './Hit';
 import styles from './InstantSearch.module.css';
 
@@ -16,33 +17,15 @@ export function InstantSearch({
   const [showHits, setShowHits] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter inventory based on search query
-  const hitList = useMemo(() => {
-    if (!inventory || inventory.length === 0) return [];
+  // Index once per inventory change; rank on every keystroke
+  const searchIndex = useMemo(() => buildSearchIndex(inventory), [inventory]);
 
-    const query = searchQuery.toLowerCase().trim();
-
-    if (!query) {
-      // Show no results when no query - helper text will display instead
-      return [];
-    }
-
-    return inventory
-      .filter((product) => {
-        const productName = (product.productName || '').toLowerCase();
-        const manufacturer = (product.manufacturer || '').toLowerCase();
-        const description = (product.description || '').toLowerCase();
-        const itemid = (product.itemid || '').toLowerCase();
-
-        return (
-          productName.includes(query) ||
-          manufacturer.includes(query) ||
-          description.includes(query) ||
-          itemid.includes(query)
-        );
-      })
-      .slice(0, 5); // Limit to 5 results
-  }, [inventory, searchQuery]);
+  // Fuzzy-match inventory: typo tolerant, prefix on the word being typed.
+  // Empty query shows helper text instead of results.
+  const hitList = useMemo(
+    () => searchProducts(searchIndex, searchQuery, { limit: 5 }),
+    [searchIndex, searchQuery]
+  );
 
   function handleInput(event) {
     setSearchQuery(event.target.value);
@@ -80,6 +63,7 @@ export function InstantSearch({
               <Hit
                 key={product.itemid}
                 itemid={product.itemid}
+                query={searchQuery}
                 setSelectedProduct={setSelectedProduct}
                 setRecommendedProduct={setRecommendedProduct}
               />
