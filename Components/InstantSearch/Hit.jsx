@@ -4,10 +4,12 @@ import { useContext } from 'react';
 import { CartContext } from '../../context/CartProvider';
 import { formatCurrency } from '../../utils/cartUtils';
 import { getCurrentItem } from '../../utils/getItem';
+import { Highlight } from '../Search/Highlight';
 import styles from './InstantSearch.module.css';
 
 export function Hit({
   itemid,
+  query = '',
   setSelectedProduct: _setSelectedProduct,
   setRecommendedProduct: _setRecommendedProduct,
 }) {
@@ -46,8 +48,12 @@ export function Hit({
             alt={`${productName} made by ${manufacturer}`}
           />
           <div className={styles.nameManufacturer}>
-            <h2>{productName}</h2>
-            <h3>Made By: {manufacturer}</h3>
+            <h2>
+              <Highlight text={productName} query={query} />
+            </h2>
+            <h3>
+              Made By: <Highlight text={manufacturer} query={query} />
+            </h3>
             <p>Available: {available}</p>
             <p>{formatCurrency(price)}</p>
           </div>
@@ -66,6 +72,7 @@ export function Hit({
 // TODO:// Update object shape when rec system is implemented
 Hit.propTypes = {
   itemid: PropTypes.string.isRequired,
+  query: PropTypes.string,
   setSelectedProduct: PropTypes.func,
   setRecommendedProduct: PropTypes.func,
 };
